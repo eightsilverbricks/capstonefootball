@@ -1,5 +1,3 @@
-
-
 from pathlib import Path
 import json
 
@@ -29,10 +27,37 @@ FEATURES = [
     "diff_season_points_allowed_pg",
     "diff_season_point_diff_pg",
     "diff_season_win_pct",
+    "diff_season_turnover_diff_pg",
+    "diff_season_ypp_off",
+    "diff_season_ypp_def",
+    "diff_season_epa_per_play",
+    "diff_season_epa_per_play_allowed",
+    "diff_season_success_rate",
+    "diff_season_success_rate_allowed",
+    "diff_season_pass_epa_per_play",
+    "diff_season_rush_epa_per_play",
+    "diff_season_sack_rate_allowed",
+    "diff_season_def_sack_rate",
     "diff_last3_points_pg",
     "diff_last3_points_allowed_pg",
     "diff_last3_point_diff_pg",
     "diff_last3_win_pct",
+    "diff_last3_turnover_diff_pg",
+    "diff_last3_ypp_off",
+    "diff_last3_ypp_def",
+    "diff_last3_epa_per_play",
+    "diff_last3_epa_per_play_allowed",
+    "diff_last3_success_rate",
+    "diff_last3_success_rate_allowed",
+    "diff_last3_pass_epa_per_play",
+    "diff_last3_rush_epa_per_play",
+    "diff_last3_sack_rate_allowed",
+    "diff_last3_def_sack_rate",
+    "rest_diff",
+    "div_game",
+    "spread_line",
+    "home_moneyline",
+    "away_moneyline",
     "home_field",
 ]
 
@@ -74,7 +99,7 @@ def build_model() -> Pipeline:
     return Pipeline(
         steps=[
             ("scaler", StandardScaler()),
-            ("clf", LogisticRegression(max_iter=2000, random_state=42)),
+            ("clf", LogisticRegression(max_iter=4000, random_state=42)),
         ]
     )
 
