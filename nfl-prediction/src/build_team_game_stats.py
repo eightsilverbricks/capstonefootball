@@ -26,6 +26,9 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
         "qb_dropback",
         "pass",
         "rush",
+        "qb_epa",
+        "cpoe",
+        "pass_oe",
     ]
     missing = [col for col in required_cols if col not in plays.columns]
     if missing:
@@ -44,6 +47,9 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
         "qb_dropback",
         "pass",
         "rush",
+        "qb_epa",
+        "cpoe",
+        "pass_oe",
     ]:
         plays[col] = pd.to_numeric(plays[col], errors="coerce").fillna(0)
 
@@ -60,6 +66,9 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
             dropbacks=("qb_dropback", "sum"),
             pass_plays=("pass", "sum"),
             rush_plays=("rush", "sum"),
+            qb_epa_total=("qb_epa", "sum"),
+            cpoe_avg=("cpoe", "mean"),
+            pass_oe_avg=("pass_oe", "mean"),
             pass_epa_total=("epa", lambda s: s[plays.loc[s.index, "pass"] == 1].sum()),
             rush_epa_total=("epa", lambda s: s[plays.loc[s.index, "rush"] == 1].sum()),
         )
@@ -101,6 +110,10 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
     team_stats["pass_epa_per_play"] = team_stats["pass_epa_total"] / team_stats["pass_plays"].replace(0, pd.NA)
     team_stats["rush_epa_per_play"] = team_stats["rush_epa_total"] / team_stats["rush_plays"].replace(0, pd.NA)
 
+    team_stats["qb_epa_per_play"] = team_stats["qb_epa_total"] / team_stats["dropbacks"].replace(0, pd.NA)
+    team_stats["cpoe"] = team_stats["cpoe_avg"]
+    team_stats["pass_oe"] = team_stats["pass_oe_avg"]
+
     team_stats["sack_rate_allowed"] = team_stats["sacks_allowed"] / team_stats["dropbacks"].replace(0, pd.NA)
     team_stats["def_sack_rate"] = team_stats["sacks_made"] / team_stats["opponent_dropbacks"].replace(0, pd.NA)
 
@@ -115,6 +128,9 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
         "rush_epa_per_play",
         "sack_rate_allowed",
         "def_sack_rate",
+        "qb_epa_per_play",
+        "cpoe",
+        "pass_oe",
     ]
     for col in fill_zero_cols:
         team_stats[col] = team_stats[col].fillna(0.0)
@@ -133,6 +149,9 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
         "rush_epa_per_play",
         "sack_rate_allowed",
         "def_sack_rate",
+        "qb_epa_per_play",
+        "cpoe",
+        "pass_oe",
     ]
     return team_stats[keep_cols]
 
@@ -202,6 +221,9 @@ def main() -> None:
         "rush_epa_per_play",
         "sack_rate_allowed",
         "def_sack_rate",
+        "qb_epa_per_play",
+        "cpoe",
+        "pass_oe",
     ]
     for col in fill_zero_cols:
         team_games[col] = team_games[col].fillna(0.0)
@@ -230,6 +252,9 @@ def main() -> None:
         "season_rush_epa_per_play": "rush_epa_per_play",
         "season_sack_rate_allowed": "sack_rate_allowed",
         "season_def_sack_rate": "def_sack_rate",
+        "season_qb_epa_per_play": "qb_epa_per_play",
+        "season_cpoe": "cpoe",
+        "season_pass_oe": "pass_oe",
     }
 
     for new_col, source_col in season_stats.items():
@@ -253,6 +278,9 @@ def main() -> None:
         "last3_rush_epa_per_play": "rush_epa_per_play",
         "last3_sack_rate_allowed": "sack_rate_allowed",
         "last3_def_sack_rate": "def_sack_rate",
+        "last3_qb_epa_per_play": "qb_epa_per_play",
+        "last3_cpoe": "cpoe",
+        "last3_pass_oe": "pass_oe",
     }
 
     for new_col, source_col in last3_stats.items():

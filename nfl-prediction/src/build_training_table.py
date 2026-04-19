@@ -22,6 +22,9 @@ FEATURES = [
     "season_rush_epa_per_play",
     "season_sack_rate_allowed",
     "season_def_sack_rate",
+    "season_qb_epa_per_play",
+    "season_cpoe",
+    "season_pass_oe",
     "last3_points_pg",
     "last3_points_allowed_pg",
     "last3_point_diff_pg",
@@ -37,6 +40,9 @@ FEATURES = [
     "last3_rush_epa_per_play",
     "last3_sack_rate_allowed",
     "last3_def_sack_rate",
+    "last3_qb_epa_per_play",
+    "last3_cpoe",
+    "last3_pass_oe",
 ]
 
 
@@ -86,6 +92,38 @@ def main() -> None:
     for c in FEATURES:
         df[f"diff_{c}"] = df[f"home_{c}"] - df[f"away_{c}"]
 
+    df["match_season_pass_off_vs_def"] = (
+        df["home_season_pass_epa_per_play"] - df["away_season_epa_per_play_allowed"]
+    )
+    df["match_season_rush_off_vs_def"] = (
+        df["home_season_rush_epa_per_play"] - df["away_season_epa_per_play_allowed"]
+    )
+    df["match_season_success_off_vs_def"] = (
+        df["home_season_success_rate"] - df["away_season_success_rate_allowed"]
+    )
+    df["match_season_sack_pressure"] = (
+        df["home_season_sack_rate_allowed"] - df["away_season_def_sack_rate"]
+    )
+    df["match_season_qb_vs_def"] = (
+        df["home_season_qb_epa_per_play"] - df["away_season_epa_per_play_allowed"]
+    )
+
+    df["match_last3_pass_off_vs_def"] = (
+        df["home_last3_pass_epa_per_play"] - df["away_last3_epa_per_play_allowed"]
+    )
+    df["match_last3_rush_off_vs_def"] = (
+        df["home_last3_rush_epa_per_play"] - df["away_last3_epa_per_play_allowed"]
+    )
+    df["match_last3_success_off_vs_def"] = (
+        df["home_last3_success_rate"] - df["away_last3_success_rate_allowed"]
+    )
+    df["match_last3_sack_pressure"] = (
+        df["home_last3_sack_rate_allowed"] - df["away_last3_def_sack_rate"]
+    )
+    df["match_last3_qb_vs_def"] = (
+        df["home_last3_qb_epa_per_play"] - df["away_last3_epa_per_play_allowed"]
+    )
+
     df["home_field"] = 1
     df["rest_diff"] = df["rest_home"] - df["rest_away"]
     df["div_game"] = pd.to_numeric(df["div_game"], errors="coerce").fillna(0).astype(int)
@@ -106,6 +144,16 @@ def main() -> None:
         "spread_line",
         "home_moneyline",
         "away_moneyline",
+        "match_season_pass_off_vs_def",
+        "match_season_rush_off_vs_def",
+        "match_season_success_off_vs_def",
+        "match_season_sack_pressure",
+        "match_season_qb_vs_def",
+        "match_last3_pass_off_vs_def",
+        "match_last3_rush_off_vs_def",
+        "match_last3_success_off_vs_def",
+        "match_last3_sack_pressure",
+        "match_last3_qb_vs_def",
     ] + [f"diff_{c}" for c in FEATURES]
 
     df = df[final_cols].copy()
