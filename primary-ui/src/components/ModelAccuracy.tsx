@@ -19,18 +19,18 @@ const ModelAccuracy: React.FC = () => {
       <div className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-slate-700/50 rounded-lg p-3 text-center">
           <div className="text-2xl font-bold text-emerald-400">{seasonPct}%</div>
-          <p className="text-xs text-slate-400 mt-1">2024 Holdout</p>
+          <p className="text-xs text-slate-400 mt-1">2024 Expanding Week</p>
           <p className="text-xs text-slate-500">{modelAccuracy.season}/{modelAccuracy.seasonTotal} correct</p>
         </div>
 
         <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-cyan-400">0.591</div>
+          <div className="text-2xl font-bold text-cyan-400">0.592</div>
           <p className="text-xs text-slate-400 mt-1">Log Loss</p>
           <p className="text-xs text-slate-500">Lower is better</p>
         </div>
 
         <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-purple-400">28</div>
+          <div className="text-2xl font-bold text-purple-400">12</div>
           <p className="text-xs text-slate-400 mt-1">Features</p>
           <p className="text-xs text-slate-500">Used by the API model</p>
         </div>
@@ -51,7 +51,7 @@ const ModelAccuracy: React.FC = () => {
           </div>
           <div className="flex justify-between text-xs text-slate-500 mt-1">
             <span>0%</span>
-            <span>Logistic regression holdout result</span>
+            <span>Expanding-week result</span>
             <span>100%</span>
           </div>
         </div>
@@ -99,7 +99,7 @@ const ModelAccuracy: React.FC = () => {
         <div className="flex items-start gap-2">
           <History className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
           <p className="text-xs text-slate-500">
-            Logistic regression with standard scaling, trained on 2018-2023 and evaluated on the 2024 holdout season. The live cards above come from the FastAPI endpoint using this trained model.
+            Logistic regression with standard scaling. The production model uses market/context inputs plus recent team-form metrics, then predicts each 2024 week using only prior seasons plus earlier 2024 weeks.
           </p>
         </div>
       </div>

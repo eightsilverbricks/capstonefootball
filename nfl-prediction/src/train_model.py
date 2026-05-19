@@ -1,5 +1,6 @@
 from pathlib import Path
 import json
+from typing import Any
 
 import joblib
 import pandas as pd
@@ -67,9 +68,40 @@ CONTEXT_FEATURES = [
     "home_field",
 ]
 
+RECENT_FORM_FEATURES = [
+    "diff_last3_point_diff_pg",
+    "diff_last3_win_pct",
+    "diff_last3_epa_per_play",
+    "diff_last3_epa_per_play_allowed",
+    "diff_last3_success_rate",
+    "diff_last3_success_rate_allowed",
+]
+
+PRODUCTION_FEATURES = MARKET_FEATURES + CONTEXT_FEATURES + RECENT_FORM_FEATURES
+PRODUCTION_MODEL_NAME = "market_context_recent_form"
+
 PURE_FOOTBALL_FEATURES = [feature for feature in FEATURES if feature not in MARKET_FEATURES]
 
 TARGET = "home_win"
+
+FEATURE_LABELS = {
+    "spread_line": "Closing spread",
+    "home_moneyline": "Home moneyline",
+    "away_moneyline": "Away moneyline",
+    "rest_diff": "Rest differential",
+    "div_game": "Division matchup",
+    "home_field": "Home field",
+    "diff_last3_point_diff_pg": "Recent point differential",
+    "diff_last3_win_pct": "Recent win rate",
+    "diff_last3_epa_per_play": "Recent offensive EPA",
+    "diff_last3_epa_per_play_allowed": "Recent defensive EPA allowed",
+    "diff_last3_success_rate": "Recent offensive success rate",
+    "diff_last3_success_rate_allowed": "Recent defensive success allowed",
+}
+
+
+def binary_log_loss(y_true, y_prob) -> float:
+    return float(log_loss(y_true, y_prob, labels=[0, 1]))
 
 
 def load_training_data() -> pd.DataFrame:
@@ -89,11 +121,16 @@ def load_training_data() -> pd.DataFrame:
     return df
 
 
+def sort_games(df: pd.DataFrame) -> pd.DataFrame:
+    sort_columns = [col for col in ["season", "week", "gameday", "game_id"] if col in df.columns]
+    return df.sort_values(sort_columns).reset_index(drop=True)
+
+
 def split_train_test(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, int]:
     latest_season = int(df["season"].max())
 
-    train_df = df[df["season"] < latest_season].copy()
-    test_df = df[df["season"] == latest_season].copy()
+    train_df = sort_games(df[df["season"] < latest_season].copy())
+    test_df = sort_games(df[df["season"] == latest_season].copy())
 
     if train_df.empty:
         raise ValueError("Training set is empty. Add more than one season to the dataset.")
@@ -101,6 +138,12 @@ def split_train_test(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, int]
         raise ValueError("Test set is empty. Make sure the latest season exists in the table.")
 
     return train_df, test_df, latest_season
+
+
+def fit_model(train_df: pd.DataFrame, feature_list: list[str] = FEATURES) -> Pipeline:
+    model = build_model()
+    model.fit(train_df[feature_list], train_df[TARGET])
+    return model
 
 
 def build_model() -> Pipeline:
@@ -121,18 +164,21 @@ def build_model() -> Pipeline:
         param_grid,
         scoring="accuracy",
         cv=5,
-        n_jobs=-1,
-        verbose=1,
+        n_jobs=1,
+        verbose=0,
     )
 
     return grid
 
 
-def compute_feature_importance(model) -> list[tuple[str, float]]:
+def compute_feature_importance(
+    model,
+    feature_list: list[str] = PRODUCTION_FEATURES,
+) -> list[tuple[str, float]]:
     fitted_model = model.best_estimator_ if hasattr(model, "best_estimator_") else model
     clf = fitted_model.named_steps["clf"]
     return sorted(
-        zip(FEATURES, clf.coef_[0]),
+        zip(feature_list, clf.coef_[0]),
         key=lambda item: abs(item[1]),
         reverse=True,
     )
@@ -157,17 +203,174 @@ def evaluate_feature_set(
     return {
         "feature_count": len(feature_list),
         "accuracy": float(accuracy_score(y_test, preds)),
-        "log_loss": float(log_loss(y_test, probs)),
+        "log_loss": binary_log_loss(y_test, probs),
     }
 
 
-def print_feature_importance(model: Pipeline) -> None:
+def evaluate_feature_set_expanding(
+    df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    latest_season: int,
+    feature_list: list[str],
+) -> dict:
+    outputs = []
+
+    for week in sorted(test_df["week"].unique()):
+        train_df = sort_games(
+            df[
+                (df["season"] < latest_season)
+                | ((df["season"] == latest_season) & (df["week"] < week))
+            ].copy()
+        )
+        week_df = test_df[test_df["week"] == week].copy()
+
+        if train_df.empty or week_df.empty:
+            continue
+
+        model = fit_model(train_df, feature_list)
+        probs = model.predict_proba(week_df[feature_list])[:, 1]
+        preds = (probs >= 0.5).astype(int)
+        output = build_predictions_output(week_df, probs, preds)
+        outputs.append(output)
+
+    if not outputs:
+        raise ValueError("No weekly predictions were generated for feature evaluation.")
+
+    predictions = pd.concat(outputs, ignore_index=True)
+
+    return {
+        "feature_count": len(feature_list),
+        "accuracy": float(accuracy_score(predictions[TARGET], predictions["predicted_home_win"])),
+        "log_loss": binary_log_loss(predictions[TARGET], predictions["home_win_probability"]),
+    }
+
+
+def print_feature_importance(
+    model: Pipeline,
+    feature_list: list[str] = PRODUCTION_FEATURES,
+) -> None:
     print("\nTop feature coefficients:")
-    for name, coef in compute_feature_importance(model):
+    for name, coef in compute_feature_importance(model, feature_list):
         print(f"{name}: {coef:.4f}")
 
 
-def build_predictions_output(test_df: pd.DataFrame, probs, preds) -> pd.DataFrame:
+def format_feature_value(feature: str, value: Any) -> str:
+    if feature in {"home_moneyline", "away_moneyline"}:
+        return f"{int(value):+d}"
+    if feature == "spread_line":
+        return f"{float(value):+.1f}"
+    if feature == "rest_diff":
+        days = abs(int(value))
+        return f"{int(value):+d} day{'s' if days != 1 else ''}"
+    if feature == "div_game":
+        return "Yes" if int(value) == 1 else "No"
+    if feature == "home_field":
+        return "Home"
+    if feature in {"diff_last3_win_pct", "diff_last3_success_rate", "diff_last3_success_rate_allowed"}:
+        return f"{float(value):+.1%}"
+    if feature == "diff_last3_point_diff_pg":
+        return f"{float(value):+.1f} pts/game"
+    return f"{float(value):+.3f}"
+
+
+def display_direction(feature: str, row: pd.Series, contribution: float) -> str:
+    if feature == "spread_line":
+        if row[feature] > 0:
+            return row["home_team"]
+        if row[feature] < 0:
+            return row["away_team"]
+    if feature == "home_moneyline":
+        return row["home_team"] if row[feature] < 0 else row["away_team"]
+    if feature == "away_moneyline":
+        return row["away_team"] if row[feature] < 0 else row["home_team"]
+    if feature == "rest_diff":
+        if row[feature] > 0:
+            return row["home_team"]
+        if row[feature] < 0:
+            return row["away_team"]
+    if feature == "home_field":
+        return row["home_team"]
+    if feature in {
+        "diff_last3_point_diff_pg",
+        "diff_last3_win_pct",
+        "diff_last3_epa_per_play",
+        "diff_last3_success_rate",
+    }:
+        if row[feature] > 0:
+            return row["home_team"]
+        if row[feature] < 0:
+            return row["away_team"]
+    if feature in {"diff_last3_epa_per_play_allowed", "diff_last3_success_rate_allowed"}:
+        if row[feature] > 0:
+            return row["away_team"]
+        if row[feature] < 0:
+            return row["home_team"]
+    return row["home_team"] if contribution >= 0 else row["away_team"]
+
+
+def explain_prediction(
+    row: pd.Series,
+    model: Pipeline,
+    feature_list: list[str],
+) -> tuple[str, str]:
+    fitted_model = model.best_estimator_ if hasattr(model, "best_estimator_") else model
+    scaler = fitted_model.named_steps["scaler"]
+    clf = fitted_model.named_steps["clf"]
+
+    feature_frame = pd.DataFrame([row[feature_list].to_dict()])
+    scaled_values = scaler.transform(feature_frame)[0]
+    contributions = scaled_values * clf.coef_[0]
+
+    factors = []
+    for feature, contribution in zip(feature_list, contributions):
+        direction = display_direction(feature, row, contribution)
+        factors.append(
+            {
+                "feature": feature,
+                "label": FEATURE_LABELS.get(feature, feature),
+                "value": format_feature_value(feature, row[feature]),
+                "direction": direction,
+                "impact": float(abs(contribution)),
+            }
+        )
+
+    factors = sorted(factors, key=lambda factor: factor["impact"], reverse=True)
+    top_factors = factors[:3]
+    factor_text = "; ".join(
+        f"{factor['label']} {factor['value']} favored {factor['direction']}"
+        for factor in top_factors
+    )
+    summary = (
+        f"{row['predicted_winner']} was projected ahead because the strongest inputs for this "
+        f"specific matchup were: {factor_text}."
+    )
+
+    return summary, json.dumps(top_factors)
+
+
+def add_prediction_explanations(
+    output: pd.DataFrame,
+    model: Pipeline,
+    feature_list: list[str],
+) -> pd.DataFrame:
+    explanations = output.apply(
+        lambda row: explain_prediction(row, model, feature_list),
+        axis=1,
+        result_type="expand",
+    )
+    output["explanation_summary"] = explanations[0]
+    output["explanation_factors"] = explanations[1]
+    output["model_feature_set"] = PRODUCTION_MODEL_NAME
+    return output
+
+
+def build_predictions_output(
+    test_df: pd.DataFrame,
+    probs,
+    preds,
+    model: Pipeline | None = None,
+    feature_list: list[str] | None = None,
+) -> pd.DataFrame:
     output = test_df.copy()
     output["home_win_probability"] = probs
     output["away_win_probability"] = 1 - probs
@@ -181,7 +384,62 @@ def build_predictions_output(test_df: pd.DataFrame, probs, preds) -> pd.DataFram
         axis=1,
     )
     output["correct"] = (output["predicted_home_win"] == output[TARGET]).astype(int)
-    return output
+    if model is not None and feature_list is not None:
+        output = add_prediction_explanations(output, model, feature_list)
+    return sort_games(output)
+
+
+def build_expanding_week_predictions(
+    df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    latest_season: int,
+    feature_list: list[str],
+) -> tuple[pd.DataFrame, list[dict]]:
+    outputs = []
+    weekly_metrics = []
+
+    for week in sorted(test_df["week"].unique()):
+        train_df = sort_games(
+            df[
+                (df["season"] < latest_season)
+                | ((df["season"] == latest_season) & (df["week"] < week))
+            ].copy()
+        )
+        week_df = test_df[test_df["week"] == week].copy()
+
+        if train_df.empty or week_df.empty:
+            continue
+
+        model = fit_model(train_df, feature_list)
+        probs = model.predict_proba(week_df[feature_list])[:, 1]
+        preds = (probs >= 0.5).astype(int)
+
+        output = build_predictions_output(week_df, probs, preds, model, feature_list)
+        output["training_games"] = len(train_df)
+        output["training_max_week_in_test_season"] = int(week) - 1
+        outputs.append(output)
+
+        weekly_metrics.append(
+            {
+                "week": int(week),
+                "n_train_games": int(len(train_df)),
+                "n_test_games": int(len(week_df)),
+                "accuracy": float(accuracy_score(week_df[TARGET], preds)),
+                "log_loss": binary_log_loss(week_df[TARGET], probs),
+                "best_params": getattr(model, "best_params_", None),
+            }
+        )
+
+        print(
+            f"Week {int(week)}: trained on {len(train_df)} previous games, "
+            f"predicted {len(week_df)} games"
+        )
+
+    if not outputs:
+        raise ValueError("No weekly predictions were generated.")
+
+    predictions = sort_games(pd.concat(outputs, ignore_index=True))
+    return predictions, weekly_metrics
 
 
 def save_metrics(metrics: dict) -> None:
@@ -190,66 +448,68 @@ def save_metrics(metrics: dict) -> None:
 
 
 def main() -> None:
-    df = load_training_data()
+    df = sort_games(load_training_data())
     train_df, test_df, latest_season = split_train_test(df)
 
-    X_train = train_df[FEATURES]
-    y_train = train_df[TARGET]
-    X_test = test_df[FEATURES]
-    y_test = test_df[TARGET]
+    predictions, weekly_metrics = build_expanding_week_predictions(
+        df=df,
+        test_df=test_df,
+        latest_season=latest_season,
+        feature_list=PRODUCTION_FEATURES,
+    )
 
-    model = build_model()
-    model.fit(X_train, y_train)
-    if hasattr(model, "best_params_"):
-        print("Best params:", model.best_params_)
-
-    probs = model.predict_proba(X_test)[:, 1]
-
-    best_thresh = 0.5
-    best_acc = 0
-
-    for t in [0.50, 0.52, 0.53, 0.54, 0.55, 0.57, 0.60]:
-        temp_preds = (probs >= t).astype(int)
-        acc = accuracy_score(y_test, temp_preds)
-        if acc > best_acc:
-            best_acc = acc
-            best_thresh = t
-
-    print(f"Best threshold: {best_thresh}, Accuracy: {best_acc}")
-    preds = (probs >= best_thresh).astype(int)
+    final_model = fit_model(df, PRODUCTION_FEATURES)
+    if hasattr(final_model, "best_params_"):
+        print("Final full-data params:", final_model.best_params_)
 
     metrics = {
         "train_seasons": sorted(train_df["season"].unique().tolist()),
         "test_season": latest_season,
-        "n_train_games": int(len(train_df)),
+        "evaluation_type": "expanding_week",
+        "production_model": PRODUCTION_MODEL_NAME,
+        "production_features": PRODUCTION_FEATURES,
+        "decision_threshold": 0.5,
+        "n_initial_train_games": int(len(train_df)),
         "n_test_games": int(len(test_df)),
-        "accuracy": float(accuracy_score(y_test, preds)),
-        "log_loss": float(log_loss(y_test, probs)),
+        "accuracy": float(accuracy_score(predictions[TARGET], predictions["predicted_home_win"])),
+        "log_loss": binary_log_loss(predictions[TARGET], predictions["home_win_probability"]),
+        "weekly_metrics": weekly_metrics,
     }
 
     ablation_results = {
         "full_model": {
             "feature_count": len(FEATURES),
-            "accuracy": float(accuracy_score(y_test, preds)),
-            "log_loss": float(log_loss(y_test, probs)),
+            **evaluate_feature_set_expanding(
+                df=df,
+                test_df=test_df,
+                latest_season=latest_season,
+                feature_list=FEATURES,
+            ),
         },
-        "no_market_features": evaluate_feature_set(
-            train_df=train_df,
+        "no_market_features": evaluate_feature_set_expanding(
+            df=df,
             test_df=test_df,
+            latest_season=latest_season,
             feature_list=PURE_FOOTBALL_FEATURES,
         ),
-        "market_only": evaluate_feature_set(
-            train_df=train_df,
+        "market_only": evaluate_feature_set_expanding(
+            df=df,
             test_df=test_df,
+            latest_season=latest_season,
             feature_list=MARKET_FEATURES + CONTEXT_FEATURES,
+        ),
+        "market_context_recent_form": evaluate_feature_set_expanding(
+            df=df,
+            test_df=test_df,
+            latest_season=latest_season,
+            feature_list=PRODUCTION_FEATURES,
         ),
     }
 
     metrics["ablation_results"] = ablation_results
+    metrics["selected_result"] = ablation_results["market_context_recent_form"]
 
-    predictions = build_predictions_output(test_df, probs, preds)
-
-    joblib.dump(model, MODEL_PATH)
+    joblib.dump(final_model, MODEL_PATH)
     predictions.to_csv(PREDICTIONS_PATH, index=False)
     save_metrics(metrics)
 
@@ -259,7 +519,7 @@ def main() -> None:
     print(f"Saved metrics to: {METRICS_PATH}")
     print(json.dumps(metrics, indent=2))
 
-    print_feature_importance(model)
+    print_feature_importance(final_model, PRODUCTION_FEATURES)
 
     print("\nAblation summary:")
     for name, result in ablation_results.items():

@@ -19,7 +19,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000
 const AppLayout: React.FC = () => {
   const [predictions, setPredictions] = useState<ApiPrediction[]>([]);
   const [selectedGame, setSelectedGame] = useState<ApiPrediction | null>(null);
-  const [sortMode, setSortMode] = useState<SortMode>('confidence');
+  const [sortMode, setSortMode] = useState<SortMode>('week');
   const [filterConfidence, setFilterConfidence] = useState<ConfidenceFilter>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -65,7 +65,7 @@ const AppLayout: React.FC = () => {
         if (a.week !== b.week) {
           return a.week - b.week;
         }
-        return a.home_team.localeCompare(b.home_team);
+        return a.away_team.localeCompare(b.away_team) || a.home_team.localeCompare(b.home_team);
       }
 
       return getConfidenceScore(b) - getConfidenceScore(a);
@@ -204,7 +204,7 @@ const AppLayout: React.FC = () => {
             </div>
             <h2 className="text-3xl font-bold text-white">What We Actually Trained</h2>
             <p className="text-slate-400 mt-2 max-w-2xl mx-auto">
-              The app uses the trained logistic regression model from `nfl-prediction/models/logreg_model.joblib`.
+              The displayed predictions come from `nfl-prediction/outputs/predictions.csv`, generated one week at a time with an expanding training window.
             </p>
           </div>
 
@@ -221,7 +221,7 @@ const AppLayout: React.FC = () => {
             </div>
             <h2 className="text-3xl font-bold text-white">How The Model Works</h2>
             <p className="text-slate-400 mt-2 max-w-2xl mx-auto">
-              The old “13 Keys” framing is kept as a readable explanation, but the underlying model uses 28 numeric features from the training table.
+              The production model uses market/context inputs plus recent team-form metrics that improved the expanding-week evaluation.
             </p>
           </div>
 
@@ -230,9 +230,9 @@ const AppLayout: React.FC = () => {
               <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center text-cyan-400 font-bold text-xl mb-4">
                 1
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Build Team Features</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">Build Game Context</h3>
               <p className="text-slate-400">
-                Play-by-play and schedule data are converted into team-game rows with EPA, success rate, turnovers, QB efficiency, sacks, rest, and market lines.
+                Schedule, market, and team-game data are converted into rows with spread, moneyline, rest context, and recent point margin, EPA, success rate, and win rate.
               </p>
             </div>
 
@@ -240,9 +240,9 @@ const AppLayout: React.FC = () => {
               <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 font-bold text-xl mb-4">
                 2
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Create Matchups</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">Keep The Best Signal</h3>
               <p className="text-slate-400">
-                Home and away team rows are merged into one game row, then converted into differential and matchup features that compare each side directly.
+                The full 28-feature model is still evaluated, but the deployed model keeps the football signals that improved chronological accuracy without adding noisy extras.
               </p>
             </div>
 
@@ -250,9 +250,9 @@ const AppLayout: React.FC = () => {
               <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold text-xl mb-4">
                 3
               </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Score With Logistic Regression</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">Train Week By Week</h3>
               <p className="text-slate-400">
-                A standard-scaled logistic regression model estimates the home win probability, then the UI derives away probability, predicted winner, and confidence.
+                Week 5 is trained on prior seasons plus Weeks 1-4 from the same season. Every week follows that same expanding-window rule before estimating win probability.
               </p>
             </div>
           </div>

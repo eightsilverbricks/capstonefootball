@@ -6,7 +6,7 @@ import {
   getPredictedProbability,
   toPercent,
 } from '@/types/prediction';
-import { BarChart3, Calendar, ShieldCheck, X } from 'lucide-react';
+import { BarChart3, Calendar, ShieldCheck, Sparkles, X } from 'lucide-react';
 
 interface GameDetailModalProps {
   game: ApiPrediction;
@@ -17,6 +17,7 @@ const GameDetailModal: React.FC<GameDetailModalProps> = ({ game, onClose }) => {
   const predictedProbability = getPredictedProbability(game);
   const confidenceLevel = getConfidenceLevel(game);
   const confidencePercent = getConfidencePercent(game);
+  const explanationFactors = game.explanation_factors ?? [];
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
@@ -44,7 +45,7 @@ const GameDetailModal: React.FC<GameDetailModalProps> = ({ game, onClose }) => {
               {game.away_team} @ {game.home_team}
             </h2>
             <p className="mt-2 text-slate-400">
-              Logistic regression model prediction generated from the processed training table.
+              Logistic regression prediction generated with only games completed before this week.
             </p>
           </div>
 
@@ -92,13 +93,32 @@ const GameDetailModal: React.FC<GameDetailModalProps> = ({ game, onClose }) => {
             </div>
 
             <div className="rounded-lg border border-slate-700 bg-slate-800/40 p-5">
-              <h3 className="text-lg font-semibold text-white mb-3">What this prediction uses</h3>
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-5 h-5 text-purple-300" />
+                <h3 className="text-lg font-semibold text-white">Why this game landed here</h3>
+              </div>
               <p className="text-slate-400 leading-7">
-                The API loads the trained logistic regression pipeline and scores each game with the
-                same feature set used by the Python model: betting market lines, rest differential,
-                division-game context, season and last-three-game EPA/success-rate signals, turnover
-                differential, quarterback efficiency, and offensive-vs-defensive matchup features.
+                {game.explanation_summary ?? 'This prediction was generated from the expanding-week model output for this matchup.'}
               </p>
+
+              {explanationFactors.length > 0 && (
+                <div className="mt-5 space-y-3">
+                  {explanationFactors.map((factor) => (
+                    <div
+                      key={`${factor.feature}-${factor.direction}`}
+                      className="rounded-lg border border-slate-700 bg-slate-950/40 p-3"
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                        <span className="font-medium text-white">{factor.label}</span>
+                        <span className="text-sm text-cyan-300">{factor.value}</span>
+                      </div>
+                      <p className="text-sm text-slate-400 mt-1">
+                        Favored {factor.direction} in this fitted weekly model.
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>

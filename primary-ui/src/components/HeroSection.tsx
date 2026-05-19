@@ -54,7 +54,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGames, predictionCo
 
             {/* Subheadline */}
             <p className="text-lg text-slate-300 mb-8 max-w-xl">
-              This UI reads directly from the FastAPI prediction service and displays the same win probabilities produced by the trained Python model.
+              This UI reads directly from the FastAPI prediction service. Each week is scored by a model trained on every completed game before that week.
             </p>
 
             {/* CTA Buttons */}
@@ -71,14 +71,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGames, predictionCo
             <div className="grid grid-cols-3 gap-6">
               <div>
                 <div className="text-3xl font-bold text-emerald-400">{seasonAccuracy}%</div>
-                <p className="text-sm text-slate-400">2024 Holdout Accuracy</p>
+                <p className="text-sm text-slate-400">2024 Expanding Accuracy</p>
               </div>
               <div>
                 <div className="text-3xl font-bold text-cyan-400">{predictionCount || 285}</div>
                 <p className="text-sm text-slate-400">{latestSeason || 2024} Predictions</p>
               </div>
               <div>
-                <div className="text-3xl font-bold text-purple-400">28</div>
+                <div className="text-3xl font-bold text-purple-400">12</div>
                 <p className="text-sm text-slate-400">Model Features</p>
               </div>
             </div>
@@ -115,7 +115,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGames, predictionCo
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Football Signals</h3>
               <p className="text-sm text-slate-400">
-                EPA, success rate, rest, turnovers, and QB metrics
+                Recent point margin, EPA, success rate, and win rate
               </p>
             </div>
 
@@ -126,7 +126,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onScrollToGames, predictionCo
               </div>
               <h3 className="text-lg font-semibold text-white mb-2">Calibrated Probabilities</h3>
               <p className="text-sm text-slate-400">
-                Each game includes home, away, and winner probability
+                Weekly predictions avoid using future games
               </p>
             </div>
           </div>

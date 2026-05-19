@@ -1,3 +1,11 @@
+export interface PredictionFactor {
+  feature: string;
+  label: string;
+  value: string;
+  direction: string;
+  impact: number;
+}
+
 export interface ApiPrediction {
   season: number;
   week: number;
@@ -6,6 +14,9 @@ export interface ApiPrediction {
   home_win_prob: number;
   away_win_prob: number;
   predicted_winner: string;
+  explanation_summary?: string;
+  explanation_factors?: PredictionFactor[];
+  model_feature_set?: string;
 }
 
 export type ConfidenceLevel = 'High' | 'Medium' | 'Low';

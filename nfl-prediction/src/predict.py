@@ -6,6 +6,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 MODEL_PATH = BASE_DIR / "models" / "logreg_model.joblib"
 DATA_PATH = BASE_DIR / "data" / "processed" / "game_training_table.csv"
+PREDICTIONS_PATH = BASE_DIR / "outputs" / "predictions.csv"
 
 FEATURES = [
     "rest_diff",
@@ -38,25 +39,53 @@ FEATURES = [
     "home_field",
 ]
 
-model = joblib.load(MODEL_PATH)
+PRODUCTION_FEATURES = [
+    "spread_line",
+    "home_moneyline",
+    "away_moneyline",
+    "rest_diff",
+    "div_game",
+    "home_field",
+    "diff_last3_point_diff_pg",
+    "diff_last3_win_pct",
+    "diff_last3_epa_per_play",
+    "diff_last3_epa_per_play_allowed",
+    "diff_last3_success_rate",
+    "diff_last3_success_rate_allowed",
+]
+
 df = pd.read_csv(DATA_PATH)
+model = joblib.load(MODEL_PATH)
 
 latest_season = df["season"].max()
-latest_games = df[df["season"] == latest_season].copy()
+if PREDICTIONS_PATH.exists():
+    latest_games = pd.read_csv(PREDICTIONS_PATH)
+    latest_games = latest_games[latest_games["season"] == latest_season].copy()
+    latest_games = latest_games.rename(
+        columns={
+            "home_win_probability": "home_win_prob",
+            "away_win_probability": "away_win_prob",
+        }
+    )
+else:
+    latest_games = df[df["season"] == latest_season].copy()
 
 missing_columns = [col for col in FEATURES if col not in latest_games.columns]
-if missing_columns:
+if missing_columns and not PREDICTIONS_PATH.exists():
     raise ValueError(f"Missing required feature columns: {missing_columns}")
 
-X = latest_games[FEATURES].copy()
+if "home_win_prob" not in latest_games.columns:
+    X = latest_games[PRODUCTION_FEATURES].copy()
 
-probs = model.predict_proba(X)[:, 1]
+    probs = model.predict_proba(X)[:, 1]
 
-latest_games["home_win_prob"] = probs
-latest_games["predicted_winner"] = latest_games.apply(
-    lambda row: row["home_team"] if row["home_win_prob"] > 0.5 else row["away_team"],
-    axis=1,
-)
+    latest_games["home_win_prob"] = probs
+    latest_games["predicted_winner"] = latest_games.apply(
+        lambda row: row["home_team"] if row["home_win_prob"] > 0.5 else row["away_team"],
+        axis=1,
+    )
+
+latest_games = latest_games.sort_values(["season", "week", "game_id"])
 
 print(
     latest_games[[
