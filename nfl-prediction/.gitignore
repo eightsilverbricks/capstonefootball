@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.Python
+
+# Virtual environment — never commit
+.venv/
+venv/
+
+# Large raw data (uncomment if game_training_table.csv exceeds 100 MB)
+# data/processed/game_training_table.csv
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# macOS
+.DS_Store

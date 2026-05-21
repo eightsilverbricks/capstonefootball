@@ -1,0 +1,55 @@
+# ── macOS ────────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+*.so
+
+# ── Virtual environments ──────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb
+
+# ── Editor ───────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── Node / frontend ───────────────────────────────────────────────────────────
+node_modules/
+nfl-frontend/dist/
+nfl-frontend/dist-ssr/
+*.local
+
+# ── Environment / secrets ─────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# ── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+
+# ── Data files (large raw data — regenerate from nflfastR) ───────────────────
+# Processed training table can be large; exclude if over GitHub's 100MB limit.
+# Uncomment the line below if needed:
+# nfl-prediction/data/processed/game_training_table.csv
+
+# NOTE: predictions.json IS committed — it's the static data artifact
+# that Vercel serves. Do not add it here.
