@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import TeamLogo from './TeamLogo';
@@ -6,7 +7,7 @@ import { ChevronRight } from 'lucide-react';
 
 interface GameCardProps {
   game: ApiPrediction;
-  onClick: () => void;
+  onClick?: () => void; // optional — kept for hero preview usage
   isSelected?: boolean;
 }
 
@@ -16,7 +17,13 @@ const CONFIDENCE_STYLES = {
   Low:    { dot: '#94a3b8', label: 'text-slate-400',   bg: 'bg-slate-400/10' },
 };
 
-const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected = false }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/game/${game.season}/${game.week}/${game.away_team}/${game.home_team}`);
+    onClick?.();
+  };
   const homeColors = getTeamColors(game.home_team);
   const awayColors = getTeamColors(game.away_team);
   const winnerProb = (getPredictedProbability(game) * 100).toFixed(0);
@@ -29,10 +36,10 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected }) => {
 
   return (
     <div
-      onClick={onClick}
+      onClick={handleClick}
       role="button"
       tabIndex={0}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
       className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl border ${
         isSelected ? 'border-white/30' : 'border-white/8'
       }`}
@@ -117,7 +124,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected }) => {
           </div>
           <button
             type="button"
-            onClick={(e) => { e.stopPropagation(); onClick(); }}
+            onClick={(e) => { e.stopPropagation(); handleClick(); }}
             className="flex items-center gap-1 text-xs text-white/40 hover:text-white/80 group transition-colors"
           >
             Clark Report

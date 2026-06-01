@@ -3,45 +3,18 @@ import Header from './Header';
 import HeroSection from './HeroSection';
 import WeekStrip from './WeekStrip';
 import GameCard from './GameCard';
-import GameDetailModal from './GameDetailModal';
 import ModelAccuracy from './ModelAccuracy';
 import Footer from './Footer';
-import { ApiPrediction, ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
+import { usePredictions } from '@/hooks/usePredictions';
+import { ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
 import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
 
-// Static JSON path — works in both dev (Vite serves from public/) and Vercel production.
-// If VITE_API_BASE_URL is set (e.g. pointing to a live FastAPI), fetch from there instead.
-const PREDICTIONS_URL = import.meta.env.VITE_API_BASE_URL
-  ? `${import.meta.env.VITE_API_BASE_URL}/predictions`
-  : '/predictions.json';
-
-// Default to Super Bowl week for the demo
 const DEFAULT_WEEK = 22;
 
 const AppLayout: React.FC = () => {
-  const [predictions, setPredictions] = useState<ApiPrediction[]>([]);
-  const [selectedGame, setSelectedGame] = useState<ApiPrediction | null>(null);
+  const { predictions, loading, error, reload } = usePredictions();
   const [selectedWeek, setSelectedWeek] = useState<number>(DEFAULT_WEEK);
   const [filterConfidence, setFilterConfidence] = useState<ConfidenceFilter>('all');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const loadPredictions = async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const response = await fetch(PREDICTIONS_URL);
-      if (!response.ok) throw new Error(`Failed to load predictions (${response.status})`);
-      const data = await response.json() as ApiPrediction[];
-      setPredictions(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Unable to load predictions');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { loadPredictions(); }, []);
 
   // Available weeks for the week strip
   const availableWeeks = useMemo(() => {
@@ -98,7 +71,6 @@ const AppLayout: React.FC = () => {
       {/* ── Hero ── */}
       <HeroSection
         featuredGame={featuredGame ?? null}
-        onViewReport={setSelectedGame}
         totalGames={predictions.length}
       />
 
@@ -170,7 +142,7 @@ const AppLayout: React.FC = () => {
                     Make sure the prediction API is running, then try again.
                   </p>
                   <button
-                    onClick={loadPredictions}
+                    onClick={reload}
                     className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
                   >
                     Retry
@@ -187,8 +159,6 @@ const AppLayout: React.FC = () => {
                 <GameCard
                   key={`${game.season}-${game.week}-${game.away_team}-${game.home_team}`}
                   game={game}
-                  onClick={() => setSelectedGame(game)}
-                  isSelected={selectedGame === game}
                 />
               ))}
             </div>
@@ -241,11 +211,6 @@ const AppLayout: React.FC = () => {
       </section>
 
       <Footer />
-
-      {/* ── Clark Report modal ── */}
-      {selectedGame && (
-        <GameDetailModal game={selectedGame} onClose={() => setSelectedGame(null)} />
-      )}
     </div>
   );
 };

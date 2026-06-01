@@ -641,12 +641,9 @@ def _factor_reason(name: str, adv: str, opp: str, edge: float, mag: str,
         )
 
     if name == "Recent Form":
-        pts = abs(safe_get({"v": edge * 14}, "v")) if edge else 0
-        return (
-            f"{adv} has been the hotter team over the last 3 games "
-            f"(composite form edge: {abs(edge):.2f}). "
-            f"Trajectory matters — injuries, scheme changes, and momentum all show up here first."
-        )
+        # Placeholder — game_diagnosis_engine overwrites this with real W-L + scoring data
+        # from game_context after build_factor_cards() returns.
+        return f"{adv} has been the stronger team over the last 3 games."
 
     return f"{adv} holds the {name} edge ({abs(edge):.3f} differential)."
 
@@ -855,6 +852,28 @@ def game_diagnosis_engine(row: dict) -> dict:
         0.0,
     )
     factor_cards = build_factor_cards(row)
+
+    # ── Post-process: replace Recent Form placeholder with real records + scoring ──
+    _game_ctx_early = get_game_context(str(row.get("game_id") or ""))
+    _rf_card = next((c for c in factor_cards if c["name"] == "Recent Form"), None)
+    if _rf_card and _game_ctx_early:
+        _adv_is_home = _rf_card["advantage_team"] == home
+        _adv_last3   = _game_ctx_early.get("home_last3_record" if _adv_is_home else "away_last3_record") or ""
+        _opp_last3   = _game_ctx_early.get("away_last3_record" if _adv_is_home else "home_last3_record") or ""
+        _adv_pts     = _game_ctx_early.get("home_last3_pts_for" if _adv_is_home else "away_last3_pts_for")
+        _adv_pts_ag  = _game_ctx_early.get("home_last3_pts_ag"  if _adv_is_home else "away_last3_pts_ag")
+        _adv         = _rf_card["advantage_team"]
+        _opp         = away if _adv_is_home else home
+        if _adv_last3:
+            _pts_note = (
+                f", scoring {_adv_pts:.0f} and allowing {_adv_pts_ag:.0f} pts/game"
+                if _adv_pts and _adv_pts_ag else ""
+            )
+            _opp_note = f" {_opp} are {_opp_last3}." if _opp_last3 else ""
+            _rf_card["reason"] = (
+                f"{_adv} are {_adv_last3}{_pts_note}.{_opp_note} "
+                f"Recent trajectory captures momentum, injuries, and scheme changes faster than season averages."
+            )
 
     # Resolve player context for prose
     winner_ctx = get_player_context(season, winner)
@@ -1073,6 +1092,7 @@ def get_predictions():
 
         results.append({
             # Identity
+            "game_id":           record.get("game_id"),
             "season":            record.get("season"),
             "week":              record.get("week"),
             "week_label":         week_label(record.get("week") or 0),

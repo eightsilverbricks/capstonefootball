@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import TeamLogo from './TeamLogo';
@@ -6,11 +7,10 @@ import { modelAccuracy } from '@/data/nflData';
 
 interface HeroSectionProps {
   featuredGame: ApiPrediction | null;
-  onViewReport: (game: ApiPrediction) => void;
   totalGames: number;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ featuredGame, onViewReport, totalGames }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ featuredGame, totalGames }) => {
   const accuracyPct = ((modelAccuracy.season / modelAccuracy.seasonTotal) * 100).toFixed(1);
 
   return (
@@ -76,7 +76,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ featuredGame, onViewReport, t
 
           {/* ── Right: Featured game preview ── */}
           {featuredGame ? (
-            <FeaturedPreview game={featuredGame} onViewReport={onViewReport} />
+            <FeaturedPreview game={featuredGame} />
           ) : (
             <div className="rounded-xl border border-white/8 bg-white/[0.03] h-48 flex items-center justify-center">
               <p className="text-sm text-white/20">Loading featured matchup…</p>
@@ -91,8 +91,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ featuredGame, onViewReport, t
 // ─── Featured game mini-preview ────────────────────────────────────────────────
 const FeaturedPreview: React.FC<{
   game: ApiPrediction;
-  onViewReport: (game: ApiPrediction) => void;
-}> = ({ game, onViewReport }) => {
+}> = ({ game }) => {
+  const navigate = useNavigate();
   const homeColors = getTeamColors(game.home_team);
   const awayColors = getTeamColors(game.away_team);
   const winnerColors = game.predicted_winner === game.home_team ? homeColors : awayColors;
@@ -174,7 +174,7 @@ const FeaturedPreview: React.FC<{
 
         {/* CTA */}
         <button
-          onClick={() => onViewReport(game)}
+          onClick={() => navigate(`/game/${game.season}/${game.week}/${game.away_team}/${game.home_team}`)}
           className="w-full py-2.5 rounded-lg text-sm font-semibold transition-all hover:opacity-90"
           style={{
             background: `linear-gradient(135deg, ${winnerColors.primary}, ${winnerColors.primary}cc)`,
