@@ -84,6 +84,28 @@ export interface ApiPrediction {
   home_players?: PlayerContext;
   away_players?: PlayerContext;
 
+  // Weather
+  weather?: {
+    temp?: number | null;
+    wind?: number | null;
+    surface?: string;
+    roof?: string | null;
+    stadium?: string | null;
+    is_outdoor?: boolean;
+    is_notable?: boolean;
+    summary?: string;
+  };
+
+  // Records (pregame)
+  home_season_record?: string | null;
+  away_season_record?: string | null;
+  home_last3_record?: string | null;
+  away_last3_record?: string | null;
+  home_last3_pts_for?: number | null;
+  home_last3_pts_ag?: number | null;
+  away_last3_pts_for?: number | null;
+  away_last3_pts_ag?: number | null;
+
   // Legacy compat
   explanation_summary?: string;
   explanation_factors?: PredictionFactor[];

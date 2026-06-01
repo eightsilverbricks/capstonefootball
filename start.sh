@@ -1,22 +1,23 @@
 #!/bin/bash
-# NFL Matchup Lab — start everything with one command
+# The Clark Index — start everything with one command
 # Run from the capstonefootball directory: ./start.sh
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BACKEND_DIR="$SCRIPT_DIR/nfl-prediction"
-FRONTEND_DIR="$SCRIPT_DIR/nfl-frontend"
+FRONTEND_DIR="$SCRIPT_DIR/primary-ui"
 
 echo ""
-echo "🏈  NFL Matchup Lab"
+echo "🏈  The Clark Index"
 echo "──────────────────────────────────────"
 
 # ── Backend ──────────────────────────────
 echo "▶  Starting backend (FastAPI)..."
 
 if [ ! -d "$BACKEND_DIR/.venv" ]; then
-  echo "❌  No .venv found in nfl-prediction. Run: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+  echo "❌  No .venv found in nfl-prediction."
+  echo "    Run: cd nfl-prediction && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
   exit 1
 fi
 
@@ -37,15 +38,38 @@ fi
 cd "$FRONTEND_DIR"
 npm run dev &
 FRONTEND_PID=$!
-echo "   Frontend PID: $FRONTEND_PID  →  http://localhost:5173"
+echo "   Frontend PID: $FRONTEND_PID  →  http://localhost:8080"
+
+# ── Wait for Vite to be ready, then open browser ─────────────────────────────
+echo ""
+echo "   Waiting for Vite..."
+for i in $(seq 1 15); do
+  if curl -s http://localhost:8080 > /dev/null 2>&1; then
+    break
+  fi
+  sleep 1
+done
+
+# Open the browser (macOS: open, Linux: xdg-open, fallback: skip)
+URL="http://localhost:8080"
+if command -v open &>/dev/null; then
+  open "$URL"
+elif command -v xdg-open &>/dev/null; then
+  xdg-open "$URL"
+fi
 
 echo ""
-echo "✅  Both servers running."
+echo "✅  The Clark Index is running."
+echo "   Frontend  →  $URL"
+echo "   Backend   →  http://127.0.0.1:8000"
+echo ""
+echo "   Note: The frontend uses static predictions.json from public/"
+echo "   The backend is available for local re-export or live mode."
+echo ""
 echo "   Press Ctrl+C to stop everything."
 echo "──────────────────────────────────────"
 
 # ── Cleanup on Ctrl+C ────────────────────
 trap "echo ''; echo 'Stopping...'; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit 0" SIGINT SIGTERM
 
-# Keep the script alive
 wait

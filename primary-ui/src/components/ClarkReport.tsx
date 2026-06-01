@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ApiPrediction, FactorCard, getTopFactors, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import TeamLogo from './TeamLogo';
-import { Info, TrendingUp, AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
+import { Info, TrendingUp, AlertTriangle, ChevronDown, ChevronUp, Thermometer, Wind, Building2 } from 'lucide-react';
 
 interface ClarkReportProps {
   game: ApiPrediction;
@@ -265,14 +265,46 @@ const ClarkReport: React.FC<ClarkReportProps> = ({ game, compact = false }) => {
           </div>
         </div>
 
-        {/* Player context chips */}
-        {(game.home_players?.qb?.name || game.away_players?.qb?.name) && (
-          <div className="flex items-center justify-between mb-4 text-xs text-white/40">
-            <span className="truncate max-w-[40%]">QB: {game.away_players?.qb?.name ?? '—'}</span>
-            <span className="text-white/20 mx-2">·</span>
-            <span className="truncate max-w-[40%] text-right">QB: {game.home_players?.qb?.name ?? '—'}</span>
+        {/* Records + QB row */}
+        <div className="flex items-start justify-between gap-2 mb-4">
+          {/* Away team context */}
+          <div className="flex-1 min-w-0 space-y-0.5">
+            {game.away_season_record && (
+              <p className="text-xs text-white/50 font-medium">{game.away_season_record}</p>
+            )}
+            {game.away_last3_record && (
+              <p className="text-xs text-white/30">{game.away_last3_record}</p>
+            )}
+            {game.away_players?.qb?.name && (
+              <p className="text-xs text-white/25">QB: {game.away_players.qb.name}</p>
+            )}
           </div>
-        )}
+
+          {/* Weather chip — center */}
+          {game.weather?.summary && (
+            <div className="flex-shrink-0 flex items-center gap-1 px-2 py-1 rounded bg-white/[0.04] border border-white/8 text-xs text-white/40">
+              {game.weather.is_outdoor && game.weather.temp !== null && game.weather.temp !== undefined
+                ? <Thermometer className="w-3 h-3" />
+                : game.weather.wind && game.weather.wind >= 15
+                  ? <Wind className="w-3 h-3" />
+                  : <Building2 className="w-3 h-3" />}
+              <span className="max-w-[120px] truncate">{game.weather.summary}</span>
+            </div>
+          )}
+
+          {/* Home team context */}
+          <div className="flex-1 min-w-0 space-y-0.5 text-right">
+            {game.home_season_record && (
+              <p className="text-xs text-white/50 font-medium">{game.home_season_record}</p>
+            )}
+            {game.home_last3_record && (
+              <p className="text-xs text-white/30">{game.home_last3_record}</p>
+            )}
+            {game.home_players?.qb?.name && (
+              <p className="text-xs text-white/25">QB: {game.home_players.qb.name}</p>
+            )}
+          </div>
+        </div>
 
         {/* Probability bar */}
         <ProbabilityBar

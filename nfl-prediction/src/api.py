@@ -27,6 +27,7 @@ SCHEDULE_DATES_PATH  = BASE_DIR / "data" / "processed" / "schedule_dates.csv"
 PREDICTIONS_PATH     = BASE_DIR / "outputs" / "predictions.csv"
 METRICS_PATH         = BASE_DIR / "outputs" / "metrics.json"
 PLAYER_CONTEXT_PATH  = BASE_DIR / "data" / "processed" / "player_context.json"
+GAME_CONTEXT_PATH    = BASE_DIR / "data" / "processed" / "game_context.json"
 
 # ---------------------------------------------------------------------------
 # Feature sets — must match train_model.py exactly
@@ -151,6 +152,18 @@ if PLAYER_CONTEXT_PATH.exists():
         PLAYER_CONTEXT: dict = json.load(_f)
 else:
     PLAYER_CONTEXT = {}
+
+
+# Game context: {game_id: {home_team, away_team, records, weather}}
+if GAME_CONTEXT_PATH.exists():
+    with open(GAME_CONTEXT_PATH) as _gf:
+        GAME_CONTEXT: dict = json.load(_gf)
+else:
+    GAME_CONTEXT = {}
+
+
+def get_game_context(game_id: str) -> dict:
+    return GAME_CONTEXT.get(game_id, {})
 
 
 def get_player_context(season: int, team: str) -> dict:
@@ -908,40 +921,55 @@ def game_diagnosis_engine(row: dict) -> dict:
     spread    = safe_get(row, "spread_line")
     mkt_word  = "market agrees" if (spread > 0) == (winner == home) else "market disagrees"
 
+    # Pull records from game_context if available
+    game_ctx       = get_game_context(str(row.get("game_id") or ""))
+    winner_is_home = winner == home
+    week_num       = int(row.get("week") or 0)
+    # Only show last-3 record when ≥ 4 games in, otherwise it's prior-season data
+    _show_last3    = week_num >= 4
+    winner_last3   = (game_ctx.get("home_last3_record" if winner_is_home else "away_last3_record") or "") if _show_last3 else ""
+    loser_last3    = (game_ctx.get("away_last3_record" if winner_is_home else "home_last3_record") or "") if _show_last3 else ""
+    winner_season  = game_ctx.get("home_season_record" if winner_is_home else "away_season_record") or ""
+    weather_ctx    = game_ctx.get("weather", {})
+    weather_note   = weather_ctx.get("summary", "") if weather_ctx.get("is_notable") else ""
+
     if primary and secondary:
-        # Name the QB when QB Efficiency is one of the top factors
         uses_qb = primary["name"] == "QB Efficiency" or secondary["name"] == "QB Efficiency"
         _qb_card = next((c for c in factor_cards if c["name"] == "QB Efficiency"), None)
         qb_diff  = abs(_qb_card["raw_edge"]) if _qb_card else 0.0
         qb_note = (
-            f" {winner_qb} holds the QB efficiency edge over {loser_qb} ({qb_diff:.3f} EPA/play differential)."
+            f" {winner_qb} holds the QB efficiency edge over {loser_qb} ({qb_diff:.3f} EPA/play)."
             if uses_qb and winner_qb != winner else ""
         )
-        form_note = f" {winner} are the hotter team over the last 3 games." if secondary["name"] == "Recent Form" else ""
-        rest_note = f" They also have a {abs(rest_diff):.0f}-day rest advantage." if abs(rest_diff) >= 3 else ""
-        div_note  = " This is a divisional matchup — expect tighter margins than the numbers suggest." if div_game else ""
+        rec_note  = f" {winner} enter at {winner_last3}." if winner_last3 else ""
+        rest_note = f" They also carry a {abs(rest_diff):.0f}-day rest edge." if abs(rest_diff) >= 3 else ""
+        div_note  = " Divisional game — expect a tighter margin than the stats suggest." if div_game else ""
+        wthr_note = f" Weather factor: {weather_note}." if weather_note else ""
         football_story = (
-            f"{winner} hold a meaningful edge in {primary['name']} and {secondary['name']}.{qb_note}"
-            f"{form_note}{rest_note}{div_note} The {mkt_word} with the model's lean."
+            f"{winner} ({winner_season}) hold a meaningful edge in {primary['name']} and {secondary['name']}.{qb_note}"
+            f"{rec_note}{rest_note}{div_note}{wthr_note} The {mkt_word}."
         )
     elif primary:
-        rb_note = f" {winner_rb} is the key ball-carrier if {winner} can establish the run." if winner_rb and "Recent Form" in primary["name"] else ""
-        div_note = " In a divisional game, one dominant factor usually isn't enough to cover completely." if div_game else ""
+        rec_note  = f" {winner} enter at {winner_last3}." if winner_last3 else ""
+        div_note  = " In a divisional game, one dominant factor rarely decides things cleanly." if div_game else ""
+        wthr_note = f" Weather: {weather_note}." if weather_note else ""
         football_story = (
-            f"{winner}'s edge comes down to one factor: {primary['name']}.{rb_note}{div_note} "
-            f"The {mkt_word} — watch for {loser} to challenge through {risk['name'] if risk else 'game-state variance'}."
+            f"{winner} ({winner_season}) hold one decisive edge: {primary['name']}.{rec_note}{div_note}{wthr_note} "
+            f"The {mkt_word} — watch for {loser} to challenge through {risk['name'] if risk else 'turnover variance'}."
         )
     elif risk:
+        rec_note = f" {winner} are {winner_last3}." if winner_last3 else ""
         football_story = (
-            f"The model leans {winner}, but {risk['advantage_team']} has the stronger football profile on {risk['name']}. "
-            f"The lean is built on market signals more than pure football edges. "
-            f"Treat {risk['advantage_team']}'s {risk['name']} advantage as the live upset path."
+            f"The model leans {winner} ({winner_season}), but {risk['advantage_team']} owns the {risk['name']} edge.{rec_note} "
+            f"The lean is built primarily on market signals — treat {risk['advantage_team']}'s {risk['name']} advantage "
+            f"as the live upset path."
         )
     else:
         football_story = (
-            f"This is a genuinely balanced matchup — no football factor decisively favors either team. "
-            f"The {winner} lean ({probability * 100:.0f}%) is driven more by market position than a clear statistical edge. "
-            f"Small in-game swings — one turnover, one field-position shift — could change the outcome."
+            f"Genuinely balanced matchup — no football factor decisively favors either team. "
+            f"{winner} ({winner_season}) hold the slight edge at {probability * 100:.0f}%, "
+            f"driven more by market position than a statistical advantage. "
+            f"One turnover or field-position shift can flip this."
         )
 
     return {
@@ -1024,8 +1052,10 @@ def get_predictions():
 
         confidence_label, confidence_score = get_confidence(home_win_prob)
         season_int  = int(record.get("season") or 0)
+        game_id_str = str(record.get("game_id") or "")
         home_ctx    = get_player_context(season_int, record.get("home_team", ""))
         away_ctx    = get_player_context(season_int, record.get("away_team", ""))
+        game_ctx    = get_game_context(game_id_str)
         factors     = build_football_factors(record)
         key_battle  = build_key_battle(record, factors)
         market_note = build_market_note(record, factors)
@@ -1085,6 +1115,16 @@ def get_predictions():
             # Player context (QB, RB per team)
             "home_players":      home_ctx,
             "away_players":      away_ctx,
+            # Game context (weather, records)
+            "weather":           game_ctx.get("weather", {}),
+            "home_season_record": game_ctx.get("home_season_record"),
+            "away_season_record": game_ctx.get("away_season_record"),
+            "home_last3_record":  game_ctx.get("home_last3_record"),
+            "away_last3_record":  game_ctx.get("away_last3_record"),
+            "home_last3_pts_for": game_ctx.get("home_last3_pts_for"),
+            "home_last3_pts_ag":  game_ctx.get("home_last3_pts_ag"),
+            "away_last3_pts_for": game_ctx.get("away_last3_pts_for"),
+            "away_last3_pts_ag":  game_ctx.get("away_last3_pts_ag"),
             # Model + data provenance
             "model_meta":        MODEL_META,
             "data_mode":         DATA_MODE,
