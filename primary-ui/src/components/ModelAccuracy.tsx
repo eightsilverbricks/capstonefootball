@@ -1,91 +1,88 @@
 import React from 'react';
 import { modelAccuracy, topFactors } from '@/data/nflData';
-import { Target, Award, History } from 'lucide-react';
 
 const ModelAccuracy: React.FC = () => {
-  const seasonPct = (modelAccuracy.season / modelAccuracy.seasonTotal * 100).toFixed(1);
+  const pct = ((modelAccuracy.season / modelAccuracy.seasonTotal) * 100).toFixed(1);
+  const vegasBaseline = 67.4; // ~historical favorite win rate
 
   return (
-    <div className="bg-slate-800/50 rounded-xl border border-slate-700 overflow-hidden">
+    <div id="model" className="rounded-xl border border-white/8 overflow-hidden bg-[#0f0f1a]">
+
       {/* Header */}
-      <div className="p-4 bg-gradient-to-r from-emerald-500/10 to-cyan-500/10 border-b border-slate-700">
-        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-          <Target className="w-5 h-5 text-emerald-400" />
-          Model Performance
-        </h3>
-        <p className="text-sm text-slate-400 mt-1">From `nfl-prediction/outputs/metrics.json`</p>
+      <div className="px-6 py-5 border-b border-white/8">
+        <h3 className="text-lg font-semibold text-white mb-1">Model transparency</h3>
+        <p className="text-sm text-white/40">
+          What the model got right, what it missed, and how it works.
+        </p>
       </div>
 
-      <div className="p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-emerald-400">{seasonPct}%</div>
-          <p className="text-xs text-slate-400 mt-1">2024 Expanding Week</p>
-          <p className="text-xs text-slate-500">{modelAccuracy.season}/{modelAccuracy.seasonTotal} correct</p>
+      {/* Accuracy vs baseline */}
+      <div className="p-6 border-b border-white/8">
+        <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-4">
+          2024 season accuracy
+        </p>
+        <div className="space-y-4">
+          {/* Clark Index model */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-sm text-white">The Clark Index model</span>
+              <span className="text-sm font-bold text-emerald-400">{pct}%</span>
+            </div>
+            <div className="h-2 bg-white/8 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all duration-1000"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+            <p className="text-xs text-white/30 mt-1">{modelAccuracy.season} of {modelAccuracy.seasonTotal} games correct</p>
+          </div>
+
+          {/* Vegas baseline */}
+          <div>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-sm text-white/50">Pick the Vegas favorite (baseline)</span>
+              <span className="text-sm font-semibold text-white/40">~{vegasBaseline}%</span>
+            </div>
+            <div className="h-2 bg-white/8 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full bg-white/20 transition-all duration-1000"
+                style={{ width: `${vegasBaseline}%` }}
+              />
+            </div>
+            <p className="text-xs text-white/30 mt-1">Historical NFL favorite win rate</p>
+          </div>
         </div>
 
-        <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-cyan-400">0.592</div>
-          <p className="text-xs text-slate-400 mt-1">Log Loss</p>
-          <p className="text-xs text-slate-500">Lower is better</p>
-        </div>
-
-        <div className="bg-slate-700/50 rounded-lg p-3 text-center">
-          <div className="text-2xl font-bold text-purple-400">12</div>
-          <p className="text-xs text-slate-400 mt-1">Features</p>
-          <p className="text-xs text-slate-500">Used by the API model</p>
+        <div className="mt-4 px-4 py-3 rounded-lg bg-amber-400/8 border border-amber-400/20">
+          <p className="text-xs text-amber-300/70 leading-relaxed">
+            <strong className="text-amber-300">Honest note:</strong> Vegas spread is one of the model's 12 features —
+            it uses market signals, not just football stats. The model's edge is <em>explaining the football reasons
+            behind the probability</em>, not merely beating Vegas.
+          </p>
         </div>
       </div>
 
-      {/* Accuracy Bar */}
-      <div className="px-4 pb-4">
-        <div className="bg-slate-700/50 rounded-lg p-3">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-400">Season Accuracy</span>
-            <span className="text-sm font-semibold text-emerald-400">{seasonPct}%</span>
-          </div>
-          <div className="h-3 bg-slate-600 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-cyan-500 transition-all duration-1000"
-              style={{ width: `${seasonPct}%` }}
-            />
-          </div>
-          <div className="flex justify-between text-xs text-slate-500 mt-1">
-            <span>0%</span>
-            <span>Expanding-week result</span>
-            <span>100%</span>
-          </div>
-        </div>
-      </div>
-
-      {/* Top Factors */}
-      <div className="p-4 border-t border-slate-700">
-        <h4 className="text-sm font-semibold text-slate-400 mb-3 flex items-center gap-2">
-          <Award className="w-4 h-4" />
-          MODEL FEATURE GROUPS
-        </h4>
-        <div className="space-y-2">
-          {topFactors.map((factor) => (
+      {/* Feature groups */}
+      <div className="p-6 border-b border-white/8">
+        <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-4">
+          What the model looks at
+        </p>
+        <div className="space-y-3">
+          {topFactors.slice(0, 6).map((factor) => (
             <div key={factor.rank} className="flex items-center gap-3">
-              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                factor.rank <= 3 ? 'bg-yellow-500/20 text-yellow-400' :
-                factor.rank <= 6 ? 'bg-slate-600 text-slate-300' :
-                'bg-slate-700 text-slate-400'
-              }`}>
-                {factor.rank}
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-white truncate">{factor.name}</span>
-                  <span className="text-xs text-cyan-400 ml-2">{factor.importance}%</span>
+              <span className="text-xs text-white/25 w-5 shrink-0 text-right">{factor.rank}</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm text-white/70">{factor.name}</span>
+                  <span className="text-xs text-white/30">{factor.importance}%</span>
                 </div>
-                <div className="h-1.5 bg-slate-700 rounded-full overflow-hidden mt-1">
+                <div className="h-1 bg-white/8 rounded-full overflow-hidden">
                   <div
-                    className={`h-full transition-all ${
-                      factor.rank <= 3 ? 'bg-yellow-400' :
-                      factor.rank <= 6 ? 'bg-cyan-400' :
-                      'bg-slate-500'
-                    }`}
-                    style={{ width: `${factor.importance * 6.67}%` }}
+                    className="h-full rounded-full"
+                    style={{
+                      width: `${(factor.importance / 15) * 100}%`,
+                      background: factor.rank <= 3 ? '#c8a96e' : 'rgba(255,255,255,0.2)',
+                    }}
                   />
                 </div>
               </div>
@@ -94,12 +91,24 @@ const ModelAccuracy: React.FC = () => {
         </div>
       </div>
 
-      {/* Methodology Note */}
-      <div className="p-4 bg-slate-900/50 border-t border-slate-700">
-        <div className="flex items-start gap-2">
-          <History className="w-4 h-4 text-slate-500 mt-0.5 flex-shrink-0" />
-          <p className="text-xs text-slate-500">
-            Logistic regression with standard scaling. The production model uses market/context inputs plus recent team-form metrics, then predicts each 2024 week using only prior seasons plus earlier 2024 weeks.
+      {/* Methodology */}
+      <div className="p-6">
+        <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-3">
+          How predictions are made
+        </p>
+        <div className="space-y-3 text-sm text-white/50 leading-relaxed">
+          <p>
+            <strong className="text-white/70">Expanding window:</strong> Each week's prediction is made using only data
+            from games already played. Week 10 is never trained on Week 11 results. This simulates real pre-game prediction conditions.
+          </p>
+          <p>
+            <strong className="text-white/70">Logistic regression:</strong> A simple, interpretable model — not a black box.
+            Every factor's influence can be traced directly, which is why the Clark Report can show you
+            exactly which factors drove each prediction.
+          </p>
+          <p>
+            <strong className="text-white/70">2024 demo data:</strong> This is a historical backtest on the completed 2024 NFL season.
+            Trained on 2018–2023 seasons (1,640 games), evaluated on 2024 (285 games).
           </p>
         </div>
       </div>

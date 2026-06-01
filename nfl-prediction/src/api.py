@@ -20,12 +20,13 @@ from fastapi.middleware.cors import CORSMiddleware
 # Paths
 # ---------------------------------------------------------------------------
 
-BASE_DIR        = Path(__file__).resolve().parent.parent
-MODEL_PATH      = BASE_DIR / "models" / "logreg_model.joblib"
-DATA_PATH       = BASE_DIR / "data" / "processed" / "game_training_table.csv"
-SCHEDULE_DATES_PATH = BASE_DIR / "data" / "processed" / "schedule_dates.csv"
-PREDICTIONS_PATH = BASE_DIR / "outputs" / "predictions.csv"
-METRICS_PATH    = BASE_DIR / "outputs" / "metrics.json"
+BASE_DIR             = Path(__file__).resolve().parent.parent
+MODEL_PATH           = BASE_DIR / "models" / "logreg_model.joblib"
+DATA_PATH            = BASE_DIR / "data" / "processed" / "game_training_table.csv"
+SCHEDULE_DATES_PATH  = BASE_DIR / "data" / "processed" / "schedule_dates.csv"
+PREDICTIONS_PATH     = BASE_DIR / "outputs" / "predictions.csv"
+METRICS_PATH         = BASE_DIR / "outputs" / "metrics.json"
+PLAYER_CONTEXT_PATH  = BASE_DIR / "data" / "processed" / "player_context.json"
 
 # ---------------------------------------------------------------------------
 # Feature sets — must match train_model.py exactly
@@ -143,6 +144,21 @@ app.add_middleware(
 df          = pd.read_csv(DATA_PATH)
 schedule_df = pd.read_csv(SCHEDULE_DATES_PATH) if SCHEDULE_DATES_PATH.exists() else pd.DataFrame()
 model       = joblib.load(MODEL_PATH)
+
+# Player context: {season: {team: {qb: {...}, rb: {...}, ...}}}
+if PLAYER_CONTEXT_PATH.exists():
+    with open(PLAYER_CONTEXT_PATH) as _f:
+        PLAYER_CONTEXT: dict = json.load(_f)
+else:
+    PLAYER_CONTEXT = {}
+
+
+def get_player_context(season: int, team: str) -> dict:
+    """Returns player context for a team-season, or empty defaults."""
+    return PLAYER_CONTEXT.get(str(season), {}).get(team, {
+        "qb": {"name": None, "epa_per_att": 0.0, "cpoe": None},
+        "rb": {"name": None, "carries": 0, "ypc": 0.0},
+    })
 
 
 # ===========================================================================
@@ -524,8 +540,10 @@ def weekly_refresh(season: int, week: int) -> dict:
     }
 
 
+_PLAYOFF_WEEK_LABELS = {19: "Wild Card", 20: "Divisional", 21: "Conference Championship", 22: "Super Bowl"}
+
 def week_label(week: int) -> str:
-    return "Super Bowl" if int(week) == 22 else f"Week {int(week)}"
+    return _PLAYOFF_WEEK_LABELS.get(int(week), f"Week {int(week)}")
 
 
 def signed_advantage(value: float, home_team: str, away_team: str, invert: bool = False) -> str:
@@ -563,9 +581,82 @@ def factor_status(strength: float, thresholds: dict) -> str:
     return "NEUTRAL"
 
 
-def build_factor_cards(row: dict) -> list[dict]:
-    home, away = row["home_team"], row["away_team"]
+def _factor_reason(name: str, adv: str, opp: str, edge: float, mag: str,
+                   home_val: float, away_val: float,
+                   home: str, away: str, player_ctx: dict) -> str:
+    """Generate a game-specific reason string with actual numbers embedded."""
+    home_qb = player_ctx.get("home_qb", {})
+    away_qb = player_ctx.get("away_qb", {})
 
+    if name == "QB Efficiency":
+        adv_qb   = home_qb if adv == home else away_qb
+        opp_qb   = away_qb if adv == home else home_qb
+        adv_name = adv_qb.get("name") or adv
+        opp_name = opp_qb.get("name") or opp
+        # Use the model's computed differential (not full-season absolute values,
+        # which would be time-contaminated for early-season games)
+        return (
+            f"{adv_name} holds a {mag} QB efficiency edge over {opp_name} "
+            f"({abs(edge):.3f} EPA/play advantage). "
+            f"Efficient passers sustain drives and create explosive plays without needing short fields."
+        )
+
+    if name == "EPA/play":
+        return (
+            f"{adv} creates {mag} more expected value per play than {opp} "
+            f"({abs(edge):.3f} EPA/play edge). "
+            f"Consistent EPA generation sustains drives without needing explosive plays."
+        )
+
+    if name == "Turnover Control":
+        return (
+            f"{adv} wins the turnover battle by {abs(edge):.2f} turnovers/game on average. "
+            f"Each extra possession is worth roughly 2–3 expected points of field position."
+        )
+
+    if name == "Sack Pressure":
+        pct = abs(edge) * 100
+        return (
+            f"{adv}'s pass-rush-vs-protection matchup gives them a {pct:.1f}% sack-rate edge. "
+            f"Pressure collapses routes, forces early throws, and creates negative plays."
+        )
+
+    if name == "Success Rate":
+        return (
+            f"{adv} converts {abs(edge):.3f} more plays 'on schedule' (first-down-gain rate). "
+            f"Staying on schedule limits predictable down-and-distance for the defense."
+        )
+
+    if name == "Recent Form":
+        pts = abs(safe_get({"v": edge * 14}, "v")) if edge else 0
+        return (
+            f"{adv} has been the hotter team over the last 3 games "
+            f"(composite form edge: {abs(edge):.2f}). "
+            f"Trajectory matters — injuries, scheme changes, and momentum all show up here first."
+        )
+
+    return f"{adv} holds the {name} edge ({abs(edge):.3f} differential)."
+
+
+def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
+    home, away = row["home_team"], row["away_team"]
+    season     = int(row.get("season", 0))
+    if player_ctx is None:
+        player_ctx = {}
+
+    # Flat lookup for QB context used in reason generation
+    _home_qb = get_player_context(season, home).get("qb", {})
+    _away_qb = get_player_context(season, away).get("qb", {})
+    _ctx = {"home_qb": _home_qb, "away_qb": _away_qb}
+
+    # Season-average absolute values (derived from diffs — home is reference)
+    # diff = home - away, so home_val = mean + diff/2, away_val = mean - diff/2
+    # We don't have per-team absolute values in the training table, but we can
+    # use the home QB EPA and away QB EPA from player_context for QB cards.
+    _home_qb_epa = _home_qb.get("epa_per_att", 0.0) or 0.0
+    _away_qb_epa = _away_qb.get("epa_per_att", 0.0) or 0.0
+
+    # ── Compute differential values ──────────────────────────────────────────
     qb_value = (
         safe_get(row, "diff_season_qb_epa_per_play")
         + safe_get(row, "diff_last3_qb_epa_per_play")
@@ -597,55 +688,33 @@ def build_factor_cards(row: dict) -> list[dict]:
         - safe_get(row, "diff_last3_epa_per_play_allowed") / 0.25
     ) / 4
 
+    def _make(name: str, value: float, scale: float,
+              home_val: float = 0.0, away_val: float = 0.0) -> dict:
+        adv = signed_advantage(value, home, away)
+        opp = away if adv == home else home
+        strength = scaled_strength(value, scale)
+        mag = magnitude_word(strength * 10)
+        return {
+            "name":                 name,
+            "advantage_team":       adv,
+            "raw_edge":             round(value, 4),
+            "home_value":           round(home_val, 3),
+            "away_value":           round(away_val, 3),
+            "contribution_strength": strength,
+            "reason":               _factor_reason(name, adv, opp, value, mag,
+                                                    home_val, away_val, home, away, _ctx),
+            "why_it_matters":       WHY_IT_MATTERS.get(name, ""),
+            "football_translation": FOOTBALL_TRANSLATIONS.get(name, ""),
+        }
+
     cards = [
-        {
-            "name": "QB Efficiency",
-            "advantage_team": signed_advantage(qb_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["QB Efficiency"],
-            "football_translation": FOOTBALL_TRANSLATIONS["QB Efficiency"],
-            "contribution_strength": scaled_strength(qb_value, 0.22),
-            "raw_edge": round(qb_value, 4),
-        },
-        {
-            "name": "EPA/play",
-            "advantage_team": signed_advantage(epa_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["EPA/play"],
-            "football_translation": FOOTBALL_TRANSLATIONS["EPA/play"],
-            "contribution_strength": scaled_strength(epa_value, 0.16),
-            "raw_edge": round(epa_value, 4),
-        },
-        {
-            "name": "Turnover Control",
-            "advantage_team": signed_advantage(turnover_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["Turnover Control"],
-            "football_translation": FOOTBALL_TRANSLATIONS["Turnover Control"],
-            "contribution_strength": scaled_strength(turnover_value, 1.1),
-            "raw_edge": round(turnover_value, 4),
-        },
-        {
-            "name": "Sack Pressure",
-            "advantage_team": signed_advantage(pressure_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["Sack Pressure"],
-            "football_translation": FOOTBALL_TRANSLATIONS["Sack Pressure"],
-            "contribution_strength": scaled_strength(pressure_value, 0.06),
-            "raw_edge": round(pressure_value, 4),
-        },
-        {
-            "name": "Success Rate",
-            "advantage_team": signed_advantage(success_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["Success Rate"],
-            "football_translation": FOOTBALL_TRANSLATIONS["Success Rate"],
-            "contribution_strength": scaled_strength(success_value, 0.08),
-            "raw_edge": round(success_value, 4),
-        },
-        {
-            "name": "Recent Form",
-            "advantage_team": signed_advantage(recent_value, home, away),
-            "why_it_matters": WHY_IT_MATTERS["Recent Form"],
-            "football_translation": FOOTBALL_TRANSLATIONS["Recent Form"],
-            "contribution_strength": scaled_strength(recent_value, 0.65),
-            "raw_edge": round(recent_value, 4),
-        },
+        _make("QB Efficiency",   qb_value,       0.22,
+              home_val=_home_qb_epa, away_val=_away_qb_epa),
+        _make("EPA/play",        epa_value,       0.16),
+        _make("Turnover Control", turnover_value, 1.1),
+        _make("Sack Pressure",   pressure_value,  0.06),
+        _make("Success Rate",    success_value,   0.08),
+        _make("Recent Form",     recent_value,    0.65),
     ]
 
     thresholds = contribution_percentiles(cards)
@@ -763,12 +832,26 @@ def select_learning_module(primary_card: dict | None) -> dict:
 
 
 def game_diagnosis_engine(row: dict) -> dict:
-    winner = row["predicted_winner"]
+    winner   = row["predicted_winner"]
+    loser    = row["away_team"] if winner == row["home_team"] else row["home_team"]
+    home     = row["home_team"]
+    away     = row["away_team"]
+    season   = int(row.get("season", 0))
     probability = max(
-        safe_get(row, "home_win_prob") if winner == row["home_team"] else safe_get(row, "away_win_prob"),
+        safe_get(row, "home_win_prob") if winner == home else safe_get(row, "away_win_prob"),
         0.0,
     )
     factor_cards = build_factor_cards(row)
+
+    # Resolve player context for prose
+    winner_ctx = get_player_context(season, winner)
+    loser_ctx  = get_player_context(season, loser)
+    winner_qb  = winner_ctx.get("qb", {}).get("name") or winner
+    loser_qb   = loser_ctx.get("qb", {}).get("name") or loser
+    winner_rb  = winner_ctx.get("rb", {}).get("name")
+    winner_qb_epa = winner_ctx.get("qb", {}).get("epa_per_att", 0.0) or 0.0
+    loser_qb_epa  = loser_ctx.get("qb", {}).get("epa_per_att", 0.0) or 0.0
+
     winner_decisive = [
         card for card in factor_cards
         if card["advantage_team"] == winner and card["status"] == "DECISIVE"
@@ -777,57 +860,88 @@ def game_diagnosis_engine(row: dict) -> dict:
         card for card in factor_cards
         if card["advantage_team"] == winner and card["status"] in {"DECISIVE", "MODERATE"}
     ]
-    primary = winner_decisive[0] if winner_decisive else None
+    primary   = winner_decisive[0] if winner_decisive else None
     secondary = next((card for card in winner_supporting if card is not primary), None)
-    risks = [
+    risks     = [
         card for card in factor_cards
         if card["advantage_team"] not in {winner, "Even"} and card["status"] in {"DECISIVE", "MODERATE", "MINOR"}
     ]
     risk = risks[0] if risks else None
 
-    headline = f"{winner} lean: {probability * 100:.1f}% win probability"
+    # ── Headline ───────────────────────────────────────────────────────────────
+    conf_label = "Clear edge" if probability >= 0.65 else "Slight lean" if probability <= 0.57 else "Model lean"
+    headline = f"{conf_label}: {winner} at {probability * 100:.1f}%"
+
+    # ── Primary / secondary reasons (use the new reason field) ─────────────────
     if primary:
-        primary_reason = football_sentence(primary)
+        primary_reason = primary["reason"]
     else:
+        best = max(
+            (c for c in factor_cards if c["advantage_team"] == winner),
+            key=lambda c: c["contribution_strength"],
+            default=None,
+        )
         primary_reason = (
-            f"No football factor reaches DECISIVE status for {winner}; "
-            "the model lean is not built on one dominant matchup edge."
+            best["reason"] if best
+            else f"The model's lean on {winner} is driven primarily by market signals — no single football factor dominates."
         )
 
     if secondary:
-        secondary_reason = football_sentence(secondary)
-    elif not primary and winner_supporting:
-        secondary_reason = f"Best supporting edge: {football_sentence(winner_supporting[0])}"
+        secondary_reason = secondary["reason"]
     else:
-        secondary_reason = "No second football factor is strong enough to elevate above minor status."
-    risk_factor = (
-        f"{risk['advantage_team']} can stress the pick through {risk['name'].lower()}: {risk['football_translation']}"
-        if risk else
-        "The main risk is game-state volatility: turnovers, penalties, or injuries can overwhelm the modeled edge."
-    )
+        secondary_reason = f"The primary football edge carries most of the weight — no clear secondary factor reinforces {winner}."
+
+    # ── Risk factor ────────────────────────────────────────────────────────────
+    if risk:
+        risk_factor = (
+            f"{risk['advantage_team']} owns the {risk['name']} edge. {risk['reason']}"
+        )
+    else:
+        risk_factor = (
+            "The main risk is game-state variance: a turnover, a special-teams breakdown, "
+            "or an early injury can compress the statistical edge quickly."
+        )
+
+    # ── Football story (the editorial prose) ───────────────────────────────────
+    rest_diff = safe_get(row, "rest_diff")
+    div_game  = bool(safe_get(row, "div_game"))
+    spread    = safe_get(row, "spread_line")
+    mkt_word  = "market agrees" if (spread > 0) == (winner == home) else "market disagrees"
 
     if primary and secondary:
+        # Name the QB when QB Efficiency is one of the top factors
+        uses_qb = primary["name"] == "QB Efficiency" or secondary["name"] == "QB Efficiency"
+        _qb_card = next((c for c in factor_cards if c["name"] == "QB Efficiency"), None)
+        qb_diff  = abs(_qb_card["raw_edge"]) if _qb_card else 0.0
+        qb_note = (
+            f" {winner_qb} holds the QB efficiency edge over {loser_qb} ({qb_diff:.3f} EPA/play differential)."
+            if uses_qb and winner_qb != winner else ""
+        )
+        form_note = f" {winner} are the hotter team over the last 3 games." if secondary["name"] == "Recent Form" else ""
+        rest_note = f" They also have a {abs(rest_diff):.0f}-day rest advantage." if abs(rest_diff) >= 3 else ""
+        div_note  = " This is a divisional matchup — expect tighter margins than the numbers suggest." if div_game else ""
         football_story = (
-            f"The football case for {winner} starts with {primary['name'].lower()} "
-            f"and is reinforced by {secondary['name'].lower()}. "
-            "Market data is separated below so the diagnosis stays football-first."
+            f"{winner} hold a meaningful edge in {primary['name']} and {secondary['name']}.{qb_note}"
+            f"{form_note}{rest_note}{div_note} The {mkt_word} with the model's lean."
         )
     elif primary:
+        rb_note = f" {winner_rb} is the key ball-carrier if {winner} can establish the run." if winner_rb and "Recent Form" in primary["name"] else ""
+        div_note = " In a divisional game, one dominant factor usually isn't enough to cover completely." if div_game else ""
         football_story = (
-            f"The football case for {winner} starts with {primary['name'].lower()}. "
-            "No second major football edge clears the dynamic threshold, so risk management matters. "
-            "Market data is separated below so the diagnosis stays football-first."
+            f"{winner}'s edge comes down to one factor: {primary['name']}.{rb_note}{div_note} "
+            f"The {mkt_word} — watch for {loser} to challenge through {risk['name'] if risk else 'game-state variance'}."
         )
     elif risk:
         football_story = (
-            f"The model leans {winner}, but the football diagnosis is mixed: the strongest matchup edge "
-            f"is {risk['name'].lower()} for {risk['advantage_team']}. Treat that as the upset path. "
-            "Market data is separated below so the diagnosis stays football-first."
+            f"The model leans {winner}, but {risk['advantage_team']} has the stronger football profile on {risk['name']}. "
+            f"The lean is built on market signals more than pure football edges. "
+            f"Treat {risk['advantage_team']}'s {risk['name']} advantage as the live upset path."
         )
     else:
         football_story = (
-            f"The model leans {winner}, but the football profile is balanced with no decisive matchup edge. "
-            "Market data is separated below so the diagnosis stays football-first."
+            f"This is a genuinely balanced matchup — no football factor decisively favors either team. "
+            f"The {winner} lean ({probability * 100:.0f}%) is driven more by market position than a clear statistical edge. "
+            f"Small in-game swings — one turnover, one field-position shift — could change the outcome."
         )
 
     return {
@@ -909,6 +1023,9 @@ def get_predictions():
         away_win_prob = record.get("away_win_prob") or 0.5
 
         confidence_label, confidence_score = get_confidence(home_win_prob)
+        season_int  = int(record.get("season") or 0)
+        home_ctx    = get_player_context(season_int, record.get("home_team", ""))
+        away_ctx    = get_player_context(season_int, record.get("away_team", ""))
         factors     = build_football_factors(record)
         key_battle  = build_key_battle(record, factors)
         market_note = build_market_note(record, factors)
@@ -965,6 +1082,9 @@ def get_predictions():
             "explanation_summary": diagnosis["football_story"],
             "explanation_factors": legacy_explanation_factors,
             "model_feature_set":   PRODUCTION_MODEL_NAME,
+            # Player context (QB, RB per team)
+            "home_players":      home_ctx,
+            "away_players":      away_ctx,
             # Model + data provenance
             "model_meta":        MODEL_META,
             "data_mode":         DATA_MODE,

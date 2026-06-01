@@ -1,0 +1,9 @@
+{
+  "buildCommand": "cd primary-ui && npm install && npm run build",
+  "outputDirectory": "primary-ui/dist",
+  "installCommand": "cd primary-ui && npm install",
+  "framework": null,
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

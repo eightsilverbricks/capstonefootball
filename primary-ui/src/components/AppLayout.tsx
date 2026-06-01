@@ -1,41 +1,38 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Header from './Header';
 import HeroSection from './HeroSection';
+import WeekStrip from './WeekStrip';
 import GameCard from './GameCard';
 import GameDetailModal from './GameDetailModal';
 import ModelAccuracy from './ModelAccuracy';
 import Footer from './Footer';
-import {
-  ApiPrediction,
-  ConfidenceFilter,
-  SortMode,
-  getConfidenceLevel,
-  getConfidenceScore,
-} from '@/types/prediction';
-import { AlertCircle, Calendar, Filter, ListFilter, RefreshCw, Trophy } from 'lucide-react';
+import { ApiPrediction, ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
+import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+// Static JSON path — works in both dev (Vite serves from public/) and Vercel production.
+// If VITE_API_BASE_URL is set (e.g. pointing to a live FastAPI), fetch from there instead.
+const PREDICTIONS_URL = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/predictions`
+  : '/predictions.json';
+
+// Default to Super Bowl week for the demo
+const DEFAULT_WEEK = 22;
 
 const AppLayout: React.FC = () => {
   const [predictions, setPredictions] = useState<ApiPrediction[]>([]);
   const [selectedGame, setSelectedGame] = useState<ApiPrediction | null>(null);
-  const [sortMode, setSortMode] = useState<SortMode>('week');
+  const [selectedWeek, setSelectedWeek] = useState<number>(DEFAULT_WEEK);
   const [filterConfidence, setFilterConfidence] = useState<ConfidenceFilter>('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const gamesRef = useRef<HTMLDivElement>(null);
 
   const loadPredictions = async () => {
     setLoading(true);
     setError('');
-
     try {
-      const response = await fetch(`${API_BASE_URL}/predictions`);
-      if (!response.ok) {
-        throw new Error(`Prediction API returned ${response.status}`);
-      }
-
-      const data = (await response.json()) as ApiPrediction[];
+      const response = await fetch(PREDICTIONS_URL);
+      if (!response.ok) throw new Error(`Failed to load predictions (${response.status})`);
+      const data = await response.json() as ApiPrediction[];
       setPredictions(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load predictions');
@@ -44,119 +41,137 @@ const AppLayout: React.FC = () => {
     }
   };
 
+  useEffect(() => { loadPredictions(); }, []);
+
+  // Available weeks for the week strip
+  const availableWeeks = useMemo(() => {
+    const weeks = [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b);
+    return weeks;
+  }, [predictions]);
+
+  // Sync: if the default week isn't in the data, fall back to the last available week
   useEffect(() => {
-    loadPredictions();
-  }, []);
+    if (availableWeeks.length > 0 && !availableWeeks.includes(selectedWeek)) {
+      setSelectedWeek(availableWeeks[availableWeeks.length - 1]);
+    }
+  }, [availableWeeks]);
 
-  const latestSeason = predictions.length > 0
-    ? Math.max(...predictions.map((game) => game.season))
-    : undefined;
+  // Games for the selected week
+  const weekGames = useMemo(() => {
+    return predictions.filter((g) => g.week === selectedWeek);
+  }, [predictions, selectedWeek]);
 
-  const filteredPredictions = useMemo(() => {
-    const filtered = predictions.filter((game) => {
-      if (filterConfidence === 'all') {
-        return true;
-      }
-      return getConfidenceLevel(game).toLowerCase() === filterConfidence;
-    });
+  // Featured game: Super Bowl game if on week 22, else highest confidence of selected week
+  const featuredGame = useMemo(() => {
+    if (weekGames.length === 0) return predictions.length > 0
+      ? [...predictions].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a))[0]
+      : null;
+    return [...weekGames].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a))[0];
+  }, [weekGames, predictions]);
 
-    return filtered.sort((a, b) => {
-      if (sortMode === 'week') {
-        if (a.week !== b.week) {
-          return a.week - b.week;
-        }
-        return a.away_team.localeCompare(b.away_team) || a.home_team.localeCompare(b.home_team);
-      }
+  // Filtered + sorted games for the grid (exclude featured to avoid duplication when there's only 1 game)
+  const gridGames = useMemo(() => {
+    let games = weekGames;
 
-      return getConfidenceScore(b) - getConfidenceScore(a);
-    });
-  }, [predictions, filterConfidence, sortMode]);
+    if (filterConfidence !== 'all') {
+      games = games.filter((g) => (g.confidence_label ?? '').toLowerCase() === filterConfidence);
+    }
 
-  const highConfidenceCount = predictions.filter((game) => getConfidenceLevel(game) === 'High').length;
-  const avgConfidence = predictions.length > 0
-    ? predictions.reduce((sum, game) => sum + getConfidenceScore(game) * 200, 0) / predictions.length
-    : 0;
+    // Sort by confidence desc
+    games = [...games].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a));
 
-  const scrollToGames = () => {
-    gamesRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // If only 1 game this week, grid is empty (featured takes care of it)
+    if (weekGames.length <= 1) return [];
+
+    return games;
+  }, [weekGames, filterConfidence]);
+
+  const handleWeekChange = (week: number) => {
+    setSelectedWeek(week);
+    setFilterConfidence('all');
   };
 
   return (
-    <div className="min-h-screen bg-slate-950">
+    <div className="min-h-screen" style={{ background: '#0a0a12', color: '#f5f0e8' }}>
       <Header />
 
+      {/* ── Hero ── */}
       <HeroSection
-        onScrollToGames={scrollToGames}
-        predictionCount={predictions.length}
-        latestSeason={latestSeason}
+        featuredGame={featuredGame ?? null}
+        onViewReport={setSelectedGame}
+        totalGames={predictions.length}
       />
 
-      <section ref={gamesRef} id="games" className="py-16 px-4">
+      {/* ── Week navigation ── */}
+      {availableWeeks.length > 0 && (
+        <WeekStrip
+          availableWeeks={availableWeeks}
+          selectedWeek={selectedWeek}
+          onChange={handleWeekChange}
+        />
+      )}
+
+      {/* ── Matchups grid ── */}
+      <section id="matchups" className="py-10 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 mb-8">
+
+          {/* Section header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
-              <div className="flex items-center gap-2 text-cyan-400 text-sm font-medium mb-2">
-                <Calendar className="w-4 h-4" />
-                {latestSeason ? `${latestSeason} model output` : 'Model output'}
-              </div>
-              <h2 className="text-3xl font-bold text-white">Actual Predictions</h2>
-              <p className="text-slate-400 mt-1">
-                {predictions.length} games from the FastAPI model endpoint
-                {predictions.length > 0 && ` • ${highConfidenceCount} high-confidence picks • ${avgConfidence.toFixed(1)}% avg confidence`}
+              <h2 className="text-xl font-semibold text-white">
+                {selectedWeek >= 19
+                  ? (['Wild Card', 'Divisional Round', 'Conference Championship', 'Super Bowl'][selectedWeek - 19])
+                  : `Week ${selectedWeek} Matchups`}
+              </h2>
+              <p className="text-sm text-white/30 mt-0.5">
+                {weekGames.length === 1
+                  ? 'Showing the full Clark Report above'
+                  : `${weekGames.length} games · click any card to read the Clark Report`}
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <div className="flex items-center gap-2 bg-slate-900 rounded-lg p-1 border border-slate-700">
-                {(['all', 'high', 'medium', 'low'] as ConfidenceFilter[]).map((filter) => (
+            {/* Confidence filter — only if >1 game */}
+            {weekGames.length > 1 && (
+              <div className="flex items-center gap-1 bg-white/[0.04] rounded-lg p-1 border border-white/8">
+                {(['all', 'high', 'medium', 'low'] as ConfidenceFilter[]).map((f) => (
                   <button
-                    key={filter}
-                    onClick={() => setFilterConfidence(filter)}
-                    className={`px-3 py-1.5 text-sm rounded-md transition-colors capitalize ${
-                      filterConfidence === filter
-                        ? 'bg-cyan-500 text-white'
-                        : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    key={f}
+                    onClick={() => setFilterConfidence(f)}
+                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
+                      filterConfidence === f
+                        ? 'bg-white text-[#0a0a12]'
+                        : 'text-white/40 hover:text-white'
                     }`}
                   >
-                    {filter}
+                    {f}
                   </button>
                 ))}
               </div>
-
-              <label className="flex items-center gap-2 text-sm text-slate-300">
-                <ListFilter className="w-4 h-4 text-slate-500" />
-                <select
-                  value={sortMode}
-                  onChange={(event) => setSortMode(event.target.value as SortMode)}
-                  className="bg-slate-900 border border-slate-700 rounded-md px-3 py-2 text-white"
-                >
-                  <option value="confidence">Highest confidence</option>
-                  <option value="week">Week</option>
-                </select>
-              </label>
-            </div>
+            )}
           </div>
 
+          {/* Loading */}
           {loading && (
-            <div className="rounded-lg border border-slate-700 bg-slate-900 p-8 text-center">
-              <RefreshCw className="w-8 h-8 text-cyan-400 animate-spin mx-auto mb-3" />
-              <p className="text-slate-300">Loading predictions from the model API...</p>
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <RefreshCw className="w-8 h-8 text-white/30 animate-spin" />
+              <p className="text-sm text-white/40">Loading predictions…</p>
             </div>
           )}
 
+          {/* Error */}
           {!loading && error && (
-            <div className="rounded-lg border border-red-800 bg-red-950/30 p-6">
+            <div className="rounded-xl border border-red-800/50 bg-red-950/20 p-6">
               <div className="flex items-start gap-3">
-                <AlertCircle className="w-5 h-5 text-red-400 mt-0.5" />
+                <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
                 <div>
-                  <h3 className="text-white font-semibold">Prediction API is unavailable</h3>
-                  <p className="text-red-200 mt-1">{error}</p>
-                  <p className="text-slate-400 mt-2 text-sm">
-                    Start the backend with `cd nfl-prediction && .venv/bin/uvicorn src.api:app --reload`.
+                  <h3 className="text-white font-semibold mb-1">Couldn't load predictions</h3>
+                  <p className="text-red-300/70 text-sm mb-3">{error}</p>
+                  <p className="text-white/30 text-xs mb-4">
+                    Make sure the prediction API is running, then try again.
                   </p>
                   <button
                     onClick={loadPredictions}
-                    className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                    className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors"
                   >
                     Retry
                   </button>
@@ -165,110 +180,118 @@ const AppLayout: React.FC = () => {
             </div>
           )}
 
-          {!loading && !error && (
-            <>
-              <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                {filteredPredictions.map((game) => (
-                  <GameCard
-                    key={`${game.season}-${game.week}-${game.away_team}-${game.home_team}`}
-                    game={game}
-                    onClick={() => setSelectedGame(game)}
-                    isSelected={selectedGame === game}
-                  />
-                ))}
-              </div>
+          {/* Grid — only shown when week has >1 game */}
+          {!loading && !error && gridGames.length > 0 && (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {gridGames.map((game) => (
+                <GameCard
+                  key={`${game.season}-${game.week}-${game.away_team}-${game.home_team}`}
+                  game={game}
+                  onClick={() => setSelectedGame(game)}
+                  isSelected={selectedGame === game}
+                />
+              ))}
+            </div>
+          )}
 
-              {filteredPredictions.length === 0 && (
-                <div className="text-center py-12">
-                  <Filter className="w-12 h-12 text-slate-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-white mb-2">No predictions match that filter</h3>
-                  <button
-                    onClick={() => setFilterConfidence('all')}
-                    className="mt-4 px-4 py-2 bg-cyan-500 text-white rounded-md hover:bg-cyan-600 transition-colors"
-                  >
-                    Show all predictions
-                  </button>
-                </div>
-              )}
-            </>
+          {/* Empty filter state */}
+          {!loading && !error && weekGames.length > 1 && gridGames.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 gap-3">
+              <Filter className="w-10 h-10 text-white/15" />
+              <p className="text-sm text-white/40">No {filterConfidence} confidence games this week</p>
+              <button
+                onClick={() => setFilterConfidence('all')}
+                className="text-xs text-white/50 hover:text-white underline"
+              >
+                Show all
+              </button>
+            </div>
           )}
         </div>
       </section>
 
-      <section id="model" className="py-16 px-4 bg-slate-900/50">
+      {/* ── Learn section ── */}
+      <section id="learn" className="py-12 px-4 border-t border-white/8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 text-emerald-400 text-sm font-medium mb-2">
-              <Trophy className="w-4 h-4" />
-              Model Performance
-            </div>
-            <h2 className="text-3xl font-bold text-white">What We Actually Trained</h2>
-            <p className="text-slate-400 mt-2 max-w-2xl mx-auto">
-              The displayed predictions come from `nfl-prediction/outputs/predictions.csv`, generated one week at a time with an expanding training window.
-            </p>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-white mb-2">New to football?</h2>
+            <p className="text-sm text-white/40">Every stat the model uses, explained without jargon.</p>
           </div>
-
-          <ModelAccuracy />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {GLOSSARY_ITEMS.map((item) => (
+              <div key={item.term} className="rounded-lg border border-white/8 bg-white/[0.03] p-4">
+                <h3 className="text-sm font-semibold text-white mb-1">{item.term}</h3>
+                <p className="text-sm text-white/50 leading-relaxed mb-2">{item.plain}</p>
+                <p className="text-xs text-white/25 leading-relaxed italic">{item.model_use}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="methodology" className="py-16 px-4">
+      {/* ── Model section ── */}
+      <section className="py-12 px-4 border-t border-white/8">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-2 text-purple-400 text-sm font-medium mb-2">
-              <Trophy className="w-4 h-4" />
-              Methodology
-            </div>
-            <h2 className="text-3xl font-bold text-white">How The Model Works</h2>
-            <p className="text-slate-400 mt-2 max-w-2xl mx-auto">
-              The production model uses market/context inputs plus recent team-form metrics that improved the expanding-week evaluation.
-            </p>
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-white mb-2">How the model works</h2>
+            <p className="text-sm text-white/40">What it uses, what it doesn't, and how accurate it is.</p>
           </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="bg-slate-900 rounded-lg p-6 border border-slate-700">
-              <div className="w-12 h-12 bg-cyan-500/20 rounded-lg flex items-center justify-center text-cyan-400 font-bold text-xl mb-4">
-                1
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Build Game Context</h3>
-              <p className="text-slate-400">
-                Schedule, market, and team-game data are converted into rows with spread, moneyline, rest context, and recent point margin, EPA, success rate, and win rate.
-              </p>
-            </div>
-
-            <div className="bg-slate-900 rounded-lg p-6 border border-slate-700">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-lg flex items-center justify-center text-purple-400 font-bold text-xl mb-4">
-                2
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Keep The Best Signal</h3>
-              <p className="text-slate-400">
-                The full 28-feature model is still evaluated, but the deployed model keeps the football signals that improved chronological accuracy without adding noisy extras.
-              </p>
-            </div>
-
-            <div className="bg-slate-900 rounded-lg p-6 border border-slate-700">
-              <div className="w-12 h-12 bg-emerald-500/20 rounded-lg flex items-center justify-center text-emerald-400 font-bold text-xl mb-4">
-                3
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Train Week By Week</h3>
-              <p className="text-slate-400">
-                Week 5 is trained on prior seasons plus Weeks 1-4 from the same season. Every week follows that same expanding-window rule before estimating win probability.
-              </p>
-            </div>
-          </div>
+          <ModelAccuracy />
         </div>
       </section>
 
       <Footer />
 
+      {/* ── Clark Report modal ── */}
       {selectedGame && (
-        <GameDetailModal
-          game={selectedGame}
-          onClose={() => setSelectedGame(null)}
-        />
+        <GameDetailModal game={selectedGame} onClose={() => setSelectedGame(null)} />
       )}
     </div>
   );
 };
+
+// ─── Glossary items ────────────────────────────────────────────────────────────
+const GLOSSARY_ITEMS = [
+  {
+    term: "EPA per play",
+    plain: "Expected Points Added measures how much a play helps a team score. A run that gains 5 yards on 3rd-and-2 adds more value than the same run on 3rd-and-15.",
+    model_use: "The model uses EPA per play as the primary efficiency signal — teams with consistent EPA create more scoring opportunities.",
+  },
+  {
+    term: "Success rate",
+    plain: 'The percentage of plays where the offense "stays on schedule" — gaining enough yards to make the next down manageable.',
+    model_use: "High success rate teams are more reliable on offense. They do not depend on big plays to move the chains.",
+  },
+  {
+    term: "The spread",
+    plain: "The point handicap Vegas assigns to level the betting field. A -6.5 team needs to win by 7+ points for bettors to win.",
+    model_use: "Vegas spreads encode a lot of real-world information. The model uses them as a calibration signal, not the whole story.",
+  },
+  {
+    term: "Recent form (last 3)",
+    plain: "How a team has performed in their last 3 games, not the whole season. Reflects current momentum and any recent injuries or scheme changes.",
+    model_use: "Recent form can detect when a team is trending up or down in ways that season averages miss.",
+  },
+  {
+    term: "Win probability",
+    plain: "The model's estimate of how likely each team is to win. 70% does not mean certain — it means the model sees meaningful but not overwhelming evidence.",
+    model_use: "Probabilities are derived from logistic regression. A 60/40 game is genuinely close and often comes down to execution.",
+  },
+  {
+    term: "QB efficiency",
+    plain: "How much value a quarterback creates per play — accounting for completions, yards, touchdowns, and avoiding turnovers.",
+    model_use: "QB efficiency is the single most predictive football stat in the model. Good QBs make offenses work regardless of the opponent.",
+  },
+  {
+    term: "Rest differential",
+    plain: "The difference in days of rest between the two teams. A team on a short week (3 days) vs. a rested team (10 days) is at a measurable disadvantage.",
+    model_use: "Rest matters most in close matchups. The model treats it as a context signal, not a dominant factor.",
+  },
+  {
+    term: "Sack / pressure rate",
+    plain: "How often a team's pass rush disrupts the opposing QB, or how well the offensive line protects their QB.",
+    model_use: "Pressure limits deep passing and creates negative plays. The model looks at the matchup between one team's rush and the other's protection.",
+  },
+];
 
 export default AppLayout;

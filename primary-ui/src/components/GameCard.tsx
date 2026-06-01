@@ -1,12 +1,8 @@
 import React from 'react';
-import {
-  ApiPrediction,
-  getConfidenceLevel,
-  getConfidencePercent,
-  getPredictedProbability,
-  toPercent,
-} from '@/types/prediction';
-import { BarChart3, ChevronRight, ShieldCheck } from 'lucide-react';
+import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
+import { getTeamColors } from '@/data/nflData';
+import TeamLogo from './TeamLogo';
+import { ChevronRight } from 'lucide-react';
 
 interface GameCardProps {
   game: ApiPrediction;
@@ -14,122 +10,118 @@ interface GameCardProps {
   isSelected?: boolean;
 }
 
+const CONFIDENCE_STYLES = {
+  High:   { dot: '#4ade80', label: 'text-emerald-400', bg: 'bg-emerald-400/10' },
+  Medium: { dot: '#fbbf24', label: 'text-amber-400',   bg: 'bg-amber-400/10' },
+  Low:    { dot: '#94a3b8', label: 'text-slate-400',   bg: 'bg-slate-400/10' },
+};
+
 const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected }) => {
-  const confidenceLevel = getConfidenceLevel(game);
-  const confidencePercent = getConfidencePercent(game);
-  const predictedProbability = getPredictedProbability(game);
-  const homePercent = Number(toPercent(game.home_win_prob));
-  const awayPercent = Number(toPercent(game.away_win_prob));
-  const predictedSide = game.predicted_winner === game.home_team ? 'home' : 'away';
+  const homeColors = getTeamColors(game.home_team);
+  const awayColors = getTeamColors(game.away_team);
+  const winnerProb = (getPredictedProbability(game) * 100).toFixed(0);
+  const isHome = game.predicted_winner === game.home_team;
+  const winnerColors = isHome ? homeColors : awayColors;
+  const conf = game.confidence_label ?? 'Medium';
+  const confStyle = CONFIDENCE_STYLES[conf] ?? CONFIDENCE_STYLES.Medium;
+  const awayPct = (game.away_win_prob * 100).toFixed(0);
+  const homePct = (game.home_win_prob * 100).toFixed(0);
 
   return (
     <div
       onClick={onClick}
       role="button"
       tabIndex={0}
-      onKeyDown={(event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          onClick();
-        }
-      }}
-      className={`relative bg-slate-900 rounded-lg overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-1 hover:shadow-2xl hover:shadow-cyan-500/10 border ${
-        isSelected ? 'border-cyan-400 shadow-lg shadow-cyan-500/30' : 'border-slate-700/50'
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick(); } }}
+      className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl border ${
+        isSelected ? 'border-white/30' : 'border-white/8'
       }`}
+      style={{
+        background: '#111118',
+        boxShadow: isSelected ? `0 0 0 1px ${winnerColors.primary}60, 0 8px 32px ${winnerColors.primary}20` : undefined,
+      }}
     >
+      {/* Team color band at top */}
+      <div
+        className="h-1 w-full"
+        style={{
+          background: `linear-gradient(90deg, ${awayColors.primary} 0%, ${awayColors.primary} 50%, ${homeColors.primary} 50%, ${homeColors.primary} 100%)`,
+        }}
+      />
+
       <div className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-xs font-medium text-cyan-400 bg-cyan-400/10 px-2 py-1 rounded-full">
-            Week {game.week}
-          </span>
-          <div className="flex items-center gap-1 text-xs text-slate-400">
-            <BarChart3 className="w-3.5 h-3.5" />
-            <span>{game.season}</span>
+        {/* Week label */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs text-white/30">{game.week_label ?? `Week ${game.week}`}</span>
+          <div className={`flex items-center gap-1.5 text-xs font-medium ${confStyle.label} ${confStyle.bg} px-2 py-0.5 rounded-full`}>
+            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: confStyle.dot }} />
+            {conf}
           </div>
         </div>
 
-        <div className="space-y-3">
-          <div className={`flex items-center justify-between p-3 rounded-lg border ${
-            predictedSide === 'away' ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-800/60 border-slate-700'
+        {/* Teams */}
+        <div className="space-y-2.5 mb-4">
+          {/* Away */}
+          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+            !isHome ? 'bg-white/8 border border-white/15' : 'bg-white/[0.03]'
           }`}>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-slate-700 flex items-center justify-center font-bold text-white text-sm">
-                {game.away_team}
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-white">{game.away_team}</p>
-                <p className="text-xs text-slate-400">Away</p>
+              <TeamLogo abbr={game.away_team} size="sm" />
+              <div>
+                <p className="font-semibold text-white text-sm">{game.away_team}</p>
+                <p className="text-xs text-white/30">Away</p>
               </div>
             </div>
-            <p className={`text-lg font-bold ${predictedSide === 'away' ? 'text-emerald-400' : 'text-slate-300'}`}>
-              {toPercent(game.away_win_prob)}%
+            <p className={`font-bold text-base ${!isHome ? 'text-white' : 'text-white/40'}`}>
+              {awayPct}%
             </p>
           </div>
 
+          {/* Home */}
+          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
+            isHome ? 'bg-white/8 border border-white/15' : 'bg-white/[0.03]'
+          }`}>
+            <div className="flex items-center gap-3">
+              <TeamLogo abbr={game.home_team} size="sm" />
+              <div>
+                <p className="font-semibold text-white text-sm">{game.home_team}</p>
+                <p className="text-xs text-white/30">Home</p>
+              </div>
+            </div>
+            <p className={`font-bold text-base ${isHome ? 'text-white' : 'text-white/40'}`}>
+              {homePct}%
+            </p>
+          </div>
+        </div>
+
+        {/* Probability bar */}
+        <div className="h-1.5 rounded-full overflow-hidden flex mb-4">
+          <div
+            className="h-full transition-all duration-500"
+            style={{ width: `${awayPct}%`, backgroundColor: awayColors.primary, opacity: !isHome ? 1 : 0.3 }}
+          />
+          <div
+            className="h-full transition-all duration-500"
+            style={{ width: `${homePct}%`, backgroundColor: homeColors.primary, opacity: isHome ? 1 : 0.3 }}
+          />
+        </div>
+
+        {/* Bottom: winner + CTA */}
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="flex-1 h-px bg-slate-700" />
-            <span className="text-xs text-slate-500 font-medium">@</span>
-            <div className="flex-1 h-px bg-slate-700" />
-          </div>
-
-          <div className={`flex items-center justify-between p-3 rounded-lg border ${
-            predictedSide === 'home' ? 'bg-emerald-500/10 border-emerald-500/30' : 'bg-slate-800/60 border-slate-700'
-          }`}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-md bg-cyan-700 flex items-center justify-center font-bold text-white text-sm">
-                {game.home_team}
-              </div>
-              <div className="min-w-0">
-                <p className="font-semibold text-white">{game.home_team}</p>
-                <p className="text-xs text-slate-400">Home</p>
-              </div>
-            </div>
-            <p className={`text-lg font-bold ${predictedSide === 'home' ? 'text-emerald-400' : 'text-slate-300'}`}>
-              {toPercent(game.home_win_prob)}%
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-400">Model confidence</span>
-            <span className="text-sm font-semibold text-cyan-400">
-              {confidenceLevel} ({confidencePercent.toFixed(1)}%)
+            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: winnerColors.secondary || winnerColors.primary }} />
+            <span className="text-sm font-semibold" style={{ color: winnerColors.secondary || '#ffffff' }}>
+              {game.predicted_winner}
             </span>
-          </div>
-          <div className="h-2.5 bg-slate-700 rounded-full overflow-hidden flex">
-            <div
-              className="h-full transition-all duration-500"
-              style={{
-                width: `${awayPercent}%`,
-                backgroundColor: '#64748b',
-              }}
-            />
-            <div
-              className="h-full transition-all duration-500"
-              style={{
-                width: `${homePercent}%`,
-                backgroundColor: '#06b6d4',
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="mt-4 flex items-center justify-between text-sm">
-          <div className="flex items-center gap-2 text-emerald-400 font-semibold">
-            <ShieldCheck className="w-4 h-4" />
-            {game.predicted_winner}
+            <span className="text-xs text-white/30">{winnerProb}%</span>
           </div>
           <button
             type="button"
-            onClick={(event) => {
-              event.stopPropagation();
-              onClick();
-            }}
-            className="flex items-center gap-1 text-cyan-400 font-medium group"
+            onClick={(e) => { e.stopPropagation(); onClick(); }}
+            className="flex items-center gap-1 text-xs text-white/40 hover:text-white/80 group transition-colors"
           >
-            <span>Details</span>
-            <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Clark Report
+            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
       </div>

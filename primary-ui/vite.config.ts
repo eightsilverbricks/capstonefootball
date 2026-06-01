@@ -7,6 +7,10 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      '/predictions': 'http://127.0.0.1:8000',
+      '/model-info':  'http://127.0.0.1:8000',
+    },
   },
   plugins: [
     react()
