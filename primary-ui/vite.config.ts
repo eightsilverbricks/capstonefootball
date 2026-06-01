@@ -7,10 +7,8 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    proxy: {
-      '/predictions': 'http://127.0.0.1:8000',
-      '/model-info':  'http://127.0.0.1:8000',
-    },
+    // No proxy — frontend reads static /predictions.json from public/.
+    // Set VITE_API_BASE_URL in .env.local to point at a live FastAPI instead.
   },
   plugins: [
     react()
