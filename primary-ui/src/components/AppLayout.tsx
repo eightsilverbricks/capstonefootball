@@ -1,9 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import Header from './Header';
-import HeroSection from './HeroSection';
 import WeekStrip from './WeekStrip';
 import GameCard from './GameCard';
-import ModelAccuracy from './ModelAccuracy';
 import Footer from './Footer';
 import { usePredictions } from '@/hooks/usePredictions';
 import { ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
@@ -34,29 +32,13 @@ const AppLayout: React.FC = () => {
     return predictions.filter((g) => g.week === selectedWeek);
   }, [predictions, selectedWeek]);
 
-  // Featured game: Super Bowl game if on week 22, else highest confidence of selected week
-  const featuredGame = useMemo(() => {
-    if (weekGames.length === 0) return predictions.length > 0
-      ? [...predictions].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a))[0]
-      : null;
-    return [...weekGames].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a))[0];
-  }, [weekGames, predictions]);
-
-  // Filtered + sorted games for the grid (exclude featured to avoid duplication when there's only 1 game)
+  // Filtered + sorted games for the grid
   const gridGames = useMemo(() => {
     let games = weekGames;
-
     if (filterConfidence !== 'all') {
       games = games.filter((g) => (g.confidence_label ?? '').toLowerCase() === filterConfidence);
     }
-
-    // Sort by confidence desc
-    games = [...games].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a));
-
-    // If only 1 game this week, grid is empty (featured takes care of it)
-    if (weekGames.length <= 1) return [];
-
-    return games;
+    return [...games].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a));
   }, [weekGames, filterConfidence]);
 
   const handleWeekChange = (week: number) => {
@@ -65,14 +47,8 @@ const AppLayout: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ background: '#0a0a12', color: '#f5f0e8' }}>
+    <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
-
-      {/* ── Hero ── */}
-      <HeroSection
-        featuredGame={featuredGame ?? null}
-        totalGames={predictions.length}
-      />
 
       {/* ── Week navigation ── */}
       {availableWeeks.length > 0 && (
@@ -177,36 +153,6 @@ const AppLayout: React.FC = () => {
               </button>
             </div>
           )}
-        </div>
-      </section>
-
-      {/* ── Learn section ── */}
-      <section id="learn" className="py-12 px-4 border-t border-white/8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-white mb-2">New to football?</h2>
-            <p className="text-sm text-white/40">Every stat the model uses, explained without jargon.</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {GLOSSARY_ITEMS.map((item) => (
-              <div key={item.term} className="rounded-lg border border-white/8 bg-white/[0.03] p-4">
-                <h3 className="text-sm font-semibold text-white mb-1">{item.term}</h3>
-                <p className="text-sm text-white/50 leading-relaxed mb-2">{item.plain}</p>
-                <p className="text-xs text-white/25 leading-relaxed italic">{item.model_use}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Model section ── */}
-      <section className="py-12 px-4 border-t border-white/8">
-        <div className="max-w-7xl mx-auto">
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-white mb-2">How the model works</h2>
-            <p className="text-sm text-white/40">What it uses, what it doesn't, and how accurate it is.</p>
-          </div>
-          <ModelAccuracy />
         </div>
       </section>
 
