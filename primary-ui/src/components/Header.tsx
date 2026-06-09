@@ -1,71 +1,102 @@
 import React, { useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+
+const NAV_LINKS = [
+  { label: 'Games', to: '/' },
+  { label: 'About', to: '/about' },
+];
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { pathname } = useLocation();
 
   return (
-    <header className="sticky top-0 z-40 bg-[#0a0a12]/95 backdrop-blur-sm border-b border-white/8">
+    <header
+      className="sticky top-0 z-40 backdrop-blur-sm"
+      style={{ background: 'rgba(9,9,9,0.92)', borderBottom: '1px solid var(--border-subtle)' }}
+    >
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-14">
 
-          {/* Wordmark */}
-          <a href="#" className="flex items-center gap-3 group">
+          {/* Wordmark — solid token color, no gradient */}
+          <Link to="/" className="flex items-center gap-2.5 no-underline">
             <div
-              className="w-8 h-8 rounded-sm flex items-center justify-center text-xs font-bold text-black"
-              style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c97e 100%)' }}
+              className="w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold"
+              style={{ background: 'var(--accent-gold)', color: '#090909' }}
             >
               CI
             </div>
-            <div className="leading-tight">
-              <span className="text-white font-semibold tracking-tight text-lg">The Clark Index</span>
-            </div>
-          </a>
+            <span className="font-semibold tracking-tight text-base" style={{ color: 'var(--text-primary)' }}>
+              The Clark Index
+            </span>
+          </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1">
-            <a href="#matchups" className="px-4 py-2 text-sm text-white/60 hover:text-white rounded-md transition-colors hover:bg-white/5">
-              Matchups
-            </a>
-            <a href="#model" className="px-4 py-2 text-sm text-white/60 hover:text-white rounded-md transition-colors hover:bg-white/5">
-              Model
-            </a>
-            <a href="#learn" className="px-4 py-2 text-sm text-white/60 hover:text-white rounded-md transition-colors hover:bg-white/5">
-              New to football?
-            </a>
+          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
+            {NAV_LINKS.map(({ label, to }) => {
+              const active = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  className="px-3 py-1.5 text-sm rounded-md transition-colors"
+                  style={{
+                    color: active ? 'var(--text-primary)' : 'var(--text-tertiary)',
+                    background: active ? 'var(--surface-raised)' : 'transparent',
+                  }}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
 
-          {/* Right: demo badge + mobile toggle */}
+          {/* Right: badge + mobile toggle */}
           <div className="flex items-center gap-3">
-            <span className="hidden sm:inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full border"
-              style={{ borderColor: 'rgba(200,169,110,0.4)', color: '#c8a96e', background: 'rgba(200,169,110,0.08)' }}>
-              2024 Demo Season
+            <span
+              className="hidden sm:inline text-xs font-medium px-2.5 py-1 rounded"
+              style={{
+                color: 'var(--accent-gold)',
+                background: 'rgba(200,169,110,0.08)',
+                border: '1px solid rgba(200,169,110,0.2)',
+              }}
+            >
+              2024
             </span>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-white/50 hover:text-white rounded-md"
+              className="md:hidden p-1.5 rounded-md"
+              style={{ color: 'var(--text-tertiary)' }}
               aria-label="Toggle navigation"
+              aria-expanded={menuOpen}
             >
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
+        {/* Mobile nav */}
         {menuOpen && (
-          <nav className="md:hidden py-3 border-t border-white/8 space-y-1">
-            {['Matchups', 'Model', 'New to football?'].map((label) => (
-              <a
-                key={label}
-                href={`#${label.toLowerCase().replace(/[^a-z]/g, '')}`}
-                onClick={() => setMenuOpen(false)}
-                className="block px-4 py-2.5 text-sm text-white/70 hover:text-white hover:bg-white/5 rounded-md"
-              >
-                {label}
-              </a>
-            ))}
-            <div className="px-4 pt-2">
-              <span className="text-xs text-[#c8a96e]">2024 Demo Season</span>
-            </div>
+          <nav
+            className="md:hidden py-3 space-y-1"
+            style={{ borderTop: '1px solid var(--border-subtle)' }}
+            aria-label="Mobile navigation"
+          >
+            {NAV_LINKS.map(({ label, to }) => {
+              const active = pathname === to;
+              return (
+                <Link
+                  key={to}
+                  to={to}
+                  onClick={() => setMenuOpen(false)}
+                  className="block px-3 py-2 text-sm rounded-md"
+                  style={{ color: active ? 'var(--text-primary)' : 'var(--text-secondary)' }}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </nav>
         )}
       </div>

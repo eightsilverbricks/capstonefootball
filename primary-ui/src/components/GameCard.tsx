@@ -3,18 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import TeamLogo from './TeamLogo';
-import { ChevronRight } from 'lucide-react';
 
 interface GameCardProps {
   game: ApiPrediction;
-  onClick?: () => void; // optional — kept for hero preview usage
+  onClick?: () => void;
   isSelected?: boolean;
 }
 
-const CONFIDENCE_STYLES = {
-  High:   { dot: '#4ade80', label: 'text-emerald-400', bg: 'bg-emerald-400/10' },
-  Medium: { dot: '#fbbf24', label: 'text-amber-400',   bg: 'bg-amber-400/10' },
-  Low:    { dot: '#94a3b8', label: 'text-slate-400',   bg: 'bg-slate-400/10' },
+const CONF_COLORS: Record<string, string> = {
+  High:   '#4ade80',
+  Medium: '#fbbf24',
+  Low:    '#94a3b8',
 };
 
 const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected = false }) => {
@@ -24,115 +23,123 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, isSelected = false }
     navigate(`/game/${game.season}/${game.week}/${game.away_team}/${game.home_team}`);
     onClick?.();
   };
+
   const homeColors = getTeamColors(game.home_team);
   const awayColors = getTeamColors(game.away_team);
-  const winnerProb = (getPredictedProbability(game) * 100).toFixed(0);
-  const isHome = game.predicted_winner === game.home_team;
-  const winnerColors = isHome ? homeColors : awayColors;
-  const conf = game.confidence_label ?? 'Medium';
-  const confStyle = CONFIDENCE_STYLES[conf] ?? CONFIDENCE_STYLES.Medium;
-  const awayPct = (game.away_win_prob * 100).toFixed(0);
-  const homePct = (game.home_win_prob * 100).toFixed(0);
+  const isHome     = game.predicted_winner === game.home_team;
+  const winProb    = (getPredictedProbability(game) * 100).toFixed(0);
+  const awayPct    = (game.away_win_prob * 100).toFixed(0);
+  const homePct    = (game.home_win_prob * 100).toFixed(0);
+  const conf       = game.confidence_label ?? 'Medium';
+  const confColor  = CONF_COLORS[conf] ?? CONF_COLORS.Medium;
+
+  // Top-factor editorial headline from model output
+  const topFactor = game.factor_cards?.[0];
+  const headline  = topFactor?.reason ?? null;
 
   return (
-    <div
+    <article
       onClick={handleClick}
       role="button"
       tabIndex={0}
+      aria-label={`${game.away_team} at ${game.home_team} — open Clark Report`}
       onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleClick(); } }}
-      className={`relative rounded-xl overflow-hidden cursor-pointer transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl border ${
-        isSelected ? 'border-white/30' : 'border-white/8'
-      }`}
+      className="relative rounded-lg overflow-hidden cursor-pointer transition-transform duration-150 hover:-translate-y-0.5"
       style={{
-        background: '#111118',
-        boxShadow: isSelected ? `0 0 0 1px ${winnerColors.primary}60, 0 8px 32px ${winnerColors.primary}20` : undefined,
+        background: 'var(--surface)',
+        border: `1px solid ${isSelected ? 'var(--border-emphasis)' : 'var(--border-subtle)'}`,
       }}
     >
-      {/* Team color band at top */}
+      {/* Single-team accent stripe — winner color, no gradient */}
       <div
-        className="h-1 w-full"
-        style={{
-          background: `linear-gradient(90deg, ${awayColors.primary} 0%, ${awayColors.primary} 50%, ${homeColors.primary} 50%, ${homeColors.primary} 100%)`,
-        }}
+        className="h-0.5 w-full"
+        style={{ background: isHome ? homeColors.primary : awayColors.primary }}
       />
 
-      <div className="p-4">
-        {/* Week label */}
-        <div className="flex items-center justify-between mb-4">
-          <span className="text-xs text-white/30">{game.week_label ?? `Week ${game.week}`}</span>
-          <div className={`flex items-center gap-1.5 text-xs font-medium ${confStyle.label} ${confStyle.bg} px-2 py-0.5 rounded-full`}>
-            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: confStyle.dot }} />
-            {conf}
-          </div>
-        </div>
+      <div className="p-4 flex flex-col gap-3">
 
-        {/* Teams */}
-        <div className="space-y-2.5 mb-4">
-          {/* Away */}
-          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
-            !isHome ? 'bg-white/8 border border-white/15' : 'bg-white/[0.03]'
-          }`}>
-            <div className="flex items-center gap-3">
-              <TeamLogo abbr={game.away_team} size="sm" />
-              <div>
-                <p className="font-semibold text-white text-sm">{game.away_team}</p>
-                <p className="text-xs text-white/30">Away</p>
-              </div>
-            </div>
-            <p className={`font-bold text-base ${!isHome ? 'text-white' : 'text-white/40'}`}>
-              {awayPct}%
-            </p>
-          </div>
-
-          {/* Home */}
-          <div className={`flex items-center justify-between p-3 rounded-lg transition-colors ${
-            isHome ? 'bg-white/8 border border-white/15' : 'bg-white/[0.03]'
-          }`}>
-            <div className="flex items-center gap-3">
-              <TeamLogo abbr={game.home_team} size="sm" />
-              <div>
-                <p className="font-semibold text-white text-sm">{game.home_team}</p>
-                <p className="text-xs text-white/30">Home</p>
-              </div>
-            </div>
-            <p className={`font-bold text-base ${isHome ? 'text-white' : 'text-white/40'}`}>
-              {homePct}%
-            </p>
-          </div>
-        </div>
-
-        {/* Probability bar */}
-        <div className="h-1.5 rounded-full overflow-hidden flex mb-4">
-          <div
-            className="h-full transition-all duration-500"
-            style={{ width: `${awayPct}%`, backgroundColor: awayColors.primary, opacity: !isHome ? 1 : 0.3 }}
-          />
-          <div
-            className="h-full transition-all duration-500"
-            style={{ width: `${homePct}%`, backgroundColor: homeColors.primary, opacity: isHome ? 1 : 0.3 }}
-          />
-        </div>
-
-        {/* Bottom: winner + CTA */}
+        {/* Header: week + confidence */}
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: winnerColors.secondary || winnerColors.primary }} />
-            <span className="text-sm font-semibold" style={{ color: winnerColors.secondary || '#ffffff' }}>
+          <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+            {game.week_label ?? `Week ${game.week}`}
+          </span>
+          <span
+            className="text-[10px] font-semibold uppercase tracking-wide px-2 py-0.5 rounded"
+            style={{
+              color: confColor,
+              background: `${confColor}18`,
+              border: `1px solid ${confColor}30`,
+            }}
+          >
+            {conf}
+          </span>
+        </div>
+
+        {/* Teams: away · vs · home */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-1 min-w-0">
+            <TeamLogo abbr={game.away_team} size="sm" />
+            <div className="min-w-0">
+              <p className="font-semibold text-sm truncate"
+                style={{ color: !isHome ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
+                {game.away_team}
+              </p>
+              <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Away · {awayPct}%</p>
+            </div>
+          </div>
+
+          <span className="text-xs shrink-0" style={{ color: 'var(--text-muted)' }}>vs</span>
+
+          <div className="flex items-center gap-2 flex-1 min-w-0 justify-end text-right">
+            <div className="min-w-0">
+              <p className="font-semibold text-sm truncate"
+                style={{ color: isHome ? 'var(--text-primary)' : 'var(--text-tertiary)' }}>
+                {game.home_team}
+              </p>
+              <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>Home · {homePct}%</p>
+            </div>
+            <TeamLogo abbr={game.home_team} size="sm" />
+          </div>
+        </div>
+
+        {/* Split probability bar — solid team colors, no gradient */}
+        <div
+          className="h-1 rounded-full overflow-hidden flex"
+          style={{ background: 'var(--surface-raised)' }}
+          role="img"
+          aria-label={`${game.away_team} ${awayPct}%, ${game.home_team} ${homePct}%`}
+        >
+          <div style={{ width: `${awayPct}%`, background: awayColors.primary, opacity: !isHome ? 1 : 0.3, transition: 'width 400ms' }} />
+          <div style={{ width: `${homePct}%`, background: homeColors.primary, opacity: isHome ? 1 : 0.3, transition: 'width 400ms' }} />
+        </div>
+
+        {/* Top-factor editorial line */}
+        {headline && (
+          <p className="text-[11px] leading-snug line-clamp-2" style={{ color: 'var(--text-tertiary)' }}>
+            <span style={{ color: 'var(--accent-gold)', marginRight: '0.3rem' }}>
+              {topFactor?.name ?? 'Key factor'}:
+            </span>
+            {headline}
+          </p>
+        )}
+
+        {/* Footer: winner + report link */}
+        <div className="flex items-center justify-between pt-0.5">
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full shrink-0"
+              style={{ background: isHome ? homeColors.primary : awayColors.primary }} />
+            <span className="text-xs font-semibold" style={{ color: 'var(--text-secondary)' }}>
               {game.predicted_winner}
             </span>
-            <span className="text-xs text-white/30">{winnerProb}%</span>
+            <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{winProb}%</span>
           </div>
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); handleClick(); }}
-            className="flex items-center gap-1 text-xs text-white/40 hover:text-white/80 group transition-colors"
-          >
-            Clark Report
-            <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-          </button>
+          <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+            Report →
+          </span>
         </div>
+
       </div>
-    </div>
+    </article>
   );
 };
 
