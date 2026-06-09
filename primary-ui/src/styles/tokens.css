@@ -1,0 +1,58 @@
+/* ─── Clark Index Design Tokens ──────────────────────────────────────────────
+   Visual direction: Ruckus (editorial bold structure) × SecureDeep (data
+   intelligence panels). Dark, no gradients, intentional hierarchy.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Surfaces — three levels of depth, no gradients */
+  --bg:               #090909;
+  --surface:          #111113;
+  --surface-raised:   #1a1a1d;
+  --surface-overlay:  #222226;
+
+  /* Borders */
+  --border-subtle:    rgba(255,255,255,0.05);
+  --border-default:   rgba(255,255,255,0.09);
+  --border-emphasis:  rgba(255,255,255,0.16);
+
+  /* Text hierarchy */
+  --text-primary:     #f0f0f0;
+  --text-secondary:   rgba(240,240,240,0.55);
+  --text-tertiary:    rgba(240,240,240,0.30);
+  --text-muted:       rgba(240,240,240,0.18);
+
+  /* Accent — gold for status/confidence, not decoration */
+  --accent-gold:      #c8a96e;
+  --accent-gold-dim:  rgba(200,169,110,0.15);
+
+  /* Status */
+  --status-decisive:  #4ade80;
+  --status-moderate:  #fbbf24;
+  --status-minor:     #64748b;
+  --status-neutral:   #334155;
+
+  /* Typography */
+  --font-display:     'Fraunces', Georgia, serif;
+  --font-data:        'Inter', system-ui, sans-serif;
+  --font-mono:        'JetBrains Mono', monospace;
+
+  /* Spacing rhythm */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-5:  1.25rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+
+  /* Radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+
+  /* Motion — compositor-friendly only */
+  --duration-fast:   120ms;
+  --duration-normal: 250ms;
+  --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+}

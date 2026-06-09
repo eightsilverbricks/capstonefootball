@@ -7,6 +7,7 @@ export interface FactorCard {
   contribution_strength: number;
   status: 'DECISIVE' | 'MODERATE' | 'MINOR' | 'NEUTRAL';
   tier?: 'strong' | 'medium' | 'weak';
+  reason?: string;
   why_it_matters: string;
   football_translation: string;
 }

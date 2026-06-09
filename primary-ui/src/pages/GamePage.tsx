@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { usePredictions } from '@/hooks/usePredictions';
-import ClarkReport from '@/components/ClarkReport';
+import GameReport from '@/components/game-report/GameReport';
 import TeamLogo from '@/components/TeamLogo';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 
@@ -44,7 +44,7 @@ const GamePage: React.FC = () => {
     <div className="min-h-screen" style={{ background: '#0a0a12' }}>
       {/* ── Top bar ── */}
       <div className="sticky top-0 z-30 border-b border-white/8 bg-[#0a0a12]/95 backdrop-blur-sm">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
           <button
             onClick={handleBack}
             className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
@@ -79,7 +79,7 @@ const GamePage: React.FC = () => {
       </div>
 
       {/* ── Content ── */}
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-5xl mx-auto px-4 py-8">
 
         {/* Loading */}
         {loading && (
@@ -121,7 +121,7 @@ const GamePage: React.FC = () => {
 
         {/* The report */}
         {!loading && !error && game && (
-          <ClarkReport game={game} />
+          <GameReport game={game} />
         )}
       </div>
     </div>
