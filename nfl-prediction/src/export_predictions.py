@@ -41,7 +41,7 @@ from src.api import (  # noqa: E402
     MODEL_META,
 )
 
-OUTPUT_PATH = REPO_ROOT / "nfl-frontend" / "public" / "predictions.json"
+OUTPUT_PATH = REPO_ROOT / "primary-ui" / "public" / "predictions.json"
 
 
 def main() -> None:

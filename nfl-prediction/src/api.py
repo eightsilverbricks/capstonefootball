@@ -146,6 +146,72 @@ df          = pd.read_csv(DATA_PATH)
 schedule_df = pd.read_csv(SCHEDULE_DATES_PATH) if SCHEDULE_DATES_PATH.exists() else pd.DataFrame()
 model       = joblib.load(MODEL_PATH)
 
+# ---------------------------------------------------------------------------
+# Extract model coefficients + scaler params for factor contribution math
+# ---------------------------------------------------------------------------
+_fitted_model   = model.best_estimator_ if hasattr(model, "best_estimator_") else model
+_scaler         = _fitted_model.named_steps["scaler"]
+_clf            = _fitted_model.named_steps["clf"]
+
+MODEL_SCALER_MEAN  = dict(zip(PRODUCTION_FEATURES, _scaler.mean_))
+MODEL_SCALER_SCALE = dict(zip(PRODUCTION_FEATURES, _scaler.scale_))
+MODEL_COEFS        = dict(zip(PRODUCTION_FEATURES, _clf.coef_[0]))
+
+# Factor buckets: display name -> PRODUCTION_FEATURES subset
+# advantage_team is derived from sign of sum(coef_i * scaled_val_i)
+FACTOR_BUCKETS: dict[str, list[str]] = {
+    "Market Edge":    ["spread_line", "home_moneyline", "away_moneyline"],
+    "Recent Offense": ["diff_last3_epa_per_play", "diff_last3_success_rate",
+                       "diff_last3_point_diff_pg"],
+    "Defensive Edge": ["diff_last3_epa_per_play_allowed",
+                       "diff_last3_success_rate_allowed"],
+    "Momentum":       ["diff_last3_win_pct"],
+    "Game Context":   ["rest_diff", "div_game"],
+}
+
+FACTOR_WHY_IT_MATTERS: dict[str, str] = {
+    "Market Edge":    "Vegas lines encode injury news, weather, and information the model can't capture from box scores alone.",
+    "Recent Offense": "Recent EPA and success rate capture current scheme, health, and momentum rather than season-long averages.",
+    "Defensive Edge": "Holding opponents to fewer EPA per play recently is a strong leading indicator of defensive quality.",
+    "Momentum":       "Three-game win percentage tracks trajectory. A team peaking now matters more than what they did in September.",
+    "Game Context":   "Rest differential and divisional familiarity create small but real edges that compound in close matchups.",
+}
+
+
+def compute_factor_contributions(row: dict) -> dict[str, dict]:
+    """
+    For each factor bucket sum (coef_i * scaled_val_i) using the saved model's
+    scaler and coefficients. This guarantees advantage_team always aligns with
+    the model's predicted winner.
+
+    Returns: {bucket_name: {score, advantage_team, contribution_strength}}
+    """
+    home = row.get("home_team", "Home")
+    away = row.get("away_team", "Away")
+
+    raw: dict[str, float] = {}
+    for name, features in FACTOR_BUCKETS.items():
+        s = 0.0
+        for feat in features:
+            val   = safe_get(row, feat)
+            mean  = MODEL_SCALER_MEAN.get(feat, 0.0)
+            scale = MODEL_SCALER_SCALE.get(feat, 1.0) or 1.0
+            coef  = MODEL_COEFS.get(feat, 0.0)
+            s += ((val - mean) / scale) * coef
+        raw[name] = s
+
+    max_abs = max(abs(v) for v in raw.values()) or 1.0
+
+    return {
+        name: {
+            "score":                round(score, 5),
+            "advantage_team":       home if score > 0 else (away if score < 0 else "Even"),
+            "contribution_strength": round(min(abs(score) / max_abs, 1.0), 4),
+        }
+        for name, score in raw.items()
+    }
+
+
 # Player context: {season: {team: {qb: {...}, rb: {...}, ...}}}
 if PLAYER_CONTEXT_PATH.exists():
     with open(PLAYER_CONTEXT_PATH) as _f:
@@ -160,6 +226,22 @@ if GAME_CONTEXT_PATH.exists():
         GAME_CONTEXT: dict = json.load(_gf)
 else:
     GAME_CONTEXT = {}
+
+# Pressure context: {game_id: {team: {pressure_generated_rate, pressure_faced_rate, dropbacks}}}
+PRESSURE_CONTEXT_PATH = BASE_DIR / "data" / "processed" / "pressure_context.json"
+if PRESSURE_CONTEXT_PATH.exists():
+    with open(PRESSURE_CONTEXT_PATH) as _pf:
+        PRESSURE_CONTEXT: dict = json.load(_pf)
+else:
+    PRESSURE_CONTEXT = {}
+
+# Wind impact lookup: {tier: {label, pass_epa_delta, consequence}}
+WIND_IMPACT_PATH = BASE_DIR / "data" / "processed" / "wind_impact.json"
+if WIND_IMPACT_PATH.exists():
+    with open(WIND_IMPACT_PATH) as _wf:
+        WIND_IMPACT: dict = json.load(_wf)
+else:
+    WIND_IMPACT = {}
 
 
 def get_game_context(game_id: str) -> dict:
@@ -649,89 +731,146 @@ def _factor_reason(name: str, adv: str, opp: str, edge: float, mag: str,
 
 
 def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
+    """
+    Build factor cards derived from actual model coefficients via
+    compute_factor_contributions(). This guarantees advantage_team always
+    points toward the predicted winner because it uses the same arithmetic
+    as the logistic regression.
+    """
     home, away = row["home_team"], row["away_team"]
     season     = int(row.get("season", 0))
-    if player_ctx is None:
-        player_ctx = {}
+    game_id    = str(row.get("game_id") or "")
 
-    # Flat lookup for QB context used in reason generation
+    # Coefficient-based contributions (the alignment fix)
+    contributions = compute_factor_contributions(row)
+
+    # Player context for prose enrichment
     _home_qb = get_player_context(season, home).get("qb", {})
     _away_qb = get_player_context(season, away).get("qb", {})
-    _ctx = {"home_qb": _home_qb, "away_qb": _away_qb}
+    home_qb_name = _home_qb.get("name") or home
+    away_qb_name = _away_qb.get("name") or away
 
-    # Season-average absolute values (derived from diffs — home is reference)
-    # diff = home - away, so home_val = mean + diff/2, away_val = mean - diff/2
-    # We don't have per-team absolute values in the training table, but we can
-    # use the home QB EPA and away QB EPA from player_context for QB cards.
-    _home_qb_epa = _home_qb.get("epa_per_att", 0.0) or 0.0
-    _away_qb_epa = _away_qb.get("epa_per_att", 0.0) or 0.0
+    # Pressure context for prose enrichment
+    _pressure = PRESSURE_CONTEXT.get(game_id, {})
+    home_pressure_gen = _pressure.get(home, {}).get("pressure_generated_rate")
+    away_pressure_gen = _pressure.get(away, {}).get("pressure_generated_rate")
+    home_pressure_faced = _pressure.get(home, {}).get("pressure_faced_rate")
+    away_pressure_faced = _pressure.get(away, {}).get("pressure_faced_rate")
 
-    # ── Compute differential values ──────────────────────────────────────────
-    qb_value = (
-        safe_get(row, "diff_season_qb_epa_per_play")
-        + safe_get(row, "diff_last3_qb_epa_per_play")
-    ) / 2
-    epa_value = (
-        safe_get(row, "diff_season_epa_per_play")
-        + safe_get(row, "diff_last3_epa_per_play")
-        - safe_get(row, "diff_season_epa_per_play_allowed")
-        - safe_get(row, "diff_last3_epa_per_play_allowed")
-    ) / 4
-    turnover_value = (
-        safe_get(row, "diff_season_turnover_diff_pg")
-        + safe_get(row, "diff_last3_turnover_diff_pg")
-    ) / 2
-    pressure_value = -(
-        safe_get(row, "match_season_sack_pressure")
-        + safe_get(row, "match_last3_sack_pressure")
-    ) / 2
-    success_value = (
-        safe_get(row, "diff_season_success_rate")
-        + safe_get(row, "diff_last3_success_rate")
-        - safe_get(row, "diff_season_success_rate_allowed")
-        - safe_get(row, "diff_last3_success_rate_allowed")
-    ) / 4
-    recent_value = (
-        safe_get(row, "diff_last3_point_diff_pg") / 14
-        + safe_get(row, "diff_last3_win_pct")
-        + safe_get(row, "diff_last3_epa_per_play") / 0.25
-        - safe_get(row, "diff_last3_epa_per_play_allowed") / 0.25
-    ) / 4
+    # Game context for record data
+    _game_ctx = get_game_context(game_id)
+    home_last3 = _game_ctx.get("home_last3_record") or ""
+    away_last3 = _game_ctx.get("away_last3_record") or ""
+    home_season_rec = _game_ctx.get("home_season_record") or ""
+    away_season_rec = _game_ctx.get("away_season_record") or ""
 
-    def _make(name: str, value: float, scale: float,
-              home_val: float = 0.0, away_val: float = 0.0) -> dict:
-        adv = signed_advantage(value, home, away)
+    # Raw feature values for reason text
+    spread    = safe_get(row, "spread_line")
+    home_ml   = int(safe_get(row, "home_moneyline"))
+    away_ml   = int(safe_get(row, "away_moneyline"))
+    rest_diff = safe_get(row, "rest_diff")
+    div_game  = bool(safe_get(row, "div_game"))
+    home_epa  = safe_get(row, "diff_last3_epa_per_play")
+    home_def  = safe_get(row, "diff_last3_epa_per_play_allowed")
+    home_sr   = safe_get(row, "diff_last3_success_rate")
+    home_ptdiff = safe_get(row, "diff_last3_point_diff_pg")
+    home_winpct = safe_get(row, "diff_last3_win_pct")
+
+    # Weather context
+    weather = _game_ctx.get("weather", {})
+    wind_tier = weather.get("wind_tier") or ("dome" if weather.get("roof") in ("dome","closed") else "calm")
+    wind_mph  = weather.get("wind") or 0
+    temp_f    = weather.get("temp")
+    wind_consequence = WIND_IMPACT.get(wind_tier, {}).get("consequence", "")
+
+    def _reason(name: str, adv: str, opp: str) -> str:
+        if name == "Market Edge":
+            mkt_fav = home if spread > 0 else away
+            ml_fav  = home if home_ml < away_ml else away
+            agree   = mkt_fav == ml_fav
+            ml_str  = f"{home_ml:+d} / {away_ml:+d}"
+            return (
+                f"Vegas lines {adv} at {spread:+.1f} (ML {ml_str}). "
+                f"{'Spread and moneyline agree' if agree else 'Spread and moneyline diverge'} — "
+                f"market consensus {'supports' if adv == mkt_fav else 'slightly conflicts with'} this lean."
+            )
+
+        if name == "Recent Offense":
+            epa_adv = home_epa if adv == home else -home_epa
+            sr_adv  = home_sr  if adv == home else -home_sr
+            pt_adv  = home_ptdiff if adv == home else -home_ptdiff
+            pres_note = ""
+            pf = home_pressure_faced if adv == home else away_pressure_faced
+            if pf is not None:
+                pres_note = f" Faces pressure on {pf:.0%} of dropbacks."
+            return (
+                f"{adv} averaging {epa_adv:+.3f} EPA/play and {sr_adv:+.1%} success rate "
+                f"last 3 games ({pt_adv:+.1f} pt diff/gm).{pres_note}"
+            )
+
+        if name == "Defensive Edge":
+            def_adv = -home_def if adv == home else home_def
+            pg = home_pressure_gen if adv == home else away_pressure_gen
+            qb_facing = away_qb_name if adv == home else home_qb_name
+            pres_note = f" Generates pressure on {pg:.0%} of dropbacks vs. {qb_facing}." if pg is not None else ""
+            return (
+                f"{adv} holding opponents to {def_adv:+.3f} EPA/play allowed last 3 games.{pres_note}"
+            )
+
+        if name == "Momentum":
+            wpc_adv = home_winpct if adv == home else -home_winpct
+            home_r  = home_last3 or "—"
+            away_r  = away_last3 or "—"
+            return (
+                f"{adv} has a {wpc_adv:+.0%} win-rate edge over the last 3 games. "
+                f"{home} {home_r} · {away} {away_r}."
+            )
+
+        if name == "Game Context":
+            parts = []
+            # Always include rest differential — guarantees a numeric value in every reason
+            if abs(rest_diff) >= 3:
+                rested = home if rest_diff > 0 else away
+                short  = away if rest_diff > 0 else home
+                parts.append(f"{rested} has a {abs(rest_diff):.0f}-day rest edge over {short}.")
+            else:
+                parts.append(f"Rest differential: {rest_diff:+.0f} days (even).")
+            if div_game:
+                parts.append("Divisional game — familiar schemes, expect tighter margin.")
+            if wind_tier not in ("calm", "dome") and wind_consequence:
+                wlabel = f"{wind_mph:.0f} mph wind" if wind_mph else wind_tier.title()
+                parts.append(f"{wlabel}: {wind_consequence}")
+            elif wind_tier == "dome":
+                parts.append("Indoors — no weather impact.")
+            if temp_f is not None and wind_tier not in ("dome",):
+                parts.append(f"{temp_f:.0f}°F game-time temperature.")
+            return " ".join(parts)
+
+        return f"{adv} holds the {name} edge."
+
+    # Build sorted cards from contributions
+    cards = []
+    for name, contrib in contributions.items():
+        adv = contrib["advantage_team"]
         opp = away if adv == home else home
-        strength = scaled_strength(value, scale)
-        mag = magnitude_word(strength * 10)
-        return {
+        cards.append({
             "name":                 name,
             "advantage_team":       adv,
-            "raw_edge":             round(value, 4),
-            "home_value":           round(home_val, 3),
-            "away_value":           round(away_val, 3),
-            "contribution_strength": strength,
-            "reason":               _factor_reason(name, adv, opp, value, mag,
-                                                    home_val, away_val, home, away, _ctx),
-            "why_it_matters":       WHY_IT_MATTERS.get(name, ""),
-            "football_translation": FOOTBALL_TRANSLATIONS.get(name, ""),
-        }
+            "raw_edge":             contrib["score"],
+            "contribution_strength": contrib["contribution_strength"],
+            "reason":               _reason(name, adv, opp),
+            "why_it_matters":       FACTOR_WHY_IT_MATTERS.get(name, ""),
+            "football_translation": FACTOR_WHY_IT_MATTERS.get(name, ""),
+        })
 
-    cards = [
-        _make("QB Efficiency",   qb_value,       0.22,
-              home_val=_home_qb_epa, away_val=_away_qb_epa),
-        _make("EPA/play",        epa_value,       0.16),
-        _make("Turnover Control", turnover_value, 1.1),
-        _make("Sack Pressure",   pressure_value,  0.06),
-        _make("Success Rate",    success_value,   0.08),
-        _make("Recent Form",     recent_value,    0.65),
-    ]
+    cards.sort(key=lambda c: c["contribution_strength"], reverse=True)
 
+    # Assign status labels based on relative contribution within this game
     thresholds = contribution_percentiles(cards)
     for card in cards:
         card["status"] = factor_status(card["contribution_strength"], thresholds)
 
-    return sorted(cards, key=lambda item: item["contribution_strength"], reverse=True)
+    return cards
 
 
 def parse_model_contributions(record: dict) -> list[dict]:
