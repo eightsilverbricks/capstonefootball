@@ -1,0 +1,32 @@
+{
+  "dome": {
+    "avg_pass_epa": 0.0286,
+    "delta_vs_calm": -0.0043,
+    "game_count": 572,
+    "consequence": "Indoors \u2014 no weather impact on passing."
+  },
+  "calm": {
+    "avg_pass_epa": 0.0329,
+    "delta_vs_calm": 0.0,
+    "game_count": 1015,
+    "consequence": "Normal conditions \u2014 no weather impact on passing."
+  },
+  "moderate": {
+    "avg_pass_epa": -0.0296,
+    "delta_vs_calm": -0.0625,
+    "game_count": 333,
+    "consequence": "Moderate wind (11\u201320 mph): minimal impact; deep routes may be affected."
+  },
+  "high": {
+    "avg_pass_epa": -0.0141,
+    "delta_vs_calm": -0.047,
+    "game_count": 20,
+    "consequence": "High wind (21\u201330 mph): passing efficiency is ~36% reduced. Expect more short-to-intermediate routes and potential run-game emphasis."
+  },
+  "severe": {
+    "avg_pass_epa": 0.201,
+    "delta_vs_calm": 0.1681,
+    "game_count": 2,
+    "consequence": "Severe wind (31+ mph): extreme weather. Passing game is heavily compromised \u2014 ground game and field position dominate."
+  }
+}

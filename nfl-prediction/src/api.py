@@ -776,11 +776,21 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
     home_ptdiff = safe_get(row, "diff_last3_point_diff_pg")
     home_winpct = safe_get(row, "diff_last3_win_pct")
 
-    # Weather context
-    weather = _game_ctx.get("weather", {})
-    wind_tier = weather.get("wind_tier") or ("dome" if weather.get("roof") in ("dome","closed") else "calm")
-    wind_mph  = weather.get("wind") or 0
-    temp_f    = weather.get("temp")
+    # Weather context — derive wind_tier from numeric wind + roof
+    weather  = _game_ctx.get("weather", {})
+    wind_mph = weather.get("wind") or 0
+    temp_f   = weather.get("temp")
+    _roof    = (weather.get("roof") or "").lower()
+    if _roof in ("dome", "closed", "retractable"):
+        wind_tier = "dome"
+    elif wind_mph >= 31:
+        wind_tier = "severe"
+    elif wind_mph >= 21:
+        wind_tier = "high"
+    elif wind_mph >= 11:
+        wind_tier = "moderate"
+    else:
+        wind_tier = "calm"
     wind_consequence = WIND_IMPACT.get(wind_tier, {}).get("consequence", "")
 
     def _reason(name: str, adv: str, opp: str) -> str:
