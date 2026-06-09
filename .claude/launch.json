@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "primary-ui",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd primary-ui && npm run dev"],
+      "port": 8080,
+      "autoPort": false
+    }
+  ]
+}
