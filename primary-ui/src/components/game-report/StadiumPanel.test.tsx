@@ -34,4 +34,25 @@ describe('StadiumPanel', () => {
     render(<StadiumPanel homeTeam="KC" />);
     expect(screen.getByText(/Kansas City/i)).toBeInTheDocument();
   });
+
+  it('renders US map locator when home team has stadium meta', () => {
+    render(<StadiumPanel homeTeam="KC" />);
+    expect(screen.getByTestId('stadium-map')).toBeInTheDocument();
+  });
+
+  it('falls back to color block when home team has no meta', () => {
+    render(<StadiumPanel homeTeam="XXX" stadium="Unknown Field" />);
+    expect(screen.getByTestId('stadium-fallback')).toBeInTheDocument();
+  });
+
+  it('renders capacity and elevation when meta is available', () => {
+    render(<StadiumPanel homeTeam="DEN" />);
+    expect(screen.getByText(/Capacity/i)).toBeInTheDocument();
+    expect(screen.getByText(/5,280 ft/i)).toBeInTheDocument();
+  });
+
+  it('descriptive aria-label is present', () => {
+    render(<StadiumPanel homeTeam="KC" />);
+    expect(screen.getByLabelText(/Venue: Arrowhead Stadium/i)).toBeInTheDocument();
+  });
 });

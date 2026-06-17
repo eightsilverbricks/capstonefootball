@@ -6,6 +6,7 @@ import WinProbBar from './WinProbBar';
 import FactorList from './FactorList';
 import WeatherPanel from './WeatherPanel';
 import StadiumPanel from './StadiumPanel';
+import PlayerMatchupCard from './PlayerMatchupCard';
 import { AlertTriangle } from 'lucide-react';
 
 interface GameReportProps {
@@ -42,28 +43,16 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
         className="rounded-lg p-5 mb-4"
         style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}
       >
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
           <span
-            className="text-xs font-semibold uppercase tracking-widest"
-            style={{ color: isPlayoff ? 'var(--accent-gold)' : 'var(--text-muted)' }}
+            className="text-xs font-semibold uppercase tracking-[0.2em]"
+            style={{ color: isPlayoff ? 'var(--accent-gold)' : 'var(--text-tertiary)' }}
           >
             {weekLabel} · {game.season}
           </span>
           <span
-            className="text-xs px-2.5 py-1 rounded font-medium"
-            style={{
-              background: game.confidence_label === 'High'   ? 'rgba(74,222,128,0.08)'
-                        : game.confidence_label === 'Medium' ? 'rgba(251,191,36,0.08)'
-                        : 'var(--surface-raised)',
-              color: game.confidence_label === 'High'   ? '#4ade80'
-                   : game.confidence_label === 'Medium' ? '#fbbf24'
-                   : 'var(--text-muted)',
-              border: `1px solid ${
-                game.confidence_label === 'High'   ? 'rgba(74,222,128,0.18)'
-                : game.confidence_label === 'Medium' ? 'rgba(251,191,36,0.18)'
-                : 'var(--border-subtle)'
-              }`,
-            }}
+            className="text-xs uppercase tracking-[0.2em]"
+            style={{ color: 'var(--text-tertiary)' }}
           >
             {game.confidence_label} confidence
           </span>
@@ -149,10 +138,10 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
         {game.confidence_label === 'Low' && (
           <div
             className="flex items-start gap-2 mt-4 px-3 py-2 rounded"
-            style={{ background: 'rgba(251,191,36,0.06)', border: '1px solid rgba(251,191,36,0.15)' }}
+            style={{ background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.22)' }}
           >
-            <AlertTriangle className="w-3.5 h-3.5 text-amber-400 mt-0.5 shrink-0" aria-hidden="true" />
-            <p className="text-xs" style={{ color: 'rgba(251,191,36,0.75)' }}>
+            <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: '#fde68a' }} aria-hidden="true" />
+            <p className="text-xs" style={{ color: '#fde68a' }}>
               Close game — only a slight edge. Either outcome is plausible.
             </p>
           </div>
@@ -179,7 +168,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
           {factors.length > 0 && (
             <div className="rounded-lg px-5 py-4"
               style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}>
-              <FactorList factors={factors} />
+              <FactorList factors={factors} gameId={game.game_id} />
             </div>
           )}
 
@@ -209,6 +198,12 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
             roof={weather?.roof}
             location={game.location}
             homeTeam={game.home_team}
+          />
+          <PlayerMatchupCard
+            awayTeam={game.away_team}
+            homeTeam={game.home_team}
+            awayPlayers={game.away_players}
+            homePlayers={game.home_players}
           />
           {game.market_note && (
             <div className="rounded-lg p-4"

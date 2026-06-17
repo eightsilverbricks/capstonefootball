@@ -17,9 +17,9 @@
 
   /* Text hierarchy */
   --text-primary:     #f0f0f0;
-  --text-secondary:   rgba(240,240,240,0.55);
-  --text-tertiary:    rgba(240,240,240,0.30);
-  --text-muted:       rgba(240,240,240,0.18);
+  --text-secondary:   rgba(240,240,240,0.72);
+  --text-tertiary:    rgba(240,240,240,0.55);
+  --text-muted:       rgba(240,240,240,0.42);
 
   /* Accent — gold for status/confidence, not decoration */
   --accent-gold:      #c8a96e;
@@ -30,6 +30,14 @@
   --status-moderate:  #fbbf24;
   --status-minor:     #64748b;
   --status-neutral:   #334155;
+
+  /* Stake semantics — gains reuse the existing decisive green; losses need a
+     functional negative. This is a semantic positive/negative pair the
+     Competition mode requires, not a new decorative accent. */
+  --stake-positive:     var(--status-decisive);
+  --stake-positive-dim: rgba(74,222,128,0.12);
+  --stake-negative:     #f87171;
+  --stake-negative-dim: rgba(248,113,113,0.12);
 
   /* Typography */
   --font-display:     'Fraunces', Georgia, serif;

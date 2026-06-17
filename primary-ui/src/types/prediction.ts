@@ -47,6 +47,7 @@ export interface PlayerContext {
 // ─── Full game prediction from /predictions endpoint ──────────────────────────
 export interface ApiPrediction {
   // Identity
+  game_id?: string;
   season: number;
   week: number;
   week_label: string;

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ApiPrediction } from '@/types/prediction';
 
+// Default: the static JSON bundled with the build (served from the site root on
+// Vercel). Override with VITE_API_BASE_URL to read from a live FastAPI backend.
 const PREDICTIONS_URL = import.meta.env.VITE_API_BASE_URL
   ? `${import.meta.env.VITE_API_BASE_URL}/predictions`
   : '/predictions.json';

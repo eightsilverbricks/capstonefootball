@@ -46,9 +46,54 @@ const AppLayout: React.FC = () => {
     setFilterConfidence('all');
   };
 
+  const sectionTitle = selectedWeek >= 19
+    ? (['WILD CARD', 'DIVISIONAL', 'CONFERENCE', 'SUPER BOWL'][selectedWeek - 19])
+    : `WEEK ${selectedWeek}`;
+
+  const highCount   = weekGames.filter(g => g.confidence_label === 'High').length;
+  const mediumCount = weekGames.filter(g => g.confidence_label === 'Medium').length;
+  const lowCount    = weekGames.filter(g => g.confidence_label === 'Low').length;
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
+
+      {/* ── Editorial hero — massive Fraunces, no gradient ── */}
+      <section className="px-4 pt-12 pb-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-end justify-between gap-6 mb-2">
+            <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
+              The 2024 slate · model lens
+            </span>
+            <span className="text-[11px] uppercase tracking-[0.24em] hidden md:inline" style={{ color: 'var(--text-muted)' }}>
+              {predictions.length} games analyzed
+            </span>
+          </div>
+
+          <h1
+            className="font-bold leading-[0.92] tracking-tight"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontSize: 'clamp(3.5rem, 11vw, 9rem)',
+              color: 'var(--text-primary)',
+            }}
+          >
+            {sectionTitle}
+          </h1>
+
+          {weekGames.length > 0 && (
+            <div
+              className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px overflow-hidden rounded"
+              style={{ background: 'var(--border-default)', border: '1px solid var(--border-default)' }}
+            >
+              <KpiCell label="Games" value={String(weekGames.length)} />
+              <KpiCell label="High conf." value={String(highCount)} accent />
+              <KpiCell label="Medium conf." value={String(mediumCount)} />
+              <KpiCell label="Low conf." value={String(lowCount)} />
+            </div>
+          )}
+        </div>
+      </section>
 
       {/* ── Week navigation ── */}
       {availableWeeks.length > 0 && (
@@ -59,37 +104,29 @@ const AppLayout: React.FC = () => {
         />
       )}
 
-      {/* ── Matchups grid ── */}
       <section id="matchups" className="py-10 px-4">
         <div className="max-w-7xl mx-auto">
 
-          {/* Section header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl font-semibold text-white">
-                {selectedWeek >= 19
-                  ? (['Wild Card', 'Divisional Round', 'Conference Championship', 'Super Bowl'][selectedWeek - 19])
-                  : `Week ${selectedWeek} Matchups`}
-              </h2>
-              <p className="text-sm text-white/30 mt-0.5">
-                {weekGames.length === 1
-                  ? 'Showing the full Clark Report above'
-                  : `${weekGames.length} games · click any card to read the Clark Report`}
-              </p>
-            </div>
+          <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-6 pb-4"
+            style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+              {weekGames.length === 1 ? 'One game on the slate' : `${weekGames.length} matchups · ranked by confidence`}
+            </p>
 
-            {/* Confidence filter — only if >1 game */}
             {weekGames.length > 1 && (
-              <div className="flex items-center gap-1 bg-white/[0.04] rounded-lg p-1 border border-white/8">
+              <div className="flex items-center gap-4 text-[11px] uppercase tracking-widest">
                 {(['all', 'high', 'medium', 'low'] as ConfidenceFilter[]).map((f) => (
                   <button
                     key={f}
                     onClick={() => setFilterConfidence(f)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
-                      filterConfidence === f
-                        ? 'bg-white text-[#0a0a12]'
-                        : 'text-white/40 hover:text-white'
-                    }`}
+                    className="transition-colors"
+                    style={{
+                      color: filterConfidence === f ? 'var(--text-primary)' : 'var(--text-muted)',
+                      borderBottom: filterConfidence === f
+                        ? '1px solid var(--accent-gold)'
+                        : '1px solid transparent',
+                      paddingBottom: '2px',
+                    }}
                   >
                     {f}
                   </button>
@@ -160,6 +197,26 @@ const AppLayout: React.FC = () => {
     </div>
   );
 };
+
+// ─── KPI cell — SecureDeep-style data tile ───────────────────────────────────
+interface KpiCellProps { label: string; value: string; accent?: boolean }
+const KpiCell: React.FC<KpiCellProps> = ({ label, value, accent }) => (
+  <div className="px-5 py-4 flex flex-col gap-1" style={{ background: 'var(--surface)' }}>
+    <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+      {label}
+    </span>
+    <span
+      className="font-bold tabular-nums leading-none"
+      style={{
+        fontFamily: 'var(--font-display)',
+        fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
+        color: accent ? 'var(--accent-gold)' : 'var(--text-primary)',
+      }}
+    >
+      {value}
+    </span>
+  </div>
+);
 
 // ─── Glossary items ────────────────────────────────────────────────────────────
 const GLOSSARY_ITEMS = [

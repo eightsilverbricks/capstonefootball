@@ -58,4 +58,29 @@ describe('WeatherPanel', () => {
     render(<WeatherPanel weather={{ temp: 30, wind: 35, roof: 'open', is_outdoor: true }} />);
     expect(screen.getByText(/Severe wind/i)).toBeInTheDocument();
   });
+
+  it('tier chip carries a data-tier attribute so cue does not rely on color alone', () => {
+    const { container } = render(<WeatherPanel weather={OUTDOOR} />);
+    const tierChip = container.querySelector('[data-tier="moderate"]');
+    expect(tierChip).not.toBeNull();
+  });
+
+  it('descriptive aria-label is present on the section', () => {
+    render(<WeatherPanel weather={OUTDOOR} />);
+    expect(screen.getByLabelText(/Weather: moderate wind/i)).toBeInTheDocument();
+  });
+
+  it('dome path uses indoor aria-label', () => {
+    render(<WeatherPanel weather={{ temp: 72, wind: 0, roof: 'dome', is_outdoor: false }} />);
+    expect(screen.getByLabelText(/indoor game/i)).toBeInTheDocument();
+  });
+
+  it('shows wet-conditions chip when summary mentions rain', () => {
+    render(
+      <WeatherPanel
+        weather={{ temp: 55, wind: 12, roof: 'open', is_outdoor: true, is_notable: true, summary: 'Rain expected' }}
+      />,
+    );
+    expect(screen.getByText(/Wet conditions/i)).toBeInTheDocument();
+  });
 });

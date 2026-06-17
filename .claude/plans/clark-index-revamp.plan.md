@@ -457,4 +457,64 @@ npm run dev
 - [ ] Top 2 factors point toward predicted winner on the KC vs PHI Super Bowl game
 
 ---
+
+### MILESTONE 5 — Beta-readiness pass
+
+Audit findings driving Phase 5:
+- `PlayerMatchupCard` (Task 2.6) never landed — game report has no player-level matchup
+- `WeatherPanel` covers wind tier but not surface/precip detail; tier label relies on color alone (a11y)
+- `StadiumPanel` ships a flat color block instead of a real venue locator
+- Contrast: `--text-muted` at 0.18 fails AA on `--surface` backgrounds; amber-on-amber risk warning is borderline
+- No stadium geo/meta JSON exists yet (lat/lng, capacity, elevation, dome)
+- No vitest coverage for the new context panels
+
+#### Task 5.4 — Contrast pass
+
+`primary-ui/src/styles/tokens.css`
+- Bump `--text-muted` from `0.18` → `0.42`
+- Bump `--text-tertiary` from `0.30` → `0.55`
+- Bump `--text-secondary` from `0.55` → `0.72`
+
+Component sweeps: WeatherPanel tier chip gets non-color glyph; low-confidence amber callout darkens to `rgba(251,191,36,0.10)` bg + `#fde68a` text.
+
+#### Task 5.1 — `PlayerMatchupCard.tsx`
+
+`primary-ui/src/components/game-report/PlayerMatchupCard.tsx` — reads `home_players`/`away_players` off `ApiPrediction`. QB and RB rows side-by-side. Highlight better stat with gold underline. Graceful when missing.
+
+Hooks into GameReport right column below StadiumPanel.
+
+#### Task 5.2 — WeatherPanel depth
+
+- Inline thermometer SVG, color-coded
+- Surface/roof glyph prefix
+- Tier chip glyph (■/▲/▲▲/▢) so reads w/o color
+- aria-label with tier + wind
+
+#### Task 5.3 — StadiumPanel locator
+
+- Replace color block with mini US-map SVG + dot at stadium lat/lng
+- Falls back to color block when geo missing
+- Meta line: capacity · elevation · surface · roof
+- New `primary-ui/src/data/stadiumMeta.ts` with {name, lat, lng, capacity, elevation_ft, dome} for 32 teams
+
+#### Task 5.5 — Backend enrichment
+
+`nfl-prediction/src/build_stadium_meta.py` (CREATE) — writes `data/processed/stadium_meta.json` mirroring the frontend lookup; future-proofs if we move the source-of-truth to backend.
+
+`export_predictions.py` (UPDATE) — surface `last3_epa_trend` on `home_players.qb` when player_context provides it.
+
+#### Task 5.6 — Tests
+
+`PlayerMatchupCard.test.tsx` (CREATE) + updates to `WeatherPanel.test.tsx` and `StadiumPanel.test.tsx` covering glyph cues, map render, fallback.
+
+#### Phase 5 acceptance
+
+- [ ] AA contrast on muted/tertiary text against parent surface
+- [ ] WeatherPanel tier readable without color
+- [ ] StadiumPanel renders US map for KC/PHI/SF
+- [ ] PlayerMatchupCard renders for `/game/2024/22/KC/PHI`
+- [ ] All new tests green
+- [ ] `npm run build` exits 0
+
+---
 *Generated from `.claude/prds/clark-index-revamp.prd.md` — all milestones in-progress.*

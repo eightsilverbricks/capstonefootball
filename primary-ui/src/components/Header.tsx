@@ -4,6 +4,8 @@ import { Menu, X } from 'lucide-react';
 
 const NAV_LINKS = [
   { label: 'Games', to: '/' },
+  { label: 'Compete', to: '/compete' },
+  { label: 'Leaderboard', to: '/leaderboard' },
   { label: 'About', to: '/about' },
 ];
 
@@ -19,16 +21,19 @@ const Header: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-center justify-between h-14">
 
-          {/* Wordmark — solid token color, no gradient */}
-          <Link to="/" className="flex items-center gap-2.5 no-underline">
-            <div
-              className="w-7 h-7 rounded flex items-center justify-center text-[11px] font-bold"
-              style={{ background: 'var(--accent-gold)', color: '#090909' }}
+          {/* Wordmark — editorial, no decorative tile */}
+          <Link to="/" className="flex items-baseline gap-2 no-underline">
+            <span
+              className="font-bold tracking-tight text-lg leading-none"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
             >
-              CI
-            </div>
-            <span className="font-semibold tracking-tight text-base" style={{ color: 'var(--text-primary)' }}>
-              The Clark Index
+              Clark
+            </span>
+            <span
+              className="text-lg leading-none italic"
+              style={{ fontFamily: 'var(--font-display)', color: 'var(--text-tertiary)' }}
+            >
+              Index
             </span>
           </Link>
 
@@ -52,17 +57,13 @@ const Header: React.FC = () => {
             })}
           </nav>
 
-          {/* Right: badge + mobile toggle */}
+          {/* Right: season + mobile toggle */}
           <div className="flex items-center gap-3">
             <span
-              className="hidden sm:inline text-xs font-medium px-2.5 py-1 rounded"
-              style={{
-                color: 'var(--accent-gold)',
-                background: 'rgba(200,169,110,0.08)',
-                border: '1px solid rgba(200,169,110,0.2)',
-              }}
+              className="hidden sm:inline text-xs uppercase tracking-widest"
+              style={{ color: 'var(--text-muted)' }}
             >
-              2024
+              Season 2024
             </span>
             <button
               onClick={() => setMenuOpen(!menuOpen)}

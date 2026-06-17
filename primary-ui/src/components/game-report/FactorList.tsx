@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FactorCard } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import ChallengeFactor from '@/components/competition/ChallengeFactor';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   DECISIVE: { label: 'Key edge',  color: 'var(--status-decisive)' },
@@ -13,9 +14,10 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 interface FactorRowProps {
   factor: FactorCard;
   rank: number;
+  gameId?: string;
 }
 
-const FactorRow: React.FC<FactorRowProps> = ({ factor, rank }) => {
+const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
   const [expanded, setExpanded] = useState(false);
 
   const isEven     = factor.advantage_team === 'Even';
@@ -129,15 +131,19 @@ const FactorRow: React.FC<FactorRowProps> = ({ factor, rank }) => {
           )}
         </>
       )}
+
+      {/* Community challenge thread */}
+      {gameId && <ChallengeFactor gameId={gameId} factorName={factor.name} />}
     </article>
   );
 };
 
 interface FactorListProps {
   factors: FactorCard[];
+  gameId?: string;
 }
 
-const FactorList: React.FC<FactorListProps> = ({ factors }) => {
+const FactorList: React.FC<FactorListProps> = ({ factors, gameId }) => {
   const sorted = [...factors].sort((a, b) => b.contribution_strength - a.contribution_strength);
 
   return (
@@ -150,7 +156,7 @@ const FactorList: React.FC<FactorListProps> = ({ factors }) => {
       </h3>
       <div className="flex flex-col gap-2">
         {sorted.map((factor, i) => (
-          <FactorRow key={factor.name} factor={factor} rank={i + 1} />
+          <FactorRow key={factor.name} factor={factor} rank={i + 1} gameId={gameId} />
         ))}
       </div>
     </section>
