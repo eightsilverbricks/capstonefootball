@@ -69,6 +69,12 @@ export interface ApiPrediction {
   confidence_label: 'High' | 'Medium' | 'Low';
   confidence_score: number;
 
+  // Actual outcome — real 2024 results, merged in by add_actual_results.py.
+  // null actual_winner = a tie or an unplayed game (pick stays pending).
+  actual_winner?: string | null;
+  home_score?: number | null;
+  away_score?: number | null;
+
   // Football diagnosis
   headline?: string;
   football_story?: string;

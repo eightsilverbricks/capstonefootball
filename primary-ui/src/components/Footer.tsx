@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
             <div className="flex items-center gap-2 mb-2">
               <div
                 className="w-6 h-6 rounded-sm flex items-center justify-center text-[10px] font-bold text-black"
-                style={{ background: 'linear-gradient(135deg, #c8a96e 0%, #e8c97e 100%)' }}
+                style={{ background: 'var(--accent-gold)' }}
               >
                 CI
               </div>

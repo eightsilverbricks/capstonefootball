@@ -2,12 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Header from './Header';
 import WeekStrip from './WeekStrip';
 import GameCard from './GameCard';
+import SignalCard from './SignalCard';
+import StoryModules from './StoryModules';
+import StatStrip from './StatStrip';
 import Footer from './Footer';
 import { usePredictions } from '@/hooks/usePredictions';
 import { ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
+import { computeSignal, gameKey } from '@/lib/threeWaySignal';
+import { computeStoryModules } from '@/lib/storyModules';
 import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
 
-const DEFAULT_WEEK = 22;
+const DEFAULT_WEEK = 1;
 
 const AppLayout: React.FC = () => {
   const { predictions, loading, error, reload } = usePredictions();
@@ -54,55 +59,82 @@ const AppLayout: React.FC = () => {
   const mediumCount = weekGames.filter(g => g.confidence_label === 'Medium').length;
   const lowCount    = weekGames.filter(g => g.confidence_label === 'Low').length;
 
+  const signal = useMemo(() => computeSignal(weekGames), [weekGames]);
+
+  const storyModules = useMemo(
+    () => computeStoryModules(weekGames, signal ? gameKey(signal.game) : undefined),
+    [weekGames, signal],
+  );
+  const hasStories = storyModules.length > 0;
+
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
 
-      {/* ── Editorial hero — massive Fraunces, no gradient ── */}
-      <section className="px-4 pt-12 pb-6">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-end justify-between gap-6 mb-2">
-            <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
-              The 2024 slate · model lens
-            </span>
-            <span className="text-[11px] uppercase tracking-[0.24em] hidden md:inline" style={{ color: 'var(--text-muted)' }}>
-              {predictions.length} games analyzed
-            </span>
+      {/* ── Week navigation — pinned right under the header; picking a week is ── */}
+      {/* the primary action, so it shouldn't require scrolling past the hero. ── */}
+      {availableWeeks.length > 0 && (
+        <div className="sticky top-[57px] z-30">
+          <WeekStrip
+            availableWeeks={availableWeeks}
+            selectedWeek={selectedWeek}
+            onChange={handleWeekChange}
+          />
+        </div>
+      )}
+
+      {/* ── Top band: The Signal + week masthead (left), story modules (right). ── */}
+      {/* Left column stacks the disagreement above the week title + stat strip so ── */}
+      {/* it balances the taller story column instead of leaving a dead void. ── */}
+      <section className="px-4 pt-8 pb-6">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-6 items-start">
+          <div className={`flex flex-col gap-8 ${hasStories ? 'lg:col-span-2' : 'lg:col-span-3'}`}>
+            {signal && <SignalCard signal={signal} />}
+
+            <div>
+              <div className="flex items-end justify-between gap-6 mb-2">
+                <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
+                  The 2024 slate · model lens
+                </span>
+                <span className="text-[11px] uppercase tracking-[0.24em] hidden md:inline" style={{ color: 'var(--text-muted)' }}>
+                  {predictions.length} games analyzed
+                </span>
+              </div>
+
+              <h1
+                className="font-bold leading-[0.92] tracking-tight"
+                style={{
+                  fontFamily: 'var(--font-display)',
+                  fontSize: 'clamp(2.5rem, 6vw, 5.5rem)',
+                  color: 'var(--text-primary)',
+                }}
+              >
+                {sectionTitle}
+              </h1>
+
+              {/* One game doesn't need a 4-cell breakdown — the headline already says it all. */}
+              {weekGames.length > 1 && (
+                <div className="mt-6">
+                  <StatStrip
+                    items={[
+                      { label: 'Games', value: String(weekGames.length) },
+                      { label: 'High conf.', value: String(highCount), color: 'var(--accent-gold)' },
+                      { label: 'Medium conf.', value: String(mediumCount) },
+                      { label: 'Low conf.', value: String(lowCount) },
+                    ]}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-          <h1
-            className="font-bold leading-[0.92] tracking-tight"
-            style={{
-              fontFamily: 'var(--font-display)',
-              fontSize: 'clamp(3.5rem, 11vw, 9rem)',
-              color: 'var(--text-primary)',
-            }}
-          >
-            {sectionTitle}
-          </h1>
-
-          {weekGames.length > 0 && (
-            <div
-              className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-px overflow-hidden rounded"
-              style={{ background: 'var(--border-default)', border: '1px solid var(--border-default)' }}
-            >
-              <KpiCell label="Games" value={String(weekGames.length)} />
-              <KpiCell label="High conf." value={String(highCount)} accent />
-              <KpiCell label="Medium conf." value={String(mediumCount)} />
-              <KpiCell label="Low conf." value={String(lowCount)} />
+          {hasStories && (
+            <div className="lg:col-span-1">
+              <StoryModules modules={storyModules} />
             </div>
           )}
         </div>
       </section>
-
-      {/* ── Week navigation ── */}
-      {availableWeeks.length > 0 && (
-        <WeekStrip
-          availableWeeks={availableWeeks}
-          selectedWeek={selectedWeek}
-          onChange={handleWeekChange}
-        />
-      )}
 
       <section id="matchups" className="py-10 px-4">
         <div className="max-w-7xl mx-auto">
@@ -167,14 +199,16 @@ const AppLayout: React.FC = () => {
 
           {/* Grid — only shown when week has >1 game */}
           {!loading && !error && gridGames.length > 0 && (
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {gridGames.map((game) => (
-                <GameCard
-                  key={`${game.season}-${game.week}-${game.away_team}-${game.home_team}`}
-                  game={game}
-                />
-              ))}
-            </div>
+            <>
+              <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {gridGames.map((game) => (
+                  <GameCard key={gameKey(game)} game={game} />
+                ))}
+              </div>
+              <p className="mt-6 text-[11px]" style={{ color: 'var(--text-muted)' }}>
+                † Fan sentiment shown here is illustrative — real community picks are coming.
+              </p>
+            </>
           )}
 
           {/* Empty filter state */}
@@ -197,69 +231,5 @@ const AppLayout: React.FC = () => {
     </div>
   );
 };
-
-// ─── KPI cell — SecureDeep-style data tile ───────────────────────────────────
-interface KpiCellProps { label: string; value: string; accent?: boolean }
-const KpiCell: React.FC<KpiCellProps> = ({ label, value, accent }) => (
-  <div className="px-5 py-4 flex flex-col gap-1" style={{ background: 'var(--surface)' }}>
-    <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-      {label}
-    </span>
-    <span
-      className="font-bold tabular-nums leading-none"
-      style={{
-        fontFamily: 'var(--font-display)',
-        fontSize: 'clamp(1.75rem, 3.5vw, 2.5rem)',
-        color: accent ? 'var(--accent-gold)' : 'var(--text-primary)',
-      }}
-    >
-      {value}
-    </span>
-  </div>
-);
-
-// ─── Glossary items ────────────────────────────────────────────────────────────
-const GLOSSARY_ITEMS = [
-  {
-    term: "EPA per play",
-    plain: "Expected Points Added measures how much a play helps a team score. A run that gains 5 yards on 3rd-and-2 adds more value than the same run on 3rd-and-15.",
-    model_use: "The model uses EPA per play as the primary efficiency signal — teams with consistent EPA create more scoring opportunities.",
-  },
-  {
-    term: "Success rate",
-    plain: 'The percentage of plays where the offense "stays on schedule" — gaining enough yards to make the next down manageable.',
-    model_use: "High success rate teams are more reliable on offense. They do not depend on big plays to move the chains.",
-  },
-  {
-    term: "The spread",
-    plain: "The point handicap Vegas assigns to level the betting field. A -6.5 team needs to win by 7+ points for bettors to win.",
-    model_use: "Vegas spreads encode a lot of real-world information. The model uses them as a calibration signal, not the whole story.",
-  },
-  {
-    term: "Recent form (last 3)",
-    plain: "How a team has performed in their last 3 games, not the whole season. Reflects current momentum and any recent injuries or scheme changes.",
-    model_use: "Recent form can detect when a team is trending up or down in ways that season averages miss.",
-  },
-  {
-    term: "Win probability",
-    plain: "The model's estimate of how likely each team is to win. 70% does not mean certain — it means the model sees meaningful but not overwhelming evidence.",
-    model_use: "Probabilities are derived from logistic regression. A 60/40 game is genuinely close and often comes down to execution.",
-  },
-  {
-    term: "QB efficiency",
-    plain: "How much value a quarterback creates per play — accounting for completions, yards, touchdowns, and avoiding turnovers.",
-    model_use: "QB efficiency is the single most predictive football stat in the model. Good QBs make offenses work regardless of the opponent.",
-  },
-  {
-    term: "Rest differential",
-    plain: "The difference in days of rest between the two teams. A team on a short week (3 days) vs. a rested team (10 days) is at a measurable disadvantage.",
-    model_use: "Rest matters most in close matchups. The model treats it as a context signal, not a dominant factor.",
-  },
-  {
-    term: "Sack / pressure rate",
-    plain: "How often a team's pass rush disrupts the opposing QB, or how well the offensive line protects their QB.",
-    model_use: "Pressure limits deep passing and creates negative plays. The model looks at the matchup between one team's rush and the other's protection.",
-  },
-];
 
 export default AppLayout;

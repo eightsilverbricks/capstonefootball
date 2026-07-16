@@ -12,11 +12,23 @@ const NotFound = () => {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center p-8 rounded-lg border border-border bg-card shadow-md animate-slide-in">
-        <h1 className="text-5xl font-bold mb-6 text-primary">404</h1>
-        <p className="text-xl text-card-foreground mb-6">Page not found</p>
-        <a href="/" className="text-primary hover:text-primary/80 underline transition-colors">
+    <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
+      <div
+        className="text-center p-10 rounded"
+        style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}
+      >
+        <h1
+          className="font-bold mb-4"
+          style={{ fontFamily: 'var(--font-display)', fontSize: '3rem', color: 'var(--text-primary)' }}
+        >
+          404
+        </h1>
+        <p className="text-lg mb-6" style={{ color: 'var(--text-secondary)' }}>Page not found</p>
+        <a
+          href="/"
+          className="underline transition-colors"
+          style={{ color: 'var(--accent-gold)' }}
+        >
           Return to Home
         </a>
       </div>

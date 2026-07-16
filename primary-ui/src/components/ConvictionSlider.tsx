@@ -2,7 +2,7 @@ import React from 'react';
 import { getTeamColors } from '@/data/nflData';
 import { Pick } from '@/competition/types';
 
-interface ConfidenceSliderProps {
+interface ConvictionSliderProps {
   awayTeam: string;
   homeTeam: string;
   pick: Pick;
@@ -11,7 +11,7 @@ interface ConfidenceSliderProps {
 }
 
 // The control is anchored at the center (50/50 = no position). Distance from
-// center is the confidence; the side you drag toward is the team you back.
+// center is the conviction; the side you drag toward is the team you back.
 // "lean" ∈ [0,100]: 100 = fully home, 0 = fully away, 50 = no position.
 function pickToLean(pick: Pick, homeTeam: string): number {
   const delta = (pick.confidence - 0.5) * 100; // 0..50
@@ -25,12 +25,13 @@ function leanToPick(lean: number, awayTeam: string, homeTeam: string): Pick {
 }
 
 /**
- * Confidence slider — a visual sibling of WinProbBar. Team-color fills, a
- * center 50/50 tick, percentage labels outside the bar ends, and a draggable
- * thumb. A transparent native range input is overlaid for keyboard + pointer
- * accessibility.
+ * Conviction slider — a center-anchored control the user drags toward a team.
+ * Team-color fills, a center 50/50 tick, live percentage labels outside the bar
+ * ends, and a draggable thumb. A transparent native range input is overlaid for
+ * keyboard + pointer accessibility. Shows only the user's OWN position — no
+ * Clark/Vegas/Fan numbers, preserving the blind-before-reveal sequencing.
  */
-const ConfidenceSlider: React.FC<ConfidenceSliderProps> = ({
+const ConvictionSlider: React.FC<ConvictionSliderProps> = ({
   awayTeam, homeTeam, pick, onChange, disabled = false,
 }) => {
   const awayColors = getTeamColors(awayTeam);
@@ -49,7 +50,7 @@ const ConfidenceSlider: React.FC<ConfidenceSliderProps> = ({
 
   return (
     <div className={disabled ? 'opacity-70' : ''}>
-      {/* Labels outside the bar ends — mirrors WinProbBar */}
+      {/* Labels outside the bar ends */}
       <div className="flex justify-between items-baseline mb-2">
         <span
           className="text-xs font-semibold tracking-wide tabular-nums"
@@ -58,7 +59,7 @@ const ConfidenceSlider: React.FC<ConfidenceSliderProps> = ({
           {awayTeam} {awayPct}%
         </span>
         <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-          your confidence
+          your conviction
         </span>
         <span
           className="text-xs font-semibold tracking-wide tabular-nums"
@@ -121,11 +122,11 @@ const ConfidenceSlider: React.FC<ConfidenceSliderProps> = ({
           value={lean}
           disabled={disabled}
           onChange={(e) => handle(Number(e.target.value))}
-          aria-label={`Confidence slider: ${awayTeam} versus ${homeTeam}`}
+          aria-label={`Conviction slider: ${awayTeam} versus ${homeTeam}`}
           aria-valuetext={
             lean === 50
               ? 'No position, 50/50'
-              : `${backsHome ? homeTeam : awayTeam} ${Math.max(awayPct, homePct)} percent confidence`
+              : `${backsHome ? homeTeam : awayTeam} ${Math.max(awayPct, homePct)} percent conviction`
           }
           className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed m-0"
         />
@@ -134,4 +135,4 @@ const ConfidenceSlider: React.FC<ConfidenceSliderProps> = ({
   );
 };
 
-export default ConfidenceSlider;
+export default ConvictionSlider;

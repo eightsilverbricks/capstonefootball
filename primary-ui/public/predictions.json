@@ -407,7 +407,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 34,
+    "away_score": 28
   },
   {
     "game_id": "2024_01_BAL_KC",
@@ -817,7 +820,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 27,
+    "away_score": 20
   },
   {
     "game_id": "2024_01_CAR_NO",
@@ -1227,7 +1233,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NO",
+    "home_score": 47,
+    "away_score": 10
   },
   {
     "game_id": "2024_01_DAL_CLE",
@@ -1637,7 +1646,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 17,
+    "away_score": 33
   },
   {
     "game_id": "2024_01_DEN_SEA",
@@ -2047,7 +2059,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 26,
+    "away_score": 20
   },
   {
     "game_id": "2024_01_GB_PHI",
@@ -2457,7 +2472,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 34,
+    "away_score": 29
   },
   {
     "game_id": "2024_01_HOU_IND",
@@ -2867,7 +2885,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 27,
+    "away_score": 29
   },
   {
     "game_id": "2024_01_JAX_MIA",
@@ -3277,7 +3298,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 20,
+    "away_score": 17
   },
   {
     "game_id": "2024_01_LA_DET",
@@ -3687,7 +3711,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 26,
+    "away_score": 20
   },
   {
     "game_id": "2024_01_LV_LAC",
@@ -4097,7 +4124,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 22,
+    "away_score": 10
   },
   {
     "game_id": "2024_01_MIN_NYG",
@@ -4507,7 +4537,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 6,
+    "away_score": 28
   },
   {
     "game_id": "2024_01_NE_CIN",
@@ -4917,7 +4950,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NE",
+    "home_score": 10,
+    "away_score": 16
   },
   {
     "game_id": "2024_01_NYJ_SF",
@@ -5327,7 +5363,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 32,
+    "away_score": 19
   },
   {
     "game_id": "2024_01_PIT_ATL",
@@ -5737,7 +5776,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 10,
+    "away_score": 18
   },
   {
     "game_id": "2024_01_TEN_CHI",
@@ -6147,7 +6189,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CHI",
+    "home_score": 24,
+    "away_score": 17
   },
   {
     "game_id": "2024_01_WAS_TB",
@@ -6557,7 +6602,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 37,
+    "away_score": 20
   },
   {
     "game_id": "2024_02_ATL_PHI",
@@ -6967,7 +7015,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 21,
+    "away_score": 22
   },
   {
     "game_id": "2024_02_BUF_MIA",
@@ -7377,7 +7428,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 10,
+    "away_score": 31
   },
   {
     "game_id": "2024_02_CHI_HOU",
@@ -7787,7 +7841,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 19,
+    "away_score": 13
   },
   {
     "game_id": "2024_02_CIN_KC",
@@ -8197,7 +8254,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 26,
+    "away_score": 25
   },
   {
     "game_id": "2024_02_CLE_JAX",
@@ -8607,7 +8667,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CLE",
+    "home_score": 13,
+    "away_score": 18
   },
   {
     "game_id": "2024_02_IND_GB",
@@ -9017,7 +9080,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 16,
+    "away_score": 10
   },
   {
     "game_id": "2024_02_LAC_CAR",
@@ -9427,7 +9493,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 3,
+    "away_score": 26
   },
   {
     "game_id": "2024_02_LA_ARI",
@@ -9837,7 +9906,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 41,
+    "away_score": 10
   },
   {
     "game_id": "2024_02_LV_BAL",
@@ -10247,7 +10319,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LV",
+    "home_score": 23,
+    "away_score": 26
   },
   {
     "game_id": "2024_02_NO_DAL",
@@ -10657,7 +10732,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NO",
+    "home_score": 19,
+    "away_score": 44
   },
   {
     "game_id": "2024_02_NYG_WAS",
@@ -11067,7 +11145,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 21,
+    "away_score": 18
   },
   {
     "game_id": "2024_02_NYJ_TEN",
@@ -11477,7 +11558,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYJ",
+    "home_score": 17,
+    "away_score": 24
   },
   {
     "game_id": "2024_02_PIT_DEN",
@@ -11887,7 +11971,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 6,
+    "away_score": 13
   },
   {
     "game_id": "2024_02_SEA_NE",
@@ -12297,7 +12384,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 20,
+    "away_score": 23
   },
   {
     "game_id": "2024_02_SF_MIN",
@@ -12707,7 +12797,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 23,
+    "away_score": 17
   },
   {
     "game_id": "2024_02_TB_DET",
@@ -13117,7 +13210,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 16,
+    "away_score": 20
   },
   {
     "game_id": "2024_03_BAL_DAL",
@@ -13527,7 +13623,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 25,
+    "away_score": 28
   },
   {
     "game_id": "2024_03_CAR_LV",
@@ -13937,7 +14036,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CAR",
+    "home_score": 22,
+    "away_score": 36
   },
   {
     "game_id": "2024_03_CHI_IND",
@@ -14347,7 +14449,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 21,
+    "away_score": 16
   },
   {
     "game_id": "2024_03_DEN_TB",
@@ -14757,7 +14862,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 7,
+    "away_score": 26
   },
   {
     "game_id": "2024_03_DET_ARI",
@@ -15167,7 +15275,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 13,
+    "away_score": 20
   },
   {
     "game_id": "2024_03_GB_TEN",
@@ -15577,7 +15688,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 14,
+    "away_score": 30
   },
   {
     "game_id": "2024_03_HOU_MIN",
@@ -15987,7 +16101,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 34,
+    "away_score": 7
   },
   {
     "game_id": "2024_03_JAX_BUF",
@@ -16397,7 +16514,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 47,
+    "away_score": 10
   },
   {
     "game_id": "2024_03_KC_ATL",
@@ -16807,7 +16927,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 17,
+    "away_score": 22
   },
   {
     "game_id": "2024_03_LAC_PIT",
@@ -17217,7 +17340,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 20,
+    "away_score": 10
   },
   {
     "game_id": "2024_03_MIA_SEA",
@@ -17627,7 +17753,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 24,
+    "away_score": 3
   },
   {
     "game_id": "2024_03_NE_NYJ",
@@ -18037,7 +18166,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYJ",
+    "home_score": 24,
+    "away_score": 3
   },
   {
     "game_id": "2024_03_NYG_CLE",
@@ -18447,7 +18579,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYG",
+    "home_score": 15,
+    "away_score": 21
   },
   {
     "game_id": "2024_03_PHI_NO",
@@ -18857,7 +18992,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 12,
+    "away_score": 15
   },
   {
     "game_id": "2024_03_SF_LA",
@@ -19267,7 +19405,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 27,
+    "away_score": 24
   },
   {
     "game_id": "2024_03_WAS_CIN",
@@ -19677,7 +19818,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 33,
+    "away_score": 38
   },
   {
     "game_id": "2024_04_BUF_BAL",
@@ -20087,7 +20231,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 35,
+    "away_score": 10
   },
   {
     "game_id": "2024_04_CIN_CAR",
@@ -20497,7 +20644,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 24,
+    "away_score": 34
   },
   {
     "game_id": "2024_04_CLE_LV",
@@ -20907,7 +21057,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LV",
+    "home_score": 20,
+    "away_score": 16
   },
   {
     "game_id": "2024_04_DAL_NYG",
@@ -21317,7 +21470,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 15,
+    "away_score": 20
   },
   {
     "game_id": "2024_04_DEN_NYJ",
@@ -21727,7 +21883,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 9,
+    "away_score": 10
   },
   {
     "game_id": "2024_04_JAX_HOU",
@@ -22137,7 +22296,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 24,
+    "away_score": 20
   },
   {
     "game_id": "2024_04_KC_LAC",
@@ -22547,7 +22709,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 10,
+    "away_score": 17
   },
   {
     "game_id": "2024_04_LA_CHI",
@@ -22957,7 +23122,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CHI",
+    "home_score": 24,
+    "away_score": 18
   },
   {
     "game_id": "2024_04_MIN_GB",
@@ -23367,7 +23535,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 29,
+    "away_score": 31
   },
   {
     "game_id": "2024_04_NE_SF",
@@ -23777,7 +23948,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 30,
+    "away_score": 13
   },
   {
     "game_id": "2024_04_NO_ATL",
@@ -24187,7 +24361,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 26,
+    "away_score": 24
   },
   {
     "game_id": "2024_04_PHI_TB",
@@ -24597,7 +24774,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 33,
+    "away_score": 16
   },
   {
     "game_id": "2024_04_PIT_IND",
@@ -25007,7 +25187,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 27,
+    "away_score": 24
   },
   {
     "game_id": "2024_04_SEA_DET",
@@ -25417,7 +25600,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 42,
+    "away_score": 29
   },
   {
     "game_id": "2024_04_TEN_MIA",
@@ -25827,7 +26013,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TEN",
+    "home_score": 12,
+    "away_score": 31
   },
   {
     "game_id": "2024_04_WAS_ARI",
@@ -26237,7 +26426,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 14,
+    "away_score": 42
   },
   {
     "game_id": "2024_05_ARI_SF",
@@ -26647,7 +26839,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 23,
+    "away_score": 24
   },
   {
     "game_id": "2024_05_BAL_CIN",
@@ -27057,7 +27252,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 38,
+    "away_score": 41
   },
   {
     "game_id": "2024_05_BUF_HOU",
@@ -27467,7 +27665,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 23,
+    "away_score": 20
   },
   {
     "game_id": "2024_05_CAR_CHI",
@@ -27877,7 +28078,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CHI",
+    "home_score": 36,
+    "away_score": 10
   },
   {
     "game_id": "2024_05_CLE_WAS",
@@ -28287,7 +28491,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 34,
+    "away_score": 13
   },
   {
     "game_id": "2024_05_DAL_PIT",
@@ -28697,7 +28904,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 17,
+    "away_score": 20
   },
   {
     "game_id": "2024_05_GB_LA",
@@ -29107,7 +29317,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 19,
+    "away_score": 24
   },
   {
     "game_id": "2024_05_IND_JAX",
@@ -29517,7 +29730,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "JAX",
+    "home_score": 37,
+    "away_score": 34
   },
   {
     "game_id": "2024_05_LV_DEN",
@@ -29927,7 +30143,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 34,
+    "away_score": 18
   },
   {
     "game_id": "2024_05_MIA_NE",
@@ -30337,7 +30556,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 10,
+    "away_score": 15
   },
   {
     "game_id": "2024_05_NO_KC",
@@ -30747,7 +30969,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 26,
+    "away_score": 13
   },
   {
     "game_id": "2024_05_NYG_SEA",
@@ -31157,7 +31382,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYG",
+    "home_score": 20,
+    "away_score": 29
   },
   {
     "game_id": "2024_05_NYJ_MIN",
@@ -31567,7 +31795,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 23,
+    "away_score": 17
   },
   {
     "game_id": "2024_05_TB_ATL",
@@ -31977,7 +32208,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 36,
+    "away_score": 30
   },
   {
     "game_id": "2024_06_ARI_GB",
@@ -32387,7 +32621,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 34,
+    "away_score": 13
   },
   {
     "game_id": "2024_06_ATL_CAR",
@@ -32797,7 +33034,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 20,
+    "away_score": 38
   },
   {
     "game_id": "2024_06_BUF_NYJ",
@@ -33207,7 +33447,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 20,
+    "away_score": 23
   },
   {
     "game_id": "2024_06_CIN_NYG",
@@ -33617,7 +33860,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 7,
+    "away_score": 17
   },
   {
     "game_id": "2024_06_CLE_PHI",
@@ -34027,7 +34273,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 20,
+    "away_score": 16
   },
   {
     "game_id": "2024_06_DET_DAL",
@@ -34437,7 +34686,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 9,
+    "away_score": 47
   },
   {
     "game_id": "2024_06_HOU_NE",
@@ -34847,7 +35099,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 21,
+    "away_score": 41
   },
   {
     "game_id": "2024_06_IND_TEN",
@@ -35257,7 +35512,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 17,
+    "away_score": 20
   },
   {
     "game_id": "2024_06_JAX_CHI",
@@ -35667,7 +35925,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CHI",
+    "home_score": 35,
+    "away_score": 16
   },
   {
     "game_id": "2024_06_LAC_DEN",
@@ -36077,7 +36338,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 16,
+    "away_score": 23
   },
   {
     "game_id": "2024_06_PIT_LV",
@@ -36487,7 +36751,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 13,
+    "away_score": 32
   },
   {
     "game_id": "2024_06_SF_SEA",
@@ -36897,7 +37164,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 24,
+    "away_score": 36
   },
   {
     "game_id": "2024_06_TB_NO",
@@ -37307,7 +37577,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 27,
+    "away_score": 51
   },
   {
     "game_id": "2024_06_WAS_BAL",
@@ -37717,7 +37990,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 30,
+    "away_score": 23
   },
   {
     "game_id": "2024_07_BAL_TB",
@@ -38127,7 +38403,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 31,
+    "away_score": 41
   },
   {
     "game_id": "2024_07_CAR_WAS",
@@ -38537,7 +38816,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 40,
+    "away_score": 7
   },
   {
     "game_id": "2024_07_CIN_CLE",
@@ -38947,7 +39229,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 14,
+    "away_score": 21
   },
   {
     "game_id": "2024_07_DEN_NO",
@@ -39357,7 +39642,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 10,
+    "away_score": 33
   },
   {
     "game_id": "2024_07_DET_MIN",
@@ -39767,7 +40055,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 29,
+    "away_score": 31
   },
   {
     "game_id": "2024_07_HOU_GB",
@@ -40177,7 +40468,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 24,
+    "away_score": 22
   },
   {
     "game_id": "2024_07_KC_SF",
@@ -40587,7 +40881,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 18,
+    "away_score": 28
   },
   {
     "game_id": "2024_07_LAC_ARI",
@@ -40997,7 +41294,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 17,
+    "away_score": 15
   },
   {
     "game_id": "2024_07_LV_LA",
@@ -41407,7 +41707,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 20,
+    "away_score": 15
   },
   {
     "game_id": "2024_07_MIA_IND",
@@ -41817,7 +42120,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 16,
+    "away_score": 10
   },
   {
     "game_id": "2024_07_NE_JAX",
@@ -42227,7 +42533,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "JAX",
+    "home_score": 32,
+    "away_score": 16
   },
   {
     "game_id": "2024_07_NYJ_PIT",
@@ -42637,7 +42946,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 37,
+    "away_score": 15
   },
   {
     "game_id": "2024_07_PHI_NYG",
@@ -43047,7 +43359,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 3,
+    "away_score": 28
   },
   {
     "game_id": "2024_07_SEA_ATL",
@@ -43457,7 +43772,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 14,
+    "away_score": 34
   },
   {
     "game_id": "2024_07_TEN_BUF",
@@ -43867,7 +44185,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 34,
+    "away_score": 10
   },
   {
     "game_id": "2024_08_ARI_MIA",
@@ -44277,7 +44598,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 27,
+    "away_score": 28
   },
   {
     "game_id": "2024_08_ATL_TB",
@@ -44687,7 +45011,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 26,
+    "away_score": 31
   },
   {
     "game_id": "2024_08_BAL_CLE",
@@ -45097,7 +45424,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CLE",
+    "home_score": 29,
+    "away_score": 24
   },
   {
     "game_id": "2024_08_BUF_SEA",
@@ -45507,7 +45837,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 10,
+    "away_score": 31
   },
   {
     "game_id": "2024_08_CAR_DEN",
@@ -45917,7 +46250,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 28,
+    "away_score": 14
   },
   {
     "game_id": "2024_08_CHI_WAS",
@@ -46327,7 +46663,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 18,
+    "away_score": 15
   },
   {
     "game_id": "2024_08_DAL_SF",
@@ -46737,7 +47076,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 30,
+    "away_score": 24
   },
   {
     "game_id": "2024_08_GB_JAX",
@@ -47147,7 +47489,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 27,
+    "away_score": 30
   },
   {
     "game_id": "2024_08_IND_HOU",
@@ -47557,7 +47902,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 23,
+    "away_score": 20
   },
   {
     "game_id": "2024_08_KC_LV",
@@ -47967,7 +48315,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 20,
+    "away_score": 27
   },
   {
     "game_id": "2024_08_MIN_LA",
@@ -48377,7 +48728,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 30,
+    "away_score": 20
   },
   {
     "game_id": "2024_08_NO_LAC",
@@ -48787,7 +49141,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 26,
+    "away_score": 8
   },
   {
     "game_id": "2024_08_NYG_PIT",
@@ -49197,7 +49554,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 26,
+    "away_score": 18
   },
   {
     "game_id": "2024_08_NYJ_NE",
@@ -49607,7 +49967,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NE",
+    "home_score": 25,
+    "away_score": 22
   },
   {
     "game_id": "2024_08_PHI_CIN",
@@ -50017,7 +50380,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 17,
+    "away_score": 37
   },
   {
     "game_id": "2024_08_TEN_DET",
@@ -50427,7 +50793,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 52,
+    "away_score": 14
   },
   {
     "game_id": "2024_09_CHI_ARI",
@@ -50837,7 +51206,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 29,
+    "away_score": 9
   },
   {
     "game_id": "2024_09_DAL_ATL",
@@ -51247,7 +51619,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 27,
+    "away_score": 21
   },
   {
     "game_id": "2024_09_DEN_BAL",
@@ -51657,7 +52032,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 41,
+    "away_score": 10
   },
   {
     "game_id": "2024_09_DET_GB",
@@ -52067,7 +52445,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 14,
+    "away_score": 24
   },
   {
     "game_id": "2024_09_HOU_NYJ",
@@ -52477,7 +52858,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYJ",
+    "home_score": 21,
+    "away_score": 13
   },
   {
     "game_id": "2024_09_IND_MIN",
@@ -52887,7 +53271,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 21,
+    "away_score": 13
   },
   {
     "game_id": "2024_09_JAX_PHI",
@@ -53297,7 +53684,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 28,
+    "away_score": 23
   },
   {
     "game_id": "2024_09_LAC_CLE",
@@ -53707,7 +54097,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 10,
+    "away_score": 27
   },
   {
     "game_id": "2024_09_LA_SEA",
@@ -54117,7 +54510,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 20,
+    "away_score": 26
   },
   {
     "game_id": "2024_09_LV_CIN",
@@ -54527,7 +54923,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 41,
+    "away_score": 24
   },
   {
     "game_id": "2024_09_MIA_BUF",
@@ -54937,7 +55336,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 30,
+    "away_score": 27
   },
   {
     "game_id": "2024_09_NE_TEN",
@@ -55347,7 +55749,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TEN",
+    "home_score": 20,
+    "away_score": 17
   },
   {
     "game_id": "2024_09_NO_CAR",
@@ -55757,7 +56162,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CAR",
+    "home_score": 23,
+    "away_score": 22
   },
   {
     "game_id": "2024_09_TB_KC",
@@ -56167,7 +56575,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 30,
+    "away_score": 24
   },
   {
     "game_id": "2024_09_WAS_NYG",
@@ -56577,7 +56988,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 22,
+    "away_score": 27
   },
   {
     "game_id": "2024_10_ATL_NO",
@@ -56987,7 +57401,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NO",
+    "home_score": 20,
+    "away_score": 17
   },
   {
     "game_id": "2024_10_BUF_IND",
@@ -57397,7 +57814,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 20,
+    "away_score": 30
   },
   {
     "game_id": "2024_10_CIN_BAL",
@@ -57807,7 +58227,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 35,
+    "away_score": 34
   },
   {
     "game_id": "2024_10_DEN_KC",
@@ -58217,7 +58640,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 16,
+    "away_score": 14
   },
   {
     "game_id": "2024_10_DET_HOU",
@@ -58627,7 +59053,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 23,
+    "away_score": 26
   },
   {
     "game_id": "2024_10_MIA_LA",
@@ -59037,7 +59466,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 15,
+    "away_score": 23
   },
   {
     "game_id": "2024_10_MIN_JAX",
@@ -59447,7 +59879,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 7,
+    "away_score": 12
   },
   {
     "game_id": "2024_10_NE_CHI",
@@ -59857,7 +60292,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NE",
+    "home_score": 3,
+    "away_score": 19
   },
   {
     "game_id": "2024_10_NYG_CAR",
@@ -60267,7 +60705,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CAR",
+    "home_score": 20,
+    "away_score": 17
   },
   {
     "game_id": "2024_10_NYJ_ARI",
@@ -60677,7 +61118,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 31,
+    "away_score": 6
   },
   {
     "game_id": "2024_10_PHI_DAL",
@@ -61087,7 +61531,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 6,
+    "away_score": 34
   },
   {
     "game_id": "2024_10_PIT_WAS",
@@ -61497,7 +61944,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 27,
+    "away_score": 28
   },
   {
     "game_id": "2024_10_SF_TB",
@@ -61907,7 +62357,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 20,
+    "away_score": 23
   },
   {
     "game_id": "2024_10_TEN_LAC",
@@ -62317,7 +62770,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 27,
+    "away_score": 17
   },
   {
     "game_id": "2024_11_ATL_DEN",
@@ -62727,7 +63183,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 38,
+    "away_score": 6
   },
   {
     "game_id": "2024_11_BAL_PIT",
@@ -63137,7 +63596,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 18,
+    "away_score": 16
   },
   {
     "game_id": "2024_11_CIN_LAC",
@@ -63547,7 +64009,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 34,
+    "away_score": 27
   },
   {
     "game_id": "2024_11_CLE_NO",
@@ -63957,7 +64422,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NO",
+    "home_score": 35,
+    "away_score": 14
   },
   {
     "game_id": "2024_11_GB_CHI",
@@ -64367,7 +64835,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 19,
+    "away_score": 20
   },
   {
     "game_id": "2024_11_HOU_DAL",
@@ -64777,7 +65248,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 10,
+    "away_score": 34
   },
   {
     "game_id": "2024_11_IND_NYJ",
@@ -65187,7 +65661,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 27,
+    "away_score": 28
   },
   {
     "game_id": "2024_11_JAX_DET",
@@ -65597,7 +66074,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 52,
+    "away_score": 6
   },
   {
     "game_id": "2024_11_KC_BUF",
@@ -66007,7 +66487,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 30,
+    "away_score": 21
   },
   {
     "game_id": "2024_11_LA_NE",
@@ -66417,7 +66900,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 22,
+    "away_score": 28
   },
   {
     "game_id": "2024_11_LV_MIA",
@@ -66827,7 +67313,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 34,
+    "away_score": 19
   },
   {
     "game_id": "2024_11_MIN_TEN",
@@ -67237,7 +67726,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 13,
+    "away_score": 23
   },
   {
     "game_id": "2024_11_SEA_SF",
@@ -67647,7 +68139,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 17,
+    "away_score": 20
   },
   {
     "game_id": "2024_11_WAS_PHI",
@@ -68057,7 +68552,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 26,
+    "away_score": 18
   },
   {
     "game_id": "2024_12_ARI_SEA",
@@ -68467,7 +68965,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 16,
+    "away_score": 6
   },
   {
     "game_id": "2024_12_BAL_LAC",
@@ -68877,7 +69378,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 23,
+    "away_score": 30
   },
   {
     "game_id": "2024_12_DAL_WAS",
@@ -69287,7 +69791,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 26,
+    "away_score": 34
   },
   {
     "game_id": "2024_12_DEN_LV",
@@ -69697,7 +70204,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 19,
+    "away_score": 29
   },
   {
     "game_id": "2024_12_DET_IND",
@@ -70107,7 +70617,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 6,
+    "away_score": 24
   },
   {
     "game_id": "2024_12_KC_CAR",
@@ -70517,7 +71030,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 27,
+    "away_score": 30
   },
   {
     "game_id": "2024_12_MIN_CHI",
@@ -70927,7 +71443,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 27,
+    "away_score": 30
   },
   {
     "game_id": "2024_12_NE_MIA",
@@ -71337,7 +71856,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 34,
+    "away_score": 15
   },
   {
     "game_id": "2024_12_PHI_LA",
@@ -71747,7 +72269,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 20,
+    "away_score": 37
   },
   {
     "game_id": "2024_12_PIT_CLE",
@@ -72157,7 +72682,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CLE",
+    "home_score": 24,
+    "away_score": 19
   },
   {
     "game_id": "2024_12_SF_GB",
@@ -72567,7 +73095,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 38,
+    "away_score": 10
   },
   {
     "game_id": "2024_12_TB_NYG",
@@ -72977,7 +73508,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 7,
+    "away_score": 30
   },
   {
     "game_id": "2024_12_TEN_HOU",
@@ -73387,7 +73921,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TEN",
+    "home_score": 27,
+    "away_score": 32
   },
   {
     "game_id": "2024_13_ARI_MIN",
@@ -73797,7 +74334,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 23,
+    "away_score": 22
   },
   {
     "game_id": "2024_13_CHI_DET",
@@ -74207,7 +74747,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 23,
+    "away_score": 20
   },
   {
     "game_id": "2024_13_CLE_DEN",
@@ -74617,7 +75160,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 41,
+    "away_score": 32
   },
   {
     "game_id": "2024_13_HOU_JAX",
@@ -75027,7 +75573,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 20,
+    "away_score": 23
   },
   {
     "game_id": "2024_13_IND_NE",
@@ -75437,7 +75986,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 24,
+    "away_score": 25
   },
   {
     "game_id": "2024_13_LAC_ATL",
@@ -75847,7 +76399,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 13,
+    "away_score": 17
   },
   {
     "game_id": "2024_13_LA_NO",
@@ -76257,7 +76812,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 14,
+    "away_score": 21
   },
   {
     "game_id": "2024_13_LV_KC",
@@ -76667,7 +77225,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 19,
+    "away_score": 17
   },
   {
     "game_id": "2024_13_MIA_GB",
@@ -77077,7 +77638,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 30,
+    "away_score": 17
   },
   {
     "game_id": "2024_13_NYG_DAL",
@@ -77487,7 +78051,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 27,
+    "away_score": 20
   },
   {
     "game_id": "2024_13_PHI_BAL",
@@ -77897,7 +78464,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 19,
+    "away_score": 24
   },
   {
     "game_id": "2024_13_PIT_CIN",
@@ -78307,7 +78877,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 38,
+    "away_score": 44
   },
   {
     "game_id": "2024_13_SEA_NYJ",
@@ -78717,7 +79290,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 21,
+    "away_score": 26
   },
   {
     "game_id": "2024_13_SF_BUF",
@@ -79127,7 +79703,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 35,
+    "away_score": 10
   },
   {
     "game_id": "2024_13_TB_CAR",
@@ -79537,7 +80116,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 23,
+    "away_score": 26
   },
   {
     "game_id": "2024_13_TEN_WAS",
@@ -79947,7 +80529,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 42,
+    "away_score": 19
   },
   {
     "game_id": "2024_14_ATL_MIN",
@@ -80357,7 +80942,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 42,
+    "away_score": 21
   },
   {
     "game_id": "2024_14_BUF_LA",
@@ -80767,7 +81355,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 44,
+    "away_score": 42
   },
   {
     "game_id": "2024_14_CAR_PHI",
@@ -81177,7 +81768,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 22,
+    "away_score": 16
   },
   {
     "game_id": "2024_14_CHI_SF",
@@ -81587,7 +82181,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SF",
+    "home_score": 38,
+    "away_score": 13
   },
   {
     "game_id": "2024_14_CIN_DAL",
@@ -81997,7 +82594,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 20,
+    "away_score": 27
   },
   {
     "game_id": "2024_14_CLE_PIT",
@@ -82407,7 +83007,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PIT",
+    "home_score": 27,
+    "away_score": 14
   },
   {
     "game_id": "2024_14_GB_DET",
@@ -82817,7 +83420,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 34,
+    "away_score": 31
   },
   {
     "game_id": "2024_14_JAX_TEN",
@@ -83227,7 +83833,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "JAX",
+    "home_score": 6,
+    "away_score": 10
   },
   {
     "game_id": "2024_14_LAC_KC",
@@ -83637,7 +84246,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 19,
+    "away_score": 17
   },
   {
     "game_id": "2024_14_LV_TB",
@@ -84047,7 +84659,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 28,
+    "away_score": 13
   },
   {
     "game_id": "2024_14_NO_NYG",
@@ -84457,7 +85072,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NO",
+    "home_score": 11,
+    "away_score": 14
   },
   {
     "game_id": "2024_14_NYJ_MIA",
@@ -84867,7 +85485,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 32,
+    "away_score": 26
   },
   {
     "game_id": "2024_14_SEA_ARI",
@@ -85277,7 +85898,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 18,
+    "away_score": 30
   },
   {
     "game_id": "2024_15_ATL_LV",
@@ -85687,7 +86311,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 9,
+    "away_score": 15
   },
   {
     "game_id": "2024_15_BAL_NYG",
@@ -86097,7 +86724,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 14,
+    "away_score": 35
   },
   {
     "game_id": "2024_15_BUF_DET",
@@ -86507,7 +87137,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 42,
+    "away_score": 48
   },
   {
     "game_id": "2024_15_CHI_MIN",
@@ -86917,7 +87550,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 30,
+    "away_score": 12
   },
   {
     "game_id": "2024_15_CIN_TEN",
@@ -87327,7 +87963,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 27,
+    "away_score": 37
   },
   {
     "game_id": "2024_15_DAL_CAR",
@@ -87737,7 +88376,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 14,
+    "away_score": 30
   },
   {
     "game_id": "2024_15_GB_SEA",
@@ -88147,7 +88789,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 13,
+    "away_score": 30
   },
   {
     "game_id": "2024_15_IND_DEN",
@@ -88557,7 +89202,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 31,
+    "away_score": 13
   },
   {
     "game_id": "2024_15_KC_CLE",
@@ -88967,7 +89615,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 7,
+    "away_score": 21
   },
   {
     "game_id": "2024_15_LA_SF",
@@ -89377,7 +90028,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 6,
+    "away_score": 12
   },
   {
     "game_id": "2024_15_MIA_HOU",
@@ -89787,7 +90441,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 20,
+    "away_score": 12
   },
   {
     "game_id": "2024_15_NE_ARI",
@@ -90197,7 +90854,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 30,
+    "away_score": 17
   },
   {
     "game_id": "2024_15_NYJ_JAX",
@@ -90607,7 +91267,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYJ",
+    "home_score": 25,
+    "away_score": 32
   },
   {
     "game_id": "2024_15_PIT_PHI",
@@ -91017,7 +91680,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 27,
+    "away_score": 13
   },
   {
     "game_id": "2024_15_TB_LAC",
@@ -91427,7 +92093,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 17,
+    "away_score": 40
   },
   {
     "game_id": "2024_15_WAS_NO",
@@ -91837,7 +92506,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 19,
+    "away_score": 20
   },
   {
     "game_id": "2024_16_ARI_CAR",
@@ -92247,7 +92919,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CAR",
+    "home_score": 36,
+    "away_score": 30
   },
   {
     "game_id": "2024_16_CLE_CIN",
@@ -92657,7 +93332,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 24,
+    "away_score": 6
   },
   {
     "game_id": "2024_16_DEN_LAC",
@@ -93067,7 +93745,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 34,
+    "away_score": 27
   },
   {
     "game_id": "2024_16_DET_CHI",
@@ -93477,7 +94158,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 17,
+    "away_score": 34
   },
   {
     "game_id": "2024_16_HOU_KC",
@@ -93887,7 +94571,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 27,
+    "away_score": 19
   },
   {
     "game_id": "2024_16_JAX_LV",
@@ -94297,7 +94984,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LV",
+    "home_score": 19,
+    "away_score": 14
   },
   {
     "game_id": "2024_16_LA_NYJ",
@@ -94707,7 +95397,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 9,
+    "away_score": 19
   },
   {
     "game_id": "2024_16_MIN_SEA",
@@ -95117,7 +95810,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 24,
+    "away_score": 27
   },
   {
     "game_id": "2024_16_NE_BUF",
@@ -95527,7 +96223,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 24,
+    "away_score": 21
   },
   {
     "game_id": "2024_16_NO_GB",
@@ -95937,7 +96636,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "GB",
+    "home_score": 34,
+    "away_score": 0
   },
   {
     "game_id": "2024_16_NYG_ATL",
@@ -96347,7 +97049,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ATL",
+    "home_score": 34,
+    "away_score": 7
   },
   {
     "game_id": "2024_16_PHI_WAS",
@@ -96757,7 +97462,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 36,
+    "away_score": 33
   },
   {
     "game_id": "2024_16_PIT_BAL",
@@ -97167,7 +97875,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 34,
+    "away_score": 17
   },
   {
     "game_id": "2024_16_SF_MIA",
@@ -97577,7 +98288,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 29,
+    "away_score": 17
   },
   {
     "game_id": "2024_16_TB_DAL",
@@ -97987,7 +98701,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DAL",
+    "home_score": 26,
+    "away_score": 24
   },
   {
     "game_id": "2024_16_TEN_IND",
@@ -98397,7 +99114,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 38,
+    "away_score": 30
   },
   {
     "game_id": "2024_17_ARI_LA",
@@ -98807,7 +99527,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 13,
+    "away_score": 9
   },
   {
     "game_id": "2024_17_ATL_WAS",
@@ -99217,7 +99940,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 30,
+    "away_score": 24
   },
   {
     "game_id": "2024_17_BAL_HOU",
@@ -99627,7 +100353,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 2,
+    "away_score": 31
   },
   {
     "game_id": "2024_17_CAR_TB",
@@ -100037,7 +100766,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 48,
+    "away_score": 14
   },
   {
     "game_id": "2024_17_DAL_PHI",
@@ -100447,7 +101179,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 41,
+    "away_score": 7
   },
   {
     "game_id": "2024_17_DEN_CIN",
@@ -100857,7 +101592,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 30,
+    "away_score": 24
   },
   {
     "game_id": "2024_17_DET_SF",
@@ -101267,7 +102005,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 34,
+    "away_score": 40
   },
   {
     "game_id": "2024_17_GB_MIN",
@@ -101677,7 +102418,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIN",
+    "home_score": 27,
+    "away_score": 25
   },
   {
     "game_id": "2024_17_IND_NYG",
@@ -102087,7 +102831,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYG",
+    "home_score": 45,
+    "away_score": 33
   },
   {
     "game_id": "2024_17_KC_PIT",
@@ -102497,7 +103244,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 10,
+    "away_score": 29
   },
   {
     "game_id": "2024_17_LAC_NE",
@@ -102907,7 +103657,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 7,
+    "away_score": 40
   },
   {
     "game_id": "2024_17_LV_NO",
@@ -103317,7 +104070,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LV",
+    "home_score": 10,
+    "away_score": 25
   },
   {
     "game_id": "2024_17_MIA_CLE",
@@ -103727,7 +104483,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "MIA",
+    "home_score": 3,
+    "away_score": 20
   },
   {
     "game_id": "2024_17_NYJ_BUF",
@@ -104137,7 +104896,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 40,
+    "away_score": 14
   },
   {
     "game_id": "2024_17_SEA_CHI",
@@ -104547,7 +105309,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 3,
+    "away_score": 6
   },
   {
     "game_id": "2024_17_TEN_JAX",
@@ -104957,7 +105722,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "JAX",
+    "home_score": 20,
+    "away_score": 13
   },
   {
     "game_id": "2024_18_BUF_NE",
@@ -105367,7 +106135,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NE",
+    "home_score": 23,
+    "away_score": 16
   },
   {
     "game_id": "2024_18_CAR_ATL",
@@ -105777,7 +106548,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CAR",
+    "home_score": 38,
+    "away_score": 44
   },
   {
     "game_id": "2024_18_CHI_GB",
@@ -106187,7 +106961,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CHI",
+    "home_score": 22,
+    "away_score": 24
   },
   {
     "game_id": "2024_18_CIN_PIT",
@@ -106597,7 +107374,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "CIN",
+    "home_score": 17,
+    "away_score": 19
   },
   {
     "game_id": "2024_18_CLE_BAL",
@@ -107007,7 +107787,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 35,
+    "away_score": 10
   },
   {
     "game_id": "2024_18_HOU_TEN",
@@ -107417,7 +108200,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 14,
+    "away_score": 23
   },
   {
     "game_id": "2024_18_JAX_IND",
@@ -107827,7 +108613,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "IND",
+    "home_score": 26,
+    "away_score": 23
   },
   {
     "game_id": "2024_18_KC_DEN",
@@ -108237,7 +109026,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DEN",
+    "home_score": 38,
+    "away_score": 0
   },
   {
     "game_id": "2024_18_LAC_LV",
@@ -108647,7 +109439,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LAC",
+    "home_score": 20,
+    "away_score": 34
   },
   {
     "game_id": "2024_18_MIA_NYJ",
@@ -109057,7 +109852,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "NYJ",
+    "home_score": 32,
+    "away_score": 20
   },
   {
     "game_id": "2024_18_MIN_DET",
@@ -109467,7 +110265,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "DET",
+    "home_score": 31,
+    "away_score": 9
   },
   {
     "game_id": "2024_18_NO_TB",
@@ -109877,7 +110678,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "TB",
+    "home_score": 27,
+    "away_score": 19
   },
   {
     "game_id": "2024_18_NYG_PHI",
@@ -110287,7 +111091,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 20,
+    "away_score": 13
   },
   {
     "game_id": "2024_18_SEA_LA",
@@ -110697,7 +111504,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "SEA",
+    "home_score": 25,
+    "away_score": 30
   },
   {
     "game_id": "2024_18_SF_ARI",
@@ -111107,7 +111917,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "ARI",
+    "home_score": 47,
+    "away_score": 24
   },
   {
     "game_id": "2024_18_WAS_DAL",
@@ -111517,7 +112330,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 19,
+    "away_score": 23
   },
   {
     "game_id": "2024_19_DEN_BUF",
@@ -111927,7 +112743,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 31,
+    "away_score": 7
   },
   {
     "game_id": "2024_19_GB_PHI",
@@ -112337,7 +113156,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 22,
+    "away_score": 10
   },
   {
     "game_id": "2024_19_LAC_HOU",
@@ -112747,7 +113569,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "HOU",
+    "home_score": 32,
+    "away_score": 12
   },
   {
     "game_id": "2024_19_MIN_LA",
@@ -113157,7 +113982,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "LA",
+    "home_score": 27,
+    "away_score": 9
   },
   {
     "game_id": "2024_19_PIT_BAL",
@@ -113567,7 +114395,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BAL",
+    "home_score": 28,
+    "away_score": 14
   },
   {
     "game_id": "2024_19_WAS_TB",
@@ -113977,7 +114808,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 20,
+    "away_score": 23
   },
   {
     "game_id": "2024_20_BAL_BUF",
@@ -114387,7 +115221,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "BUF",
+    "home_score": 27,
+    "away_score": 25
   },
   {
     "game_id": "2024_20_HOU_KC",
@@ -114797,7 +115634,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 23,
+    "away_score": 14
   },
   {
     "game_id": "2024_20_LA_PHI",
@@ -115207,7 +116047,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 28,
+    "away_score": 22
   },
   {
     "game_id": "2024_20_WAS_DET",
@@ -115617,7 +116460,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "WAS",
+    "home_score": 31,
+    "away_score": 45
   },
   {
     "game_id": "2024_21_BUF_KC",
@@ -116027,7 +116873,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "KC",
+    "home_score": 32,
+    "away_score": 29
   },
   {
     "game_id": "2024_21_WAS_PHI",
@@ -116437,7 +117286,10 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 55,
+    "away_score": 23
   },
   {
     "game_id": "2024_22_KC_PHI",
@@ -116847,6 +117699,9 @@
       "mode": "historical_backtest"
     },
     "data_mode": "historical_backtest",
-    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features."
+    "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data — only games already played are used to build features.",
+    "actual_winner": "PHI",
+    "home_score": 40,
+    "away_score": 22
   }
 ]

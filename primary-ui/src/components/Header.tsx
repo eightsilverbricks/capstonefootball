@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
+import FanIdentityPicker from './FanIdentityPicker';
+import SeasonSummary from './SeasonSummary';
 
 const NAV_LINKS = [
-  { label: 'Games', to: '/' },
-  { label: 'Compete', to: '/compete' },
-  { label: 'Leaderboard', to: '/leaderboard' },
+  { label: 'Home', to: '/' },
+  { label: 'My Season', to: '/my-season' },
   { label: 'About', to: '/about' },
 ];
 
@@ -57,8 +58,10 @@ const Header: React.FC = () => {
             })}
           </nav>
 
-          {/* Right: season + mobile toggle */}
+          {/* Right: season standing + fan identity + mobile toggle */}
           <div className="flex items-center gap-3">
+            <SeasonSummary />
+            <FanIdentityPicker />
             <span
               className="hidden sm:inline text-xs uppercase tracking-widest"
               style={{ color: 'var(--text-muted)' }}

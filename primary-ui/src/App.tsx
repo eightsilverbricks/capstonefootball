@@ -1,9 +1,8 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import GamePage from "./pages/GamePage";
+import MySeasonPage from "./pages/MySeasonPage";
 import AboutPage from "./pages/AboutPage";
-import MakeYourCasePage from "./pages/MakeYourCasePage";
-import LeaderboardPage from "./pages/LeaderboardPage";
 import NotFound from "./pages/NotFound";
 
 const App = () => (
@@ -11,8 +10,7 @@ const App = () => (
     <Routes>
       <Route path="/" element={<Index />} />
       <Route path="/game/:season/:week/:away/:home" element={<GamePage />} />
-      <Route path="/compete" element={<MakeYourCasePage />} />
-      <Route path="/leaderboard" element={<LeaderboardPage />} />
+      <Route path="/my-season" element={<MySeasonPage />} />
       <Route path="/about" element={<AboutPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
