@@ -1,6 +1,8 @@
 import React from 'react';
 import { STADIUM_META, projectLatLng } from '@/data/stadiumMeta';
 import { getTeamColors } from '@/data/nflData';
+import { stadiumImageCredit } from '@/data/stadiumImages';
+import StadiumImage from './StadiumImage';
 
 interface StadiumPanelProps {
   stadium?: string | null;
@@ -54,6 +56,7 @@ const StadiumPanel: React.FC<StadiumPanelProps> = ({ stadium, surface, roof, loc
   const name = stadium || meta?.name || null;
   const roofLbl = roof ? (ROOF_LABEL[roof.toLowerCase()] ?? roof) : null;
   const surfLbl = surface ? surface.charAt(0).toUpperCase() + surface.slice(1) : null;
+  const credit = homeTeam ? stadiumImageCredit(homeTeam) : null;
 
   if (!name && !city) return null;
 
@@ -72,6 +75,25 @@ const StadiumPanel: React.FC<StadiumPanelProps> = ({ stadium, surface, roof, loc
       <h3 className="text-[11px] font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--text-muted)' }}>
         Venue
       </h3>
+
+      {homeTeam && credit && (
+        <figure className="mb-3">
+          <div
+            className="w-full rounded overflow-hidden"
+            style={{ border: '1px solid var(--border-subtle)', aspectRatio: '16 / 9', background: 'var(--surface-overlay)' }}
+          >
+            <StadiumImage
+              homeTeam={homeTeam}
+              width={640}
+              alt={name ? `${name} — home venue` : 'Home venue'}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <figcaption className="text-[10px] mt-1 text-right" style={{ color: 'var(--text-muted)' }}>
+            Photo · {credit}
+          </figcaption>
+        </figure>
+      )}
 
       {meta ? (
         <div

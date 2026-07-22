@@ -12,7 +12,7 @@ import { useUserPicks } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
 import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { computeSeasonHistory } from '@/lib/seasonHistory';
-import { computeFanbaseStandings } from '@/lib/threeWaySignal';
+import { computeFanbaseStandings, gameKey } from '@/lib/threeWaySignal';
 import { signed, stakeColor, pct } from '@/lib/format';
 
 const MySeasonPage: React.FC = () => {
@@ -23,6 +23,11 @@ const MySeasonPage: React.FC = () => {
   const summary = computeSeasonSummary(picks, predictions);
   const history = computeSeasonHistory(picks, predictions);
   const fanbases = React.useMemo(() => computeFanbaseStandings(predictions), [predictions]);
+  // Lets PickHighlightCard build a full share card (B4) from just the highlight's key.
+  const gameByKey = React.useMemo(
+    () => new Map(predictions.map((g) => [gameKey(g), g])),
+    [predictions],
+  );
 
   const latestWeek = history.weeks.length > 0 ? history.weeks[history.weeks.length - 1] : null;
   const latestBestCall =
@@ -107,7 +112,15 @@ const MySeasonPage: React.FC = () => {
                     Strongest calls
                   </h2>
                   {history.strongestCalls.length > 0 ? (
-                    history.strongestCalls.map((c) => <PickHighlightCard key={c.key} highlight={c} />)
+                    history.strongestCalls.map((c) => (
+                      <PickHighlightCard
+                        key={c.key}
+                        highlight={c}
+                        game={gameByKey.get(c.key)}
+                        clarkDifferential={summary.clarkDifferential}
+                        streak={summary.streak}
+                      />
+                    ))
                   ) : (
                     <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No wins yet.</p>
                   )}
@@ -117,7 +130,15 @@ const MySeasonPage: React.FC = () => {
                     Biggest misses
                   </h2>
                   {history.biggestMisses.length > 0 ? (
-                    history.biggestMisses.map((c) => <PickHighlightCard key={c.key} highlight={c} />)
+                    history.biggestMisses.map((c) => (
+                      <PickHighlightCard
+                        key={c.key}
+                        highlight={c}
+                        game={gameByKey.get(c.key)}
+                        clarkDifferential={summary.clarkDifferential}
+                        streak={summary.streak}
+                      />
+                    ))
                   ) : (
                     <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No misses — flawless so far.</p>
                   )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { PlayerContext } from '@/types/prediction';
+import PlayerHeadshot from '@/components/PlayerHeadshot';
 
 interface PlayerMatchupCardProps {
   awayTeam: string;
@@ -69,35 +70,49 @@ interface MatchupBlockProps {
   homeTeam: string;
   awayName: string;
   homeName: string;
+  awayEspnId?: string | null;
+  homeEspnId?: string | null;
   rows: React.ReactNode;
 }
 
-const MatchupBlock: React.FC<MatchupBlockProps> = ({ heading, awayTeam, homeTeam, awayName, homeName, rows }) => (
+const MatchupBlock: React.FC<MatchupBlockProps> = ({
+  heading, awayTeam, homeTeam, awayName, homeName, awayEspnId, homeEspnId, rows,
+}) => (
   <div>
     <div className="flex items-center justify-between mb-2">
       <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
         {heading}
       </span>
     </div>
-    <div className="grid grid-cols-[1fr_auto_1fr] items-baseline gap-3 mb-2">
-      <div className="text-right">
-        <p className="font-semibold text-sm leading-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
-          {awayName}
-        </p>
-        <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
-          {awayTeam}
-        </p>
+    <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 mb-2">
+      <div className="flex items-center justify-end gap-2 text-right">
+        <div className="min-w-0">
+          <p className="font-semibold text-sm leading-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+            {awayName}
+          </p>
+          <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            {awayTeam}
+          </p>
+        </div>
+        {awayEspnId && (
+          <PlayerHeadshot espnId={awayEspnId} name={awayName} teamAbbr={awayTeam} size={28} className="shrink-0" />
+        )}
       </div>
-      <span className="text-[10px] uppercase tracking-widest pt-1" style={{ color: 'var(--text-muted)' }}>
+      <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
         vs
       </span>
-      <div className="text-left">
-        <p className="font-semibold text-sm leading-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
-          {homeName}
-        </p>
-        <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
-          {homeTeam}
-        </p>
+      <div className="flex items-center justify-start gap-2 text-left">
+        {homeEspnId && (
+          <PlayerHeadshot espnId={homeEspnId} name={homeName} teamAbbr={homeTeam} size={28} className="shrink-0" />
+        )}
+        <div className="min-w-0">
+          <p className="font-semibold text-sm leading-tight" style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+            {homeName}
+          </p>
+          <p className="text-[10px] uppercase tracking-widest mt-0.5" style={{ color: 'var(--text-tertiary)' }}>
+            {homeTeam}
+          </p>
+        </div>
       </div>
     </div>
     <div className="flex flex-col gap-1">{rows}</div>
@@ -145,6 +160,8 @@ const PlayerMatchupCard: React.FC<PlayerMatchupCardProps> = ({
             homeTeam={homeTeam}
             awayName={awayQB?.name || '—'}
             homeName={homeQB?.name || '—'}
+            awayEspnId={awayQB?.espn_id}
+            homeEspnId={homeQB?.espn_id}
             rows={
               <>
                 <StatRow
@@ -180,6 +197,8 @@ const PlayerMatchupCard: React.FC<PlayerMatchupCardProps> = ({
             homeTeam={homeTeam}
             awayName={awayRB?.name || '—'}
             homeName={homeRB?.name || '—'}
+            awayEspnId={awayRB?.espn_id}
+            homeEspnId={homeRB?.espn_id}
             rows={
               <>
                 <StatRow

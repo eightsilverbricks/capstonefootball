@@ -1,5 +1,6 @@
 import React from 'react';
 import { getTeamColors } from '@/data/nflData';
+import { legibleTeamTextColor, SURFACE_HEX } from '@/lib/color';
 
 interface WinProbBarProps {
   awayTeam: string;
@@ -24,14 +25,14 @@ const WinProbBar: React.FC<WinProbBarProps> = ({
       <div className="flex justify-between items-baseline mb-2">
         <span
           className="text-xs font-semibold tracking-wide"
-          style={{ color: awayWins ? (awayColors.secondary || '#f0f0f0') : 'var(--text-tertiary)' }}
+          style={{ color: awayWins ? legibleTeamTextColor(awayColors, SURFACE_HEX, '#ffffff') : 'rgba(255,255,255,0.82)' }}
         >
           {awayTeam} {awayPct}%
         </span>
-        <span className="text-xs" style={{ color: 'var(--text-muted)' }}>win probability</span>
+        <span className="text-xs" style={{ color: 'rgba(255,255,255,0.78)' }}>win probability</span>
         <span
           className="text-xs font-semibold tracking-wide"
-          style={{ color: homeWins ? (homeColors.secondary || '#f0f0f0') : 'var(--text-tertiary)' }}
+          style={{ color: homeWins ? legibleTeamTextColor(homeColors, SURFACE_HEX, '#ffffff') : 'rgba(255,255,255,0.82)' }}
         >
           {homePct}% {homeTeam}
         </span>

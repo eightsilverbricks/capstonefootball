@@ -17,5 +17,12 @@ def main():
     pbp.write_parquet(RAW_DIR / "pbp.parquet")
     print("Saved pbp.parquet")
 
+    # gsis_id -> espn_id crosswalk, used to build real headshot URLs for the
+    # game-page banner's QB/RB imagery (see build_player_context.py).
+    print("Loading player id crosswalk...")
+    players = nfl.load_players()
+    players.write_parquet(RAW_DIR / "player_ids.parquet")
+    print("Saved player_ids.parquet")
+
 if __name__ == "__main__":
     main()

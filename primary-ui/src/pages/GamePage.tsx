@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { usePredictions } from '@/hooks/usePredictions';
 import GameReport from '@/components/game-report/GameReport';
 import TeamLogo from '@/components/TeamLogo';
@@ -68,13 +68,23 @@ const GamePage: React.FC = () => {
             )}
           </div>
 
-          {/* Right: demo badge */}
-          <span
-            className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border"
-            style={{ borderColor: 'rgba(200,169,110,0.35)', color: '#c8a96e', background: 'rgba(200,169,110,0.08)' }}
-          >
-            2024
-          </span>
+          {/* Right: My Season link (closes the reasoning -> pick -> share -> history
+              loop — this page previously had no path back to Home or My Season
+              other than the browser Back button) + demo badge */}
+          <div className="flex items-center gap-3 shrink-0">
+            <Link
+              to="/my-season"
+              className="hidden sm:inline text-sm text-white/50 hover:text-white transition-colors"
+            >
+              My Season →
+            </Link>
+            <span
+              className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border"
+              style={{ borderColor: 'rgba(200,169,110,0.35)', color: '#c8a96e', background: 'rgba(200,169,110,0.08)' }}
+            >
+              2024
+            </span>
+          </div>
         </div>
       </div>
 

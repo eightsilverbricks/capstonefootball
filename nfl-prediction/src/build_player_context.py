@@ -20,14 +20,31 @@ import pandas as pd
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PBP_PATH  = BASE_DIR / "data" / "raw" / "pbp.parquet"
+PLAYER_IDS_PATH = BASE_DIR / "data" / "raw" / "player_ids.parquet"
 OUT_PATH  = BASE_DIR / "data" / "processed" / "player_context.json"
 
 MIN_QB_ATTEMPTS  = 50
 MIN_RB_CARRIES   = 30
 
 
-def build(pbp: pd.DataFrame) -> dict:
+def load_gsis_to_espn() -> dict[str, str]:
+    """gsis_id -> espn_id crosswalk for building real headshot URLs.
+
+    Returns {} (graceful degradation to TeamLogo fallback) if the crosswalk
+    hasn't been fetched yet — run download_data.py to populate it.
+    """
+    if not PLAYER_IDS_PATH.exists():
+        print(f"  (no {PLAYER_IDS_PATH.name} — run download_data.py for headshots; "
+              "continuing without espn_id)")
+        return {}
+    ids = pd.read_parquet(PLAYER_IDS_PATH, columns=["gsis_id", "espn_id"])
+    ids = ids.dropna(subset=["gsis_id", "espn_id"])
+    return dict(zip(ids["gsis_id"], ids["espn_id"].astype(int).astype(str)))
+
+
+def build(pbp: pd.DataFrame, gsis_to_espn: dict[str, str] | None = None) -> dict:
     """Returns {season: {team: {...player context...}}}"""
+    gsis_to_espn = gsis_to_espn or {}
     context: dict = {}
 
     for season in sorted(pbp["season"].unique()):
@@ -48,7 +65,7 @@ def build(pbp: pd.DataFrame) -> dict:
             ]
             qb_agg = (
                 qb_plays
-                .groupby("passer_player_name")
+                .groupby(["passer_player_name", "passer_player_id"], dropna=False)
                 .agg(attempts=("pass_attempt", "sum"), epa=("epa", "sum"), cpoe=("cpoe", "mean"))
                 .reset_index()
             )
@@ -62,9 +79,10 @@ def build(pbp: pd.DataFrame) -> dict:
                     "attempts":    int(starter["attempts"]),
                     "epa_per_att": float(round(starter["epa_per_att"], 3)),
                     "cpoe":        float(round(starter["cpoe"], 2)) if pd.notna(starter["cpoe"]) else None,
+                    "espn_id":     gsis_to_espn.get(starter["passer_player_id"]),
                 }
             else:
-                qb_ctx = {"name": None, "attempts": 0, "epa_per_att": 0.0, "cpoe": None}
+                qb_ctx = {"name": None, "attempts": 0, "epa_per_att": 0.0, "cpoe": None, "espn_id": None}
 
             # ── RB stats ────────────────────────────────────────────────────────
             rush_plays = team_plays[
@@ -74,7 +92,7 @@ def build(pbp: pd.DataFrame) -> dict:
             ]
             rb_agg = (
                 rush_plays
-                .groupby("rusher_player_name")
+                .groupby(["rusher_player_name", "rusher_player_id"], dropna=False)
                 .agg(carries=("rush_attempt", "sum"), yards=("yards_gained", "sum"), epa=("epa", "sum"))
                 .reset_index()
             )
@@ -88,9 +106,10 @@ def build(pbp: pd.DataFrame) -> dict:
                     "carries": int(top_rb["carries"]),
                     "ypc":     float(round(top_rb["ypc"], 2)),
                     "epa":     float(round(top_rb["epa"], 1)),
+                    "espn_id": gsis_to_espn.get(top_rb["rusher_player_id"]),
                 }
             else:
-                rb_ctx = {"name": None, "carries": 0, "ypc": 0.0, "epa": 0.0}
+                rb_ctx = {"name": None, "carries": 0, "ypc": 0.0, "epa": 0.0, "espn_id": None}
 
             # ── Offense summary ─────────────────────────────────────────────────
             pass_epa_total = float(round(qb_plays["epa"].sum(), 2)) if not qb_plays.empty else 0.0
@@ -123,8 +142,12 @@ def main():
     pbp = pd.read_parquet(PBP_PATH)
     print(f"  {len(pbp):,} plays · seasons {sorted(pbp['season'].unique())}")
 
+    print("Loading gsis_id -> espn_id crosswalk …")
+    gsis_to_espn = load_gsis_to_espn()
+    print(f"  {len(gsis_to_espn):,} players with an espn_id")
+
     print("Building player context …")
-    ctx = build(pbp)
+    ctx = build(pbp, gsis_to_espn)
 
     total_entries = sum(len(v) for v in ctx.values())
     print(f"  {total_entries} team-season entries")

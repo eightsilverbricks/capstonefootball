@@ -7,9 +7,13 @@ export interface FactorCard {
   contribution_strength: number;
   status: 'DECISIVE' | 'MODERATE' | 'MINOR' | 'NEUTRAL';
   tier?: 'strong' | 'medium' | 'weak';
-  reason?: string;
-  why_it_matters: string;
-  football_translation: string;
+  // Plain-English reasoning layer (claim -> evidence -> implication).
+  // `confident` is false for hedged/"close to even" reads — the UI should
+  // treat those as informational rather than a decisive selling point.
+  headline?: string;
+  explanation?: string;
+  baseline_note?: string;
+  confident?: boolean;
 }
 
 // ─── Market context ────────────────────────────────────────────────────────────
@@ -40,8 +44,8 @@ export interface PredictionFactor {
 
 // ─── Player context per team ──────────────────────────────────────────────────
 export interface PlayerContext {
-  qb?: { name?: string | null; attempts?: number; epa_per_att?: number; cpoe?: number | null };
-  rb?: { name?: string | null; carries?: number; ypc?: number; epa?: number };
+  qb?: { name?: string | null; attempts?: number; epa_per_att?: number; cpoe?: number | null; espn_id?: string | null };
+  rb?: { name?: string | null; carries?: number; ypc?: number; epa?: number; espn_id?: string | null };
 }
 
 // ─── Full game prediction from /predictions endpoint ──────────────────────────

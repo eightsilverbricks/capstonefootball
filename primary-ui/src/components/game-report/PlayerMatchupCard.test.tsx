@@ -77,6 +77,30 @@ describe('PlayerMatchupCard', () => {
     expect(screen.queryByText('Lead back')).toBeNull();
   });
 
+  it('renders real headshots (lazy-loaded) when espn_id is present on a player', () => {
+    render(
+      <PlayerMatchupCard
+        awayTeam="BUF" homeTeam="KC"
+        awayPlayers={{ qb: { ...awayPlayers.qb, espn_id: '3918298' } }}
+        homePlayers={{ qb: homePlayers.qb }}
+      />,
+    );
+    const img = screen.getByRole('img', { name: 'J.Allen' });
+    expect(img).toHaveAttribute('src', expect.stringContaining('3918298'));
+    expect(img).toHaveAttribute('loading', 'lazy'); // below-the-fold, not the banner hero image
+  });
+
+  it('renders no headshot image when espn_id is absent (no broken-image state)', () => {
+    render(
+      <PlayerMatchupCard
+        awayTeam="BUF" homeTeam="KC"
+        awayPlayers={{ qb: awayPlayers.qb }}
+        homePlayers={{ qb: homePlayers.qb }}
+      />,
+    );
+    expect(screen.queryByRole('img', { name: 'J.Allen' })).not.toBeInTheDocument();
+  });
+
   it('has descriptive aria-label', () => {
     render(
       <PlayerMatchupCard

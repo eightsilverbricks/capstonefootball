@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FactorCard } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
-import { ChevronDown, ChevronUp } from 'lucide-react';
 import ChallengeFactor from '@/components/competition/ChallengeFactor';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
@@ -18,16 +17,13 @@ interface FactorRowProps {
 }
 
 const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
-  const [expanded, setExpanded] = useState(false);
-
   const isEven     = factor.advantage_team === 'Even';
   const teamColors = isEven ? null : getTeamColors(factor.advantage_team);
   const accentColor = teamColors?.primary ?? '#475569';
   const labelColor  = teamColors?.secondary ?? '#94a3b8';
   const fillPct     = Math.round(factor.contribution_strength * 100);
   const statusCfg   = STATUS_CONFIG[factor.status] ?? STATUS_CONFIG.NEUTRAL;
-  const displayText = factor.reason || factor.football_translation || '';
-  const hasDetail   = !!(factor.why_it_matters);
+  const displayText = factor.explanation || '';
 
   return (
     <article
@@ -89,9 +85,19 @@ const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
         </div>
       </div>
 
-      {/* Reason text — numbers from backend */}
+      {/* Headline + full explanation — inline, expanded by default.
+          This is the core reasoning; it must never hide behind a second
+          dropdown (see CLARK_REPORT_AND_VIRALITY_PLAN.md, B1). */}
       {displayText && (
         <div className="px-4 pb-4">
+          {factor.headline && (
+            <p
+              className="text-sm font-semibold mb-1"
+              style={{ color: 'var(--text-primary)' }}
+            >
+              {factor.headline}
+            </p>
+          )}
           <p
             className="text-sm leading-relaxed"
             style={{ color: 'var(--text-secondary)' }}
@@ -101,38 +107,8 @@ const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
         </div>
       )}
 
-      {/* Expandable: why it matters */}
-      {hasDetail && (
-        <>
-          <button
-            onClick={() => setExpanded(e => !e)}
-            className="w-full flex items-center justify-center gap-1 py-2 text-[11px] transition-colors"
-            style={{
-              borderTop: '1px solid var(--border-subtle)',
-              color: 'var(--text-muted)',
-            }}
-            aria-expanded={expanded}
-          >
-            {expanded
-              ? <><ChevronUp className="w-3 h-3" />Less</>
-              : <><ChevronDown className="w-3 h-3" />Why does this matter?</>}
-          </button>
-          {expanded && (
-            <div
-              className="px-4 pb-4 pt-3 text-xs leading-relaxed"
-              style={{
-                borderTop: '1px solid var(--border-subtle)',
-                color: 'var(--text-tertiary)',
-                background: 'var(--surface-raised)',
-              }}
-            >
-              {factor.why_it_matters}
-            </div>
-          )}
-        </>
-      )}
-
-      {/* Community challenge thread */}
+      {/* Community challenge thread — the only thing that stays collapsed;
+          secondary to the reasoning above, never competes with it. */}
       {gameId && <ChallengeFactor gameId={gameId} factorName={factor.name} />}
     </article>
   );

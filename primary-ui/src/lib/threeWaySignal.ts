@@ -9,6 +9,7 @@
 
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { GAME_CREDIT_CAP } from '@/competition/scoring';
+import { getHeroInsight } from '@/lib/heroInsight';
 
 export interface TeamPick {
   team: string;
@@ -180,6 +181,9 @@ export interface SignalResult {
   clark: TeamPick;
   vegas: TeamPick | null;
   fan: TeamPick;
+  /** The non-obvious factor headline behind Clark's pick (B5) — null if the
+   * game has no factor data to build one from. */
+  clarkHeadline: string | null;
 }
 
 export function computeSignal(games: ApiPrediction[]): SignalResult | null {
@@ -202,7 +206,12 @@ export function computeSignal(games: ApiPrediction[]): SignalResult | null {
 
     if (score > bestScore) {
       bestScore = score;
-      best = { game, sentence: buildSignalSentence(game, clark, vegas, fan), clark, vegas, fan };
+      best = {
+        game,
+        sentence: buildSignalSentence(game, clark, vegas, fan),
+        clark, vegas, fan,
+        clarkHeadline: getHeroInsight(game)?.headline ?? null,
+      };
     }
   }
   return best;

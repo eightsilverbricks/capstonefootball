@@ -6,6 +6,7 @@
 
 import { ApiPrediction } from '@/types/prediction';
 import { gameKey, getFanPick, getFanSentimentSeries, SentimentPoint } from './threeWaySignal';
+import { getHeroInsight } from './heroInsight';
 
 export interface StoryModule {
   id: string;
@@ -18,6 +19,9 @@ export interface StoryModule {
   sparkline?: SentimentPoint[];
   /** True when any part of this module leans on provisional fan data. */
   provisional: boolean;
+  /** The non-obvious factor headline behind Clark's pick (B5) — makes the
+   * homepage itself deliver an observation, not just a crowd/market stat. */
+  clarkHeadline: string | null;
 }
 
 export function computeStoryModules(games: ApiPrediction[], excludeKey?: string): StoryModule[] {
@@ -48,6 +52,7 @@ export function computeStoryModules(games: ApiPrediction[], excludeKey?: string)
       statValue: `+${Math.round(swing.delta * 100)} pts`,
       sparkline: swing.series.points,
       provisional: true,
+      clarkHeadline: getHeroInsight(swing.g)?.headline ?? null,
     });
     used.add(gameKey(swing.g));
   }
@@ -75,6 +80,7 @@ export function computeStoryModules(games: ApiPrediction[], excludeKey?: string)
       statLabel: 'fan support',
       statValue: `${fanPct}%`,
       provisional: true,
+      clarkHeadline: getHeroInsight(bold.g)?.headline ?? null,
     });
     used.add(gameKey(bold.g));
   }
@@ -94,6 +100,7 @@ export function computeStoryModules(games: ApiPrediction[], excludeKey?: string)
       statLabel: 'fan lean',
       statValue: `${Math.round(divided.fan.prob * 100)}%`,
       provisional: true,
+      clarkHeadline: getHeroInsight(divided.g)?.headline ?? null,
     });
   }
 

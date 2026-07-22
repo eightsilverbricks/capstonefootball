@@ -7,6 +7,13 @@
       "runtimeArgs": ["-c", "cd primary-ui && npm run dev"],
       "port": 8080,
       "autoPort": false
+    },
+    {
+      "name": "nfl-prediction-api",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd nfl-prediction && .venv/bin/python -m uvicorn src.api:app --host 127.0.0.1 --port 8000 --reload"],
+      "port": 8000,
+      "autoPort": false
     }
   ]
 }

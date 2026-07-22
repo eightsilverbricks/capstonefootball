@@ -15,7 +15,7 @@ interface SignalCardProps {
  */
 const SignalCard: React.FC<SignalCardProps> = ({ signal }) => {
   const navigate = useNavigate();
-  const { game, sentence, clark, vegas, fan } = signal;
+  const { game, sentence, clark, vegas, fan, clarkHeadline } = signal;
 
   const rows = [
     { label: 'Clark', team: clark.team, pct: clark.prob },
@@ -51,6 +51,15 @@ const SignalCard: React.FC<SignalCardProps> = ({ signal }) => {
       >
         {sentence}
       </p>
+
+      {clarkHeadline && (
+        <p
+          className="mb-5 text-sm leading-snug flex items-start gap-1.5"
+          style={{ color: 'var(--text-secondary)' }}
+        >
+          <span style={{ color: 'var(--accent-gold)' }}>Clark noticed:</span> {clarkHeadline}
+        </p>
+      )}
 
       <ThreeWayCompare rows={rows} size="large" winner={game.actual_winner} />
 

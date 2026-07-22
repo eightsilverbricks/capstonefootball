@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import FactorList from './FactorList';
 import type { FactorCard } from '@/types/prediction';
 
@@ -10,9 +10,10 @@ const makeFactors = (): FactorCard[] => [
     raw_edge: 1.4,
     contribution_strength: 0.82,
     status: 'DECISIVE',
-    reason: 'KC favored by 6.5 — market edge is clear.',
-    why_it_matters: 'Vegas lines encode injury news and public info.',
-    football_translation: 'KC has a significant market advantage.',
+    headline: 'The market leans KC.',
+    explanation: 'KC favored by 6.5 — market edge is clear.',
+    baseline_note: 'Vegas priced KC as a 6.5-point favorite.',
+    confident: true,
   },
   {
     name: 'Recent Offense',
@@ -20,9 +21,10 @@ const makeFactors = (): FactorCard[] => [
     raw_edge: 0.4,
     contribution_strength: 0.41,
     status: 'MODERATE',
-    reason: 'BUF EPA +0.18 over last 3 games.',
-    why_it_matters: 'Recent EPA reflects current offensive efficiency.',
-    football_translation: 'BUF offense trending up.',
+    headline: 'BUF own the better recent offense.',
+    explanation: 'BUF EPA +0.18 over last 3 games.',
+    baseline_note: 'BUF hold a +0.18 EPA/play edge.',
+    confident: true,
   },
   {
     name: 'Defensive Edge',
@@ -30,9 +32,10 @@ const makeFactors = (): FactorCard[] => [
     raw_edge: 0.0,
     contribution_strength: 0.05,
     status: 'NEUTRAL',
-    reason: 'Defenses roughly equal over last 3 games.',
-    why_it_matters: 'Neither defense has a clear advantage.',
-    football_translation: 'Neutral defensive matchup.',
+    headline: 'Recent defense grades out close.',
+    explanation: 'Defenses roughly equal over last 3 games.',
+    baseline_note: 'Recent EPA allowed grades out close.',
+    confident: false,
   },
 ];
 
@@ -49,7 +52,7 @@ describe('FactorList', () => {
     expect(screen.getByText('Defensive Edge')).toBeInTheDocument();
   });
 
-  it('renders reason text from backend for non-neutral factors', () => {
+  it('renders explanation text from backend for non-neutral factors', () => {
     render(<FactorList factors={makeFactors()} />);
     expect(screen.getByText(/KC favored by 6.5/)).toBeInTheDocument();
     expect(screen.getByText(/BUF EPA \+0\.18/)).toBeInTheDocument();
@@ -91,25 +94,22 @@ describe('FactorList', () => {
     expect(badges).toHaveLength(1);
   });
 
-  it('shows expand toggle when why_it_matters is set', () => {
+  it('renders the headline and full explanation inline with no second dropdown', () => {
     render(<FactorList factors={makeFactors()} />);
-    expect(screen.getAllByText(/why does this matter/i).length).toBeGreaterThan(0);
+    // The reasoning is visible immediately — no "why does this matter?" toggle exists.
+    expect(screen.queryByText(/why does this matter/i)).not.toBeInTheDocument();
+    expect(screen.getByText('The market leans KC.')).toBeInTheDocument();
+    expect(screen.getByText(/KC favored by 6\.5/)).toBeInTheDocument();
   });
 
-  it('expands why_it_matters on toggle click', () => {
-    render(<FactorList factors={makeFactors()} />);
-    const toggle = screen.getAllByText(/why does this matter/i)[0];
-    expect(screen.queryByText(/Vegas lines encode/)).not.toBeInTheDocument();
-    fireEvent.click(toggle);
-    expect(screen.getByText(/Vegas lines encode/)).toBeInTheDocument();
-  });
-
-  it('collapses detail on second click', () => {
-    render(<FactorList factors={makeFactors()} />);
-    const toggle = screen.getAllByText(/why does this matter/i)[0];
-    fireEvent.click(toggle);
-    fireEvent.click(screen.getByText(/Less/i));
-    expect(screen.queryByText(/Vegas lines encode/)).not.toBeInTheDocument();
+  it('does not render an explanation paragraph when the field is missing (no crash)', () => {
+    const factors = makeFactors();
+    delete factors[0].explanation;
+    delete factors[0].headline;
+    render(<FactorList factors={factors} />);
+    // The row still renders (name + bar), just without a reasoning paragraph.
+    expect(screen.getByText('Market Edge')).toBeInTheDocument();
+    expect(screen.queryByText(/KC favored by 6\.5/)).not.toBeInTheDocument();
   });
 
   it('renders with empty factors array without crashing', () => {

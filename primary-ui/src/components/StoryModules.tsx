@@ -48,6 +48,12 @@ const StoryCard: React.FC<{ module: StoryModule }> = ({ module }) => {
         {module.headline}
       </p>
 
+      {module.clarkHeadline && (
+        <p className="text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
+          <span style={{ color: 'var(--accent-gold)' }}>Clark noticed:</span> {module.clarkHeadline}
+        </p>
+      )}
+
       {module.sparkline && <MiniSpark points={module.sparkline} color={colors.primary} />}
 
       <div className="flex items-baseline justify-between mt-auto pt-1">

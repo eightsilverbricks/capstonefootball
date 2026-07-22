@@ -1,46 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
-import TeamLogo from '@/components/TeamLogo';
-import WinProbBar from './WinProbBar';
+import GameBanner from './GameBanner';
 import FactorList from './FactorList';
 import WeatherPanel from './WeatherPanel';
 import StadiumPanel from './StadiumPanel';
 import PlayerMatchupCard from './PlayerMatchupCard';
 import ThreeWayCompare from './ThreeWayCompare';
 import BeliefTracker from './BeliefTracker';
+import PickShareCard from './PickShareCard';
 import ConvictionSlider from '@/components/ConvictionSlider';
 import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
 import { useUserPicks } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { usePredictions } from '@/hooks/usePredictions';
+import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { Pick } from '@/competition/types';
 import { stakeFromConfidence, stakePreview, resolvePick } from '@/competition/scoring';
 import { signed, stakeColor } from '@/lib/format';
-import { AlertTriangle, ChevronDown, ChevronUp } from 'lucide-react';
+import { getHeroInsight, getEvidenceTeaser } from '@/lib/heroInsight';
+import { AlertTriangle, ChevronDown, ChevronUp, Sparkles, Share2 } from 'lucide-react';
 
 interface GameReportProps {
   game: ApiPrediction;
 }
 
-const PLAYOFF_LABELS: Record<number, string> = {
-  19: 'Wild Card', 20: 'Divisional', 21: 'Conference Championship', 22: 'Super Bowl',
-};
-
 const GameReport: React.FC<GameReportProps> = ({ game }) => {
   const [evidenceOpen, setEvidenceOpen] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
   const { picks, setPick } = useUserPicks();
   const { team: fanTeam } = useFanIdentity();
+  // Cheap: usePredictions is module-cached, so this reuses the fetch GamePage
+  // already made — needed here only to surface the season bragging layer (B6)
+  // on the per-pick share card.
+  const { predictions } = usePredictions();
+  const seasonSummary = useMemo(
+    () => computeSeasonSummary(picks, predictions),
+    [picks, predictions],
+  );
 
-  const winnerProb   = Math.round(getPredictedProbability(game) * 100);
-  const winnerColors = getTeamColors(game.predicted_winner);
-  const isPlayoff    = game.week >= 19;
-  const weekLabel    = PLAYOFF_LABELS[game.week] ?? `Week ${game.week}`;
   const factors      = game.factor_cards ?? [];
 
   const key      = gameKey(game);
   const userPick = picks[key];
   const vegas    = getVegasPick(game);
   const fan      = getFanPick(game);
+  const insight  = getHeroInsight(game);
+  const insightColors = insight ? getTeamColors(insight.team) : null;
+  const evidenceTeaser = getEvidenceTeaser(game);
 
   // Voting — the game page is the "informed" path: read the evidence, then vote.
   const [editing, setEditing] = useState(false);
@@ -81,124 +88,9 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
   return (
     <article style={{ fontFamily: 'var(--font-data)' }}>
 
-      {/* ── Matchup header — left-aligned, no centered hero, no gradients ── */}
-      <header
-        className="rounded-lg p-5 mb-4"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}
-      >
-        <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <span
-            className="text-xs font-semibold uppercase tracking-[0.2em]"
-            style={{ color: isPlayoff ? 'var(--accent-gold)' : 'var(--text-tertiary)' }}
-          >
-            {weekLabel} · {game.season}
-          </span>
-          {game.actual_winner ? (
-            <span
-              className="text-xs font-semibold uppercase tracking-[0.2em] tabular-nums"
-              style={{ color: game.predicted_winner === game.actual_winner ? 'var(--stake-positive)' : 'var(--stake-negative)' }}
-            >
-              Final · {game.away_team} {game.away_score} — {game.home_team} {game.home_score}
-            </span>
-          ) : (
-            <span
-              className="text-xs uppercase tracking-[0.2em]"
-              style={{ color: 'var(--text-tertiary)' }}
-            >
-              {game.confidence_label} confidence
-            </span>
-          )}
-        </div>
-
-        {/* Teams row — away left, win prob center, home right */}
-        <div className="flex items-center justify-between gap-4 mb-5">
-          {/* Away */}
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <TeamLogo abbr={game.away_team} size="lg" />
-            <div className="min-w-0">
-              <p className="font-bold text-lg leading-none"
-                style={{ color: game.predicted_winner === game.away_team ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                {game.away_team}
-              </p>
-              {game.away_season_record && (
-                <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                  {game.away_season_record}
-                  {game.away_last3_record && (
-                    <span style={{ color: 'var(--text-muted)' }}>
-                      {' '}· {game.away_last3_record.replace(' last 3', ' L3')}
-                    </span>
-                  )}
-                </p>
-              )}
-            </div>
-          </div>
-
-          {/* Win probability — display type */}
-          <div className="flex flex-col items-center shrink-0">
-            <div
-              className="font-bold leading-none"
-              style={{
-                fontSize: 'clamp(2.5rem, 5vw, 4rem)',
-                fontFamily: 'var(--font-display)',
-                color: winnerColors.secondary || winnerColors.primary || 'var(--accent-gold)',
-              }}
-            >
-              {winnerProb}
-              <span
-                className="text-2xl align-super"
-                style={{ color: 'var(--text-tertiary)', fontFamily: 'var(--font-data)', fontWeight: 400 }}
-              >
-                %
-              </span>
-            </div>
-            <p className="text-[11px] font-semibold uppercase tracking-wider mt-1" style={{ color: 'var(--text-muted)' }}>
-              {game.predicted_winner}
-            </p>
-          </div>
-
-          {/* Home */}
-          <div className="flex items-center gap-3 min-w-0 flex-1 justify-end">
-            <div className="min-w-0 text-right">
-              <p className="font-bold text-lg leading-none"
-                style={{ color: game.predicted_winner === game.home_team ? 'var(--text-primary)' : 'var(--text-secondary)' }}>
-                {game.home_team}
-              </p>
-              {game.home_season_record && (
-                <p className="text-xs mt-1" style={{ color: 'var(--text-tertiary)' }}>
-                  {game.home_season_record}
-                  {game.home_last3_record && (
-                    <span style={{ color: 'var(--text-muted)' }}>
-                      {' '}· {game.home_last3_record.replace(' last 3', ' L3')}
-                    </span>
-                  )}
-                </p>
-              )}
-            </div>
-            <TeamLogo abbr={game.home_team} size="lg" />
-          </div>
-        </div>
-
-        {/* Probability bar */}
-        <WinProbBar
-          awayTeam={game.away_team}
-          homeTeam={game.home_team}
-          awayProb={game.away_win_prob}
-          homeProb={game.home_win_prob}
-          predictedWinner={game.predicted_winner}
-        />
-
-        {game.confidence_label === 'Low' && (
-          <div
-            className="flex items-start gap-2 mt-4 px-3 py-2 rounded"
-            style={{ background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.22)' }}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: '#fde68a' }} aria-hidden="true" />
-            <p className="text-xs" style={{ color: '#fde68a' }}>
-              Close game — only a slight edge. Either outcome is plausible.
-            </p>
-          </div>
-        )}
-      </header>
+      {/* ── Matchup banner (Workstream C) — layered stadium/weather art,
+          home-team tinted, same content as the old plain header ── */}
+      <GameBanner game={game} />
 
       {/* ── Make your call — vote here, informed by everything on this page ── */}
       <div
@@ -276,14 +168,41 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                 </span>
               )}
             </div>
-            <button
-              type="button"
-              onClick={handleChange}
-              className="px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide"
-              style={{ background: 'var(--surface-raised)', color: 'var(--text-primary)', border: '1px solid var(--border-emphasis)' }}
-            >
-              Change pick
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setShareOpen((open) => !open)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide"
+                style={{ background: 'var(--surface-raised)', color: 'var(--accent-gold)', border: '1px solid var(--border-emphasis)' }}
+                aria-expanded={shareOpen}
+              >
+                <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
+                {shareOpen ? 'Hide card' : 'Share your call'}
+              </button>
+              <button
+                type="button"
+                onClick={handleChange}
+                className="px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide"
+                style={{ background: 'var(--surface-raised)', color: 'var(--text-primary)', border: '1px solid var(--border-emphasis)' }}
+              >
+                Change pick
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* ── Per-pick shareable artifact (B4) — screenshot-ready, self-contained ── */}
+        {!showSlider && shareOpen && (
+          <div className="mt-4">
+            <PickShareCard
+              game={game}
+              pick={{ team: userPick.team, confidence: userPick.confidence }}
+              vegas={vegas}
+              fan={fan}
+              resolvedNet={resolvedNet}
+              clarkDifferential={seasonSummary.resolvedCount > 0 ? seasonSummary.clarkDifferential : null}
+              streak={seasonSummary.streak}
+            />
           </div>
         )}
       </div>
@@ -308,6 +227,40 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
       {/* ── Belief tracker: takeaway, fan sentiment, fanbase splits ── */}
       <BeliefTracker game={game} />
 
+      {/* ── "Clark noticed…" — the non-obvious insight, visible before anyone
+          opts into the full evidence (B2). Team-colored, one claim + one line. ── */}
+      {insight && (
+        <div
+          className="rounded-lg p-5 mb-4"
+          style={{
+            background: 'var(--surface)',
+            border: `1px solid ${insightColors?.primary ?? 'var(--border-default)'}40`,
+            borderLeft: `3px solid ${insightColors?.primary ?? 'var(--accent-gold)'}`,
+          }}
+        >
+          <div className="flex items-center gap-1.5 mb-2">
+            <Sparkles className="w-3.5 h-3.5" style={{ color: insightColors?.primary ?? 'var(--accent-gold)' }} aria-hidden="true" />
+            <span
+              className="text-[11px] font-semibold uppercase tracking-widest"
+              style={{ color: insightColors?.secondary ?? 'var(--accent-gold)' }}
+            >
+              Clark noticed
+            </span>
+          </div>
+          <p
+            className="font-bold text-lg leading-snug"
+            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
+          >
+            {insight.headline}
+          </p>
+          {insight.line && (
+            <p className="text-sm leading-relaxed mt-1.5" style={{ color: 'var(--text-secondary)' }}>
+              {insight.line}
+            </p>
+          )}
+        </div>
+      )}
+
       {/* ── Evidence toggle — Clark Report stays intact, just moved behind an action ── */}
       <button
         type="button"
@@ -317,7 +270,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
         aria-expanded={evidenceOpen}
       >
         <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-          {evidenceOpen ? 'Hide the evidence' : 'View the evidence — why Clark thinks this'}
+          {evidenceOpen ? 'Hide the evidence' : evidenceTeaser}
         </span>
         {evidenceOpen ? (
           <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
@@ -328,11 +281,10 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
 
       {evidenceOpen && (
         <>
-          {/* ── Two-column body ── */}
-          <div
-            className="grid gap-4"
-            style={{ gridTemplateColumns: 'minmax(0,3fr) minmax(0,2fr)' }}
-          >
+          {/* ── Two-column body — single column on mobile, 3fr/2fr from lg up.
+              (Previously a fixed inline grid-template that never collapsed,
+              causing horizontal overflow on narrow viewports — see B7 mobile audit.) ── */}
+          <div className="grid grid-cols-1 lg:[grid-template-columns:minmax(0,3fr)_minmax(0,2fr)] gap-4">
             {/* Left — editorial lede + factors */}
             <div className="flex flex-col gap-4 min-w-0">
               {(game.football_story || game.explanation_summary) && (

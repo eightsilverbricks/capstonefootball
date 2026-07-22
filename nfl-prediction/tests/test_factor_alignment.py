@@ -67,23 +67,23 @@ class TestFactorPredictionAlignment(unittest.TestCase):
                                      f"Strength {s} > 1 in {game.get('game_id')}")
 
     def test_factor_cards_have_required_fields(self):
-        """Every card must have name, advantage_team, contribution_strength, reason, status."""
-        required = {"name", "advantage_team", "contribution_strength", "reason", "status"}
+        """Every card must have name, advantage_team, contribution_strength, explanation, status."""
+        required = {"name", "advantage_team", "contribution_strength", "explanation", "status"}
         for game in self.predictions:
             for card in game.get("factor_cards", []):
                 missing = required - set(card.keys())
                 self.assertFalse(missing,
                                  f"Card missing {missing} in {game.get('game_id')}")
 
-    def test_factor_reason_contains_real_numbers(self):
-        """Reason text must contain at least one number (not a generic placeholder)."""
+    def test_factor_explanation_contains_real_numbers(self):
+        """Explanation or baseline_note must contain at least one number (not a generic placeholder)."""
         number_pattern = re.compile(r'\d+')
         for game in self.predictions:
             for card in game.get("factor_cards", []):
-                reason = card.get("reason", "")
+                text = card.get("explanation", "") + " " + card.get("baseline_note", "")
                 self.assertTrue(
-                    number_pattern.search(reason),
-                    f"No numbers in reason for {game.get('game_id')}: '{reason[:80]}'"
+                    number_pattern.search(text),
+                    f"No numbers in explanation for {game.get('game_id')}: '{text[:80]}'"
                 )
 
 
