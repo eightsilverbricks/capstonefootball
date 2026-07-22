@@ -58,10 +58,18 @@ export const STADIUM_IMAGES: Record<string, StadiumImageMeta> = {
 /**
  * Stable URL for a team's stadium photo at a requested pixel width, or null when
  * we have no mapping for that team (caller should fall back to the SVG scene).
+ *
+ * In production (Vercel) this points at the same-origin `/api/stadium` proxy —
+ * Wikimedia blocks/rate-limits third-party hotlinking from a deployed origin, so
+ * the browser must not hit Commons directly. In dev/test there is no serverless
+ * runtime, so we hit Commons directly (which works fine from localhost).
  */
 export function stadiumImageUrl(team: string, width = 1000): string | null {
   const meta = STADIUM_IMAGES[team];
   if (!meta) return null;
+  if (import.meta.env.PROD) {
+    return `/api/stadium?team=${encodeURIComponent(team)}&w=${width}`;
+  }
   return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(meta.file)}?width=${width}`;
 }
 
