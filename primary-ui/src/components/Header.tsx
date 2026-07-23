@@ -6,6 +6,7 @@ import SeasonSummary from './SeasonSummary';
 
 const NAV_LINKS = [
   { label: 'Home', to: '/' },
+  { label: 'Games', to: '/games' },
   { label: 'My Season', to: '/my-season' },
   { label: 'About', to: '/about' },
 ];

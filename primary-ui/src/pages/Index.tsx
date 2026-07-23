@@ -1,8 +1,8 @@
 import React from 'react';
-import AppLayout from '@/components/AppLayout';
+import HomeDashboard from '@/components/HomeDashboard';
 
 const Index: React.FC = () => {
-  return <AppLayout />;
+  return <HomeDashboard />;
 };
 
 export default Index;

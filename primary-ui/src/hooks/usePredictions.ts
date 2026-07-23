@@ -7,7 +7,7 @@ const PREDICTIONS_URL = import.meta.env.VITE_API_BASE_URL
   ? `${import.meta.env.VITE_API_BASE_URL}/predictions`
   : '/predictions.json';
 
-// Module-level cache so both AppLayout and GamePage share one fetch
+// Module-level cache so the dashboard, Games page, and GamePage share one fetch
 let _cache: ApiPrediction[] | null = null;
 let _promise: Promise<ApiPrediction[]> | null = null;
 
