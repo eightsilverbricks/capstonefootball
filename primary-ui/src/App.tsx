@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
 import GamesPage from "./pages/GamesPage";
 import GamePage from "./pages/GamePage";
@@ -16,6 +17,7 @@ const App = () => (
       <Route path="/about" element={<AboutPage />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
+    <Analytics />
   </BrowserRouter>
 );
 
