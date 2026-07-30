@@ -1,6 +1,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
 @import './styles/tokens.css';
+@import './styles/landing.css';
 
 @tailwind base;
 @tailwind components;
@@ -85,6 +86,44 @@
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 215 25% 27%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  /* ── shadcn tokens, re-pointed at the Clark palette ───────────────────────
+     index.html hardcodes class="dark", so this block is the one that actually
+     ships. The generic slate defaults above are kept only so the light theme
+     still resolves if anything ever toggles it. Values mirror tokens.css:
+     background=--bg, card=--surface, popover=--surface-raised,
+     primary/ring=--accent-gold, destructive=--stake-negative. */
+  .dark {
+    --background: 0 0% 3.5%;
+    --foreground: 0 0% 94%;
+
+    --card: 240 6% 7%;
+    --card-foreground: 0 0% 94%;
+
+    --popover: 240 6% 10%;
+    --popover-foreground: 0 0% 94%;
+
+    --primary: 39 45% 61%;
+    --primary-foreground: 0 0% 7%;
+
+    --secondary: 240 6% 14%;
+    --secondary-foreground: 0 0% 94%;
+
+    --muted: 240 5% 13%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 240 6% 15%;
+    --accent-foreground: 0 0% 94%;
+
+    --destructive: 0 91% 71%;
+    --destructive-foreground: 0 0% 7%;
+
+    --border: 240 4% 18%;
+    --input: 240 4% 18%;
+    --ring: 39 45% 61%;
   }
 }
 

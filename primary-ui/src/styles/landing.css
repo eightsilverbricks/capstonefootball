@@ -1,0 +1,189 @@
+/* ─── Landing + dashboard surface styles ─────────────────────────────────────
+   Scoped extensions to the core token set in tokens.css. The data UI stays flat
+   and gradient-free; these are the *marketing* and *dashboard-hero* surfaces,
+   where a little stadium-night atmosphere is the point. Everything here is
+   compositor-friendly (transform / opacity only) and fully disabled under
+   prefers-reduced-motion.
+   ─────────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Atmosphere — only used on hero/landing surfaces */
+  --field-line:      rgba(255, 255, 255, 0.035);
+  --field-hash:      rgba(255, 255, 255, 0.055);
+  --glow-gold:       rgba(200, 169, 110, 0.16);
+  --glow-soft:       rgba(255, 255, 255, 0.05);
+
+  /* Landing rhythm — deliberately looser than the data pages */
+  --space-section:   clamp(3.5rem, 2.5rem + 4vw, 7rem);
+
+  --duration-slow:   600ms;
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ── Field turf: yard lines fading toward the top ───────────────────────────── */
+.field-texture {
+  position: relative;
+  isolation: isolate;
+}
+
+.field-texture::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--field-line) 0 1px,
+      transparent 1px 5rem
+    ),
+    repeating-linear-gradient(
+      0deg,
+      var(--field-line) 0 1px,
+      transparent 1px 5rem
+    );
+  -webkit-mask-image: radial-gradient(120% 90% at 50% 0%, #000 0%, transparent 72%);
+  mask-image: radial-gradient(120% 90% at 50% 0%, #000 0%, transparent 72%);
+}
+
+/* ── Warm stadium-light bloom behind a hero ─────────────────────────────────── */
+.stadium-bloom {
+  position: relative;
+  isolation: isolate;
+}
+
+/* Stays inside the inline box on purpose: bleeding the glow past the edges with
+   a negative inset widens the document and gives the page a horizontal
+   scrollbar. The gradient's own falloff does the softening instead. */
+.stadium-bloom::after {
+  content: '';
+  position: absolute;
+  inset: -20% 0 auto 0;
+  height: 65%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(75% 100% at 50% 0%, var(--glow-gold) 0%, transparent 70%);
+}
+
+/* ── Bobblehead motion ──────────────────────────────────────────────────────── */
+@keyframes clark-bobble {
+  0%,
+  100% { transform: rotate(-4.5deg); }
+  50%  { transform: rotate(4.5deg); }
+}
+
+.bobble-head {
+  transform-box: fill-box;
+  transform-origin: 50% 96%;
+  animation: clark-bobble 2.6s var(--ease-out) infinite;
+  will-change: transform;
+}
+
+/* Hover on the figure winds the bobble up rather than stopping it. */
+.bobble-figure:hover .bobble-head,
+.bobble-figure:focus-visible .bobble-head {
+  animation-duration: 0.62s;
+}
+
+.bobble-figure {
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.bobble-figure:hover,
+.bobble-figure:focus-visible {
+  transform: translateY(-6px);
+}
+
+/* ── Card lift — the one shared hover treatment for clickable panels ────────── */
+.lift-card {
+  transition:
+    transform var(--duration-normal) var(--ease-out),
+    border-color var(--duration-normal) var(--ease-out),
+    box-shadow var(--duration-normal) var(--ease-out);
+  will-change: transform;
+}
+
+.lift-card:hover,
+.lift-card:focus-visible {
+  transform: translateY(-3px);
+  border-color: var(--border-emphasis);
+  box-shadow: 0 12px 32px -18px rgba(0, 0, 0, 0.9);
+}
+
+/* ── Entrance: staggered rise. Set --rise-delay per child. ──────────────────── */
+@keyframes clark-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.rise-in {
+  animation: clark-rise var(--duration-slow) var(--ease-out) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* ── Slow ambient float for decorative stickers ─────────────────────────────── */
+@keyframes clark-float {
+  0%,
+  100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
+  50%  { transform: translateY(-7px) rotate(var(--tilt, 0deg)); }
+}
+
+.float-slow {
+  animation: clark-float 5.5s var(--ease-out) infinite;
+}
+
+/* ── Live pulse dot ─────────────────────────────────────────────────────────── */
+@keyframes clark-pulse-ring {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  70%  { transform: scale(2.4); opacity: 0; }
+  100% { transform: scale(2.4); opacity: 0; }
+}
+
+.pulse-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  background: currentColor;
+  animation: clark-pulse-ring 2s var(--ease-out) infinite;
+}
+
+/* ── Horizontal rails — hide the scrollbar, keep the scrolling ──────────────── */
+.rail-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
+}
+
+.rail-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.rail-scroll > * {
+  scroll-snap-align: start;
+}
+
+/* ── Reduced motion: kill every animation, keep every final state ───────────── */
+@media (prefers-reduced-motion: reduce) {
+  .bobble-head,
+  .float-slow,
+  .rise-in,
+  .pulse-ring::after {
+    animation: none !important;
+  }
+
+  .bobble-figure,
+  .lift-card {
+    transition: none;
+  }
+
+  .bobble-figure:hover,
+  .lift-card:hover {
+    transform: none;
+  }
+
+  .rise-in {
+    opacity: 1;
+  }
+}

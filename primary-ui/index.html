@@ -1,12 +1,17 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<!-- The app is dark-only. Setting the class here (rather than at runtime) means
+     shadcn/Radix surfaces — dialogs, inputs, overlays — resolve their dark
+     tokens on first paint, with no light flash. -->
+<html lang="en" class="dark" style="color-scheme: dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>The Clark Index — NFL Football Intelligence</title>
     <meta name="description" content="Understand any NFL matchup in 60 seconds. The Clark Index explains why teams win using evidence-based statistical analysis — built for fans and beginners alike." />
-    <link rel="icon" type="image/svg+xml" href="/placeholder.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.svg" />
+    <meta name="theme-color" content="#090909" />
 
     <meta property="og:title" content="The Clark Index — NFL Football Intelligence" />
     <meta property="og:description" content="Understand any NFL matchup in 60 seconds. Evidence-based analysis that explains why teams win." />

@@ -2,8 +2,12 @@
 // Product-overhaul Phase 5: capture a favorite team so future fanbase-level
 // insights ("Packers fans have been the most accurate") have something to key
 // off of. This is NOT the real persistence layer — it's localStorage on this
-// device only, no account, no sync, no backend. Wiring it to a real account
-// system is a later, explicitly-scoped piece of work.
+// device only, no sync, no backend.
+//
+// Once someone has an account (see src/auth/), the profile's favoriteTeam is the
+// source of truth and useAuth mirrors it down here on sign-in / profile update,
+// so every team-colored surface keeps working the same way for signed-out
+// visitors and signed-in members alike.
 
 import { useCallback, useSyncExternalStore } from 'react';
 
@@ -28,6 +32,26 @@ function emit(): void {
   listeners.forEach((l) => l());
 }
 
+/** Module-level setter so non-hook code (useAuth) can mirror the profile team. */
+export function setFanTeam(team: string): void {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, team);
+  } catch {
+    // localStorage unavailable — selection just won't persist this session
+  }
+  emit();
+}
+
+/** Module-level clear, used on sign-out. */
+export function clearFanTeam(): void {
+  try {
+    window.localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    // no-op
+  }
+  emit();
+}
+
 export interface FanIdentityData {
   team: string | null;
   setTeam: (team: string) => void;
@@ -37,23 +61,8 @@ export interface FanIdentityData {
 export function useFanIdentity(): FanIdentityData {
   const team = useSyncExternalStore(subscribe, readTeam, () => null);
 
-  const setTeam = useCallback((next: string) => {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, next);
-    } catch {
-      // localStorage unavailable — selection just won't persist this session
-    }
-    emit();
-  }, []);
-
-  const clearTeam = useCallback(() => {
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } catch {
-      // no-op
-    }
-    emit();
-  }, []);
+  const setTeam = useCallback((next: string) => setFanTeam(next), []);
+  const clearTeam = useCallback(() => clearFanTeam(), []);
 
   return { team, setTeam, clearTeam };
 }
