@@ -1,8 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowRight, PartyPopper, Sparkles } from 'lucide-react';
 import BobbleheadRow from '@/components/brand/BobbleheadRow';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
+
+/** Hardcoded on purpose — this is a hype date, not derived from the shipped
+ * dataset (which stays pinned to the 2024 demo season). Bump it by hand each
+ * offseason. */
+const UPCOMING_SEASON = 2026;
 
 interface LandingHeroProps {
   /** Total games in the shipped dataset — shown as live proof, not a claim. */
@@ -71,13 +76,19 @@ const LandingHero: React.FC<LandingHeroProps> = ({ gamesAnalyzed }) => (
         </button>
         <Link
           to="/games"
-          className="inline-flex items-center gap-2 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline transition-colors"
+          className="shine-cta group inline-flex items-center gap-2 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline transition-transform duration-150 hover:-translate-y-0.5"
           style={{
-            color: 'var(--text-secondary)',
-            border: '1px solid var(--border-default)',
+            color: 'var(--accent-gold)',
+            background: 'var(--accent-gold-dim)',
+            border: '1.5px solid var(--accent-gold)',
+            boxShadow: '0 8px 24px -10px rgba(200,169,110,0.55)',
           }}
         >
-          Look around first
+          <span className="relative z-[2]">Look around first — see this week's games</span>
+          <ArrowRight
+            className="relative z-[2] w-4 h-4 transition-transform duration-200 group-hover:translate-x-1"
+            aria-hidden="true"
+          />
         </Link>
       </div>
 
@@ -85,8 +96,29 @@ const LandingHero: React.FC<LandingHeroProps> = ({ gamesAnalyzed }) => (
         No card, no odds, no risk — just bragging rights.
       </p>
 
+      {/* Hype sign — a physical, bolted-on marquee plaque, not another banner */}
+      <div
+        className="rise-in stadium-sign px-6 py-3 mt-10"
+        style={{ '--rise-delay': '300ms' } as React.CSSProperties}
+      >
+        <div className="flex items-center gap-2.5">
+          <PartyPopper className="w-5 h-5 shrink-0" aria-hidden="true" />
+          <p className="leading-tight text-left">
+            <span className="block text-[10px] font-semibold uppercase tracking-[0.2em] opacity-80">
+              Get ready for the
+            </span>
+            <span
+              className="block font-bold uppercase tracking-wide"
+              style={{ fontFamily: 'var(--font-display)', fontSize: '1.15rem' }}
+            >
+              {UPCOMING_SEASON} NFL Season
+            </span>
+          </p>
+        </div>
+      </div>
+
       {/* The three of us, on a shelf */}
-      <div className="mt-10 sm:mt-14 w-full">
+      <div className="mt-8 sm:mt-12 w-full">
         <BobbleheadRow size={124} />
       </div>
     </div>

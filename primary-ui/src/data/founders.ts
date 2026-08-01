@@ -3,10 +3,12 @@
 // About page. Jersey team + number come straight off our actual jerseys, so the
 // bobblehead colors are the real team colors from NFL_TEAM_COLORS.
 //
-// To swap the drawn SVG faces for real cutouts: drop transparent PNGs at
-// public/founders/<id>.png and set `photo: true` below. The Bobblehead falls
-// back to the drawn face automatically if the file 404s, so it's safe to flip
-// the flag before the art exists.
+// Faces are real cutouts from the original commissioned artwork (the group
+// photo used everywhere else in the brand), cropped per-founder into
+// public/founders/<id>.png — see that folder's crop script in git history if
+// the source frame ever needs re-cropping. `photo: true` below is what tells
+// Bobblehead to use the cutout instead of the drawn SVG face; it falls back to
+// the drawn face automatically if the file 404s.
 
 export type HairStyle = 'spiky' | 'straight' | 'curly';
 
@@ -41,6 +43,7 @@ export const FOUNDERS: Founder[] = [
     hair: 'spiky',
     hairColor: '#141118',
     skin: '#e8b98f',
+    photo: true,
   },
   {
     id: 'nicholas',
@@ -54,6 +57,7 @@ export const FOUNDERS: Founder[] = [
     hair: 'straight',
     hairColor: '#17131a',
     skin: '#eec39c',
+    photo: true,
   },
   {
     id: 'zane',
@@ -67,6 +71,7 @@ export const FOUNDERS: Founder[] = [
     hair: 'curly',
     hairColor: '#3a2318',
     skin: '#e5b189',
+    photo: true,
   },
 ];
 

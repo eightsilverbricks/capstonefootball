@@ -39,13 +39,13 @@ describe('Bobblehead', () => {
     expect(head.style.animationDelay).toBe('380ms');
   });
 
-  it('draws the face by default when no photo is provided', () => {
-    const { container } = render(<Bobblehead founder={zane} />);
+  it('draws the face when a founder has no photo cutout', () => {
+    const { container } = render(<Bobblehead founder={{ ...zane, photo: false }} />);
     expect(container.querySelector('image')).toBeNull();
   });
 
-  it('uses the photo cutout when the founder opts in', () => {
-    const { container } = render(<Bobblehead founder={{ ...zane, photo: true }} />);
+  it('uses the real photo cutout for the shipped founders', () => {
+    const { container } = render(<Bobblehead founder={zane} />);
     const image = container.querySelector('image');
     expect(image).not.toBeNull();
     expect(image?.getAttribute('href')).toBe('/founders/zane.png');

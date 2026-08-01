@@ -1,5 +1,12 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { localAuthClient, __resetLocalAuthForTests, MIN_PASSWORD_LENGTH } from './localAuthClient';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  localAuthClient,
+  __resetLocalAuthForTests,
+  MIN_PASSWORD_LENGTH,
+  adminListAccounts,
+  adminDeleteAccount,
+  adminSubscribe,
+} from './localAuthClient';
 
 const validSignUp = {
   email: 'Zane@Example.com',
@@ -166,6 +173,97 @@ describe('localAuthClient', () => {
     it('errors when nobody is signed in', async () => {
       const { error } = await localAuthClient.updateProfile({ favoriteTeam: 'SEA' });
       expect(error).not.toBeNull();
+    });
+  });
+
+  describe('admin utilities', () => {
+    it('returns a stable array reference across calls when nothing changed', async () => {
+      // AdminPage reads this via useSyncExternalStore, which treats a new
+      // reference as "the store changed" and re-renders in an infinite loop —
+      // this is the regression test for that exact bug.
+      await localAuthClient.signUp(validSignUp);
+      const first = adminListAccounts();
+      const second = adminListAccounts();
+      expect(second).toBe(first);
+    });
+
+    it('returns a new array reference only after the accounts actually change', async () => {
+      await localAuthClient.signUp(validSignUp);
+      const before = adminListAccounts();
+
+      await localAuthClient.updateProfile({ favoriteTeam: 'SEA' });
+      const after = adminListAccounts();
+
+      expect(after).not.toBe(before);
+      expect(after[0].favoriteTeam).toBe('SEA');
+    });
+
+    it('lists every account, newest first, with no password material', async () => {
+      // Real-clock signups can land in the same millisecond, which would make
+      // "newest first" ordering flaky — pin the clock so createdAt is distinct.
+      vi.useFakeTimers();
+      try {
+        vi.setSystemTime(new Date('2026-01-01T00:00:00.000Z'));
+        await localAuthClient.signUp(validSignUp);
+        await localAuthClient.signOut();
+
+        vi.setSystemTime(new Date('2026-01-01T00:00:01.000Z'));
+        await localAuthClient.signUp({
+          email: 'nicholas@example.com',
+          password: 'giantsforever1',
+          displayName: 'Nicholas Chan',
+          favoriteTeam: 'NYG',
+        });
+      } finally {
+        vi.useRealTimers();
+      }
+
+      const rows = adminListAccounts();
+      expect(rows).toHaveLength(2);
+      expect(rows[0].displayName).toBe('Nicholas Chan'); // most recent first
+      expect(rows[1].displayName).toBe('Zane Wolf');
+      expect(rows.every((r) => !('digest' in r) && !('salt' in r))).toBe(true);
+    });
+
+    it('deletes an account and signs it out if it was the active session', async () => {
+      await localAuthClient.signUp(validSignUp);
+      const id = localAuthClient.getSession()!.user.id;
+
+      adminDeleteAccount(id);
+
+      expect(adminListAccounts()).toHaveLength(0);
+      expect(localAuthClient.getSession()).toBeNull();
+    });
+
+    it('deleting a different account leaves the current session intact', async () => {
+      await localAuthClient.signUp(validSignUp);
+      await localAuthClient.signOut();
+      const { session: other } = await localAuthClient.signUp({
+        email: 'nicholas@example.com',
+        password: 'giantsforever1',
+        displayName: 'Nicholas Chan',
+        favoriteTeam: 'NYG',
+      });
+
+      const zaneRow = adminListAccounts().find((r) => r.displayName === 'Zane Wolf')!;
+      adminDeleteAccount(zaneRow.id);
+
+      expect(adminListAccounts()).toHaveLength(1);
+      expect(localAuthClient.getSession()?.user.id).toBe(other!.user.id);
+    });
+
+    it('notifies admin subscribers on signup and on deletion', async () => {
+      let calls = 0;
+      const unsubscribe = adminSubscribe(() => { calls++; });
+
+      await localAuthClient.signUp(validSignUp);
+      expect(calls).toBe(1);
+
+      const id = localAuthClient.getSession()!.user.id;
+      adminDeleteAccount(id);
+      expect(calls).toBe(2);
+
+      unsubscribe();
     });
   });
 });

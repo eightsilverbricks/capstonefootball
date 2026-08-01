@@ -70,7 +70,13 @@ const Header: React.FC = () => {
               </>
             ) : (
               <>
-                <FanIdentityPicker />
+                {/* The select's intrinsic width doesn't shrink like text does —
+                    at narrow widths it was the difference between the row
+                    fitting and overflowing the viewport. "Sign in" already
+                    hides the same way below `sm`. */}
+                <div className="hidden sm:block">
+                  <FanIdentityPicker />
+                </div>
                 <button
                   type="button"
                   onClick={() => openAuthDialog('signin')}

@@ -74,8 +74,13 @@ function readAccounts(): StoredAccount[] {
   }
 }
 
+// Bumped on every write so adminListAccounts() knows when its cached array is
+// stale — see the comment there for why this matters.
+let accountsVersion = 0;
+
 function writeAccounts(accounts: StoredAccount[]): void {
   writeRaw(ACCOUNTS_KEY, JSON.stringify(accounts));
+  accountsVersion++;
 }
 
 // ─── Password digest ──────────────────────────────────────────────────────────
@@ -271,4 +276,70 @@ export const localAuthClient: AuthClient = {
 export function __resetLocalAuthForTests(): void {
   removeRaw(ACCOUNTS_KEY);
   setCurrentUser(null);
+}
+
+// ─── Local admin utilities — deliberately NOT part of AuthClient ──────────────
+// Power the developer-only /admin page (src/pages/AdminPage.tsx). These have no
+// Supabase equivalent reachable from the browser — listing every account
+// requires a service-role key, which must never ship to client code — so they
+// only ever read/write this device's own localStorage. When the real backend
+// lands, /admin becomes a server-side dashboard and these exports go away.
+//
+// IMPORTANT LIMITATION: this only sees accounts created in THIS browser, on
+// THIS device. It cannot see signups from anyone else's browser. There is no
+// cross-device user list until there's a real server — see [[project_clark_index]].
+
+export interface AdminAccountRow {
+  id: string;
+  handle: string;
+  displayName: string;
+  email: string;
+  favoriteTeam: string | null;
+  createdAt: string;
+}
+
+function toAdminRow({ profile }: StoredAccount): AdminAccountRow {
+  return {
+    id: profile.id,
+    handle: profile.handle,
+    displayName: profile.displayName,
+    email: profile.email,
+    favoriteTeam: profile.favoriteTeam,
+    createdAt: profile.createdAt,
+  };
+}
+
+// AdminPage reads this through useSyncExternalStore, which requires getSnapshot
+// to return the *same reference* when nothing has changed — otherwise React
+// re-renders every time, sees "another" new snapshot, and loops. Cache the
+// computed row array and only rebuild it when writeAccounts() has actually run.
+let cachedAdminRows: AdminAccountRow[] | null = null;
+let cachedAdminVersion = -1;
+
+/** Every account on this device, newest first. Never includes password material. */
+export function adminListAccounts(): AdminAccountRow[] {
+  if (cachedAdminRows && cachedAdminVersion === accountsVersion) return cachedAdminRows;
+  cachedAdminRows = readAccounts()
+    .map(toAdminRow)
+    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  cachedAdminVersion = accountsVersion;
+  return cachedAdminRows;
+}
+
+/** Deletes an account outright. Signs it out first if it's the active session. */
+export function adminDeleteAccount(id: string): void {
+  writeAccounts(readAccounts().filter((a) => a.profile.id !== id));
+  if (currentUser?.id === id) {
+    setCurrentUser(null); // already notifies listeners
+  } else {
+    listeners.forEach((l) => l());
+  }
+}
+
+/** Notified on every signup, sign-out, profile edit, or admin deletion. */
+export function adminSubscribe(listener: () => void): () => void {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
 }

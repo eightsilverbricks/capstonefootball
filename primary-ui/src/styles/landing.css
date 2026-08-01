@@ -164,6 +164,90 @@
   scroll-snap-align: start;
 }
 
+/* ── Stadium marquee sign — the "get ready" hype banner ──────────────────────── */
+.stadium-sign {
+  position: relative;
+  display: inline-block;
+  transform: rotate(-1.6deg);
+  background: linear-gradient(180deg, #e2c48c 0%, var(--accent-gold) 55%, #a9854f 100%);
+  color: #16130c;
+  border-radius: 10px;
+  border: 2px solid #6b5326;
+  box-shadow:
+    0 14px 30px -14px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform var(--duration-normal) var(--ease-spring);
+}
+
+.stadium-sign:hover {
+  transform: rotate(-1.6deg) scale(1.02);
+}
+
+/* Bolt heads — two are enough to sell "mounted plaque" without four DOM nodes. */
+.stadium-sign::before,
+.stadium-sign::after {
+  content: '';
+  position: absolute;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff9 0%, #3d2f16 75%);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.stadium-sign::before {
+  left: 8px;
+}
+
+.stadium-sign::after {
+  right: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stadium-sign,
+  .stadium-sign:hover {
+    transform: none;
+  }
+}
+
+/* ── Shine CTA — a secondary action styled to compete with the primary one ──── */
+.shine-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.shine-cta::before {
+  content: '';
+  position: absolute;
+  inset: -60% -10%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.55) 50%, transparent 60%);
+  transform: translateX(-140%);
+  animation: clark-shine 3.4s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+@keyframes clark-shine {
+  0%,
+  50% {
+    transform: translateX(-140%);
+  }
+  78%,
+  100% {
+    transform: translateX(140%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine-cta::before {
+    animation: none;
+    display: none;
+  }
+}
+
 /* ── Reduced motion: kill every animation, keep every final state ───────────── */
 @media (prefers-reduced-motion: reduce) {
   .bobble-head,
