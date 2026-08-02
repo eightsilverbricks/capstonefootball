@@ -1,12 +1,18 @@
-// ─── useCountUp — numbers that tick up when they scroll into view ─────────────
-// Used on the landing page's proof stats. Deliberately cheap: one rAF loop that
-// stops the moment it reaches the target, started once by an IntersectionObserver
-// so off-screen stats cost nothing.
+// ─── useCountUp — numbers that tick up to their final value ───────────────────
+// Used on the landing page's proof stats.
 //
-// Under prefers-reduced-motion the hook returns the final value immediately and
-// never schedules a frame.
+// This deliberately does NOT gate on IntersectionObserver. An earlier version
+// did, and when IO never fired (throttled tabs, embedded webviews, some
+// automation and privacy contexts) the counter stayed pinned at 0 — rendering
+// "0.0% CLARK CALLED IT — 203 of 285 games", a stat that contradicts its own
+// caption. A decorative animation must never be able to display a wrong number,
+// so the animation now always runs to completion on mount and the final value
+// is guaranteed.
+//
+// Under prefers-reduced-motion the target is set immediately and no frame is
+// ever scheduled.
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useReducedMotion } from './useReducedMotion';
 
 const DEFAULT_DURATION_MS = 1100;
@@ -18,7 +24,7 @@ function easeOut(t: number): number {
 
 export interface CountUpResult<T extends Element> {
   value: number;
-  /** Attach to the element whose visibility should start the count. */
+  /** Attach to the element being counted. Kept for call-site ergonomics. */
   ref: (node: T | null) => void;
 }
 
@@ -28,17 +34,16 @@ export function useCountUp<T extends Element = HTMLElement>(
 ): CountUpResult<T> {
   const prefersReducedMotion = useReducedMotion();
   const [value, setValue] = useState(prefersReducedMotion ? target : 0);
-  const [node, setNode] = useState<T | null>(null);
-  const startedRef = useRef(false);
-
-  const ref = useCallback((next: T | null) => setNode(next), []);
+  const nodeRef = useRef<T | null>(null);
+  const ref = (node: T | null) => {
+    nodeRef.current = node;
+  };
 
   useEffect(() => {
     if (prefersReducedMotion) {
       setValue(target);
       return;
     }
-    if (!node || startedRef.current) return;
 
     let frame = 0;
     let startTime = 0;
@@ -46,32 +51,20 @@ export function useCountUp<T extends Element = HTMLElement>(
     const step = (now: number) => {
       if (!startTime) startTime = now;
       const progress = Math.min(1, (now - startTime) / durationMs);
-      setValue(target * easeOut(progress));
+      // Land exactly on the target rather than on an eased approximation.
+      setValue(progress === 1 ? target : target * easeOut(progress));
       if (progress < 1) frame = requestAnimationFrame(step);
     };
 
-    // No IntersectionObserver (older webview, jsdom) — just show the number.
-    if (typeof IntersectionObserver === 'undefined') {
+    // No rAF (very old or headless environments) — show the real number.
+    if (typeof requestAnimationFrame === 'undefined') {
       setValue(target);
       return;
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((e) => e.isIntersecting) || startedRef.current) return;
-        startedRef.current = true;
-        observer.disconnect();
-        frame = requestAnimationFrame(step);
-      },
-      { threshold: 0.4 },
-    );
-    observer.observe(node);
-
-    return () => {
-      observer.disconnect();
-      cancelAnimationFrame(frame);
-    };
-  }, [node, target, durationMs, prefersReducedMotion]);
+    frame = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(frame);
+  }, [target, durationMs, prefersReducedMotion]);
 
   return { value, ref };
 }

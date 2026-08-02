@@ -11,8 +11,10 @@ import BeliefTracker from './BeliefTracker';
 import PickShareCard from './PickShareCard';
 import ConvictionSlider from '@/components/ConvictionSlider';
 import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
-import { useUserPicks } from '@/hooks/useUserPicks';
+import { useUserPicks, stashPendingPick } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { useAuth } from '@/hooks/useAuth';
+import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { usePredictions } from '@/hooks/usePredictions';
 import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { Pick } from '@/competition/types';
@@ -30,6 +32,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
   const [shareOpen, setShareOpen] = useState(false);
   const { picks, setPick } = useUserPicks();
   const { team: fanTeam } = useFanIdentity();
+  const { isSignedIn } = useAuth();
   // Cheap: usePredictions is module-cached, so this reuses the fetch GamePage
   // already made — needed here only to surface the season bragging layer (B6)
   // on the per-pick share card.
@@ -65,7 +68,16 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
 
   const handleLock = () => {
     if (!hasPosition) return;
-    setPick(key, { team: draft.team, confidence: draft.confidence, fanTeam });
+    const pick = { team: draft.team, confidence: draft.confidence, fanTeam };
+
+    // Same funnel as the games grid: don't block the slider, capture the
+    // account at the moment of commitment and replay the pick after sign-up.
+    if (!isSignedIn) {
+      stashPendingPick(key, pick);
+      openAuthDialog('signup');
+      return;
+    }
+    setPick(key, pick);
     setEditing(false);
   };
 

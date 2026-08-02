@@ -4,8 +4,10 @@ import { ApiPrediction } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import { gameKey, getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
-import { useUserPicks, UserPick } from '@/hooks/useUserPicks';
+import { useUserPicks, UserPick, stashPendingPick } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { useAuth } from '@/hooks/useAuth';
+import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { Pick } from '@/competition/types';
 import { stakeFromConfidence, stakePreview, indexConfidenceFromScore } from '@/competition/scoring';
 import TeamLogo from './TeamLogo';
@@ -20,8 +22,9 @@ interface GameCardProps {
 
 const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   const navigate = useNavigate();
-  const { picks, setPick } = useUserPicks();
+  const { picks, setPick, clearPick } = useUserPicks();
   const { team: fanTeam } = useFanIdentity();
+  const { isSignedIn } = useAuth();
 
   const key = gameKey(game);
   const userPick: UserPick | undefined = picks[key];
@@ -37,7 +40,22 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
 
   const handleLock = () => {
     if (!hasPosition) return;
-    setPick(key, { team: draft.team, confidence: draft.confidence, fanTeam });
+    const pick: UserPick = { team: draft.team, confidence: draft.confidence, fanTeam };
+
+    // Picking is the moment the account actually matters — capture it here
+    // rather than blocking the slider upfront. The pick is replayed as soon as
+    // the account exists, so nothing the user did is thrown away.
+    if (!isSignedIn) {
+      stashPendingPick(key, pick);
+      openAuthDialog('signup');
+      return;
+    }
+    setPick(key, pick);
+  };
+
+  const handleChangePick = () => {
+    if (userPick) setDraft({ team: userPick.team, confidence: userPick.confidence });
+    clearPick(key);
   };
 
   const vegas = getVegasPick(game);
@@ -132,7 +150,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
                   color: hasPosition ? '#111' : 'var(--text-muted)',
                 }}
               >
-                {hasPosition ? `Lock in ${draft.team}` : 'Pick a side'}
+                {!hasPosition
+                  ? 'Pick a side'
+                  : isSignedIn
+                    ? `Lock in ${draft.team}`
+                    : `Lock in ${draft.team} — free account`}
               </button>
             </div>
 
@@ -166,9 +188,26 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
               <span className="text-[10px] uppercase tracking-widest tabular-nums" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
                 ±{stake} pts on the line
               </span>
-              <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                View evidence →
-              </span>
+              <div className="flex items-center gap-3">
+                {/* A pick must stay changeable — one stray drag shouldn't
+                    commit someone's season with no way back. Matches the game
+                    page, which already lets you re-open the slider. Stops
+                    propagation so it doesn't also open the report behind it. */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleChangePick();
+                  }}
+                  className="text-[10px] uppercase tracking-widest transition-colors hover:text-white"
+                  style={{ color: 'var(--text-muted)' }}
+                >
+                  Change
+                </button>
+                <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                  View evidence →
+                </span>
+              </div>
             </div>
           </>
         )}

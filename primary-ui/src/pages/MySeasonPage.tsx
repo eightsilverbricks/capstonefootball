@@ -10,6 +10,8 @@ import StatStrip from '@/components/StatStrip';
 import { usePredictions } from '@/hooks/usePredictions';
 import { useUserPicks } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { useAuth } from '@/hooks/useAuth';
+import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { computeSeasonHistory } from '@/lib/seasonHistory';
 import { computeFanbaseStandings, gameKey } from '@/lib/threeWaySignal';
@@ -19,6 +21,7 @@ const MySeasonPage: React.FC = () => {
   const { predictions } = usePredictions();
   const { picks } = useUserPicks();
   const { team: fanTeam } = useFanIdentity();
+  const { isSignedIn } = useAuth();
 
   const summary = computeSeasonSummary(picks, predictions);
   const history = computeSeasonHistory(picks, predictions);
@@ -57,7 +60,32 @@ const MySeasonPage: React.FC = () => {
         </div>
       </section>
 
-      {!hasPicks ? (
+      {!isSignedIn ? (
+        // The season belongs to an account — without one there's nothing to show,
+        // so say that plainly instead of rendering an empty scoreboard.
+        <section className="px-4 py-24">
+          <div className="max-w-xl mx-auto text-center flex flex-col items-center gap-4">
+            <p className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
+              Your season lives in your account.
+            </p>
+            <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
+              Create a free one and every pick you make from here on is tracked, scored, and stacked
+              up against Clark.
+            </p>
+            <button
+              type="button"
+              onClick={() => openAuthDialog('signup')}
+              className="mt-2 px-5 py-2.5 rounded text-sm font-semibold uppercase tracking-wide"
+              style={{ background: 'var(--accent-gold)', color: '#111' }}
+            >
+              Create your free account
+            </button>
+            <Link to="/games" className="text-xs no-underline" style={{ color: 'var(--text-tertiary)' }}>
+              Or browse this week's games first →
+            </Link>
+          </div>
+        </section>
+      ) : !hasPicks ? (
         <section className="px-4 py-24">
           <div className="max-w-xl mx-auto text-center flex flex-col items-center gap-4">
             <p className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
@@ -67,8 +95,8 @@ const MySeasonPage: React.FC = () => {
               Head to the games, drag your conviction on a matchup, and your season starts building here.
             </p>
             <Link
-              to="/"
-              className="mt-2 px-5 py-2.5 rounded text-sm font-semibold uppercase tracking-wide"
+              to="/games"
+              className="mt-2 px-5 py-2.5 rounded text-sm font-semibold uppercase tracking-wide no-underline"
               style={{ background: 'var(--accent-gold)', color: '#111' }}
             >
               Make your first pick

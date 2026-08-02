@@ -28,6 +28,7 @@ BASE_DIR             = Path(__file__).resolve().parent.parent
 MODEL_PATH           = BASE_DIR / "models" / "logreg_model.joblib"
 DATA_PATH            = BASE_DIR / "data" / "processed" / "game_training_table.csv"
 SCHEDULE_DATES_PATH  = BASE_DIR / "data" / "processed" / "schedule_dates.csv"
+SCHEDULES_RAW_PATH   = BASE_DIR / "data" / "raw" / "schedules.parquet"
 PREDICTIONS_PATH     = BASE_DIR / "outputs" / "predictions.csv"
 METRICS_PATH         = BASE_DIR / "outputs" / "metrics.json"
 PLAYER_CONTEXT_PATH  = BASE_DIR / "data" / "processed" / "player_context.json"
@@ -151,6 +152,48 @@ app.add_middleware(
 df          = pd.read_csv(DATA_PATH)
 schedule_df = pd.read_csv(SCHEDULE_DATES_PATH) if SCHEDULE_DATES_PATH.exists() else pd.DataFrame()
 model       = joblib.load(MODEL_PATH)
+
+
+# ---------------------------------------------------------------------------
+# Actual results
+# ---------------------------------------------------------------------------
+# The frontend resolves every pick against `actual_winner` — records, streaks,
+# Clark Differential and the whole My Season page are derived from it. The
+# static export gets these fields patched in by add_actual_results.py; this API
+# has to serve the same three fields from the same source, or a frontend
+# pointed at VITE_API_BASE_URL silently never resolves a single pick.
+# Keep this in step with src/add_actual_results.py.
+
+def _load_results_map() -> dict[str, dict]:
+    """game_id -> {actual_winner, home_score, away_score} for played games."""
+    if not SCHEDULES_RAW_PATH.exists():
+        return {}
+    try:
+        sched = pd.read_parquet(SCHEDULES_RAW_PATH)
+    except Exception:
+        # Missing parquet engine or unreadable file — degrade to "no outcomes"
+        # rather than taking the whole API down.
+        return {}
+
+    played = sched[sched["home_score"].notna() & sched["away_score"].notna()]
+    out: dict[str, dict] = {}
+    for row in played.itertuples(index=False):
+        home_score, away_score = int(row.home_score), int(row.away_score)
+        if home_score > away_score:
+            winner = row.home_team
+        elif away_score > home_score:
+            winner = row.away_team
+        else:
+            winner = None  # tie — the pick stays unresolved, same as the export
+        out[row.game_id] = {
+            "actual_winner": winner,
+            "home_score": home_score,
+            "away_score": away_score,
+        }
+    return out
+
+
+RESULTS_MAP = _load_results_map()
 
 # ---------------------------------------------------------------------------
 # Extract model coefficients + scaler params for factor contribution math
@@ -1206,6 +1249,10 @@ def get_predictions():
             "predicted_winner":  record.get("predicted_winner"),
             "home_win_prob":     round(float(home_win_prob), 4),
             "away_win_prob":     round(float(away_win_prob), 4),
+            # Actual outcome — null winner means a tie or an unplayed game.
+            **RESULTS_MAP.get(game_id_str, {
+                "actual_winner": None, "home_score": None, "away_score": None,
+            }),
             # Confidence
             "confidence_label":  confidence_label,
             "confidence_score":  confidence_score,
