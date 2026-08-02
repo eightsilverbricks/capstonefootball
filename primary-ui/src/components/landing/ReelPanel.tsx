@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ExternalLink, Instagram, Play } from 'lucide-react';
-import BobbleheadRow from '@/components/brand/BobbleheadRow';
+import FoundersPortrait from '@/components/brand/FoundersPortrait';
 
 // The reel that introduces us. Swap this one constant to change the video.
 const REEL_ID = 'DXu1XJosWMO';
@@ -95,7 +95,9 @@ const ReelPanel: React.FC = () => {
                 }}
                 aria-label="Play The Clark Index intro reel"
               >
-                <BobbleheadRow size={52} showCaptions={false} className="!gap-1 opacity-90" />
+                <div className="w-28 opacity-90 pointer-events-none">
+                  <FoundersPortrait showLabels={false} animate={false} />
+                </div>
                 <span
                   className="relative w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
                   style={{ background: 'var(--accent-gold)', color: '#111' }}

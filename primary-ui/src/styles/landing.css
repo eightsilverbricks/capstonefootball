@@ -66,33 +66,16 @@
   background: radial-gradient(75% 100% at 50% 0%, var(--glow-gold) 0%, transparent 70%);
 }
 
-/* ── Bobblehead motion ──────────────────────────────────────────────────────── */
-@keyframes clark-bobble {
+/* ── Founders photo: slow Ken-Burns breathing zoom ───────────────────────────── */
+@keyframes clark-photo-zoom {
   0%,
-  100% { transform: rotate(-4.5deg); }
-  50%  { transform: rotate(4.5deg); }
+  100% { transform: scale(1); }
+  50%  { transform: scale(1.07); }
 }
 
-.bobble-head {
-  transform-box: fill-box;
-  transform-origin: 50% 96%;
-  animation: clark-bobble 2.6s var(--ease-out) infinite;
+.photo-zoom {
+  animation: clark-photo-zoom 16s ease-in-out infinite;
   will-change: transform;
-}
-
-/* Hover on the figure winds the bobble up rather than stopping it. */
-.bobble-figure:hover .bobble-head,
-.bobble-figure:focus-visible .bobble-head {
-  animation-duration: 0.62s;
-}
-
-.bobble-figure {
-  transition: transform var(--duration-normal) var(--ease-spring);
-}
-
-.bobble-figure:hover,
-.bobble-figure:focus-visible {
-  transform: translateY(-6px);
 }
 
 /* ── Card lift — the one shared hover treatment for clickable panels ────────── */
@@ -250,19 +233,17 @@
 
 /* ── Reduced motion: kill every animation, keep every final state ───────────── */
 @media (prefers-reduced-motion: reduce) {
-  .bobble-head,
+  .photo-zoom,
   .float-slow,
   .rise-in,
   .pulse-ring::after {
     animation: none !important;
   }
 
-  .bobble-figure,
   .lift-card {
     transition: none;
   }
 
-  .bobble-figure:hover,
   .lift-card:hover {
     transform: none;
   }

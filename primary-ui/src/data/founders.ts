@@ -1,33 +1,27 @@
 // ─── The three of us ──────────────────────────────────────────────────────────
-// One record per founder, driving the bobbleheads on the landing page and the
-// About page. Jersey team + number come straight off our actual jerseys, so the
-// bobblehead colors are the real team colors from NFL_TEAM_COLORS.
+// One record per founder, driving the labels under the group photo on the
+// landing page and About page. Jersey team + number come straight off our
+// actual jerseys.
 //
-// Faces are real cutouts from the original commissioned artwork (the group
-// photo used everywhere else in the brand), cropped per-founder into
-// public/founders/<id>.png — see that folder's crop script in git history if
-// the source frame ever needs re-cropping. `photo: true` below is what tells
-// Bobblehead to use the cutout instead of the drawn SVG face; it falls back to
-// the drawn face automatically if the file 404s.
-
-export type HairStyle = 'spiky' | 'straight' | 'curly';
+// `photoXPercent` is where each of us sits, horizontally, in
+// public/founders/group.jpg (0–100, left edge to right edge) — it's what lets
+// FoundersPortrait anchor each name label under the right face in a single
+// flat image instead of three separate cutouts. Recompute these if the source
+// photo is ever swapped for a different composition.
 
 export interface Founder {
   id: string;
   name: string;
   firstName: string;
-  /** NFL abbreviation — drives the jersey colors. */
+  /** NFL abbreviation — drives the label color. */
   team: string;
   teamName: string;
   number: string;
   role: string;
-  /** One fan-voice line shown under the bobblehead. */
+  /** One fan-voice line shown under the name. */
   line: string;
-  hair: HairStyle;
-  hairColor: string;
-  skin: string;
-  /** Set true once public/founders/<id>.png exists. */
-  photo?: boolean;
+  /** Horizontal center of this person's face in group.jpg, as a 0–100 percent. */
+  photoXPercent: number;
 }
 
 export const FOUNDERS: Founder[] = [
@@ -40,10 +34,7 @@ export const FOUNDERS: Founder[] = [
     number: '11',
     role: 'Co-founder',
     line: 'Loud on Sundays. Louder about the numbers.',
-    hair: 'spiky',
-    hairColor: '#141118',
-    skin: '#e8b98f',
-    photo: true,
+    photoXPercent: 16.9,
   },
   {
     id: 'nicholas',
@@ -54,10 +45,7 @@ export const FOUNDERS: Founder[] = [
     number: '6',
     role: 'Co-founder',
     line: 'Believes in the Giants. Every single year.',
-    hair: 'straight',
-    hairColor: '#17131a',
-    skin: '#eec39c',
-    photo: true,
+    photoXPercent: 48.2,
   },
   {
     id: 'zane',
@@ -68,16 +56,13 @@ export const FOUNDERS: Founder[] = [
     number: '17',
     role: 'Co-founder',
     line: 'Bills Mafia — table included.',
-    hair: 'curly',
-    hairColor: '#3a2318',
-    skin: '#e5b189',
-    photo: true,
+    photoXPercent: 81.3,
   },
 ];
 
 /**
  * Signature on the welcome note. Kept literal rather than derived from FOUNDERS
- * — the bobblehead row is ordered left-to-right by jersey, the signature is the
+ * — the group photo is ordered left-to-right by jersey, the signature is the
  * order we actually sign things in.
  */
 export const FOUNDER_SIGNATURE = 'Zane, Nicholas, & Takuo';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
-import BobbleheadRow from '@/components/brand/BobbleheadRow';
+import FoundersPortrait from '@/components/brand/FoundersPortrait';
 import { FOUNDER_SIGNATURE } from '@/data/founders';
 
 /**
@@ -63,7 +63,9 @@ const FoundersLetter: React.FC = () => (
         style={{ borderTop: '1px solid var(--border-subtle)' }}
       >
         <div className="flex flex-wrap items-center gap-x-4 gap-y-3">
-          <BobbleheadRow size={44} showCaptions={false} className="!gap-0.5 shrink-0 !w-auto" />
+          <div className="w-16 shrink-0">
+            <FoundersPortrait showLabels={false} animate={false} />
+          </div>
           <p
             className="italic text-lg leading-none"
             style={{ fontFamily: 'var(--font-display)', color: 'var(--accent-gold)' }}

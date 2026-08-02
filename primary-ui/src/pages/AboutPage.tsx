@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import BobbleheadRow from '@/components/brand/BobbleheadRow';
+import FoundersPortrait from '@/components/brand/FoundersPortrait';
 import TeamLogo from '@/components/TeamLogo';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
@@ -11,7 +11,7 @@ import { FOUNDERS, FOUNDER_SIGNATURE } from '@/data/founders';
 import { getTeamColors } from '@/data/nflData';
 
 /**
- * Where the landing page's "read our story" link lands. Same three bobbleheads,
+ * Where the landing page's "read our story" link lands. Same founders photo,
  * so the hand-off is visually continuous, then the longer version of what the
  * Index is and who's behind it.
  */
@@ -42,7 +42,9 @@ const AboutPage: React.FC = () => {
             >
               Three fans, one very long spreadsheet.
             </h1>
-            <BobbleheadRow size={116} showCaptions={false} />
+            <div className="w-full max-w-sm mx-auto">
+              <FoundersPortrait showLabels={false} />
+            </div>
           </div>
         </section>
 

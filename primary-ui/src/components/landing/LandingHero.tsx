@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, PartyPopper, Sparkles } from 'lucide-react';
-import BobbleheadRow from '@/components/brand/BobbleheadRow';
+import FoundersPortrait from '@/components/brand/FoundersPortrait';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 
 /** Hardcoded on purpose — this is a hype date, not derived from the shipped
@@ -117,9 +117,9 @@ const LandingHero: React.FC<LandingHeroProps> = ({ gamesAnalyzed }) => (
         </div>
       </div>
 
-      {/* The three of us, on a shelf */}
-      <div className="mt-8 sm:mt-12 w-full">
-        <BobbleheadRow size={124} />
+      {/* The three of us */}
+      <div className="rise-in mt-8 sm:mt-12 w-full max-w-md sm:max-w-lg md:max-w-2xl mx-auto" style={{ '--rise-delay': '360ms' } as React.CSSProperties}>
+        <FoundersPortrait />
       </div>
     </div>
   </section>
