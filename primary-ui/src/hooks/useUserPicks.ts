@@ -1,13 +1,11 @@
-// ─── useUserPicks — the user's picks, persisted per account ───────────────────
+// ─── useUserPicks — the user's picks, per account ─────────────────────────────
 // Picks ARE the product: record, streak, Clark Differential, My Season and the
-// whole Clark Competition are derived from this store. So it persists, and it
-// persists *per account* — two people signing in on the same laptop must never
-// see each other's season.
+// whole Clark Competition are derived from this store. Where they're stored is
+// picksRepository's problem (Supabase when configured, localStorage otherwise);
+// this module owns the synchronous cache components render from.
 //
-// Storage is localStorage under `clark-index:picks:v1:<userId>`, which means it
-// is still device-local (see [[project_clark_index]] — no server yet). Signing
-// in on another machine starts an empty season until the Supabase backend
-// lands, at which point this module's read/write pair is what moves server-side.
+// Writes are optimistic: the cache updates immediately so the UI never waits on
+// a round trip, and the repository persists in the background.
 //
 // Signed-out visitors get no bucket at all. They can still drag the slider and
 // read everything; the moment they commit, the pick is stashed and replayed
@@ -15,17 +13,13 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 import { localAuthClient } from '@/auth/localAuthClient';
+import { supabaseAuthClient } from '@/auth/supabaseAuthClient';
+import { isSupabaseConfigured } from '@/auth/supabaseClient';
+import { deletePick, loadPicks, savePick, PickMap, UserPick } from '@/data/picksRepository';
 
-export interface UserPick {
-  team: string;
-  confidence: number; // 0.5–1.0 (slider space)
-  /** The user's favorite team at pick time (from useFanIdentity), or null. */
-  fanTeam?: string | null;
-}
+export type { UserPick } from '@/data/picksRepository';
 
-const STORAGE_PREFIX = 'clark-index:picks:v1:';
-
-type PickMap = Record<string, UserPick>;
+const authClient = isSupabaseConfigured ? supabaseAuthClient : localAuthClient;
 
 const EMPTY: PickMap = {};
 
@@ -40,56 +34,39 @@ function emit(): void {
   listeners.forEach((l) => l());
 }
 
-function storageKey(userId: string): string {
-  return `${STORAGE_PREFIX}${userId}`;
-}
-
-function readBucket(userId: string): PickMap {
-  try {
-    const raw = window.localStorage.getItem(storageKey(userId));
-    if (!raw) return EMPTY;
-    const parsed = JSON.parse(raw);
-    // Guard against hand-edited or corrupt storage rather than crashing render.
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return EMPTY;
-    return parsed as PickMap;
-  } catch {
-    return EMPTY;
-  }
-}
-
-function writeBucket(): void {
-  if (!activeUserId) return;
-  try {
-    window.localStorage.setItem(storageKey(activeUserId), JSON.stringify(store));
-  } catch {
-    // Storage full or unavailable — the in-memory store still works this session.
-  }
-}
-
 /**
- * Point the store at whichever account is currently signed in. Called on every
- * auth change, so signing out empties the board and signing back in restores
- * exactly that account's season.
+ * Point the store at whichever account is signed in. Runs on every auth change,
+ * so signing out empties the board and signing back in restores that account's
+ * season — from the server, on any device.
  */
-function syncToSession(): void {
-  const nextId = localAuthClient.getSession()?.user.id ?? null;
+async function syncToSession(): Promise<void> {
+  const nextId = authClient.getSession()?.user.id ?? null;
   if (nextId === activeUserId) return;
 
   activeUserId = nextId;
-  store = nextId ? readBucket(nextId) : EMPTY;
+  store = EMPTY;
+  emit(); // clear immediately; don't show the previous account's picks while loading
+
+  if (!nextId) return;
+
+  const loaded = await loadPicks(nextId);
+  // Guard against a fast sign-out/sign-in landing an out-of-date response.
+  if (activeUserId !== nextId) return;
+  store = loaded;
 
   // Someone picked, then signed up to make it count — honor that pick.
-  if (nextId && pendingPick) {
-    store = { ...store, [pendingPick.key]: pendingPick.pick };
+  if (pendingPick) {
+    const { key, pick } = pendingPick;
     pendingPick = null;
-    writeBucket();
+    store = { ...store, [key]: pick };
+    void savePick(nextId, key, pick, store);
   }
 
   emit();
 }
 
-localAuthClient.subscribe(syncToSession);
-syncToSession();
+authClient.subscribe(() => { void syncToSession(); });
+void syncToSession();
 
 function subscribe(cb: () => void): () => void {
   listeners.add(cb);
@@ -109,8 +86,8 @@ function setUserPick(key: string, pick: UserPick): void {
     return;
   }
   store = { ...store, [key]: pick };
-  writeBucket();
   emit();
+  void savePick(activeUserId, key, pick, store);
 }
 
 function clearUserPick(key: string): void {
@@ -118,8 +95,8 @@ function clearUserPick(key: string): void {
   const next = { ...store };
   delete next[key];
   store = next;
-  writeBucket();
   emit();
+  void deletePick(activeUserId, key, store);
 }
 
 /**
@@ -134,7 +111,7 @@ export function stashPendingPick(key: string, pick: UserPick): void {
 export function __resetPicksForTests(): void {
   if (activeUserId) {
     try {
-      window.localStorage.removeItem(storageKey(activeUserId));
+      window.localStorage.removeItem(`clark-index:picks:v1:${activeUserId}`);
     } catch {
       // ignore
     }

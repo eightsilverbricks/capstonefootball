@@ -31,5 +31,13 @@ export default defineConfig(({ mode }) => ({
     globals: true,
     setupFiles: ["./src/test/setup.ts"],
     css: false,
+    // Vitest loads .env.local like the dev server does, which would silently
+    // point the suite at the real Supabase project the moment a developer
+    // configures one. Blank these so unit tests always exercise the
+    // deterministic local fallback and never touch the network.
+    env: {
+      VITE_SUPABASE_URL: "",
+      VITE_SUPABASE_ANON_KEY: "",
+    },
   },
 }));

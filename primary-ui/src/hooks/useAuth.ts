@@ -5,11 +5,15 @@
 
 import { useCallback, useSyncExternalStore } from 'react';
 import { localAuthClient } from '@/auth/localAuthClient';
+import { supabaseAuthClient } from '@/auth/supabaseAuthClient';
+import { isSupabaseConfigured } from '@/auth/supabaseClient';
 import { AuthClient, AuthResult, ClarkProfile, ProfilePatch, SignInInput, SignUpInput } from '@/auth/types';
 import { clearFanTeam, setFanTeam } from './useFanIdentity';
 
-// ── Swap this line for the Supabase-backed client when the backend lands ──
-const client: AuthClient = localAuthClient;
+// Real accounts whenever Supabase is configured; the device-local client is the
+// no-credentials development fallback only. Both satisfy the same AuthClient
+// contract, so nothing downstream knows or cares which one is live.
+const client: AuthClient = isSupabaseConfigured ? supabaseAuthClient : localAuthClient;
 
 function getSnapshot() {
   return client.getSession();
