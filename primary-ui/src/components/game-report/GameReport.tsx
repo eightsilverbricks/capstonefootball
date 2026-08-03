@@ -12,6 +12,7 @@ import PickShareCard from './PickShareCard';
 import ConvictionSlider from '@/components/ConvictionSlider';
 import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
 import { useUserPicks, stashPendingPick } from '@/hooks/useUserPicks';
+import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
@@ -46,8 +47,10 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
 
   const key      = gameKey(game);
   const userPick = picks[key];
+  const sentimentKeys = useMemo(() => [key], [key]);
+  const { sentiment } = useFanSentiment(sentimentKeys);
   const vegas    = getVegasPick(game);
-  const fan      = getFanPick(game);
+  const fan      = getFanPick(game, sentiment);
   const insight  = getHeroInsight(game);
   const insightColors = insight ? getTeamColors(insight.team) : null;
   const evidenceTeaser = getEvidenceTeaser(game);
@@ -229,7 +232,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
             ...(userPick ? [{ label: 'You', team: userPick.team, pct: userPick.confidence }] : []),
             { label: 'Clark', team: game.predicted_winner, pct: getPredictedProbability(game) },
             ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
-            { label: 'Fans', team: fan.team, pct: fan.prob, isProvisional: true },
+            ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
           ]}
           size="large"
           winner={game.actual_winner}

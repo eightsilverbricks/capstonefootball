@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { PickHighlight } from '@/lib/seasonHistory';
 import { Streak } from '@/lib/seasonSummary';
 import { ApiPrediction } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
-import { getVegasPick, getFanPick } from '@/lib/threeWaySignal';
+import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
+import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { signed, stakeColor, pct } from '@/lib/format';
 import PickShareCard from '@/components/game-report/PickShareCard';
 import { Share2 } from 'lucide-react';
@@ -20,6 +21,8 @@ interface PickHighlightCardProps {
 const PickHighlightCard: React.FC<PickHighlightCardProps> = ({ highlight, game, clarkDifferential, streak }) => {
   const [shareOpen, setShareOpen] = useState(false);
   const colors = getTeamColors(highlight.yourTeam);
+  const sentimentKeys = useMemo(() => (game ? [gameKey(game)] : []), [game]);
+  const { sentiment } = useFanSentiment(sentimentKeys);
 
   return (
     <div className="flex flex-col gap-2">
@@ -77,7 +80,7 @@ const PickHighlightCard: React.FC<PickHighlightCardProps> = ({ highlight, game, 
           game={game}
           pick={{ team: highlight.yourTeam, confidence: highlight.confidence }}
           vegas={getVegasPick(game)}
-          fan={getFanPick(game)}
+          fan={getFanPick(game, sentiment)}
           resolvedNet={highlight.net}
           clarkDifferential={clarkDifferential}
           streak={streak}

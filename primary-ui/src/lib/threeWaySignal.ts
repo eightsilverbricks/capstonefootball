@@ -1,15 +1,16 @@
 // ─── Clark / Vegas / Fans comparison logic ─────────────────────────────────────
-// Vegas is derived from real market_context data already in predictions.json.
-// Fan sentiment has NO real backend yet — see product-overhaul Phase 5/6 for the
-// planned persistence layer. Until then, getFanPick() below is a clearly-labeled
-// PROVISIONAL placeholder: deterministic per game (seeded by game id) so the UI
-// doesn't flicker or lie about being live data, but it is not real user input.
-// Replace this module's fan logic — and only this module — once real aggregated
-// picks exist.
+// All three signals are real data. Vegas is derived from the market_context
+// moneylines already in predictions.json; the fan signal is the aggregate of
+// real accounts' picks, loaded through sentimentRepository.
+//
+// The fan signal is therefore *optional*: a game nobody has picked yet has no
+// fan position at all. Every fan helper below returns null in that case, and
+// callers are expected to say "no picks yet" rather than fill the gap. Nothing
+// in this module invents a number.
 
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { GAME_CREDIT_CAP } from '@/competition/scoring';
-import { getHeroInsight } from '@/lib/heroInsight';
+import { FanbaseTotal, SentimentDay, SentimentMap } from '@/data/sentimentRepository';
 
 export interface TeamPick {
   team: string;
@@ -17,12 +18,19 @@ export interface TeamPick {
   prob: number;
 }
 
+/** A fan position, plus how many real picks it rests on. */
+export interface FanPick extends TeamPick {
+  picks: number;
+}
+
 export function gameKey(game: ApiPrediction): string {
   return game.game_id ?? `${game.season}_${game.week}_${game.away_team}_${game.home_team}`;
 }
 
 // ─── Deterministic seeded PRNG (djb2 hash → [0,1)) ─────────────────────────────
-// NOT cryptographic. Only used so provisional fan data is stable across renders.
+// NOT cryptographic, and no longer used for any *data*. Its only remaining job
+// is choosing between equivalent phrasings of the pre-pick teaser, so adjacent
+// cards in a sorted feed don't read identically. Stable per game across renders.
 function seededRandom01(seed: string): number {
   let hash = 5381;
   for (let i = 0; i < seed.length; i++) {
@@ -53,23 +61,24 @@ export function getVegasPick(game: ApiPrediction): TeamPick | null {
     : { team: game.away_team, prob: awayProb };
 }
 
-// ─── Fans — PROVISIONAL placeholder, seeded per game ───────────────────────────
+// ─── Fans — real aggregated picks ──────────────────────────────────────────────
 /**
- * PROVISIONAL. Deterministic placeholder for fan sentiment — not real user data.
- * ~65% of the time fans "agree" with Clark's favorite (mirrors real-world
- * favorite bias); the rest of the time they lean the other way, so the product
- * has real-feeling disagreement to demonstrate the three-way comparison.
+ * Where the community landed on this game: the team more accounts backed, and
+ * the share of picks it drew. Null when nobody has picked it yet — there is no
+ * such thing as a fan position on a game with no picks.
  */
-export function getFanPick(game: ApiPrediction): TeamPick {
-  const seed = gameKey(game);
-  const agreesWithClark = seededRandom01(`${seed}:fanflip`) < 0.65;
-  const team = agreesWithClark
-    ? game.predicted_winner
-    : game.predicted_winner === game.home_team
-      ? game.away_team
-      : game.home_team;
-  const prob = 0.52 + seededRandom01(`${seed}:fanconf`) * 0.41; // 52%–93%
-  return { team, prob };
+export function getFanPick(game: ApiPrediction, sentiment: SentimentMap): FanPick | null {
+  const entry = sentiment[gameKey(game)];
+  if (!entry) return null;
+
+  const home = entry.byTeam[game.home_team] ?? 0;
+  const away = entry.byTeam[game.away_team] ?? 0;
+  const counted = home + away;
+  if (counted === 0) return null;
+
+  return home >= away
+    ? { team: game.home_team, prob: home / counted, picks: counted }
+    : { team: game.away_team, prob: away / counted, picks: counted };
 }
 
 // ─── Pre-pick teaser — a qualitative hook shown BEFORE the user commits ────────
@@ -83,16 +92,21 @@ function pickVariant(seed: string, options: string[]): string {
   return options[idx];
 }
 
-export function getPrePickTeaser(game: ApiPrediction, vegas: TeamPick | null, fan: TeamPick): string {
+export function getPrePickTeaser(
+  game: ApiPrediction,
+  vegas: TeamPick | null,
+  fan: FanPick | null,
+): string {
   const clarkProb = getPredictedProbability(game);
   const seed = gameKey(game);
   const disagreementCount =
-    (fan.team !== game.predicted_winner ? 1 : 0) + (vegas && vegas.team !== game.predicted_winner ? 1 : 0);
+    (fan && fan.team !== game.predicted_winner ? 1 : 0) +
+    (vegas && vegas.team !== game.predicted_winner ? 1 : 0);
 
   if (disagreementCount >= 2) {
     return pickVariant(seed, ['Nobody agrees on this one.', 'Three different opinions on this game.']);
   }
-  if (Math.abs(fan.prob - 0.5) < 0.06) {
+  if (fan && Math.abs(fan.prob - 0.5) < 0.06) {
     return pickVariant(seed, ['Fans are genuinely split.', "This fanbase can't agree with itself."]);
   }
   if (vegas && vegas.team !== game.predicted_winner) {
@@ -107,184 +121,175 @@ export function getPrePickTeaser(game: ApiPrediction, vegas: TeamPick | null, fa
   return pickVariant(seed, ['A clean read this week.', 'Nothing unusual here — steady favorite.']);
 }
 
-// ─── Fan sentiment over time — PROVISIONAL, seeded per game ───────────────────
-/**
- * PROVISIONAL. A deterministic, seeded time series of fan support for the
- * fan-favored team in the days leading to kickoff — NOT real tracked sentiment.
- * Drifts from a 50/50 start toward getFanPick()'s final share, so the reveal on
- * the game page has a believable "support built over the week" shape. Labeled
- * illustrative wherever shown.
- */
+// ─── Fan support over time — real, from pick timestamps ───────────────────────
 export interface SentimentPoint {
   label: string;
   pct: number;
 }
 
-export function getFanSentimentSeries(game: ApiPrediction): { team: string; points: SentimentPoint[] } {
-  const fan = getFanPick(game);
-  const seed = gameKey(game);
-  const labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Kick'];
-  const target = fan.prob;
-
-  const points = labels.map((label, i) => {
-    const t = i / (labels.length - 1);
-    if (i === labels.length - 1) return { label, pct: target };
-    const base = 0.5 + (target - 0.5) * t;
-    const noise = (seededRandom01(`${seed}:sent${i}`) - 0.5) * 0.09 * (1 - t * 0.5);
-    return { label, pct: Math.min(0.95, Math.max(0.05, base + noise)) };
-  });
-
-  return { team: fan.team, points };
+export interface SentimentSeries {
+  team: string;
+  points: SentimentPoint[];
+  picks: number;
 }
 
-// ─── Fanbase split — PROVISIONAL, seeded per game ─────────────────────────────
-/** PROVISIONAL. How loyally each fanbase backs its own team (homer bias). */
+/** A curve needs at least this many picks over this many days to mean anything. */
+const MIN_SERIES_DAYS = 2;
+const MIN_SERIES_PICKS = 4;
+
+function dayLabel(iso: string): string {
+  const date = new Date(`${iso}T00:00:00Z`);
+  return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getUTCDay()] ?? iso.slice(5);
+}
+
+/**
+ * How support for the eventual leading team built, day by day, from real pick
+ * timestamps. Null when there aren't enough picks across enough days to draw a
+ * line that says anything — two picks on one afternoon is not a trend.
+ */
+export function buildSentimentSeries(
+  game: ApiPrediction,
+  days: SentimentDay[],
+): SentimentSeries | null {
+  if (days.length < MIN_SERIES_DAYS) return null;
+
+  const totals = days.reduce(
+    (acc, d) => ({
+      home: acc.home + (d.byTeam[game.home_team] ?? 0),
+      away: acc.away + (d.byTeam[game.away_team] ?? 0),
+    }),
+    { home: 0, away: 0 },
+  );
+  const picks = totals.home + totals.away;
+  if (picks < MIN_SERIES_PICKS) return null;
+
+  const team = totals.home >= totals.away ? game.home_team : game.away_team;
+  const other = team === game.home_team ? game.away_team : game.home_team;
+
+  let backing = 0;
+  let against = 0;
+  const points: SentimentPoint[] = [];
+  for (const d of days) {
+    backing += d.byTeam[team] ?? 0;
+    against += d.byTeam[other] ?? 0;
+    const counted = backing + against;
+    if (counted === 0) continue; // picks that day were all on a third value — skip
+    points.push({ label: dayLabel(d.day), pct: backing / counted });
+  }
+
+  return points.length >= MIN_SERIES_DAYS ? { team, points, picks } : null;
+}
+
+// ─── Fanbase split — real, from picks tagged with the picker's fanbase ────────
+export interface FanbaseSide {
+  team: string;
+  /** Share of that fanbase's picks that backed their own team. */
+  backsOwn: number;
+  picks: number;
+}
+
 export interface FanbaseSplit {
-  homeTeam: string;
-  homeBacksHome: number;
-  awayTeam: string;
-  awayBacksAway: number;
+  home: FanbaseSide | null;
+  away: FanbaseSide | null;
 }
 
-export function getFanbaseSplit(game: ApiPrediction): FanbaseSplit {
-  const seed = gameKey(game);
-  return {
-    homeTeam: game.home_team,
-    homeBacksHome: 0.62 + seededRandom01(`${seed}:homehomer`) * 0.3,
-    awayTeam: game.away_team,
-    awayBacksAway: 0.6 + seededRandom01(`${seed}:awayhomer`) * 0.3,
-  };
+function sideSplit(fanTeam: string, key: string, totals: FanbaseTotal[]): FanbaseSide | null {
+  const rows = totals.filter((r) => r.fanTeam === fanTeam && r.gameKey === key);
+  const picks = rows.reduce((s, r) => s + r.picks, 0);
+  if (picks === 0) return null;
+
+  const own = rows.filter((r) => r.team === fanTeam).reduce((s, r) => s + r.picks, 0);
+  return { team: fanTeam, backsOwn: own / picks, picks };
+}
+
+/**
+ * How loyally each side's fanbase backed its own team on this game. Either side
+ * is null when nobody from that fanbase has picked it. Null overall when neither
+ * has.
+ */
+export function getFanbaseSplit(
+  game: ApiPrediction,
+  totals: FanbaseTotal[],
+): FanbaseSplit | null {
+  const key = gameKey(game);
+  const home = sideSplit(game.home_team, key, totals);
+  const away = sideSplit(game.away_team, key, totals);
+  return home || away ? { home, away } : null;
 }
 
 // ─── One-line takeaway — the central conflict of a matchup ─────────────────────
-export function getMatchupTakeaway(game: ApiPrediction, vegas: TeamPick | null, fan: TeamPick): string {
+export function getMatchupTakeaway(
+  game: ApiPrediction,
+  vegas: TeamPick | null,
+  fan: FanPick | null,
+): string {
   const clark = game.predicted_winner;
-  if (vegas && vegas.team !== clark && fan.team !== clark) {
+  if (vegas && fan && vegas.team !== clark && fan.team !== clark) {
     return `Clark stands alone on ${clark} — Vegas and the fans both lean the other way.`;
   }
   if (vegas && vegas.team !== clark) {
     return `The model likes ${clark}; the market leans ${vegas.team}. That gap is the whole game.`;
   }
-  if (fan.team !== clark) {
+  if (fan && fan.team !== clark) {
     return `Clark and Vegas both back ${clark}, but ${fan.team} fans aren't buying it.`;
   }
   if (getPredictedProbability(game) < 0.58) {
     return `A near coin-flip — Clark gives ${clark} only the slightest edge.`;
   }
+  if (!fan) {
+    return `Clark and the market both land on ${clark}. Nobody has staked a call against it yet.`;
+  }
   return `Clark, Vegas, and the fans all converge on ${clark} — a rare game with no argument.`;
 }
 
-// ─── Homepage "Signal" — most interesting disagreement in a set of games ──────
-export interface SignalResult {
-  game: ApiPrediction;
-  sentence: string;
-  clark: TeamPick;
-  vegas: TeamPick | null;
-  fan: TeamPick;
-  /** The non-obvious factor headline behind Clark's pick (B5) — null if the
-   * game has no factor data to build one from. */
-  clarkHeadline: string | null;
-}
-
-export function computeSignal(games: ApiPrediction[]): SignalResult | null {
-  if (games.length === 0) return null;
-
-  let best: SignalResult | null = null;
-  let bestScore = -Infinity;
-
-  for (const game of games) {
-    const vegas = getVegasPick(game);
-    const fan = getFanPick(game);
-    const clark: TeamPick = { team: game.predicted_winner, prob: getPredictedProbability(game) };
-
-    const disagreementCount =
-      (fan.team !== clark.team ? 1 : 0) +
-      (vegas && vegas.team !== clark.team ? 1 : 0) +
-      (vegas && vegas.team !== fan.team ? 1 : 0);
-    const splitCloseness = 0.5 - Math.abs(fan.prob - 0.5); // rewards a divided fanbase
-    const score = disagreementCount * 10 + splitCloseness;
-
-    if (score > bestScore) {
-      bestScore = score;
-      best = {
-        game,
-        sentence: buildSignalSentence(game, clark, vegas, fan),
-        clark, vegas, fan,
-        clarkHeadline: getHeroInsight(game)?.headline ?? null,
-      };
-    }
-  }
-  return best;
-}
-
-// ─── Fanbase standings — PROVISIONAL, seeded per (team, game) ──────────────────
+// ─── Fanbase standings — real, from picks tagged with the picker's fanbase ────
 /**
- * PROVISIONAL. A per-fanbase season standing, seeded deterministically — NOT
- * real community data. For each team's own games it models loyal-but-imperfect
- * belief: fans usually back their own team (seeded ~75% loyalty) at a seeded
- * conviction, sometimes fading them. Resolved against the real actual_winner,
- * this yields a fun, honest-if-labeled "which fanbases believed well in 2024"
- * ranking. Replace with real aggregated fan picks when they exist.
+ * Which fanbases have believed well this season. Every row is real: picks made
+ * by accounts that told us who they root for, resolved against the actual
+ * winner in predictions.json. Fanbases with no picks simply don't appear.
  */
 export interface FanbaseStanding {
   team: string;
-  games: number;
+  /** Resolved picks made by this fanbase (not games — a game can hold many). */
+  picks: number;
   correct: number;
   net: number;
   loyaltyPct: number;
 }
 
-export function computeFanbaseStandings(games: ApiPrediction[]): FanbaseStanding[] {
-  const byTeam = new Map<string, { games: number; correct: number; net: number; loyal: number }>();
-
+export function computeFanbaseStandings(
+  games: ApiPrediction[],
+  totals: FanbaseTotal[],
+): FanbaseStanding[] {
+  const winnerByKey = new Map<string, string>();
   for (const game of games) {
-    const winner = game.actual_winner ?? null;
+    if (game.actual_winner) winnerByKey.set(gameKey(game), game.actual_winner);
+  }
+
+  const byTeam = new Map<string, { picks: number; correct: number; net: number; loyal: number }>();
+
+  for (const row of totals) {
+    const winner = winnerByKey.get(row.gameKey);
     if (!winner) continue; // only resolved games count
 
-    for (const team of [game.home_team, game.away_team]) {
-      const opponent = team === game.home_team ? game.away_team : game.home_team;
-      const seed = `${team}:${gameKey(game)}`;
-      const isLoyal = seededRandom01(`${seed}:loyal`) < 0.75;
-      const backed = isLoyal ? team : opponent;
-      const conviction = 0.55 + seededRandom01(`${seed}:conv`) * 0.4; // 0.55–0.95
-      const stake = Math.round(GAME_CREDIT_CAP * (2 * conviction - 1));
-      const won = backed === winner;
-
-      const acc = byTeam.get(team) ?? { games: 0, correct: 0, net: 0, loyal: 0 };
-      acc.games += 1;
-      acc.correct += won ? 1 : 0;
-      acc.net += won ? stake : -stake;
-      acc.loyal += isLoyal ? 1 : 0;
-      byTeam.set(team, acc);
-    }
+    const acc = byTeam.get(row.fanTeam) ?? { picks: 0, correct: 0, net: 0, loyal: 0 };
+    const won = row.team === winner;
+    acc.picks += row.picks;
+    acc.correct += won ? row.picks : 0;
+    // stakeUnits is Σ(2·conf − 1); the cap turns it into credits. Every pick in
+    // this row backed the same team on the same game, so the sign is uniform.
+    acc.net += (won ? 1 : -1) * row.stakeUnits * GAME_CREDIT_CAP;
+    acc.loyal += row.team === row.fanTeam ? row.picks : 0;
+    byTeam.set(row.fanTeam, acc);
   }
 
   return [...byTeam.entries()]
     .map(([team, a]) => ({
       team,
-      games: a.games,
+      picks: a.picks,
       correct: a.correct,
-      net: a.net,
-      loyaltyPct: a.games ? a.loyal / a.games : 0,
+      net: Math.round(a.net),
+      loyaltyPct: a.picks ? a.loyal / a.picks : 0,
     }))
     .sort((a, b) => b.net - a.net);
-}
-
-function buildSignalSentence(
-  game: ApiPrediction,
-  clark: TeamPick,
-  vegas: TeamPick | null,
-  fan: TeamPick,
-): string {
-  const matchup = `${game.away_team} at ${game.home_team}`;
-  if (vegas && vegas.team !== clark.team) {
-    return `Vegas and Clark disagree on ${matchup}.`;
-  }
-  if (fan.team !== clark.team) {
-    return `Clark and Vegas agree on ${clark.team}. ${fan.team} fans don't.`;
-  }
-  if (Math.abs(fan.prob - 0.5) < 0.06) {
-    return `This week's most divided fanbase: ${matchup}.`;
-  }
-  return `Clark, Vegas, and the fans all agree on ${clark.team} this week.`;
 }

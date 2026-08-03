@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApiPrediction } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import { gameKey, getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
 import { useUserPicks, UserPick, stashPendingPick } from '@/hooks/useUserPicks';
+import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
@@ -29,6 +30,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   const key = gameKey(game);
   const userPick: UserPick | undefined = picks[key];
   const hasPicked = Boolean(userPick);
+
+  // Memoized so the sentiment store sees a stable request, not a new array each
+  // render. One card asks for one game; the store batches the whole grid.
+  const sentimentKeys = useMemo(() => [key], [key]);
+  const { sentiment } = useFanSentiment(sentimentKeys);
 
   // Draft slider position, center-anchored (0.5 = no position) until locked.
   const [draft, setDraft] = useState<Pick>({ team: game.home_team, confidence: 0.5 });
@@ -59,7 +65,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   };
 
   const vegas = getVegasPick(game);
-  const fan = getFanPick(game);
+  const fan = getFanPick(game, sentiment);
   const stake = userPick ? Math.round(stakeFromConfidence(userPick.confidence)) : 0;
 
   return (
@@ -174,7 +180,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
                 { label: 'You', team: userPick!.team, pct: userPick!.confidence },
                 { label: 'Clark', team: game.predicted_winner, pct: indexConfidenceFromScore(game.confidence_score) },
                 ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
-                { label: 'Fans', team: fan.team, pct: fan.prob, isProvisional: true },
+                // No row at all until real accounts have picked this game.
+                ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
               ]}
               size="compact"
               winner={game.actual_winner}

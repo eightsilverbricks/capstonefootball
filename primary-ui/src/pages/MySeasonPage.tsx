@@ -10,6 +10,7 @@ import StatStrip from '@/components/StatStrip';
 import { usePredictions } from '@/hooks/usePredictions';
 import { useUserPicks } from '@/hooks/useUserPicks';
 import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { computeSeasonSummary } from '@/lib/seasonSummary';
@@ -23,9 +24,20 @@ const MySeasonPage: React.FC = () => {
   const { team: fanTeam } = useFanIdentity();
   const { isSignedIn } = useAuth();
 
+  // Only the user's own picked games need a community read here; the fanbase
+  // standings come from the season-wide totals the same hook loads.
+  const pickedKeys = React.useMemo(() => Object.keys(picks), [picks]);
+  const { sentiment, fanbases: fanbaseTotals, status: sentimentStatus } = useFanSentiment(pickedKeys);
+
   const summary = computeSeasonSummary(picks, predictions);
-  const history = computeSeasonHistory(picks, predictions);
-  const fanbases = React.useMemo(() => computeFanbaseStandings(predictions), [predictions]);
+  const history = React.useMemo(
+    () => computeSeasonHistory(picks, predictions, sentiment),
+    [picks, predictions, sentiment],
+  );
+  const fanbases = React.useMemo(
+    () => computeFanbaseStandings(predictions, fanbaseTotals),
+    [predictions, fanbaseTotals],
+  );
   // Lets PickHighlightCard build a full share card (B4) from just the highlight's key.
   const gameByKey = React.useMemo(
     () => new Map(predictions.map((g) => [gameKey(g), g])),
@@ -183,13 +195,18 @@ const MySeasonPage: React.FC = () => {
                     { label: 'Avg conviction', value: pct(history.tendencies.avgConviction) },
                     { label: 'Side with Clark', value: pct(history.tendencies.withClarkPct) },
                     { label: 'Fade Vegas', value: pct(history.tendencies.fadeVegasPct) },
+                    // Hidden until the community has picked something you also
+                    // picked — 0% would read as a fact rather than as no data.
+                    ...(history.tendencies.crowdComparableCount > 0
+                      ? [{ label: 'Side with fans', value: pct(history.tendencies.withFansPct) }]
+                      : []),
                     { label: 'Longest win streak', value: String(history.longestWinStreak), color: 'var(--accent-gold)' },
                   ]}
                 />
               </div>
 
               {/* Fanbase standings */}
-              <FanbaseStandings standings={fanbases} userTeam={fanTeam} />
+              <FanbaseStandings standings={fanbases} userTeam={fanTeam} status={sentimentStatus} />
             </>
           )}
         </div>

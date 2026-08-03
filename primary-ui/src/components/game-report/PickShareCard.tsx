@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { Pick } from '@/competition/types';
-import { TeamPick } from '@/lib/threeWaySignal';
+import { FanPick, TeamPick } from '@/lib/threeWaySignal';
 import { Streak } from '@/lib/seasonSummary';
 import { getTeamColors } from '@/data/nflData';
 import { getHeroInsight } from '@/lib/heroInsight';
@@ -13,7 +13,8 @@ interface PickShareCardProps {
   game: ApiPrediction;
   pick: Pick;
   vegas: TeamPick | null;
-  fan: TeamPick;
+  /** Null when no one has picked this game yet — the row is simply omitted. */
+  fan: FanPick | null;
   /** Signed credits if this pick has resolved; null while the game is pending. */
   resolvedNet: number | null;
   /** Season-wide bragging layer (B6) — optional, shown only when provided. */
@@ -97,7 +98,7 @@ const PickShareCard: React.FC<PickShareCardProps> = ({
           { label: 'You', team: pick.team, pct: pick.confidence },
           { label: 'Clark', team: game.predicted_winner, pct: getPredictedProbability(game) },
           ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
-          { label: 'Fans', team: fan.team, pct: fan.prob, isProvisional: true },
+          ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
         ]}
         size="compact"
         winner={game.actual_winner}

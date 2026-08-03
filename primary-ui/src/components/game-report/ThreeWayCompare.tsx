@@ -5,8 +5,9 @@ export interface CompareRow {
   label: string;
   team: string;
   pct: number; // 0–1
-  /** Marks provisional (non-real) data — renders a small "sample" tag. */
-  isProvisional?: boolean;
+  /** How many real picks this row rests on. Rendered as a superscript so a
+   * 100% share off two picks can't be mistaken for a settled consensus. */
+  sampleSize?: number;
 }
 
 interface ThreeWayCompareProps {
@@ -43,13 +44,13 @@ const ThreeWayCompare: React.FC<ThreeWayCompareProps> = ({ rows, size = 'compact
                 </span>
               )}
               {row.label}
-              {row.isProvisional && (
+              {row.sampleSize != null && (
                 <sup
-                  className="ml-0.5"
+                  className="ml-0.5 tabular-nums"
                   style={{ color: 'var(--text-muted)' }}
-                  title="Illustrative — real community picks are coming"
+                  title={`${row.sampleSize} community pick${row.sampleSize === 1 ? '' : 's'}`}
                 >
-                  †
+                  {row.sampleSize}
                 </sup>
               )}
             </span>

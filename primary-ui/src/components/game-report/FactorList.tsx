@@ -2,6 +2,8 @@ import React from 'react';
 import { FactorCard } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import ChallengeFactor from '@/components/competition/ChallengeFactor';
+import { ChallengesData, useChallenges } from '@/hooks/useChallenges';
+import { useAuth } from '@/hooks/useAuth';
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   DECISIVE: { label: 'Key edge',  color: 'var(--status-decisive)' },
@@ -13,10 +15,11 @@ const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
 interface FactorRowProps {
   factor: FactorCard;
   rank: number;
-  gameId?: string;
+  /** Null when the report has no game key to attach a thread to. */
+  challenges: ChallengesData | null;
 }
 
-const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
+const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, challenges }) => {
   const isEven     = factor.advantage_team === 'Even';
   const teamColors = isEven ? null : getTeamColors(factor.advantage_team);
   const accentColor = teamColors?.primary ?? '#475569';
@@ -109,7 +112,7 @@ const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, gameId }) => {
 
       {/* Community challenge thread — the only thing that stays collapsed;
           secondary to the reasoning above, never competes with it. */}
-      {gameId && <ChallengeFactor gameId={gameId} factorName={factor.name} />}
+      {challenges && <ChallengeFactor challenges={challenges} factorName={factor.name} />}
     </article>
   );
 };
@@ -121,6 +124,10 @@ interface FactorListProps {
 
 const FactorList: React.FC<FactorListProps> = ({ factors, gameId }) => {
   const sorted = [...factors].sort((a, b) => b.contribution_strength - a.contribution_strength);
+  // Loaded once for the whole report: the RPC returns every challenge on this
+  // game, and each factor row filters to its own thread.
+  const { user } = useAuth();
+  const challenges = useChallenges(gameId ?? '', user?.id ?? null);
 
   return (
     <section aria-label="Factors to victory">
@@ -132,7 +139,7 @@ const FactorList: React.FC<FactorListProps> = ({ factors, gameId }) => {
       </h3>
       <div className="flex flex-col gap-2">
         {sorted.map((factor, i) => (
-          <FactorRow key={factor.name} factor={factor} rank={i + 1} gameId={gameId} />
+          <FactorRow key={factor.name} factor={factor} rank={i + 1} challenges={gameId ? challenges : null} />
         ))}
       </div>
     </section>

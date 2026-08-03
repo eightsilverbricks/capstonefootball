@@ -1,11 +1,14 @@
 // ─── seasonHistory — the full My Season derivation ────────────────────────────
 // Pure. Extends seasonSummary with per-week rows (You vs Clark vs Vegas),
 // cumulative curves, strongest calls / biggest misses, and pick tendencies.
-// Everything is derived from the session picks + predictions.json (which now
-// carries real 2024 outcomes). Vegas net reuses the real moneyline-derived
-// getVegasPick; the fan direction reuses the PROVISIONAL getFanPick.
+// Everything is derived from the user's picks + predictions.json (which now
+// carries real 2024 outcomes). Vegas net reuses the moneyline-derived
+// getVegasPick; the fan direction reuses the real aggregated getFanPick, which
+// is absent for games nobody else has picked — those simply don't count toward
+// the "sided with the fans" tendency.
 
 import { ApiPrediction } from '@/types/prediction';
+import { SentimentMap } from '@/data/sentimentRepository';
 import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
 import { UserPick } from '@/hooks/useUserPicks';
 import { resolvePick, stakeFromConfidence, indexConfidenceFromScore } from '@/competition/scoring';
@@ -42,6 +45,9 @@ export interface Tendencies {
   withClarkPct: number;
   fadeVegasPct: number;
   withFansPct: number;
+  /** Picks that had a community read to compare against — 0 means withFansPct
+   * is meaningless and callers should hide it rather than show 0%. */
+  crowdComparableCount: number;
 }
 
 export interface SeasonHistory {
@@ -74,14 +80,15 @@ interface Row {
   vegasExists: boolean;
   withClark: boolean;
   fadeVegas: boolean;
-  withFans: boolean;
+  /** null when no one else has picked this game — no crowd to agree with. */
+  withFans: boolean | null;
 }
 
 function highlightTag(r: Row): string {
   if (r.correct) {
     if (!r.withClark) return 'Beat Clark';
     if (r.fadeVegas) return 'Faded Vegas ✓';
-    if (!r.withFans) return 'Minority call ✓';
+    if (r.withFans === false) return 'Minority call ✓';
     return 'Nailed it';
   }
   if (r.confidence >= 0.8) return 'Overconfident miss';
@@ -89,7 +96,11 @@ function highlightTag(r: Row): string {
   return 'Cold call';
 }
 
-function buildRows(picks: Record<string, UserPick>, games: ApiPrediction[]): Row[] {
+function buildRows(
+  picks: Record<string, UserPick>,
+  games: ApiPrediction[],
+  sentiment: SentimentMap,
+): Row[] {
   const byKey = new Map(games.map((g) => [gameKey(g), g]));
   const rows: Row[] = [];
 
@@ -100,7 +111,7 @@ function buildRows(picks: Record<string, UserPick>, games: ApiPrediction[]): Row
     const winner = game.actual_winner ?? null;
     const resolved = winner != null;
     const vegas = getVegasPick(game);
-    const fan = getFanPick(game);
+    const fan = getFanPick(game, sentiment);
     const clarkConfidence = indexConfidenceFromScore(game.confidence_score);
 
     rows.push({
@@ -119,7 +130,7 @@ function buildRows(picks: Record<string, UserPick>, games: ApiPrediction[]): Row
       vegasExists: vegas != null,
       withClark: pick.team === game.predicted_winner,
       fadeVegas: vegas != null && pick.team !== vegas.team,
-      withFans: pick.team === fan.team,
+      withFans: fan ? pick.team === fan.team : null,
     });
   }
   return rows;
@@ -194,8 +205,9 @@ function toHighlight(r: Row): PickHighlight {
 export function computeSeasonHistory(
   picks: Record<string, UserPick>,
   games: ApiPrediction[],
+  sentiment: SentimentMap,
 ): SeasonHistory {
-  const rows = buildRows(picks, games);
+  const rows = buildRows(picks, games, sentiment);
   rows.sort((a, b) => (a.week - b.week) || a.gameDate.localeCompare(b.gameDate));
 
   const resolved = rows.filter((r) => r.resolved);
@@ -214,11 +226,15 @@ export function computeSeasonHistory(
     .map(toHighlight);
 
   const withVegas = rows.filter((r) => r.vegasExists);
+  // Only games the community has actually weighed in on can say anything about
+  // how often you side with them.
+  const withCrowd = rows.filter((r) => r.withFans !== null);
   const tendencies: Tendencies = {
     avgConviction: rows.length ? rows.reduce((s, r) => s + r.confidence, 0) / rows.length : 0.5,
     withClarkPct: rows.length ? rows.filter((r) => r.withClark).length / rows.length : 0,
     fadeVegasPct: withVegas.length ? withVegas.filter((r) => r.fadeVegas).length / withVegas.length : 0,
-    withFansPct: rows.length ? rows.filter((r) => r.withFans).length / rows.length : 0,
+    withFansPct: withCrowd.length ? withCrowd.filter((r) => r.withFans).length / withCrowd.length : 0,
+    crowdComparableCount: withCrowd.length,
   };
 
   return {

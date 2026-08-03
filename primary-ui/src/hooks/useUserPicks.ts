@@ -16,6 +16,7 @@ import { localAuthClient } from '@/auth/localAuthClient';
 import { supabaseAuthClient } from '@/auth/supabaseAuthClient';
 import { isSupabaseConfigured } from '@/auth/supabaseClient';
 import { deletePick, loadPicks, savePick, PickMap, UserPick } from '@/data/picksRepository';
+import { invalidateFanSentiment } from '@/hooks/useFanSentiment';
 
 export type { UserPick } from '@/data/picksRepository';
 
@@ -59,7 +60,7 @@ async function syncToSession(): Promise<void> {
     const { key, pick } = pendingPick;
     pendingPick = null;
     store = { ...store, [key]: pick };
-    void savePick(nextId, key, pick, store);
+    void savePick(nextId, key, pick, store).then(invalidateFanSentiment);
   }
 
   emit();
@@ -87,7 +88,9 @@ function setUserPick(key: string, pick: UserPick): void {
   }
   store = { ...store, [key]: pick };
   emit();
-  void savePick(activeUserId, key, pick, store);
+  // Your own pick is part of the community split — re-read it once the write
+  // lands so the percentage you're looking at includes you.
+  void savePick(activeUserId, key, pick, store).then(invalidateFanSentiment);
 }
 
 function clearUserPick(key: string): void {
@@ -96,7 +99,7 @@ function clearUserPick(key: string): void {
   delete next[key];
   store = next;
   emit();
-  void deletePick(activeUserId, key, store);
+  void deletePick(activeUserId, key, store).then(invalidateFanSentiment);
 }
 
 /**

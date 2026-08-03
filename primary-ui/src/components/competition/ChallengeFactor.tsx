@@ -1,29 +1,49 @@
 import React, { useState } from 'react';
-import { useCompetitionData } from '@/hooks/useCompetitionData';
+import { ChallengesData } from '@/hooks/useChallenges';
+import { MAX_CHALLENGE_LENGTH } from '@/data/challengesRepository';
+import { useAuth } from '@/hooks/useAuth';
+import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { ChevronDown, ChevronUp, ArrowBigUp, Trophy } from 'lucide-react';
 
 interface ChallengeFactorProps {
-  gameId: string;
+  /** Loaded once per report by FactorList and shared across every factor row. */
+  challenges: ChallengesData;
   factorName: string;
 }
 
 /**
  * Community "Challenge a Factor" thread attached to a single factor card.
- * Lists mock challenges sorted by upvotes with a Top Challenge badge, an upvote
- * button, and a submission box. All ephemeral/local state for this pass.
+ * Every challenge is a real post by a real account — the name shown is the
+ * author's profile display name, resolved server-side, and each account's
+ * upvote is a row so it can only ever count once.
  */
-const ChallengeFactor: React.FC<ChallengeFactorProps> = ({ gameId, factorName }) => {
-  const { challengesFor, addChallenge, upvoteChallenge } = useCompetitionData();
+const ChallengeFactor: React.FC<ChallengeFactorProps> = ({ challenges, factorName }) => {
+  const { isSignedIn } = useAuth();
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
 
-  const items = challengesFor(gameId, factorName);
+  const items = challenges.forFactor(factorName);
 
-  const submit = () => {
-    const text = draft.trim();
-    if (!text) return;
-    addChallenge(gameId, factorName, text);
-    setDraft('');
+  const submit = async () => {
+    if (!isSignedIn) {
+      openAuthDialog('signup');
+      return;
+    }
+    setBusy(true);
+    const failure = await challenges.post(factorName, draft);
+    setBusy(false);
+    setError(failure);
+    if (!failure) setDraft('');
+  };
+
+  const vote = async (challenge: (typeof items)[number]) => {
+    if (!isSignedIn) {
+      openAuthDialog('signup');
+      return;
+    }
+    setError(await challenges.toggleVote(challenge));
   };
 
   return (
@@ -47,35 +67,43 @@ const ChallengeFactor: React.FC<ChallengeFactorProps> = ({ gameId, factorName })
           {items.map(c => (
             <div key={c.id} className="flex items-start gap-2.5 pt-2">
               <button
-                onClick={() => upvoteChallenge(c.id)}
+                onClick={() => void vote(c)}
                 className="flex flex-col items-center shrink-0 rounded px-1.5 py-0.5 transition-colors"
-                style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}
-                aria-label={`Upvote challenge by ${c.submitter}`}
+                style={{
+                  background: 'var(--surface)',
+                  border: `1px solid ${c.viewerVoted ? 'var(--accent-gold)' : 'var(--border-subtle)'}`,
+                }}
+                aria-pressed={c.viewerVoted}
+                aria-label={`${c.viewerVoted ? 'Remove your upvote from' : 'Upvote'} the challenge by ${c.authorName}`}
               >
-                <ArrowBigUp className="w-3.5 h-3.5" style={{ color: 'var(--text-tertiary)' }} />
+                <ArrowBigUp
+                  className="w-3.5 h-3.5"
+                  style={{ color: c.viewerVoted ? 'var(--accent-gold)' : 'var(--text-tertiary)' }}
+                />
                 <span className="text-[10px] tabular-nums" style={{ fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>
-                  {c.upvotes}
+                  {c.votes}
                 </span>
               </button>
               <div className="min-w-0">
                 <div className="flex items-center gap-1.5 mb-0.5">
-                  <span aria-hidden="true" className="text-xs">{c.avatar}</span>
-                  <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{c.submitter}</span>
-                  {c.isTopChallenge && (
+                  <span className="text-[11px] font-semibold" style={{ color: 'var(--text-secondary)' }}>{c.authorName}</span>
+                  {challenges.isTopChallenge(c) && (
                     <span className="inline-flex items-center gap-1 text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded"
                       style={{ color: 'var(--accent-gold)', background: 'var(--accent-gold-dim)' }}>
                       <Trophy className="w-2.5 h-2.5" /> Top
                     </span>
                   )}
                 </div>
-                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{c.text}</p>
+                <p className="text-xs leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>{c.body}</p>
               </div>
             </div>
           ))}
 
           {items.length === 0 && (
             <p className="text-xs pt-2" style={{ color: 'var(--text-muted)' }}>
-              No challenges yet. Make the first case against this factor.
+              {challenges.isLoading
+                ? 'Loading challenges…'
+                : 'No challenges yet. Make the first case against this factor.'}
             </p>
           )}
 
@@ -84,19 +112,24 @@ const ChallengeFactor: React.FC<ChallengeFactorProps> = ({ gameId, factorName })
             <textarea
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              maxLength={240}
+              maxLength={MAX_CHALLENGE_LENGTH}
               rows={2}
               placeholder="Push back on this factor with evidence…"
               className="w-full rounded-md px-3 py-2 text-xs outline-none resize-none"
               style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
             />
+            {error && (
+              <span className="text-[11px]" style={{ color: 'var(--stake-negative)' }} role="alert">
+                {error}
+              </span>
+            )}
             <button
-              onClick={submit}
-              disabled={!draft.trim()}
+              onClick={() => void submit()}
+              disabled={!draft.trim() || busy}
               className="self-end px-3 py-1.5 rounded-md text-[11px] font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               style={{ background: 'var(--accent-gold)', color: '#1a1408' }}
             >
-              Post challenge
+              {busy ? 'Posting…' : isSignedIn ? 'Post challenge' : 'Post challenge — free account'}
             </button>
           </div>
         </div>

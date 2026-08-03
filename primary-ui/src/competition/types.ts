@@ -1,5 +1,8 @@
 // ─── The Clark Competition — shared types ─────────────────────────────────────
 // Mode where users wager confidence against the model and the crowd.
+// Leaderboard/league/challenge shapes used to live here to describe fabricated
+// users; the real ones now come off Supabase — see data/challengesRepository.ts
+// and data/sentimentRepository.ts.
 
 export type EntityKind = 'you' | 'crowd' | 'index';
 
@@ -24,45 +27,8 @@ export interface CompetitionGame {
   resolved: boolean;
   /** Clark Index's own position — confidence pulled from predictions.json. */
   index: Pick;
-  /** Crowd position — confidence is the mean of mock users' submissions. */
+  /** Crowd position — confidence is the mean of real users' submissions. */
   crowd: Pick;
   /** Your sample/seed position (editable on Make Your Case for the live week). */
   you: Pick;
-}
-
-/** A leaderboard competitor. */
-export interface MockUser {
-  id: string;
-  displayName: string;
-  /** Placeholder avatar — an emoji or initials token, not a real image. */
-  avatar: string;
-  clarkScore: number;
-  clarkDifferential: number;
-  /** This week's net, for the "this week" sort. */
-  weeklyNet: number;
-  /** Biggest single correct stake this season. */
-  biggestCorrectStake: number;
-  /** League id this user is tagged to, or 'global' only. */
-  leagueId: string | null;
-}
-
-export interface MockLeague {
-  id: string;
-  name: string;
-  tag: string;
-  memberIds: string[];
-}
-
-/** A community challenge against one of a game's factor cards. */
-export interface FactorChallenge {
-  id: string;
-  gameId: string;
-  /** Factor card name this challenge targets (matches FactorCard.name). */
-  factorName: string;
-  submitter: string;
-  avatar: string;
-  text: string;
-  upvotes: number;
-  /** Derived: highest-upvoted challenge for its factor. */
-  isTopChallenge: boolean;
 }

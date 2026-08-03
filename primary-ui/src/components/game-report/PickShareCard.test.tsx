@@ -36,7 +36,7 @@ describe('PickShareCard', () => {
         game={game()}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={{ team: 'BUF', prob: 0.7 }}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={null}
       />,
     );
@@ -52,7 +52,7 @@ describe('PickShareCard', () => {
         game={game({ actual_winner: 'ARI' })}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={{ team: 'BUF', prob: 0.7 }}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={35}
       />,
     );
@@ -66,7 +66,7 @@ describe('PickShareCard', () => {
         game={game({ actual_winner: 'BUF' })}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={null}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={-35}
       />,
     );
@@ -80,7 +80,7 @@ describe('PickShareCard', () => {
         game={game()}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={null}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={null}
         clarkDifferential={22}
         streak={{ type: 'W', count: 3 }}
@@ -96,7 +96,7 @@ describe('PickShareCard', () => {
         game={game()}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={null}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={null}
         streak={{ type: 'W', count: 1 }}
       />,
@@ -111,7 +111,7 @@ describe('PickShareCard', () => {
         game={game()}
         pick={{ team: 'ARI', confidence: 0.85 }}
         vegas={null}
-        fan={{ team: 'BUF', prob: 0.6 }}
+        fan={{ team: 'BUF', prob: 0.6, picks: 12 }}
         resolvedNet={null}
       />,
     );

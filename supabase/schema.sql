@@ -137,3 +137,119 @@ as $$
   where p.game_key = any(game_keys)
   group by p.game_key, p.team;
 $$;
+
+-- How support built through the week, by day. Note that a pick edited after the
+-- fact keeps its original created_at, so switching sides rewrites that day's
+-- history rather than appending to it — this is a "where does each day's
+-- support stand" curve, not an immutable audit log.
+create or replace function public.game_sentiment_timeline(game_keys text[])
+returns table (game_key text, team text, day date, picks bigint)
+language sql
+stable
+as $$
+  select p.game_key, p.team, (p.created_at at time zone 'utc')::date as day, count(*) as picks
+  from public.picks p
+  where p.game_key = any(game_keys)
+  group by p.game_key, p.team, (p.created_at at time zone 'utc')::date
+  order by day;
+$$;
+
+-- Fanbase-level cuts: every pick grouped by the fanbase the picker belongs to.
+-- `stake_units` is the sum of (2 * confidence - 1), the unitless half of the
+-- stake formula — the client multiplies by GAME_CREDIT_CAP so
+-- competition/scoring.ts stays the only place that number is defined. Resolving
+-- against the actual winner also happens client-side: outcomes live in
+-- predictions.json, not in this database.
+create or replace function public.fanbase_totals()
+returns table (fan_team text, game_key text, team text, picks bigint, stake_units numeric)
+language sql
+stable
+as $$
+  select p.fan_team, p.game_key, p.team, count(*) as picks,
+         sum(2 * p.confidence - 1) as stake_units
+  from public.picks p
+  where p.fan_team is not null
+  group by p.fan_team, p.game_key, p.team;
+$$;
+
+-- ── Challenge a Factor ───────────────────────────────────────────────────────
+-- Community pushback on a single factor card of a single game's Clark Report.
+create table if not exists public.challenges (
+  id          uuid primary key default gen_random_uuid(),
+  user_id     uuid not null references public.profiles(id) on delete cascade,
+  game_key    text not null,
+  factor_name text not null,
+  body        text not null check (char_length(btrim(body)) between 1 and 240),
+  created_at  timestamptz not null default now()
+);
+
+create index if not exists challenges_thread_idx
+  on public.challenges (game_key, factor_name);
+
+comment on table public.challenges is
+  'One row per posted challenge. Author identity comes from profiles, never from a client-supplied name.';
+
+-- Upvotes as rows rather than a counter column, so one account can only ever
+-- count once and the tally can never drift from the votes behind it.
+create table if not exists public.challenge_votes (
+  challenge_id uuid not null references public.challenges(id) on delete cascade,
+  user_id      uuid not null references public.profiles(id) on delete cascade,
+  created_at   timestamptz not null default now(),
+  primary key (challenge_id, user_id)
+);
+
+alter table public.challenges      enable row level security;
+alter table public.challenge_votes enable row level security;
+
+drop policy if exists "challenges are publicly readable" on public.challenges;
+create policy "challenges are publicly readable"
+  on public.challenges for select using (true);
+
+drop policy if exists "users post their own challenges" on public.challenges;
+create policy "users post their own challenges"
+  on public.challenges for insert with check (auth.uid() = user_id);
+
+drop policy if exists "users delete their own challenges" on public.challenges;
+create policy "users delete their own challenges"
+  on public.challenges for delete using (auth.uid() = user_id);
+
+drop policy if exists "votes are publicly readable" on public.challenge_votes;
+create policy "votes are publicly readable"
+  on public.challenge_votes for select using (true);
+
+drop policy if exists "users cast their own votes" on public.challenge_votes;
+create policy "users cast their own votes"
+  on public.challenge_votes for insert with check (auth.uid() = user_id);
+
+drop policy if exists "users retract their own votes" on public.challenge_votes;
+create policy "users retract their own votes"
+  on public.challenge_votes for delete using (auth.uid() = user_id);
+
+-- One round trip per Clark Report: every challenge on the page, with its author,
+-- its live vote count, and whether the person reading has already voted.
+create or replace function public.challenge_threads(p_game_key text)
+returns table (
+  id           uuid,
+  factor_name  text,
+  body         text,
+  created_at   timestamptz,
+  author_id    uuid,
+  author_name  text,
+  votes        bigint,
+  viewer_voted boolean
+)
+language sql
+stable
+as $$
+  select c.id, c.factor_name, c.body, c.created_at,
+         c.user_id as author_id,
+         pr.display_name as author_name,
+         (select count(*) from public.challenge_votes v where v.challenge_id = c.id) as votes,
+         exists (
+           select 1 from public.challenge_votes v
+           where v.challenge_id = c.id and v.user_id = auth.uid()
+         ) as viewer_voted
+  from public.challenges c
+  join public.profiles pr on pr.id = c.user_id
+  where c.game_key = p_game_key;
+$$;
