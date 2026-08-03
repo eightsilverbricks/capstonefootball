@@ -53,3 +53,5 @@ npm-debug.log*
 
 # NOTE: predictions.json IS committed — it's the static data artifact
 # that Vercel serves. Do not add it here.
+.vercel
+.env*

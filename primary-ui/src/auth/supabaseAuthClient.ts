@@ -129,9 +129,13 @@ export const supabaseAuthClient: AuthClient = {
 
     if (error) return { session: null, error: friendlyError(error.message) };
 
-    const authUser = data.user;
+    // Gate on the session, not the user. With email confirmation enabled
+    // Supabase still returns a `user` here, but no session — and a profile row
+    // is publicly readable, so trusting `user` would hand back a signed-in-
+    // looking session that carries no auth. Every RLS-protected write would
+    // then fail, and the session would vanish on reload.
+    const authUser = data.session?.user;
     if (!authUser) {
-      // Email confirmation is on — there's no session until they click through.
       return {
         session: null,
         error: { message: 'Check your email to confirm your account, then sign in.' },
@@ -155,7 +159,7 @@ export const supabaseAuthClient: AuthClient = {
 
     if (error) return { session: null, error: friendlyError(error.message) };
 
-    const authUser = data.user;
+    const authUser = data.session?.user;
     if (!authUser) return { session: null, error: { message: 'Email or password is incorrect.', field: 'password' } };
 
     const profile = await loadProfile(authUser.id, authUser.email ?? input.email);
