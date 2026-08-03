@@ -5,15 +5,17 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import HomeHighlights from '@/components/HomeHighlights';
 import LandingHero from '@/components/landing/LandingHero';
+import WhyClark from '@/components/landing/WhyClark';
 import FoundersLetter from '@/components/landing/FoundersLetter';
-import ProofStrip from '@/components/landing/ProofStrip';
 import HowItWorks from '@/components/landing/HowItWorks';
 import ReelPanel from '@/components/landing/ReelPanel';
 import ReportPeekDialog from '@/components/landing/ReportPeekDialog';
+import SectionIntro from '@/components/landing/SectionIntro';
 import { usePredictions } from '@/hooks/usePredictions';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
 import { computeModelRecord } from '@/lib/modelRecord';
+import { getHeroFactor } from '@/lib/heroInsight';
 import { getConfidenceScore } from '@/types/prediction';
 
 /**
@@ -41,22 +43,47 @@ const LandingPage: React.FC = () => {
     [predictions, currentWeek],
   );
 
-  // The sample report should be a game worth showing: this week's clearest read.
-  const peekGame = useMemo(
-    () => [...weekGames].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a))[0] ?? null,
-    [weekGames],
-  );
+  // The showcase game fronts the whole pitch, so pick the strongest example in
+  // the season rather than whatever happens to lead the current week.
+  //
+  // Week >= 4 matters: the "last 3" fields carry over from the prior season
+  // early on, so a Week 1 game shows both teams at an identical, unexplained
+  // 1-2 — confusing on a panel whose entire claim is that the numbers are real.
+  // Requiring a factor headline guarantees the right-hand column has prose.
+  const peekGame = useMemo(() => {
+    const byConfidence = (a: typeof predictions[number], b: typeof predictions[number]) =>
+      getConfidenceScore(b) - getConfidenceScore(a);
+
+    // The right-hand column has to earn its place. Momentum just restates the
+    // last-3 records already sitting in the left column, and Market Edge just
+    // restates the spread — pick a game whose lead factor surfaces something
+    // the stat sheet genuinely cannot show, like a pass-rush or efficiency edge.
+    const ADDS_NEW_INFORMATION = new Set(['Defensive Edge', 'Recent Offense']);
+
+    const strongExample = predictions
+      .filter((g) => {
+        if (g.week < 4) return false;
+        const hero = getHeroFactor(g);
+        return Boolean(hero?.headline) && ADDS_NEW_INFORMATION.has(hero!.name);
+      })
+      .sort(byConfidence)[0];
+
+    return strongExample ?? [...weekGames].sort(byConfidence)[0] ?? null;
+  }, [predictions, weekGames]);
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
 
       <main className="flex flex-col" style={{ gap: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
-        <LandingHero gamesAnalyzed={predictions.length} />
+        <LandingHero />
+
+        {/* Prove the claim before asking anyone to care who we are. */}
+        {!loading && peekGame && (
+          <WhyClark game={peekGame} record={record} onPeek={() => setPeekOpen(true)} />
+        )}
 
         <FoundersLetter />
-
-        {!loading && record.played > 0 && <ProofStrip record={record} />}
 
         <HowItWorks onPeek={() => setPeekOpen(true)} canPeek={peekGame != null} />
 
@@ -66,21 +93,15 @@ const LandingPage: React.FC = () => {
         {weekGames.length > 0 && (
           <section aria-labelledby="week-peek-heading" className="max-w-5xl mx-auto px-4 w-full">
             <div
-              className="flex flex-wrap items-baseline justify-between gap-3 mb-5 pb-3"
+              className="flex flex-wrap items-end justify-between gap-3 mb-6 pb-4"
               style={{ borderBottom: '1px solid var(--border-subtle)' }}
             >
-              <h2
+              <SectionIntro
                 id="week-peek-heading"
-                className="font-bold"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)',
-                  color: 'var(--text-primary)',
-                }}
-              >
-                On the board right now
-              </h2>
-              <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+                kicker="Live right now"
+                heading="Go read one yourself."
+              />
+              <span className="text-[11px] uppercase tracking-[0.2em] pb-1" style={{ color: 'var(--text-muted)' }}>
                 {weekTitle(currentWeek)} · {weekGames.length} games
               </span>
             </div>

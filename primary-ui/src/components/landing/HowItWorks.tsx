@@ -1,5 +1,6 @@
 import React from 'react';
 import { BookOpen, Eye, Flame, Trophy } from 'lucide-react';
+import SectionIntro from './SectionIntro';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 
 interface HowItWorksProps {
@@ -15,15 +16,12 @@ interface HowItWorksProps {
  */
 const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
   <section aria-labelledby="how-it-works-heading" className="max-w-5xl mx-auto px-4">
-    <div className="flex items-baseline justify-between gap-4 mb-5 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-      <h2
-        id="how-it-works-heading"
-        className="font-bold"
-        style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(1.5rem, 3.5vw, 2.25rem)', color: 'var(--text-primary)' }}
-      >
-        How it works
-      </h2>
-      <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
+    <div
+      className="flex flex-wrap items-end justify-between gap-4 mb-6 pb-4"
+      style={{ borderBottom: '1px solid var(--border-subtle)' }}
+    >
+      <SectionIntro id="how-it-works-heading" kicker="How it works" heading="Read it. Call it. Live with it." />
+      <span className="text-[11px] uppercase tracking-[0.2em] pb-1" style={{ color: 'var(--text-muted)' }}>
         Three steps
       </span>
     </div>
