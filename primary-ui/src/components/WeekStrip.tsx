@@ -1,24 +1,10 @@
 import React, { useRef, useEffect } from 'react';
+import { weekShortLabel } from '@/lib/currentWeek';
 
 interface WeekStripProps {
   availableWeeks: number[];
   selectedWeek: number;
   onChange: (week: number) => void;
-}
-
-const PLAYOFF_LABELS: Record<number, string> = {
-  19: 'Wild Card',
-  20: 'Divisional',
-  21: 'Conf. Champ.',
-  22: 'Super Bowl',
-};
-
-function weekLabel(week: number): string {
-  return PLAYOFF_LABELS[week] ?? `Wk ${week}`;
-}
-
-function isPlayoff(week: number): boolean {
-  return week >= 19;
 }
 
 const WeekStrip: React.FC<WeekStripProps> = ({ availableWeeks, selectedWeek, onChange }) => {
@@ -63,7 +49,7 @@ const WeekStrip: React.FC<WeekStripProps> = ({ availableWeeks, selectedWeek, onC
                     : 'text-white/40 hover:text-white hover:bg-white/8'
                 }`}
               >
-                {weekLabel(week)}
+                {weekShortLabel(week)}
               </button>
             );
           })}
@@ -92,7 +78,7 @@ const WeekStrip: React.FC<WeekStripProps> = ({ availableWeeks, selectedWeek, onC
                     : { color: '#c8a96e', background: 'rgba(200,169,110,0.1)' }
                 }
               >
-                {weekLabel(week)}
+                {weekShortLabel(week)}
               </button>
             );
           })}

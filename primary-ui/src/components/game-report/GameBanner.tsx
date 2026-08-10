@@ -3,6 +3,8 @@ import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import { withAlpha, legibleTeamTextColor, SURFACE_HEX } from '@/lib/color';
 import { STADIUM_META } from '@/data/stadiumMeta';
+import { isPlayoffWeek, weekLabel } from '@/lib/currentWeek';
+import { formatKickoff, getSlateWindow } from '@/lib/slate';
 import TeamLogo from '@/components/TeamLogo';
 import PlayerHeadshot from '@/components/PlayerHeadshot';
 import WinProbBar from './WinProbBar';
@@ -16,9 +18,6 @@ interface GameBannerProps {
   game: ApiPrediction;
 }
 
-const PLAYOFF_LABELS: Record<number, string> = {
-  19: 'Wild Card', 20: 'Divisional', 21: 'Conference Championship', 22: 'Super Bowl',
-};
 
 /**
  * Layered game-page banner (Workstream C): a home-team-tinted surface with a
@@ -37,8 +36,12 @@ const GameBanner: React.FC<GameBannerProps> = ({ game }) => {
   const winnerColors = getTeamColors(game.predicted_winner);
 
   const winnerProb = Math.round(getPredictedProbability(game) * 100);
-  const isPlayoff = game.week >= 19;
-  const weekLabel = PLAYOFF_LABELS[game.week] ?? `Week ${game.week}`;
+  const isPlayoff = isPlayoffWeek(game.week);
+  const label = weekLabel(game.week);
+  // Same window naming the Games page groups by, so a game carries the same
+  // framing ("Sunday Night · 8:20 PM ET") from the slate through to its Report.
+  const kickoff = formatKickoff(game.gametime);
+  const slateWindow = getSlateWindow(game);
 
   const weather = game.weather;
   const windMph = weather?.wind ?? 0;
@@ -94,11 +97,21 @@ const GameBanner: React.FC<GameBannerProps> = ({ game }) => {
         style={{ textShadow: '0 1px 2px rgba(0,0,0,0.95), 0 0 10px rgba(0,0,0,0.7)' }}
       >
         <div className="flex items-center justify-between mb-4 pb-3" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
-          <span
-            className="text-xs font-semibold uppercase tracking-[0.2em]"
-            style={{ color: isPlayoff ? 'var(--accent-gold)' : 'rgba(255,255,255,0.90)' }}
-          >
-            {weekLabel} · {game.season}
+          <span className="flex flex-col gap-1 min-w-0">
+            <span
+              className="text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{ color: isPlayoff ? 'var(--accent-gold)' : 'rgba(255,255,255,0.90)' }}
+            >
+              {label} · {game.season}
+            </span>
+            {kickoff && (
+              <span
+                className="text-[10px] uppercase tracking-[0.18em] tabular-nums"
+                style={{ color: 'rgba(255,255,255,0.62)' }}
+              >
+                {slateWindow.label} · {kickoff}
+              </span>
+            )}
           </span>
           {game.actual_winner ? (
             <span

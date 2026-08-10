@@ -11,11 +11,43 @@ export function resolveCurrentWeek(availableWeeks: number[]): number {
   return availableWeeks[availableWeeks.length - 1] ?? CURRENT_WEEK;
 }
 
-const PLAYOFF_TITLES: Record<number, string> = {
-  19: 'WILD CARD', 20: 'DIVISIONAL', 21: 'CONFERENCE', 22: 'SUPER BOWL',
+// ── Week naming ──────────────────────────────────────────────────────────────
+// One source of truth for what a week is called. This used to live as four
+// near-copies (WeekStrip, GameBanner, GamePage, here), which had week 21
+// reading "Conf. Champ.", "Conference Championship" and "CONFERENCE" on three
+// surfaces of the same site. Two spellings are kept — a full name and a
+// compact one for tight navigation — and nothing else redefines them.
+
+const ROUND_NAMES: Record<number, string> = {
+  19: 'Wild Card',
+  20: 'Divisional',
+  21: 'Conference Championship',
+  22: 'Super Bowl',
 };
 
-/** Display masthead label for a week number (e.g. "WEEK 1", "DIVISIONAL"). */
+const ROUND_SHORT_NAMES: Record<number, string> = {
+  19: 'Wild Card',
+  20: 'Divisional',
+  21: 'Conf. Champ.',
+  22: 'Super Bowl',
+};
+
+/** Full name for a week — "Week 1", "Conference Championship". */
+export function weekLabel(week: number): string {
+  return ROUND_NAMES[week] ?? `Week ${week}`;
+}
+
+/** Compact name for tight navigation — "Wk 1", "Conf. Champ.". */
+export function weekShortLabel(week: number): string {
+  return ROUND_SHORT_NAMES[week] ?? `Wk ${week}`;
+}
+
+/** Masthead form, set uppercase — "WEEK 1", "SUPER BOWL". */
 export function weekTitle(week: number): string {
-  return PLAYOFF_TITLES[week] ?? `WEEK ${week}`;
+  return weekLabel(week).toUpperCase();
+}
+
+/** True for the postseason weeks, which several surfaces style differently. */
+export function isPlayoffWeek(week: number): boolean {
+  return week >= 19;
 }

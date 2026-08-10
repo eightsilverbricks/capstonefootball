@@ -2,20 +2,29 @@ import React, { useEffect, useMemo, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import WeekStrip from '@/components/WeekStrip';
-import GameCard from '@/components/GameCard';
-import StatStrip from '@/components/StatStrip';
 import RecordPreview from '@/components/RecordPreview';
+import LeadGame from '@/components/games/LeadGame';
+import SlateSection from '@/components/games/SlateSection';
+import SlateFilter, { FilterCount } from '@/components/games/SlateFilter';
 import { usePredictions } from '@/hooks/usePredictions';
-import { ConfidenceFilter, getConfidenceScore } from '@/types/prediction';
+import { ApiPrediction, ConfidenceFilter } from '@/types/prediction';
 import { gameKey } from '@/lib/threeWaySignal';
+import { groupBySlate, selectLeadGame } from '@/lib/slate';
 import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
 import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
 
 /**
- * The Games page — the full interactive slate. Week switcher (WeekStrip),
- * confidence filter, the GameCard grid, and a compact record bar. This is the
- * game-list machinery that used to live on the homepage; the homepage is now a
- * dashboard and links here.
+ * The Games page — the week laid out the way it's actually watched.
+ *
+ * Two ideas drive the structure. Games are grouped into their kickoff windows
+ * (Thursday night, the 1 o'clock slate, Sunday night, Monday night) because
+ * that's the order fans experience a week in, and it makes any single game
+ * findable by when it's on rather than by scanning a ranked list. And the
+ * week's most consequential matchup is pulled out as a lead card at display
+ * scale, so the page opens with a point of view instead of row one of sixteen.
+ *
+ * Both the lead and the grouping are derived in lib/slate.ts — this component
+ * only composes them.
  */
 const GamesView: React.FC = () => {
   const { predictions, loading, error, reload } = usePredictions();
@@ -42,22 +51,39 @@ const GamesView: React.FC = () => {
     [predictions, activeWeek],
   );
 
-  const gridGames = useMemo(() => {
-    let games = weekGames;
-    if (filterConfidence !== 'all') {
-      games = games.filter((g) => (g.confidence_label ?? '').toLowerCase() === filterConfidence);
-    }
-    return [...games].sort((a, b) => getConfidenceScore(b) - getConfidenceScore(a));
+  const filteredGames = useMemo(() => {
+    if (filterConfidence === 'all') return weekGames;
+    return weekGames.filter((g) => (g.confidence_label ?? '').toLowerCase() === filterConfidence);
   }, [weekGames, filterConfidence]);
+
+  // The lead comes from the filtered set so it never contradicts the filter,
+  // and it's held out of the windows below so the same game is never shown
+  // twice on one page.
+  const leadGame = useMemo(() => selectLeadGame(filteredGames), [filteredGames]);
+
+  const slate = useMemo(() => {
+    const leadKey = leadGame ? gameKey(leadGame) : null;
+    const rest = leadKey ? filteredGames.filter((g) => gameKey(g) !== leadKey) : filteredGames;
+    return groupBySlate(rest);
+  }, [filteredGames, leadGame]);
+
+  const filterCounts: FilterCount[] = useMemo(() => {
+    const countOf = (label: string) =>
+      weekGames.filter((g) => (g.confidence_label ?? '') === label).length;
+    return [
+      { id: 'all', label: 'Games', count: weekGames.length },
+      { id: 'high', label: 'High conf.', count: countOf('High') },
+      { id: 'medium', label: 'Medium conf.', count: countOf('Medium') },
+      { id: 'low', label: 'Low conf.', count: countOf('Low') },
+    ];
+  }, [weekGames]);
 
   const handleWeekChange = (week: number) => {
     setSelectedWeek(week);
     setFilterConfidence('all');
   };
 
-  const highCount = weekGames.filter((g) => g.confidence_label === 'High').length;
-  const mediumCount = weekGames.filter((g) => g.confidence_label === 'Medium').length;
-  const lowCount = weekGames.filter((g) => g.confidence_label === 'Low').length;
+  const hasResults = filteredGames.length > 0;
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
@@ -75,7 +101,6 @@ const GamesView: React.FC = () => {
       )}
 
       <main className="max-w-7xl mx-auto px-4 pt-8 pb-16">
-
         {/* Masthead + record bar */}
         <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
           <div>
@@ -92,48 +117,16 @@ const GamesView: React.FC = () => {
           <RecordPreview variant="compact" />
         </div>
 
-        {/* Confidence stat strip */}
+        {/* Counts and confidence filter, one control */}
         {weekGames.length > 1 && (
-          <div className="mb-8">
-            <StatStrip
-              items={[
-                { label: 'Games', value: String(weekGames.length) },
-                { label: 'High conf.', value: String(highCount), color: 'var(--accent-gold)' },
-                { label: 'Medium conf.', value: String(mediumCount) },
-                { label: 'Low conf.', value: String(lowCount) },
-              ]}
+          <div className="mb-10">
+            <SlateFilter
+              counts={filterCounts}
+              active={filterConfidence}
+              onChange={setFilterConfidence}
             />
           </div>
         )}
-
-        {/* Filter row */}
-        <div
-          className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3 mb-6 pb-4"
-          style={{ borderBottom: '1px solid var(--border-subtle)' }}
-        >
-          <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-            {weekGames.length === 1 ? 'One game on the slate' : `${weekGames.length} matchups · ranked by confidence`}
-          </p>
-
-          {weekGames.length > 1 && (
-            <div className="flex items-center gap-4 text-[11px] uppercase tracking-widest">
-              {(['all', 'high', 'medium', 'low'] as ConfidenceFilter[]).map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilterConfidence(f)}
-                  className="transition-colors"
-                  style={{
-                    color: filterConfidence === f ? 'var(--text-primary)' : 'var(--text-muted)',
-                    borderBottom: filterConfidence === f ? '1px solid var(--accent-gold)' : '1px solid transparent',
-                    paddingBottom: '2px',
-                  }}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
 
         {/* Loading */}
         {loading && (
@@ -160,22 +153,18 @@ const GamesView: React.FC = () => {
           </div>
         )}
 
-        {/* Grid */}
-        {!loading && !error && gridGames.length > 0 && (
+        {/* The week */}
+        {!loading && !error && hasResults && (
           <>
-            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {gridGames.map((game) => (
-                <GameCard key={gameKey(game)} game={game} />
-              ))}
-            </div>
-            <p className="mt-6 text-[11px]" style={{ color: 'var(--text-muted)' }}>
-              † Fan sentiment shown here is illustrative — real community picks are coming.
-            </p>
+            {leadGame && <LeadGame key={gameKey(leadGame)} game={leadGame} />}
+            {slate.map((group) => (
+              <SlateSection key={group.window.id} group={group} />
+            ))}
           </>
         )}
 
         {/* Empty filter state */}
-        {!loading && !error && weekGames.length > 1 && gridGames.length === 0 && (
+        {!loading && !error && weekGames.length > 0 && !hasResults && (
           <div className="flex flex-col items-center justify-center py-16 gap-3">
             <Filter className="w-10 h-10 text-white/15" />
             <p className="text-sm text-white/40">No {filterConfidence} confidence games this week</p>

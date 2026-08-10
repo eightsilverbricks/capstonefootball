@@ -4,10 +4,7 @@ import { usePredictions } from '@/hooks/usePredictions';
 import GameReport from '@/components/game-report/GameReport';
 import TeamLogo from '@/components/TeamLogo';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
-
-const PLAYOFF_LABELS: Record<number, string> = {
-  19: 'Wild Card', 20: 'Divisional', 21: 'Conference Championship', 22: 'Super Bowl',
-};
+import { weekLabel as formatWeekLabel } from '@/lib/currentWeek';
 
 const GamePage: React.FC = () => {
   const { season, week, away, home } = useParams<{
@@ -28,7 +25,7 @@ const GamePage: React.FC = () => {
   }, [predictions, season, week, away, home]);
 
   const weekNum = Number(week);
-  const weekLabel = PLAYOFF_LABELS[weekNum] ?? `Week ${weekNum}`;
+  const weekLabel = formatWeekLabel(weekNum);
   const backWeek = week ?? '22';
 
   const handleBack = () => {

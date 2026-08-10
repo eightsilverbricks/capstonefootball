@@ -1,16 +1,13 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApiPrediction } from '@/types/prediction';
-import { getTeamColors } from '@/data/nflData';
-import { gameKey, getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
+import { getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
-import { useUserPicks, UserPick, stashPendingPick } from '@/hooks/useUserPicks';
+import { formatKickoff } from '@/lib/slate';
 import { useFanSentiment } from '@/hooks/useFanSentiment';
-import { useFanIdentity } from '@/hooks/useFanIdentity';
+import { useGamePick } from '@/hooks/useGamePick';
 import { useAuth } from '@/hooks/useAuth';
-import { openAuthDialog } from '@/hooks/useAuthDialog';
-import { Pick } from '@/competition/types';
-import { stakeFromConfidence, stakePreview, indexConfidenceFromScore } from '@/competition/scoring';
+import { stakePreview, indexConfidenceFromScore } from '@/competition/scoring';
 import TeamLogo from './TeamLogo';
 import ConvictionSlider from './ConvictionSlider';
 import ThreeWayCompare from './game-report/ThreeWayCompare';
@@ -23,50 +20,25 @@ interface GameCardProps {
 
 const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   const navigate = useNavigate();
-  const { picks, setPick, clearPick } = useUserPicks();
-  const { team: fanTeam } = useFanIdentity();
   const { isSignedIn } = useAuth();
 
-  const key = gameKey(game);
-  const userPick: UserPick | undefined = picks[key];
-  const hasPicked = Boolean(userPick);
+  // The pick interaction is shared with the week's lead card — see
+  // hooks/useGamePick.ts. This component owns presentation only.
+  const { key, userPick, hasPicked, draft, setDraft, hasPosition, lock, changePick, stake } =
+    useGamePick(game);
 
   // Memoized so the sentiment store sees a stable request, not a new array each
   // render. One card asks for one game; the store batches the whole grid.
   const sentimentKeys = useMemo(() => [key], [key]);
   const { sentiment } = useFanSentiment(sentimentKeys);
 
-  // Draft slider position, center-anchored (0.5 = no position) until locked.
-  const [draft, setDraft] = useState<Pick>({ team: game.home_team, confidence: 0.5 });
-  const hasPosition = draft.confidence > 0.5;
-
   const handleOpenReport = () => {
     navigate(`/game/${game.season}/${game.week}/${game.away_team}/${game.home_team}`);
   };
 
-  const handleLock = () => {
-    if (!hasPosition) return;
-    const pick: UserPick = { team: draft.team, confidence: draft.confidence, fanTeam };
-
-    // Picking is the moment the account actually matters — capture it here
-    // rather than blocking the slider upfront. The pick is replayed as soon as
-    // the account exists, so nothing the user did is thrown away.
-    if (!isSignedIn) {
-      stashPendingPick(key, pick);
-      openAuthDialog('signup');
-      return;
-    }
-    setPick(key, pick);
-  };
-
-  const handleChangePick = () => {
-    if (userPick) setDraft({ team: userPick.team, confidence: userPick.confidence });
-    clearPick(key);
-  };
-
   const vegas = getVegasPick(game);
   const fan = getFanPick(game, sentiment);
-  const stake = userPick ? Math.round(stakeFromConfidence(userPick.confidence)) : 0;
+  const kickoff = formatKickoff(game.gametime);
 
   return (
     <article
@@ -93,9 +65,15 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
       <div className="h-0.5 w-full" style={{ background: 'var(--border-emphasis)' }} />
 
       <div className="p-5 flex flex-col gap-4">
+        {/* The slate section above already names the window, so the card shows
+            the exact kickoff — the one detail that still varies inside a
+            window (4:05 vs 4:25) and the thing people scan for. */}
         <div className="flex items-baseline justify-between">
-          <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-            {game.week_label ?? `Week ${game.week}`}
+          <span
+            className="text-[10px] uppercase tracking-widest tabular-nums"
+            style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}
+          >
+            {kickoff || game.week_label || `Week ${game.week}`}
           </span>
         </div>
 
@@ -148,7 +126,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
               </span>
               <button
                 type="button"
-                onClick={handleLock}
+                onClick={lock}
                 disabled={!hasPosition}
                 className="px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide transition-colors disabled:cursor-not-allowed"
                 style={{
@@ -204,7 +182,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
                   type="button"
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleChangePick();
+                    changePick();
                   }}
                   className="text-[10px] uppercase tracking-widest transition-colors hover:text-white"
                   style={{ color: 'var(--text-muted)' }}
