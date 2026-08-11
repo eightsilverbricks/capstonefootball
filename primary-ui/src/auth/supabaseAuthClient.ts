@@ -9,8 +9,49 @@
 //     can never exist without its profile.
 //   • Sessions survive across devices and browsers, unlike the local fallback.
 
+import type { Session } from '@supabase/supabase-js';
 import { AuthClient, AuthError, AuthResult, ClarkProfile, ProfilePatch, SignInInput, SignUpInput } from './types';
 import { isSupabaseConfigured, requireSupabase } from './supabaseClient';
+
+/**
+ * A request that never settles is indistinguishable from a broken button, so
+ * every auth call races a clock. Generous enough not to fire on a slow phone
+ * connection; short enough that a stall becomes a message rather than a
+ * spinner someone stares at.
+ */
+const AUTH_TIMEOUT_MS = 15_000;
+
+class AuthTimeoutError extends Error {}
+
+function withTimeout<T>(promise: PromiseLike<T>): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new AuthTimeoutError()), AUTH_TIMEOUT_MS);
+    Promise.resolve(promise).then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      (error) => {
+        clearTimeout(timer);
+        reject(error);
+      },
+    );
+  });
+}
+
+/** Turns a thrown network/timeout failure into the shape the dialog renders. */
+function failureResult(error: unknown): AuthResult {
+  if (error instanceof AuthTimeoutError) {
+    return {
+      session: null,
+      error: { message: "That took too long — check your connection and try again." },
+    };
+  }
+  return {
+    session: null,
+    error: { message: "Couldn't reach the server. Check your connection and try again." },
+  };
+}
 
 interface ProfileRow {
   id: string;
@@ -77,6 +118,17 @@ async function loadProfile(userId: string, email: string): Promise<ClarkProfile 
   return toProfile(data as ProfileRow, email);
 }
 
+/** Load the profile behind an auth session and publish it, or clear the session. */
+async function hydrateFrom(session: Session | null): Promise<void> {
+  const authUser = session?.user;
+  if (!authUser) {
+    setSession(null);
+    return;
+  }
+  const profile = await loadProfile(authUser.id, authUser.email ?? '');
+  setSession(profile ? { user: profile } : null);
+}
+
 /**
  * Wire up session hydration. Called once at module load when Supabase is the
  * live client; safe to call again (listeners are replaced, not stacked).
@@ -84,18 +136,19 @@ async function loadProfile(userId: string, email: string): Promise<ClarkProfile 
 function initialise(): void {
   const client = requireSupabase();
 
-  client.auth.getSession().then(async ({ data }) => {
-    const authUser = data.session?.user;
-    if (!authUser) return setSession(null);
-    const profile = await loadProfile(authUser.id, authUser.email ?? '');
-    setSession(profile ? { user: profile } : null);
-  });
+  void client.auth.getSession().then(({ data }) => hydrateFrom(data.session));
 
-  client.auth.onAuthStateChange(async (_event, session) => {
-    const authUser = session?.user;
-    if (!authUser) return setSession(null);
-    const profile = await loadProfile(authUser.id, authUser.email ?? '');
-    setSession(profile ? { user: profile } : null);
+  // The handler passed to onAuthStateChange MUST stay synchronous.
+  // supabase-js holds an internal lock for as long as the callback runs, and
+  // every PostgREST request needs that same lock to attach the access token —
+  // so awaiting a query in here deadlocks: the profile fetch waits on a lock
+  // the callback is still holding. That is what made sign-in spin forever on
+  // "One second…" instead of ever resolving. Deferring to a macrotask lets the
+  // lock release before the profile is fetched.
+  client.auth.onAuthStateChange((_event, session) => {
+    setTimeout(() => {
+      void hydrateFrom(session);
+    }, 0);
   });
 }
 
@@ -116,57 +169,67 @@ export const supabaseAuthClient: AuthClient = {
 
     // The handle and profile row are derived from this metadata by the
     // on_auth_user_created trigger — see supabase/schema.sql.
-    const { data, error } = await requireSupabase().auth.signUp({
-      email: input.email.trim(),
-      password: input.password,
-      options: {
-        data: {
-          display_name: displayName,
-          favorite_team: input.favoriteTeam ?? '',
+    try {
+      const { data, error } = await withTimeout(requireSupabase().auth.signUp({
+        email: input.email.trim(),
+        password: input.password,
+        options: {
+          data: {
+            display_name: displayName,
+            favorite_team: input.favoriteTeam ?? '',
+          },
         },
-      },
-    });
+      }));
 
-    if (error) return { session: null, error: friendlyError(error.message) };
+      if (error) return { session: null, error: friendlyError(error.message) };
 
-    // Gate on the session, not the user. With email confirmation enabled
-    // Supabase still returns a `user` here, but no session — and a profile row
-    // is publicly readable, so trusting `user` would hand back a signed-in-
-    // looking session that carries no auth. Every RLS-protected write would
-    // then fail, and the session would vanish on reload.
-    const authUser = data.session?.user;
-    if (!authUser) {
-      return {
-        session: null,
-        error: { message: 'Check your email to confirm your account, then sign in.' },
-      };
+      // Gate on the session, not the user. With email confirmation enabled
+      // Supabase still returns a `user` here, but no session — and a profile
+      // row is publicly readable, so trusting `user` would hand back a
+      // signed-in-looking session that carries no auth. Every RLS-protected
+      // write would then fail, and the session would vanish on reload.
+      const authUser = data.session?.user;
+      if (!authUser) {
+        return {
+          session: null,
+          error: { message: 'Check your email to confirm your account, then sign in.' },
+        };
+      }
+
+      const profile = await withTimeout(loadProfile(authUser.id, authUser.email ?? input.email));
+      if (!profile) {
+        return { session: null, error: { message: 'Account created, but the profile did not. Try signing in.' } };
+      }
+
+      setSession({ user: profile });
+      return { session: { user: profile }, error: null };
+    } catch (err) {
+      return failureResult(err);
     }
-
-    const profile = await loadProfile(authUser.id, authUser.email ?? input.email);
-    if (!profile) {
-      return { session: null, error: { message: 'Account created, but the profile did not. Try signing in.' } };
-    }
-
-    setSession({ user: profile });
-    return { session: { user: profile }, error: null };
   },
 
   async signIn(input: SignInInput): Promise<AuthResult> {
-    const { data, error } = await requireSupabase().auth.signInWithPassword({
-      email: input.email.trim(),
-      password: input.password,
-    });
+    try {
+      const { data, error } = await withTimeout(requireSupabase().auth.signInWithPassword({
+        email: input.email.trim(),
+        password: input.password,
+      }));
 
-    if (error) return { session: null, error: friendlyError(error.message) };
+      if (error) return { session: null, error: friendlyError(error.message) };
 
-    const authUser = data.session?.user;
-    if (!authUser) return { session: null, error: { message: 'Email or password is incorrect.', field: 'password' } };
+      const authUser = data.session?.user;
+      if (!authUser) {
+        return { session: null, error: { message: 'Email or password is incorrect.', field: 'password' } };
+      }
 
-    const profile = await loadProfile(authUser.id, authUser.email ?? input.email);
-    if (!profile) return { session: null, error: { message: 'That account has no profile yet.' } };
+      const profile = await withTimeout(loadProfile(authUser.id, authUser.email ?? input.email));
+      if (!profile) return { session: null, error: { message: 'That account has no profile yet.' } };
 
-    setSession({ user: profile });
-    return { session: { user: profile }, error: null };
+      setSession({ user: profile });
+      return { session: { user: profile }, error: null };
+    } catch (err) {
+      return failureResult(err);
+    }
   },
 
   async signOut() {
