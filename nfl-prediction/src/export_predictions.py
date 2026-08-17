@@ -11,9 +11,9 @@ directory with the venv activated:
     source .venv/bin/activate
     python3 src/export_predictions.py
 
-The output lands in nfl-frontend/public/predictions.json, which Vite
-serves as a static asset in production. In local dev, the Vite proxy
-routes /predictions.json to the live FastAPI backend instead.
+The output lands in primary-ui/public/predictions.json, which Vite serves as a
+static asset in both dev and production — there is no dev proxy. The frontend
+only talks to the live FastAPI backend when VITE_API_BASE_URL is set.
 """
 
 import sys
