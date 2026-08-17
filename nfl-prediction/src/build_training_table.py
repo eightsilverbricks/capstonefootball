@@ -2,6 +2,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from src.features import add_engineered_features
+
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
@@ -125,6 +127,10 @@ def main() -> None:
         df["home_last3_qb_epa_per_play"] - df["away_last3_epa_per_play_allowed"]
     )
 
+    # Engineered before the fills below, which destroy the "no line posted"
+    # signal by turning missing odds into 0.0.
+    df = add_engineered_features(df)
+
     df["home_field"] = 1
     df["rest_diff"] = df["rest_home"] - df["rest_away"]
     df["div_game"] = pd.to_numeric(df["div_game"], errors="coerce").fillna(0).astype(int)
@@ -149,6 +155,14 @@ def main() -> None:
         "spread_line",
         "home_moneyline",
         "away_moneyline",
+        "mkt_home_prob",
+        "has_market",
+        "spread_line_clean",
+        "has_spread",
+        "home_elo",
+        "away_elo",
+        "elo_diff",
+        "elo_prob",
         "match_season_pass_off_vs_def",
         "match_season_rush_off_vs_def",
         "match_season_success_off_vs_def",

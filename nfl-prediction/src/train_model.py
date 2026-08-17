@@ -56,16 +56,24 @@ FEATURES = [
     "home_field",
 ]
 
+# Implied probability rather than raw American odds, plus explicit flags for
+# whether a line exists at all — see src/features.py for why. `home_field` is
+# deliberately absent: it is 1 for every row, so it has zero variance and the
+# scaler zeroes it out. It was never a feature, only an intercept in disguise.
 MARKET_FEATURES = [
-    "spread_line",
-    "home_moneyline",
-    "away_moneyline",
+    "mkt_home_prob",
+    "has_market",
+    "spread_line_clean",
+    "has_spread",
 ]
 
 CONTEXT_FEATURES = [
     "rest_diff",
     "div_game",
-    "home_field",
+]
+
+RATING_FEATURES = [
+    "elo_diff",
 ]
 
 RECENT_FORM_FEATURES = [
@@ -77,20 +85,57 @@ RECENT_FORM_FEATURES = [
     "diff_last3_success_rate_allowed",
 ]
 
-PRODUCTION_FEATURES = MARKET_FEATURES + CONTEXT_FEATURES + RECENT_FORM_FEATURES
-PRODUCTION_MODEL_NAME = "market_context_recent_form"
+SEASON_FORM_FEATURES = [
+    "diff_season_epa_per_play",
+    "diff_season_epa_per_play_allowed",
+    "diff_season_success_rate",
+    "diff_season_qb_epa_per_play",
+    "diff_season_turnover_diff_pg",
+]
 
-PURE_FOOTBALL_FEATURES = [feature for feature in FEATURES if feature not in MARKET_FEATURES]
+PRODUCTION_FEATURES = (
+    MARKET_FEATURES
+    + CONTEXT_FEATURES
+    + RATING_FEATURES
+    + RECENT_FORM_FEATURES
+    + SEASON_FORM_FEATURES
+)
+PRODUCTION_MODEL_NAME = "market_elo_form"
+
+# Scored on games with no posted line, which is most of an upcoming season. The
+# production model degrades to roughly this set once mkt_home_prob is a neutral
+# 0.5, so it is tracked explicitly rather than assumed.
+NO_MARKET_FEATURES = (
+    CONTEXT_FEATURES + RATING_FEATURES + RECENT_FORM_FEATURES + SEASON_FORM_FEATURES
+)
+
+# The legacy FEATURES list still carries the raw odds columns, so the ablation
+# has to exclude those by name — MARKET_FEATURES now holds the encoded versions.
+RAW_MARKET_FEATURES = ["spread_line", "home_moneyline", "away_moneyline"]
+
+PURE_FOOTBALL_FEATURES = [
+    feature for feature in FEATURES if feature not in RAW_MARKET_FEATURES
+]
 
 TARGET = "home_win"
 
 FEATURE_LABELS = {
     "spread_line": "Closing spread",
+    "spread_line_clean": "Closing spread",
+    "has_spread": "Spread posted",
     "home_moneyline": "Home moneyline",
     "away_moneyline": "Away moneyline",
+    "mkt_home_prob": "Market win probability",
+    "has_market": "Market line posted",
+    "elo_diff": "Elo rating edge",
     "rest_diff": "Rest differential",
     "div_game": "Division matchup",
     "home_field": "Home field",
+    "diff_season_epa_per_play": "Season offensive EPA",
+    "diff_season_epa_per_play_allowed": "Season defensive EPA allowed",
+    "diff_season_success_rate": "Season success rate",
+    "diff_season_qb_epa_per_play": "Season QB EPA",
+    "diff_season_turnover_diff_pg": "Season turnover margin",
     "diff_last3_point_diff_pg": "Recent point differential",
     "diff_last3_win_pct": "Recent win rate",
     "diff_last3_epa_per_play": "Recent offensive EPA",
@@ -265,8 +310,14 @@ def print_feature_importance(
 def format_feature_value(feature: str, value: Any) -> str:
     if feature in {"home_moneyline", "away_moneyline"}:
         return f"{int(value):+d}"
-    if feature == "spread_line":
+    if feature in {"spread_line", "spread_line_clean"}:
         return f"{float(value):+.1f}"
+    if feature == "mkt_home_prob":
+        return f"{float(value):.1%}"
+    if feature in {"has_market", "has_spread"}:
+        return "Posted" if int(value) == 1 else "No line yet"
+    if feature == "elo_diff":
+        return f"{float(value):+.0f} Elo"
     if feature == "rest_diff":
         days = abs(int(value))
         return f"{int(value):+d} day{'s' if days != 1 else ''}"
@@ -282,10 +333,17 @@ def format_feature_value(feature: str, value: Any) -> str:
 
 
 def display_direction(feature: str, row: pd.Series, contribution: float) -> str:
-    if feature == "spread_line":
+    if feature in {"spread_line", "spread_line_clean"}:
         if row[feature] > 0:
             return row["home_team"]
         if row[feature] < 0:
+            return row["away_team"]
+    if feature in {"mkt_home_prob", "elo_diff"}:
+        # Both are home-relative: >0.5 / >0 favours the home side.
+        midpoint = 0.5 if feature == "mkt_home_prob" else 0.0
+        if row[feature] > midpoint:
+            return row["home_team"]
+        if row[feature] < midpoint:
             return row["away_team"]
     if feature == "home_moneyline":
         return row["home_team"] if row[feature] < 0 else row["away_team"]
