@@ -62,6 +62,11 @@ def main() -> None:
         "opponent",
         "win",
         "is_played",
+        # Feed the margin-of-victory Elo update only. Deliberately absent from
+        # final_cols below: it is the outcome, and as a feature it would be
+        # target leakage. Elo reads it strictly from already-played games.
+        "points_for",
+        "points_against",
         "spread_line",
         "home_moneyline",
         "away_moneyline",
@@ -129,6 +134,7 @@ def main() -> None:
 
     # Engineered before the fills below, which destroy the "no line posted"
     # signal by turning missing odds into 0.0.
+    df["point_margin"] = df["points_for"] - df["points_against"]
     df = add_engineered_features(df)
 
     df["home_field"] = 1

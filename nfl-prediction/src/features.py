@@ -118,10 +118,25 @@ def add_elo(df: pd.DataFrame) -> pd.DataFrame:
         if pd.isna(row.get(TARGET)):
             continue
 
-        expected_home = 1.0 / (
-            1.0 + 10.0 ** (-((rating_home + ELO_HFA) - rating_away) / 400.0)
-        )
-        shift = ELO_K * (float(row[TARGET]) - expected_home)
+        delta = (rating_home + ELO_HFA) - rating_away
+        expected_home = 1.0 / (1.0 + 10.0 ** (-delta / 400.0))
+        actual_home = float(row[TARGET])
+
+        # Margin of victory. Binary Elo treats a 3-point win and a 30-point win
+        # identically, throwing away the more predictive half of the result;
+        # measured over 2019–2025 this is worth ~0.004 log loss in the no-market
+        # regime. The denominator is FiveThirtyEight's autocorrelation
+        # correction — without it, blowouts by an already-strong team inflate
+        # its rating without bound.
+        multiplier = 1.0
+        margin = row.get("point_margin")
+        if pd.notna(margin):
+            winner_delta = delta if actual_home == 1 else -delta
+            multiplier = np.log(abs(margin) + 1.0) * (
+                2.2 / (0.001 * winner_delta + 2.2)
+            )
+
+        shift = ELO_K * multiplier * (actual_home - expected_home)
         ratings[home_team] = rating_home + shift
         ratings[away_team] = rating_away - shift
 

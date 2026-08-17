@@ -570,6 +570,16 @@ def main() -> None:
             latest_season=latest_season,
             feature_list=PRODUCTION_FEATURES,
         ),
+        # The regime most of an upcoming season runs in. Once no line is posted
+        # mkt_home_prob is a constant 0.5, so the production model effectively
+        # collapses to these features — worth measuring rather than assuming,
+        # because it is the number that describes an unlined fixture.
+        "no_market_regime": evaluate_feature_set_expanding(
+            df=df,
+            test_df=test_df,
+            latest_season=latest_season,
+            feature_list=NO_MARKET_FEATURES,
+        ),
     }
 
     metrics["ablation_results"] = ablation_results
