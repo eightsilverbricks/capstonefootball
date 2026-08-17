@@ -113,12 +113,20 @@ def load_training_data() -> pd.DataFrame:
 
     df = pd.read_csv(TRAINING_TABLE_PATH)
 
-    required_columns = FEATURES + [TARGET, "season", "home_team", "away_team"]
+    required_columns = FEATURES + [TARGET, "season", "home_team", "away_team", "is_played"]
     missing_columns = [col for col in required_columns if col not in df.columns]
     if missing_columns:
         raise ValueError(f"Training table is missing required columns: {missing_columns}")
 
-    return df
+    # Played games only. The table also carries the upcoming season's fixtures so
+    # the exporter can score them, but they have no home_win — left in, they would
+    # become `latest_season` in split_train_test() and the whole evaluation would
+    # "test" against a column of NaN.
+    played = df[df["is_played"]].copy()
+    if played.empty:
+        raise ValueError("Training table contains no played games.")
+
+    return played
 
 
 def sort_games(df: pd.DataFrame) -> pd.DataFrame:

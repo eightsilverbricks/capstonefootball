@@ -156,6 +156,55 @@ def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
     return team_stats[keep_cols]
 
 
+def _apply_carry_forward(
+    team_games: pd.DataFrame,
+    season_stats: dict[str, str],
+    last3_stats: dict[str, str],
+) -> None:
+    """Give unplayed fixtures their team's form as of its last played game.
+
+    The shift(1) passes cannot do this on their own. `expanding()` happens to
+    work (NaN is skipped, so the mean stops moving), but `rolling(3)` does not:
+    its window slides forward over the NaN fixtures until it holds no played
+    game at all, so last3_* first drifts — averaging 2 games, then 1 — and then
+    goes NaN from the fourth unplayed game on, which the dropna at the end of
+    main() would silently delete. That is the whole upcoming season.
+
+    So state it explicitly instead: an unplayed game sees the mean of every
+    played game (season_*) and of the last three played games (last3_*). Every
+    fixture in the season therefore shares one pre-season vector, which is
+    correct — nothing new is known until a game is actually played. Re-running
+    the pipeline once results land moves the played games onto real form.
+    """
+    upcoming = ~team_games["is_played"]
+    if not upcoming.any():
+        return
+
+    # Already sorted chronologically by main(), so tail(3) is the last 3 played.
+    played = team_games[team_games["is_played"]]
+    teams = team_games.loc[upcoming, "team"]
+
+    for new_col, source_col in season_stats.items():
+        carry = played.groupby("team")[source_col].mean()
+        team_games.loc[upcoming, new_col] = teams.map(carry)
+
+    for new_col, source_col in last3_stats.items():
+        carry = played.groupby("team")[source_col].apply(lambda s: s.tail(3).mean())
+        team_games.loc[upcoming, new_col] = teams.map(carry)
+
+
+def _win_flag(team_rows: pd.DataFrame) -> pd.Series:
+    """1.0 / 0.0 for a played game, NaN for an unplayed fixture.
+
+    Float rather than int because an unplayed game has no result to encode:
+    `(NaN > NaN).astype(int)` evaluates to 0 and would silently book every
+    upcoming fixture as a loss, dragging each team's win-rate features toward
+    zero for the whole season.
+    """
+    wins = (team_rows["points_for"] > team_rows["points_against"]).astype(float)
+    return wins.where(team_rows["is_played"], other=float("nan"))
+
+
 def main() -> None:
     schedules = pd.read_parquet(RAW_DIR / "schedules.parquet")
     pbp = pd.read_parquet(RAW_DIR / "pbp.parquet")
@@ -178,7 +227,16 @@ def main() -> None:
         "away_rest",
         "div_game",
     ]
-    games = games[needed].dropna(subset=["home_score", "away_score"]).copy()
+    # Unplayed fixtures are kept, not dropped. The upcoming season's schedule is
+    # published long before kickoff, and those rows are exactly what the model
+    # has to score. They carry no scores and no play-by-play, so every stat below
+    # stays NaN for them — which is deliberate: the shift(1).expanding() and
+    # rolling(3) passes skip NaN, so an unplayed game inherits its team's form
+    # through its last *played* game and contributes nothing back. Filling these
+    # with 0.0 instead would tell the model every upcoming team is a zero-EPA
+    # team and would poison the carry-forward for the rest of the season.
+    games = games[needed].copy()
+    games["is_played"] = games["home_score"].notna() & games["away_score"].notna()
 
     games["gameday"] = pd.to_datetime(games["gameday"])
 
@@ -193,7 +251,7 @@ def main() -> None:
         }
     ).copy()
     home["is_home"] = 1
-    home["win"] = (home["points_for"] > home["points_against"]).astype(int)
+    home["win"] = _win_flag(home)
 
     away = games.rename(
         columns={
@@ -204,7 +262,7 @@ def main() -> None:
         }
     ).copy()
     away["is_home"] = 0
-    away["win"] = (away["points_for"] > away["points_against"]).astype(int)
+    away["win"] = _win_flag(away)
 
     team_games = pd.concat([home, away], ignore_index=True)
     team_games = team_games.merge(pbp_team_stats, on=["game_id", "team"], how="left")
@@ -225,8 +283,12 @@ def main() -> None:
         "cpoe",
         "pass_oe",
     ]
+    # Played games only. A played game missing a pbp-derived stat genuinely is a
+    # zero (no sacks taken, no turnovers). An unplayed fixture has nothing to
+    # impute and must stay NaN so the rolling passes below skip it.
+    played = team_games["is_played"]
     for col in fill_zero_cols:
-        team_games[col] = team_games[col].fillna(0.0)
+        team_games.loc[played, col] = team_games.loc[played, col].fillna(0.0)
 
     team_games = team_games.sort_values(
         ["team", "season", "gameday", "game_id"]
@@ -287,6 +349,8 @@ def main() -> None:
         team_games[new_col] = grouped[source_col].transform(
             lambda s: s.shift(1).rolling(3, min_periods=1).mean()
         )
+
+    _apply_carry_forward(team_games, season_stats, last3_stats)
 
     feature_cols = list(season_stats.keys()) + list(last3_stats.keys())
     team_games = team_games.dropna(subset=feature_cols).copy()

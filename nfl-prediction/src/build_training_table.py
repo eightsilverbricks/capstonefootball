@@ -59,6 +59,7 @@ def main() -> None:
         "team",
         "opponent",
         "win",
+        "is_played",
         "spread_line",
         "home_moneyline",
         "away_moneyline",
@@ -138,6 +139,10 @@ def main() -> None:
         "home_team",
         "away_team",
         "home_win",
+        # False for a scheduled-but-unplayed fixture, whose home_win is blank.
+        # train_model.py filters on this; the exporter uses it to mark a card as
+        # a prediction with no outcome yet.
+        "is_played",
         "home_field",
         "rest_diff",
         "div_game",
