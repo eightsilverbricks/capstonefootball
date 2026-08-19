@@ -1,14 +1,45 @@
 // ─── Current week — one source of truth shared by Home and the Games page ─────
-// The 2024 dataset is complete, so "current" is a configured constant rather
-// than a live clock. Change CURRENT_WEEK to move what the dashboard treats as
-// "this week"; the Games page uses it as the initial selected week.
+// A live season has to track the calendar: "this week" moves every Tuesday and
+// nobody should have to redeploy for it. A completed demo season has no such
+// thing as now, so it opens on week 1 and stays there.
+
+import { LIVE_SEASON_KICKOFF } from './season';
 
 export const CURRENT_WEEK = 1;
 
-/** The configured current week if the data has it, else the last available week. */
-export function resolveCurrentWeek(availableWeeks: number[]): number {
-  if (availableWeeks.includes(CURRENT_WEEK)) return CURRENT_WEEK;
-  return availableWeeks[availableWeeks.length - 1] ?? CURRENT_WEEK;
+const MS_PER_WEEK = 7 * 24 * 60 * 60 * 1000;
+
+/**
+ * Which week the live season is in, counted from kickoff. Weeks are 1-indexed
+ * and clamped to 1 before the season starts, so the pre-season shows the
+ * opening slate rather than a negative week.
+ */
+export function liveSeasonWeek(now: Date = new Date()): number {
+  const elapsed = now.getTime() - LIVE_SEASON_KICKOFF.getTime();
+  if (elapsed < 0) return 1;
+  return Math.floor(elapsed / MS_PER_WEEK) + 1;
+}
+
+/**
+ * The week to open on. Live seasons follow the calendar; demo seasons are
+ * finished, so they start at week 1. Either way the result is snapped to a week
+ * the data actually contains — the calendar keeps counting past week 18 but the
+ * fixtures do not.
+ */
+export function resolveCurrentWeek(
+  availableWeeks: number[],
+  options: { isDemo?: boolean; now?: Date } = {},
+): number {
+  if (availableWeeks.length === 0) return CURRENT_WEEK;
+
+  const target = options.isDemo ? CURRENT_WEEK : liveSeasonWeek(options.now);
+  if (availableWeeks.includes(target)) return target;
+
+  // Snap to the nearest available week at or below the target, else the first.
+  const earlier = availableWeeks.filter((w) => w <= target);
+  return earlier.length > 0
+    ? earlier[earlier.length - 1]
+    : availableWeeks[0];
 }
 
 // ── Week naming ──────────────────────────────────────────────────────────────

@@ -13,7 +13,7 @@ import json
 import math
 import joblib
 import pandas as pd
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from src.factor_prose import (
@@ -53,19 +53,25 @@ FEATURES = [
     "match_last3_qb_vs_def", "home_field",
 ]
 
-PRODUCTION_FEATURES = [
-    "spread_line", "home_moneyline", "away_moneyline",
-    "rest_diff", "div_game", "home_field",
-    "diff_last3_point_diff_pg", "diff_last3_win_pct",
-    "diff_last3_epa_per_play", "diff_last3_epa_per_play_allowed",
-    "diff_last3_success_rate", "diff_last3_success_rate_allowed",
-]
-
-PRODUCTION_MODEL_NAME = "market_context_recent_form"
+# Imported, never re-declared. This list has to match the columns the model was
+# fitted on exactly; a local copy silently goes stale the moment the feature set
+# changes and then scores every game against the wrong columns.
+from src.train_model import (  # noqa: E402
+    PRODUCTION_FEATURES,
+    PRODUCTION_MODEL_NAME,
+)
 
 # ---------------------------------------------------------------------------
 # Data mode + model metadata
 # ---------------------------------------------------------------------------
+
+# ── Seasons ──────────────────────────────────────────────────────────────────
+# ACTIVE_SEASON is what the site serves by default: the season being played (or
+# about to be). DEMO_SEASON is a completed season kept for demo mode, where
+# every game has a real outcome so picks actually resolve — the live season
+# cannot do that until games are played.
+ACTIVE_SEASON = 2026
+DEMO_SEASON = 2024
 
 DATA_MODE = "historical_backtest"
 
@@ -597,6 +603,12 @@ def build_explanation(row: dict, factors: list[dict]) -> str:
 # ===========================================================================
 
 def build_market_note(row: dict, factors: list[dict]) -> str:
+    if not (safe_get(row, "spread_line") or safe_get(row, "home_moneyline")):
+        return (
+            "No betting line has been posted for this game yet. The projection "
+            "below is built purely from team form and ratings."
+        )
+
     spread  = safe_get(row, "spread_line")
     home_ml = safe_get(row, "home_moneyline")
     home, away, winner = row["home_team"], row["away_team"], row["predicted_winner"]
@@ -925,6 +937,12 @@ def build_market_context(row: dict) -> dict:
     away_ml = safe_get(row, "away_moneyline")
     home, away = row["home_team"], row["away_team"]
 
+    # No line posted yet. Most of an upcoming season sits here for months, and
+    # calling that "Even" would render a fabricated pick'em on the comparison
+    # rows — the market has not spoken, which is different from it saying the
+    # game is a coin flip.
+    has_line = bool(spread) or bool(home_ml and away_ml)
+
     market_favorite = "Even"
     if spread > 0:
         market_favorite = home
@@ -932,9 +950,11 @@ def build_market_context(row: dict) -> dict:
         market_favorite = away
     elif home_ml and away_ml:
         market_favorite = home if home_ml < away_ml else away
+    if not has_line:
+        market_favorite = None
 
     return {
-        "market_used": True,
+        "market_used": has_line,
         "market_role": "context_only",
         "market_favorite": market_favorite,
         "spread_line": spread,
@@ -1163,7 +1183,7 @@ def model_info():
 
 
 @app.get("/predictions")
-def get_predictions():
+def get_predictions(season: int | None = None):
     """
     Return enriched game predictions for the latest season.
 
@@ -1171,19 +1191,32 @@ def get_predictions():
     tier labels and comparative explanations), key battle, model explanation,
     market note, and model metadata.
     """
-    latest_season = int(df["season"].max())
+    target_season = ACTIVE_SEASON if season is None else int(season)
+    season_games = df[df["season"] == target_season].copy()
 
+    if season_games.empty:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No games in the training table for season {target_season}.",
+        )
+
+    # The backtest CSV only covers the held-out evaluation season, and its
+    # probabilities come from the stricter expanding-week refit, so prefer it
+    # when it actually has rows for this season. Every other season — the
+    # upcoming one included — is scored with the production model.
+    backtest = pd.DataFrame()
     if PREDICTIONS_PATH.exists():
-        predictions  = pd.read_csv(PREDICTIONS_PATH)
-        latest_games = predictions[predictions["season"] == latest_season].copy()
-        latest_games = latest_games.rename(columns={
+        predictions = pd.read_csv(PREDICTIONS_PATH)
+        backtest = predictions[predictions["season"] == target_season].copy()
+
+    if not backtest.empty:
+        latest_games = backtest.rename(columns={
             "home_win_probability": "home_win_prob",
             "away_win_probability": "away_win_prob",
         })
     else:
-        latest_games = df[df["season"] == latest_season].copy()
-        X = latest_games[PRODUCTION_FEATURES].copy()
-        probs = model.predict_proba(X)[:, 1]
+        latest_games = season_games
+        probs = model.predict_proba(latest_games[PRODUCTION_FEATURES])[:, 1]
         latest_games["home_win_prob"]  = probs
         latest_games["away_win_prob"]  = 1 - probs
         latest_games["predicted_winner"] = latest_games.apply(

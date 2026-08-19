@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChevronDown, Info, LogOut, Trophy } from 'lucide-react';
+import { ChevronDown, Info, LogOut, Trophy, Settings } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -93,6 +93,12 @@ const AccountMenu: React.FC = () => {
           <Link to="/my-season" className="flex items-center gap-2 cursor-pointer no-underline">
             <Trophy className="w-4 h-4" aria-hidden="true" />
             My Season
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link to="/settings" className="flex items-center gap-2 cursor-pointer no-underline">
+            <Settings className="w-4 h-4" aria-hidden="true" />
+            Settings
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>

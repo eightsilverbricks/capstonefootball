@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import { FanbaseStanding } from '@/lib/threeWaySignal';
 import { SentimentStatus } from '@/hooks/useFanSentiment';
 import { getTeamColors } from '@/data/nflData';
@@ -43,6 +44,7 @@ const Row: React.FC<{ rank: number; s: FanbaseStanding; highlight: boolean }> = 
  * short or empty. It says so rather than filling itself in.
  */
 const FanbaseStandings: React.FC<FanbaseStandingsProps> = ({ standings, userTeam, status }) => {
+  const { config: seasonConfig } = useSeasonMode();
   const top = standings.slice(0, 5);
   const userIndex = standings.findIndex((s) => s.team === userTeam);
   const userInTop = userIndex > -1 && userIndex < 5;
@@ -53,7 +55,7 @@ const FanbaseStandings: React.FC<FanbaseStandingsProps> = ({ standings, userTeam
     <div className="rounded p-6" style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}>
       <div className="flex items-baseline justify-between mb-4">
         <h2 className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-          Fanbase belief · 2024
+          Fanbase belief · {seasonConfig.season}
         </h2>
         {standings.length > 0 && (
           <span className="text-[10px] uppercase tracking-widest tabular-nums" style={{ color: 'var(--text-muted)' }}>

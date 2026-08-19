@@ -1,4 +1,5 @@
 import React from 'react';
+import { TRAIN_SEASON_RANGE, EVAL_SEASON, EVAL_GAMES, MODEL_ACCURACY, POOLED_ACCURACY, POOLED_VEGAS_ACCURACY, POOLED_SEASON_RANGE, formatPct } from '@/lib/modelFacts';
 import { Link } from 'react-router-dom';
 import ClarkLogo from './brand/ClarkLogo';
 
@@ -36,7 +37,14 @@ const Footer: React.FC = () => (
         </div>
 
         <div className="text-xs md:text-right space-y-1" style={{ color: 'var(--text-muted)' }}>
-          <p>Statistical model trained on 2018–2023 seasons · evaluated on 2024 season (285 games)</p>
+          <p>
+            Logistic regression trained on {TRAIN_SEASON_RANGE} · evaluated on {EVAL_SEASON} ({EVAL_GAMES} games) ·{' '}
+            {formatPct(MODEL_ACCURACY)} accuracy
+          </p>
+          <p>
+            {POOLED_SEASON_RANGE}: {formatPct(POOLED_ACCURACY)} vs the Vegas closing line's{' '}
+            {formatPct(POOLED_VEGAS_ACCURACY)}
+          </p>
           <p>Data sourced from nflfastR / nflverse · Not affiliated with the NFL</p>
           <p>For analysis and education only · Not gambling advice</p>
         </div>

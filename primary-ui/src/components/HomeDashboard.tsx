@@ -10,6 +10,7 @@ import FeaturedGame from './home/FeaturedGame';
 import WeekPulseGrid from './home/WeekPulseGrid';
 import StorylineRail from './home/StorylineRail';
 import { usePredictions } from '@/hooks/usePredictions';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { resolveCurrentWeek } from '@/lib/currentWeek';
@@ -50,13 +51,16 @@ const SectionHead: React.FC<{ title: string; meta?: string; id: string }> = ({ t
  */
 const HomeDashboard: React.FC = () => {
   const { predictions, loading, error, reload } = usePredictions();
+  // Demo seasons are finished, so they open on week 1 rather than the calendar.
+  const { config: seasonConfig } = useSeasonMode();
+  const isDemo = seasonConfig.isDemo;
   const { user } = useAuth();
 
   const availableWeeks = useMemo(
     () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
     [predictions],
   );
-  const currentWeek = resolveCurrentWeek(availableWeeks);
+  const currentWeek = resolveCurrentWeek(availableWeeks, { isDemo });
   const weekGames = useMemo(
     () => predictions.filter((g) => g.week === currentWeek),
     [predictions, currentWeek],
@@ -90,7 +94,8 @@ const HomeDashboard: React.FC = () => {
       <Header />
 
       <main className="max-w-5xl mx-auto px-4 pt-10 pb-16 flex flex-col gap-10">
-        <HomeHero user={user} week={currentWeek} gamesThisWeek={weekGames.length} record={record} />
+        <HomeHero
+          season={seasonConfig.season} user={user} week={currentWeek} gamesThisWeek={weekGames.length} record={record} />
 
         {/* ── Your situation ── */}
         {user ? (

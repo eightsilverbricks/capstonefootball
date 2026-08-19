@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import PreSeasonNotice from '@/components/PreSeasonNotice';
 import Header from '@/components/Header';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
 import WeekStrip from '@/components/WeekStrip';
 import RecordPreview from '@/components/RecordPreview';
@@ -28,6 +30,9 @@ import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
  */
 const GamesView: React.FC = () => {
   const { predictions, loading, error, reload } = usePredictions();
+  // Demo seasons are finished, so they open on week 1 rather than the calendar.
+  const { config: seasonConfig } = useSeasonMode();
+  const isDemo = seasonConfig.isDemo;
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
   const [filterConfidence, setFilterConfidence] = useState<ConfidenceFilter>('all');
 
@@ -40,11 +45,11 @@ const GamesView: React.FC = () => {
   useEffect(() => {
     if (availableWeeks.length === 0) return;
     if (selectedWeek === null || !availableWeeks.includes(selectedWeek)) {
-      setSelectedWeek(resolveCurrentWeek(availableWeeks));
+      setSelectedWeek(resolveCurrentWeek(availableWeeks, { isDemo }));
     }
   }, [availableWeeks, selectedWeek]);
 
-  const activeWeek = selectedWeek ?? resolveCurrentWeek(availableWeeks);
+  const activeWeek = selectedWeek ?? resolveCurrentWeek(availableWeeks, { isDemo });
 
   const weekGames = useMemo(
     () => predictions.filter((g) => g.week === activeWeek),
@@ -101,11 +106,12 @@ const GamesView: React.FC = () => {
       )}
 
       <main className="max-w-7xl mx-auto px-4 pt-8 pb-16">
+        <div className="mb-5"><PreSeasonNotice /></div>
         {/* Masthead + record bar */}
         <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
           <div>
             <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
-              Season 2024 · the slate
+              Season {seasonConfig.season} · the slate
             </span>
             <h1
               className="font-bold leading-[0.92] tracking-tight"

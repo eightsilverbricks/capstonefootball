@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { EVAL_SEASON, MODEL_ACCURACY, formatPct } from '@/lib/modelFacts';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import GameBanner from './GameBanner';
@@ -372,8 +373,8 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
             className="mt-4 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-[11px]"
             style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
           >
-            <span>Logistic regression · expanding-window backtest · 2024 season</span>
-            <span style={{ color: 'var(--text-tertiary)' }}>71% model accuracy</span>
+            <span>Logistic regression · expanding-window backtest · {EVAL_SEASON} holdout</span>
+            <span style={{ color: 'var(--text-tertiary)' }}>{formatPct(MODEL_ACCURACY)} model accuracy</span>
           </footer>
         </>
       )}

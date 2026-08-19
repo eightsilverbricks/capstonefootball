@@ -37,31 +37,44 @@ if str(PRED_DIR) not in sys.path:
 print("Loading model and data...")
 from src.api import (  # noqa: E402
     get_predictions,
+    ACTIVE_SEASON,
+    DEMO_SEASON,
     DATA_MODE,
     MODEL_META,
 )
 
-OUTPUT_PATH = REPO_ROOT / "primary-ui" / "public" / "predictions.json"
+PUBLIC_DIR = REPO_ROOT / "primary-ui" / "public"
+
+# Two files, because they answer different questions. predictions.json is the
+# season being played and mostly has no outcomes yet; the demo file is a
+# completed season where every pick resolves, which is the only way a new
+# visitor can see records, streaks and the Clark Differential do anything
+# before the live season has been played.
+EXPORTS = {
+    ACTIVE_SEASON: PUBLIC_DIR / "predictions.json",
+    DEMO_SEASON: PUBLIC_DIR / f"predictions-{DEMO_SEASON}.json",
+}
 
 
 def main() -> None:
-    print("Running enrichment pipeline over all games...")
-    predictions = get_predictions()
+    PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as fh:
-        json.dump(predictions, fh, indent=2, ensure_ascii=False)
+    for season, out_path in EXPORTS.items():
+        print(f"Running enrichment pipeline for {season}...")
+        predictions = get_predictions(season=season)
 
-    size_kb = OUTPUT_PATH.stat().st_size / 1024
-    print(f"\n✅  Done.")
-    print(f"   Games exported : {len(predictions)}")
-    print(f"   Data mode      : {DATA_MODE}")
-    print(f"   Model accuracy : {MODEL_META.get('accuracy', '?')}")
-    print(f"   Output         : {OUTPUT_PATH}")
-    print(f"   File size      : {size_kb:.1f} KB")
+        with open(out_path, "w", encoding="utf-8") as fh:
+            json.dump(predictions, fh, indent=2, ensure_ascii=False)
+
+        resolved = sum(1 for game in predictions if game.get("actual_winner"))
+        size_kb = out_path.stat().st_size / 1024
+        print(f"   Games      : {len(predictions)} ({resolved} with final scores)")
+        print(f"   Output     : {out_path.name}  ({size_kb:.1f} KB)")
+
+    print(f"\n✅  Done.  Data mode: {DATA_MODE}   "
+          f"Model accuracy: {MODEL_META.get('accuracy', '?')}")
     print(
-        "\n   Commit predictions.json and push to GitHub — "
-        "Vercel will serve it as a static file."
+        "   Commit both JSON files and push — Vercel serves them as static files."
     )
 
 

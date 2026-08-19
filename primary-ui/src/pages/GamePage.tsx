@@ -79,7 +79,7 @@ const GamePage: React.FC = () => {
               className="shrink-0 text-xs font-medium px-2.5 py-1 rounded-full border"
               style={{ borderColor: 'rgba(200,169,110,0.35)', color: '#c8a96e', background: 'rgba(200,169,110,0.08)' }}
             >
-              2024
+              {season}
             </span>
           </div>
         </div>

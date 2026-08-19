@@ -7,6 +7,8 @@ import { ModelRecord, formatAccuracy } from '@/lib/modelRecord';
 import { weekTitle } from '@/lib/currentWeek';
 
 interface HomeHeroProps {
+  /** Season being displayed — follows the live/demo dataset. */
+  season: number;
   user: ClarkProfile | null;
   week: number;
   gamesThisWeek: number;
@@ -29,7 +31,7 @@ function greeting(hour: number): string {
  * factual on the right (how the model is actually doing) — so the page opens on
  * "here's your situation" rather than a generic banner.
  */
-const HomeHero: React.FC<HomeHeroProps> = ({ user, week, gamesThisWeek, record }) => (
+const HomeHero: React.FC<HomeHeroProps> = ({ user, week, gamesThisWeek, record, season }) => (
   <section className="stadium-bloom relative" aria-labelledby="dashboard-heading">
     <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
       <p className="flex items-center gap-2 text-sm rise-in" style={{ color: 'var(--text-secondary)' }}>
@@ -45,7 +47,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ user, week, gamesThisWeek, record }
             </span>
           </>
         ) : (
-          <span>Season 2024 · the model lens</span>
+          <span>Season {season} · the model lens</span>
         )}
       </p>
 

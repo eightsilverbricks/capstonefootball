@@ -1,7 +1,9 @@
 import { describe, it, expect } from 'vitest';
+import { LIVE_SEASON_KICKOFF } from './season';
 import {
   CURRENT_WEEK,
   isPlayoffWeek,
+  liveSeasonWeek,
   resolveCurrentWeek,
   weekLabel,
   weekShortLabel,
@@ -9,18 +11,41 @@ import {
 } from './currentWeek';
 
 describe('resolveCurrentWeek', () => {
-  it('returns the configured current week when the data has it', () => {
-    expect(resolveCurrentWeek([1, 2, 3])).toBe(CURRENT_WEEK);
-  });
+  // A completed season has no "now", so it always opens on week 1.
+  const demo = { isDemo: true };
 
-  it('falls back to the last available week when the current week is absent', () => {
-    const weeks = [5, 6, 7];
-    expect(weeks).not.toContain(CURRENT_WEEK);
-    expect(resolveCurrentWeek(weeks)).toBe(7);
+  it('opens a demo season on the configured week', () => {
+    expect(resolveCurrentWeek([1, 2, 3], demo)).toBe(CURRENT_WEEK);
   });
 
   it('falls back to CURRENT_WEEK when there are no weeks at all', () => {
-    expect(resolveCurrentWeek([])).toBe(CURRENT_WEEK);
+    expect(resolveCurrentWeek([], demo)).toBe(CURRENT_WEEK);
+  });
+
+  it('snaps to the first available week when the target is earlier than all of them', () => {
+    // Pre-season: the calendar says week 1, but the data starts at week 5.
+    // Showing the *last* week here would skip the whole season at a glance.
+    expect(resolveCurrentWeek([5, 6, 7], demo)).toBe(5);
+  });
+
+  it('tracks the calendar during a live season', () => {
+    const weeks = Array.from({ length: 18 }, (_, i) => i + 1);
+    // Two and a bit weeks past kickoff is week 3.
+    const now = new Date(LIVE_SEASON_KICKOFF.getTime() + 15 * 24 * 3600 * 1000);
+    expect(resolveCurrentWeek(weeks, { now })).toBe(3);
+  });
+
+  it('clamps to week 1 before kickoff rather than going negative', () => {
+    const now = new Date(LIVE_SEASON_KICKOFF.getTime() - 30 * 24 * 3600 * 1000);
+    expect(liveSeasonWeek(now)).toBe(1);
+    expect(resolveCurrentWeek([1, 2, 3], { now })).toBe(1);
+  });
+
+  it('snaps back to the last real week once the calendar runs past the fixtures', () => {
+    // The calendar keeps counting after week 18; the schedule does not.
+    const weeks = Array.from({ length: 18 }, (_, i) => i + 1);
+    const now = new Date(LIVE_SEASON_KICKOFF.getTime() + 300 * 24 * 3600 * 1000);
+    expect(resolveCurrentWeek(weeks, { now })).toBe(18);
   });
 });
 

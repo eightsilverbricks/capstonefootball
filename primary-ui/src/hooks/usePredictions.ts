@@ -1,25 +1,37 @@
 import { useState, useEffect } from 'react';
 import { ApiPrediction } from '@/types/prediction';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 
-// Default: the static JSON bundled with the build (served from the site root on
-// Vercel). Override with VITE_API_BASE_URL to read from a live FastAPI backend.
-const PREDICTIONS_URL = import.meta.env.VITE_API_BASE_URL
-  ? `${import.meta.env.VITE_API_BASE_URL}/predictions`
-  : '/predictions.json';
+// Static JSON bundled with the build (served from the site root on Vercel).
+// VITE_API_BASE_URL overrides it to read from a live FastAPI backend, which
+// takes the season as a query parameter.
+function urlFor(season: number, dataUrl: string): string {
+  const base = import.meta.env.VITE_API_BASE_URL;
+  return base ? `${base}/predictions?season=${season}` : dataUrl;
+}
 
-// Module-level cache so the dashboard, Games page, and GamePage share one fetch
-let _cache: ApiPrediction[] | null = null;
-let _promise: Promise<ApiPrediction[]> | null = null;
+// Cached per URL, not globally: the live and demo datasets are both large, and
+// a single shared cache would hand demo cards to the live season after a toggle.
+const _cache = new Map<string, ApiPrediction[]>();
+const _promises = new Map<string, Promise<ApiPrediction[]>>();
 
-async function fetchPredictions(): Promise<ApiPrediction[]> {
-  if (_cache) return _cache;
-  if (!_promise) {
-    _promise = fetch(PREDICTIONS_URL)
+async function fetchPredictions(url: string): Promise<ApiPrediction[]> {
+  const cached = _cache.get(url);
+  if (cached) return cached;
+
+  let promise = _promises.get(url);
+  if (!promise) {
+    promise = fetch(url)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(data => { _cache = Array.isArray(data) ? data : data.games ?? []; return _cache!; })
-      .catch(err => { _promise = null; throw err; });
+      .then(data => {
+        const games: ApiPrediction[] = Array.isArray(data) ? data : data.games ?? [];
+        _cache.set(url, games);
+        return games;
+      })
+      .catch(err => { _promises.delete(url); throw err; });
+    _promises.set(url, promise);
   }
-  return _promise;
+  return promise;
 }
 
 export interface PredictionsState {
@@ -30,19 +42,27 @@ export interface PredictionsState {
 }
 
 export function usePredictions(): PredictionsState {
-  const [predictions, setPredictions] = useState<ApiPrediction[]>(_cache ?? []);
-  const [loading, setLoading] = useState(!_cache);
+  const { config } = useSeasonMode();
+  const url = urlFor(config.season, config.dataUrl);
+
+  const [predictions, setPredictions] = useState<ApiPrediction[]>(() => _cache.get(url) ?? []);
+  const [loading, setLoading] = useState(!_cache.has(url));
   const [error, setError] = useState('');
 
   const load = () => {
     setLoading(true);
     setError('');
-    fetchPredictions()
+    fetchPredictions(url)
       .then(data => { setPredictions(data); setLoading(false); })
       .catch(err => { setError(err instanceof Error ? err.message : 'Failed to load'); setLoading(false); });
   };
 
-  useEffect(() => { if (!_cache) load(); }, []);
+  // Re-runs on url, so switching season mode swaps the dataset in place.
+  useEffect(() => {
+    const cached = _cache.get(url);
+    if (cached) { setPredictions(cached); setLoading(false); setError(''); return; }
+    load();
+  }, [url]);
 
   return { predictions, loading, error, reload: load };
 }

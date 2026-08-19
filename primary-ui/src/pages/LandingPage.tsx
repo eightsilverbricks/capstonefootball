@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Lock } from 'lucide-react';
 import Header from '@/components/Header';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
 import HomeHighlights from '@/components/HomeHighlights';
 import LandingHero from '@/components/landing/LandingHero';
@@ -29,6 +30,9 @@ import { getConfidenceScore } from '@/types/prediction';
  */
 const LandingPage: React.FC = () => {
   const { predictions, loading } = usePredictions();
+  // Demo seasons are finished, so they open on week 1 rather than the calendar.
+  const { config: seasonConfig } = useSeasonMode();
+  const isDemo = seasonConfig.isDemo;
   const [peekOpen, setPeekOpen] = useState(false);
 
   const record = useMemo(() => computeModelRecord(predictions), [predictions]);
@@ -37,7 +41,7 @@ const LandingPage: React.FC = () => {
     () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
     [predictions],
   );
-  const currentWeek = resolveCurrentWeek(availableWeeks);
+  const currentWeek = resolveCurrentWeek(availableWeeks, { isDemo });
   const weekGames = useMemo(
     () => predictions.filter((g) => g.week === currentWeek),
     [predictions, currentWeek],

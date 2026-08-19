@@ -1,4 +1,5 @@
 import React from 'react';
+import { TRAIN_SEASON_RANGE, EVAL_SEASON, EVAL_GAMES, MODEL_ACCURACY, POOLED_ACCURACY, POOLED_VEGAS_ACCURACY, POOLED_SEASON_RANGE, formatPct } from '@/lib/modelFacts';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
@@ -128,10 +129,13 @@ const AboutPage: React.FC = () => {
             About the model
           </h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            Clark is a logistic regression trained on the 2018–2023 seasons and evaluated on all 285
-            games of 2024. We kept it deliberately simple: a more complicated model might squeeze out
-            another point of accuracy, but it couldn't tell you <em>why</em> — and the why is the
-            entire product. Every factor you see in a Clark Report is a real input the model
+            Clark is a logistic regression trained on the {TRAIN_SEASON_RANGE} seasons and evaluated on all{' '}
+            {EVAL_GAMES} games of {EVAL_SEASON}, where it called {formatPct(MODEL_ACCURACY)} of games correctly.
+            Across {POOLED_SEASON_RANGE} it sits at {formatPct(POOLED_ACCURACY)}, just ahead of the Vegas closing
+            line's {formatPct(POOLED_VEGAS_ACCURACY)} over the same games — which is the number worth judging it
+            on, because any single season swings several points on luck alone. We kept it deliberately
+            simple: a more complicated model might squeeze out another point of accuracy, but it
+            couldn't tell you <em>why</em> — and the why is the entire product. Every factor you see in a Clark Report is a real input the model
             weighted, translated into plain English.
           </p>
         </section>
