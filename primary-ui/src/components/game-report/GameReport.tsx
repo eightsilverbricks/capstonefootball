@@ -22,15 +22,15 @@ import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { Pick } from '@/competition/types';
 import { stakeFromConfidence, stakePreview, resolvePick } from '@/competition/scoring';
 import { signed, stakeColor } from '@/lib/format';
-import { getHeroInsight, getEvidenceTeaser } from '@/lib/heroInsight';
-import { AlertTriangle, ChevronDown, ChevronUp, Sparkles, Share2 } from 'lucide-react';
+import { getHeroInsight } from '@/lib/heroInsight';
+import { isPickingClosed } from '@/lib/gameStatus';
+import { AlertTriangle, Sparkles, Share2 } from 'lucide-react';
 
 interface GameReportProps {
   game: ApiPrediction;
 }
 
 const GameReport: React.FC<GameReportProps> = ({ game }) => {
-  const [evidenceOpen, setEvidenceOpen] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
   const { picks, setPick } = useUserPicks();
   const { team: fanTeam } = useFanIdentity();
@@ -54,7 +54,8 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
   const fan      = getFanPick(game, sentiment);
   const insight  = getHeroInsight(game);
   const insightColors = insight ? getTeamColors(insight.team) : null;
-  const evidenceTeaser = getEvidenceTeaser(game);
+  // A played live-season game is closed to picking — see lib/gameStatus.
+  const closed = isPickingClosed(game);
 
   // Voting — the game page is the "informed" path: read the evidence, then vote.
   const [editing, setEditing] = useState(false);
@@ -63,7 +64,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
       ? { team: userPick.team, confidence: userPick.confidence }
       : { team: game.home_team, confidence: 0.5 },
   );
-  const showSlider  = !userPick || editing;
+  const showSlider  = !closed && (!userPick || editing);
   const hasPosition = draft.confidence > 0.5;
   const lockedStake = userPick ? Math.round(stakeFromConfidence(userPick.confidence)) : 0;
   const resolvedNet = userPick && game.actual_winner
@@ -115,9 +116,9 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
       >
         <div className="flex items-baseline justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--accent-gold)' }}>
-            {showSlider ? 'Make your call' : 'Your call'}
+            {showSlider ? 'Make your call' : userPick ? 'Your call' : 'Final'}
           </span>
-          {game.actual_winner && (
+          {game.actual_winner && !closed && (
             <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
               Pick as if it hasn't kicked off
             </span>
@@ -164,10 +165,12 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                 </button>
               </div>
             </div>
-            <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
-              Weigh the comparison and the evidence below, then lock your conviction.
-            </p>
           </div>
+        ) : !userPick ? (
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            This one is played — {game.away_team} {game.away_score}, {game.home_team} {game.home_score}.
+            Clark had {game.predicted_winner}.
+          </p>
         ) : (
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-col">
@@ -195,20 +198,22 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                 <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
                 {shareOpen ? 'Hide card' : 'Share your call'}
               </button>
-              <button
-                type="button"
-                onClick={handleChange}
-                className="px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide"
-                style={{ background: 'var(--surface-raised)', color: 'var(--text-primary)', border: '1px solid var(--border-emphasis)' }}
-              >
-                Change pick
-              </button>
+              {!closed && (
+                <button
+                  type="button"
+                  onClick={handleChange}
+                  className="px-4 py-2 rounded text-xs font-semibold uppercase tracking-wide"
+                  style={{ background: 'var(--surface-raised)', color: 'var(--text-primary)', border: '1px solid var(--border-emphasis)' }}
+                >
+                  Change pick
+                </button>
+              )}
             </div>
           </div>
         )}
 
         {/* ── Per-pick shareable artifact (B4) — screenshot-ready, self-contained ── */}
-        {!showSlider && shareOpen && (
+        {!showSlider && userPick && shareOpen && (
           <div className="mt-4">
             <PickShareCard
               game={game}
@@ -277,26 +282,17 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
         </div>
       )}
 
-      {/* ── Evidence toggle — Clark Report stays intact, just moved behind an action ── */}
-      <button
-        type="button"
-        onClick={() => setEvidenceOpen((open) => !open)}
-        className="w-full flex items-center justify-between rounded-lg px-5 py-3 mb-4 transition-colors"
-        style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}
-        aria-expanded={evidenceOpen}
-      >
-        <span className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>
-          {evidenceOpen ? 'Hide the evidence' : evidenceTeaser}
-        </span>
-        {evidenceOpen ? (
-          <ChevronUp className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-        ) : (
-          <ChevronDown className="w-4 h-4" style={{ color: 'var(--text-muted)' }} />
-        )}
-      </button>
-
-      {evidenceOpen && (
-        <>
+      {/* ── Clark Report — the evidence, always on the page. It used to sit
+          behind a disclosure; the reasoning is the point of this page, so it
+          is stated outright under one heading. ── */}
+      <section aria-labelledby="clark-report-heading">
+        <h2
+          id="clark-report-heading"
+          className="text-sm font-semibold uppercase tracking-[0.2em] mb-3"
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--accent-gold)' }}
+        >
+          Clark Report
+        </h2>
           {/* ── Two-column body — single column on mobile, 3fr/2fr from lg up.
               (Previously a fixed inline grid-template that never collapsed,
               causing horizontal overflow on narrow viewports — see B7 mobile audit.) ── */}
@@ -376,8 +372,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
             <span>Logistic regression · expanding-window backtest · {EVAL_SEASON} holdout</span>
             <span style={{ color: 'var(--text-tertiary)' }}>{formatPct(MODEL_ACCURACY)} model accuracy</span>
           </footer>
-        </>
-      )}
+      </section>
     </article>
   );
 };

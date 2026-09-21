@@ -1,7 +1,6 @@
-// ─── heroInsight — the "Clark noticed…" card + dynamic evidence-gate teaser ────
-// Pure helpers. Both surface the same idea: the non-obvious factor Clark's
-// pick actually rests on, stated as a claim rather than a percentage — visible
-// BEFORE anyone opts into the full evidence, per the virality plan (B2/B3).
+// ─── heroInsight — the "Clark noticed…" card ─────────────────────────────────
+// Pure helpers. They surface the non-obvious factor Clark's pick actually
+// rests on, stated as a claim rather than a percentage.
 //
 // Selection order mirrors the backend's synthesis-lede logic (see
 // nfl-prediction/src/factor_prose.py build_synthesis_lede): prefer a genuinely
@@ -65,26 +64,4 @@ export function getHeroInsight(game: ApiPrediction): HeroInsight | null {
     line: explanation ? firstSentence(explanation) : '',
     team: factor.advantage_team,
   };
-}
-
-const FACTOR_LABELS: Record<string, string> = {
-  'Market Edge': 'market',
-  'Recent Offense': 'offensive',
-  'Defensive Edge': 'defensive',
-  'Momentum': 'momentum',
-  'Game Context': 'situational',
-};
-
-/**
- * Dynamic, per-game promise for the evidence-gate button — replaces the
- * generic "View the evidence — why Clark thinks this" with a specific pull
- * from this game's data (top factor + the upset path, when one exists).
- */
-export function getEvidenceTeaser(game: ApiPrediction): string {
-  const factor = getHeroFactor(game);
-  if (!factor) return 'View the evidence — why Clark thinks this';
-
-  const label = FACTOR_LABELS[factor.name] ?? factor.name.toLowerCase();
-  const base = `See the ${label} edge Clark weighted most`;
-  return game.risk_factor ? `${base} — and the upset path.` : `${base} in this one.`;
 }

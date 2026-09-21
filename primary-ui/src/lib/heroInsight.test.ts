@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getHeroFactor, getHeroInsight, getEvidenceTeaser } from './heroInsight';
+import { getHeroFactor, getHeroInsight } from './heroInsight';
 import type { ApiPrediction, FactorCard } from '@/types/prediction';
 
 const card = (overrides: Partial<FactorCard>): FactorCard => ({
@@ -83,26 +83,5 @@ describe('getHeroInsight', () => {
   it('returns null when the hero factor has no headline (ungenerated legacy card)', () => {
     const g = game({ factor_cards: [card({ headline: undefined })] });
     expect(getHeroInsight(g)).toBeNull();
-  });
-});
-
-describe('getEvidenceTeaser', () => {
-  it('names the top factor and mentions the upset path when a risk exists', () => {
-    const g = game({
-      factor_cards: [card({ name: 'Defensive Edge', advantage_team: 'BUF' })],
-      risk_factor: 'ARI bring the pass rush that matters here.',
-    });
-    expect(getEvidenceTeaser(g)).toBe('See the defensive edge Clark weighted most — and the upset path.');
-  });
-
-  it('omits the upset path clause when there is no risk factor', () => {
-    const g = game({ factor_cards: [card({ name: 'Momentum', advantage_team: 'BUF' })] });
-    expect(getEvidenceTeaser(g)).toBe('See the momentum edge Clark weighted most in this one.');
-  });
-
-  it('falls back to the generic teaser when there are no factor cards', () => {
-    expect(getEvidenceTeaser(game({ factor_cards: [] }))).toBe(
-      'View the evidence — why Clark thinks this',
-    );
   });
 });

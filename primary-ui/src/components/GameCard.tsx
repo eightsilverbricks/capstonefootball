@@ -4,10 +4,12 @@ import { ApiPrediction } from '@/types/prediction';
 import { getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
 import { formatKickoff } from '@/lib/slate';
+import { finalScore, isPickingClosed } from '@/lib/gameStatus';
 import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useGamePick } from '@/hooks/useGamePick';
 import { useAuth } from '@/hooks/useAuth';
-import { stakePreview, indexConfidenceFromScore } from '@/competition/scoring';
+import { stakePreview, indexConfidenceFromScore, resolvePick } from '@/competition/scoring';
+import { signed, stakeColor } from '@/lib/format';
 import TeamLogo from './TeamLogo';
 import ConvictionSlider from './ConvictionSlider';
 import ThreeWayCompare from './game-report/ThreeWayCompare';
@@ -40,13 +42,22 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   const fan = getFanPick(game, sentiment);
   const kickoff = formatKickoff(game.gametime);
 
+  // A played game is read, not picked: the slider comes down and the card
+  // reports the result instead.
+  const closed = isPickingClosed(game);
+  const score = finalScore(game);
+  const resolvedNet = userPick && game.actual_winner
+    ? resolvePick({ team: userPick.team, confidence: userPick.confidence }, game.actual_winner)
+    : null;
+  const opensReport = hasPicked || closed;
+
   return (
     <article
-      role={hasPicked ? 'button' : undefined}
-      tabIndex={hasPicked ? 0 : undefined}
-      onClick={hasPicked ? handleOpenReport : undefined}
+      role={opensReport ? 'button' : undefined}
+      tabIndex={opensReport ? 0 : undefined}
+      onClick={opensReport ? handleOpenReport : undefined}
       onKeyDown={
-        hasPicked
+        opensReport
           ? (e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault();
@@ -55,8 +66,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
             }
           : undefined
       }
-      aria-label={hasPicked ? `${game.away_team} at ${game.home_team} — open Clark Report` : undefined}
-      className={`relative rounded overflow-hidden transition-transform duration-150 group ${hasPicked ? 'cursor-pointer hover:-translate-y-0.5' : ''}`}
+      aria-label={opensReport ? `${game.away_team} at ${game.home_team} — open Clark Report` : undefined}
+      className={`relative rounded overflow-hidden transition-transform duration-150 group ${opensReport ? 'cursor-pointer hover:-translate-y-0.5' : ''}`}
       style={{
         background: 'var(--surface)',
         border: `1px solid ${isSelected ? 'var(--border-emphasis)' : 'var(--border-subtle)'}`,
@@ -75,6 +86,14 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
           >
             {kickoff || game.week_label || `Week ${game.week}`}
           </span>
+          {score && (
+            <span
+              className="text-[10px] font-semibold uppercase tracking-widest tabular-nums"
+              style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}
+            >
+              Final · {score}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-3">
@@ -101,7 +120,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
           </div>
         </div>
 
-        {!hasPicked ? (
+        {!hasPicked && !closed ? (
           <div className="flex flex-col gap-3 pt-1" onClick={(e) => e.stopPropagation()}>
             <p className="text-sm italic leading-snug" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
               {getPrePickTeaser(game, vegas, fan)}
@@ -155,7 +174,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
           <>
             <ThreeWayCompare
               rows={[
-                { label: 'You', team: userPick!.team, pct: userPick!.confidence },
+                ...(hasPicked ? [{ label: 'You', team: userPick!.team, pct: userPick!.confidence }] : []),
                 { label: 'Clark', team: game.predicted_winner, pct: indexConfidenceFromScore(game.confidence_score) },
                 ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
                 // No row at all until real accounts have picked this game.
@@ -165,30 +184,45 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
               winner={game.actual_winner}
             />
 
-            <p className="text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
-              {getPickReading(game, userPick!, vegas, fan)}
-            </p>
+            {hasPicked && (
+              <p className="text-xs leading-snug" style={{ color: 'var(--text-tertiary)' }}>
+                {getPickReading(game, userPick!, vegas, fan)}
+              </p>
+            )}
 
             <div className="flex items-center justify-between pt-1">
-              <span className="text-[10px] uppercase tracking-widest tabular-nums" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                ±{stake} pts on the line
-              </span>
+              {resolvedNet != null ? (
+                <span className="text-[10px] font-semibold uppercase tracking-widest tabular-nums" style={{ color: stakeColor(resolvedNet), fontFamily: 'var(--font-mono)' }}>
+                  {resolvedNet > 0 ? 'Cashed' : 'Missed'} {signed(resolvedNet)} pts
+                </span>
+              ) : hasPicked ? (
+                <span className="text-[10px] uppercase tracking-widest tabular-nums" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
+                  ±{stake} pts on the line
+                </span>
+              ) : (
+                <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
+                  Picks closed
+                </span>
+              )}
               <div className="flex items-center gap-3">
                 {/* A pick must stay changeable — one stray drag shouldn't
                     commit someone's season with no way back. Matches the game
                     page, which already lets you re-open the slider. Stops
-                    propagation so it doesn't also open the report behind it. */}
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    changePick();
-                  }}
-                  className="text-[10px] uppercase tracking-widest transition-colors hover:text-white"
-                  style={{ color: 'var(--text-muted)' }}
-                >
-                  Change
-                </button>
+                    propagation so it doesn't also open the report behind it.
+                    Gone once the game is played: there is nothing left to call. */}
+                {hasPicked && !closed && (
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      changePick();
+                    }}
+                    className="text-[10px] uppercase tracking-widest transition-colors hover:text-white"
+                    style={{ color: 'var(--text-muted)' }}
+                  >
+                    Change
+                  </button>
+                )}
                 <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
                   View evidence →
                 </span>

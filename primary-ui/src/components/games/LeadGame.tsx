@@ -14,13 +14,15 @@ import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import { withAlpha, scrimStrengthFor } from '@/lib/color';
 import { billingReason, formatKickoff, getSlateWindow } from '@/lib/slate';
+import { finalScore, isPickingClosed } from '@/lib/gameStatus';
 import { getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
 import { getHeroInsight } from '@/lib/heroInsight';
 import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useGamePick } from '@/hooks/useGamePick';
 import { useAuth } from '@/hooks/useAuth';
-import { stakePreview, indexConfidenceFromScore } from '@/competition/scoring';
+import { stakePreview, indexConfidenceFromScore, resolvePick } from '@/competition/scoring';
+import { signed, stakeColor } from '@/lib/format';
 import TeamLogo from '@/components/TeamLogo';
 import ConvictionSlider from '@/components/ConvictionSlider';
 import ThreeWayCompare from '@/components/game-report/ThreeWayCompare';
@@ -52,6 +54,13 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
   const window = getSlateWindow(game);
   const reason = billingReason(game);
   const kickoff = formatKickoff(game.gametime);
+
+  // Played games are reported, not picked — see lib/gameStatus.
+  const closed = isPickingClosed(game);
+  const score = finalScore(game);
+  const resolvedNet = userPick && game.actual_winner
+    ? resolvePick({ team: userPick.team, confidence: userPick.confidence }, game.actual_winner)
+    : null;
 
   const home = getTeamColors(game.home_team);
   const away = getTeamColors(game.away_team);
@@ -89,7 +98,10 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
         style={{ background: `rgba(10, 10, 18, ${Math.max(0.62, scrim)})` }}
       />
 
-      <div className="relative p-6 sm:p-8 lg:p-10 flex flex-col gap-6">
+      {/* The "Clark noticed" aside is absolutely positioned in the top-right
+          from lg up; this keeps the card's own content clear of it so the
+          billing line and the comparison bars are never overlapped. */}
+      <div className="relative p-6 sm:p-8 lg:p-10 lg:pr-[22rem] flex flex-col gap-6">
         {/* Billing line — why this game leads the page */}
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <span
@@ -102,6 +114,14 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
             {window.label}
             {kickoff ? ` · ${kickoff}` : ''}
           </span>
+          {score && (
+            <span
+              className="text-[11px] font-semibold uppercase tracking-[0.2em] tabular-nums"
+              style={{ color: '#fff' }}
+            >
+              Final · {score}
+            </span>
+          )}
         </div>
 
         {/* Matchup at display scale */}
@@ -141,7 +161,7 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
         </h2>
 
         {/* The claim */}
-        {!hasPicked && (
+        {!hasPicked && !closed && (
           <p
             className="max-w-2xl text-base sm:text-lg italic leading-snug"
             style={{ fontFamily: 'var(--font-display)', color: 'rgba(255,255,255,0.86)' }}
@@ -151,7 +171,7 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
         )}
 
         {/* Pick interaction — identical behaviour to the grid cards */}
-        {!hasPicked ? (
+        {!hasPicked && !closed ? (
           <div className="flex flex-col gap-4 max-w-2xl">
             <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--accent-gold)' }}>
               Drag toward your pick
@@ -194,7 +214,7 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
           <div className="flex flex-col gap-4 max-w-2xl">
             <ThreeWayCompare
               rows={[
-                { label: 'You', team: userPick!.team, pct: userPick!.confidence },
+                ...(hasPicked ? [{ label: 'You', team: userPick!.team, pct: userPick!.confidence }] : []),
                 { label: 'Clark', team: game.predicted_winner, pct: indexConfidenceFromScore(game.confidence_score) },
                 ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
                 ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
@@ -202,24 +222,44 @@ const LeadGame: React.FC<LeadGameProps> = ({ game }) => {
               size="large"
               winner={game.actual_winner}
             />
-            <p className="text-sm leading-snug" style={{ color: 'rgba(255,255,255,0.75)' }}>
-              {getPickReading(game, userPick!, vegas, fan)}
-            </p>
+            {hasPicked && (
+              <p className="text-sm leading-snug" style={{ color: 'rgba(255,255,255,0.75)' }}>
+                {getPickReading(game, userPick!, vegas, fan)}
+              </p>
+            )}
             <div className="flex items-center gap-4">
-              <span
-                className="text-[10px] uppercase tracking-widest tabular-nums"
-                style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-mono)' }}
-              >
-                ±{stake} pts on the line
-              </span>
-              <button
-                type="button"
-                onClick={changePick}
-                className="text-[10px] uppercase tracking-widest transition-colors"
-                style={{ color: 'rgba(255,255,255,0.55)' }}
-              >
-                Change
-              </button>
+              {resolvedNet != null ? (
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-widest tabular-nums"
+                  style={{ color: stakeColor(resolvedNet), fontFamily: 'var(--font-mono)' }}
+                >
+                  {resolvedNet > 0 ? 'Cashed' : 'Missed'} {signed(resolvedNet)} pts
+                </span>
+              ) : hasPicked ? (
+                <span
+                  className="text-[10px] uppercase tracking-widest tabular-nums"
+                  style={{ color: 'rgba(255,255,255,0.55)', fontFamily: 'var(--font-mono)' }}
+                >
+                  ±{stake} pts on the line
+                </span>
+              ) : (
+                <span
+                  className="text-[10px] uppercase tracking-widest"
+                  style={{ color: 'rgba(255,255,255,0.55)' }}
+                >
+                  Picks closed
+                </span>
+              )}
+              {hasPicked && !closed && (
+                <button
+                  type="button"
+                  onClick={changePick}
+                  className="text-[10px] uppercase tracking-widest transition-colors"
+                  style={{ color: 'rgba(255,255,255,0.55)' }}
+                >
+                  Change
+                </button>
+              )}
             </div>
           </div>
         )}

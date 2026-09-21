@@ -107,9 +107,6 @@ const FeaturedGame: React.FC<FeaturedGameProps> = ({ game, isYourTeam = false })
 
         {insight && (
           <div className="mt-6">
-            <p className="text-[10px] uppercase tracking-[0.2em] mb-2" style={{ color: 'var(--text-muted)' }}>
-              What Clark keeps coming back to
-            </p>
             <p
               className="font-bold leading-snug mb-2"
               style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--text-primary)' }}

@@ -41,7 +41,7 @@ const GamePage: React.FC = () => {
     <div className="min-h-screen" style={{ background: '#0a0a12' }}>
       {/* ── Top bar ── */}
       <div className="sticky top-0 z-30 border-b border-white/8 bg-[#0a0a12]/95 backdrop-blur-sm">
-        <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+        <div className="w-full px-4 sm:px-6 lg:px-10 h-14 flex items-center justify-between gap-4">
           <button
             onClick={handleBack}
             className="flex items-center gap-2 text-sm text-white/50 hover:text-white transition-colors"
@@ -86,7 +86,7 @@ const GamePage: React.FC = () => {
       </div>
 
       {/* ── Content ── */}
-      <div className="max-w-5xl mx-auto px-4 py-8">
+      <div className="w-full px-4 sm:px-6 lg:px-10 py-8">
 
         {/* Loading */}
         {loading && (
