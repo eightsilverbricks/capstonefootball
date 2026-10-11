@@ -67,11 +67,32 @@ const svg = (k) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 function tickerCell(g) {
   const w = winnerOf(g);
   const row = (t, s) => `<div class="tk-row ${g.st === 'final' && w !== t ? 'lost' : ''}"><img src="${logo(t)}" alt=""><b>${t}</b>${g.st === 'pre' ? '' : `<span class="s">${s}</span>`}</div>`;
-  const pick = g.you ? `You: ${g.you[0]}` : `Clark: ${g.clark[0]} ${g.clark[1]}%`;
+  let pick = `Clark: ${g.clark[0]} ${g.clark[1]}%`;
+  let pickCls = '';
+  if (g.you) {
+    pick = `You: ${g.you[0]} ${g.you[1]}%`;
+    if (g.st !== 'pre') pickCls = winnerOf(g) === g.you[0] ? 'win' : 'loss';
+    if (g.st === 'final') pick += pickCls === 'win' ? ' ✓' : ' ✗';
+  }
   return `<a class="tk" href="${gameUrl(g)}">
     <div class="tk-status ${g.st === 'live' ? 'live' : ''}">${statusText(g)}${g.st === 'pre' ? ' · ' + g.tv : ''}</div>
     ${row(g.a, g.as)}${row(g.h, g.hs)}
-    <div class="tk-pick">${pick}</div></a>`;
+    <div class="tk-pick ${pickCls}">${pick}</div></a>`;
+}
+
+/* Community stats for the bar under the ticker (sample numbers). */
+function communityItems(signedIn) {
+  const items = [
+    `<span><span class="dot"></span><b>12,480</b> fans active now</span>`,
+    signedIn ? `<span><img src="${logo('BUF')}" alt="">Bills fans: <b>67%</b> right this week · <b>3rd</b> of 32 <span class="up">▲2</span></span>` : '',
+    `<span><img src="${logo('DET')}" alt="">Best fanbase this week: <b>Lions fans 71%</b></span>`,
+    `<span>Fans <b>61%</b> vs Clark <b>80%</b> this week</span>`,
+    `<span><img src="${logo('DET')}" alt="">Most picked: <b>Lions over Cardinals, 88%</b></span>`,
+    `<span>Closest split: <b>49ers @ Seahawks, 54–46</b></span>`,
+    `<span><img src="${logo('SEA')}" alt="">Busiest chat: <b>49ers @ Seahawks · 7.1k</b></span>`,
+  ].filter(Boolean).join('');
+  // Doubled so the phone marquee loops seamlessly.
+  return items + `<span aria-hidden="true" style="display:contents">${items}</span>`;
 }
 
 function renderMasthead(active, signedIn) {
@@ -90,6 +111,7 @@ function renderMasthead(active, signedIn) {
       <div class="ticker-track"><div class="ticker-rail">${order.map(tickerCell).join('')}</div></div>
       <div class="ticker-arrows"><button aria-label="Previous games" data-dir="-1">‹</button><button aria-label="More games" data-dir="1">›</button></div>
     </div></div>
+    <div class="community" aria-label="Community right now"><div class="community-inner"><div class="community-rail">${communityItems(signedIn)}</div></div></div>
     <header class="masthead"><div class="wrap">
       <div class="mast-top">
         <div class="mast-left"><span>Sunday, October 11, 2026</span></div>

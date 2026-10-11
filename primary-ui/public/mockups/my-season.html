@@ -4,69 +4,163 @@
 <title>My season — Clark Index mockup</title>
 <link rel="stylesheet" href="mock.css">
 <style>
-  .head { display: flex; align-items: center; gap: 18px; padding: 32px 0 24px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
-  .head .avatar { width: 64px; height: 64px; font-size: 22px; }
-  .head h1 { font-family: var(--serif); font-size: 34px; font-weight: 700; }
-  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--rule); }
-  .kpis div { padding: 18px 0; }
-  .kpis b { display: block; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
-  .kpis span { font-size: 13px; color: var(--ink-3); }
-  .two { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; margin-top: 28px; }
-  section { margin-bottom: 32px; }
-  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
-  th { text-align: left; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 8px 0; border-bottom: 1px solid var(--rule); }
-  td { padding: 10px 0; border-bottom: 1px solid var(--rule); }
-  td img { width: 20px; height: 20px; display: inline-block; vertical-align: -5px; margin-right: 8px; }
-  .gridw { display: grid; grid-template-columns: 70px repeat(16, 1fr); gap: 4px; font-size: 12px; align-items: center; }
-  .sq { aspect-ratio: 1; border-radius: 3px; }
+  body { background: var(--page); }
+  .profile { background: var(--paper); border-bottom: 1px solid var(--rule); }
+  .profile .wrap { display: flex; align-items: center; gap: 16px; padding-top: 24px; padding-bottom: 0; flex-wrap: wrap; }
+  .profile .avatar { width: 56px; height: 56px; font-size: 19px; }
+  .profile h1 { font-family: var(--serif); font-size: 28px; font-weight: 700; line-height: 1.1; }
+  .profile .meta { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--ink-3); margin-top: 3px; }
+  .profile .meta img { width: 18px; height: 18px; }
+  .profile .acts { margin-left: auto; display: flex; gap: 8px; }
+  .ptabs { display: flex; gap: 4px; width: 100%; margin-top: 18px; }
+  .ptabs button { height: 44px; padding: 0 12px; font-weight: 600; font-size: 14px; color: var(--ink-3); position: relative; }
+  .ptabs button.on { color: var(--ink); }
+  .ptabs button.on::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: 0; height: 3px; background: var(--ink); }
+  .card { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; }
+  .card + .card { margin-top: 16px; }
+  .ch { display: flex; justify-content: space-between; align-items: baseline; padding: 14px 16px 0; }
+  .ch h2 { font-size: 16px; font-weight: 700; }
+  .ch span { font-size: 13px; color: var(--ink-3); }
+  .cb { padding: 12px 16px 16px; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: 20px 0; }
+  .kpi { background: var(--paper); border: 1px solid var(--rule); border-radius: 10px; padding: 14px 16px; }
+  .kpi span { font-size: 13px; color: var(--ink-3); }
+  .kpi b { display: block; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; margin: 2px 0; }
+  .kpi small { font-size: 12.5px; color: var(--ink-3); }
+  .kpi small.up { color: var(--win); font-weight: 600; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start; }
+  .legend { display: flex; gap: 16px; font-size: 13px; }
+  .legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: 3px; }
+  .weekrow { display: grid; grid-template-columns: 64px 1fr 56px 56px; align-items: center; gap: 12px; padding: 9px 0; border-top: 1px solid var(--rule); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .weekrow:first-child { border-top: 0; }
+  .sqs { display: flex; gap: 3px; flex-wrap: wrap; }
+  .sq { width: 14px; height: 14px; border-radius: 3px; }
   .sq.w { background: var(--win); } .sq.l { background: var(--loss); } .sq.n { background: var(--rule); }
-  .pick-card { border: 1px solid var(--rule); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
-  .pick-card .k { font-size: 12px; font-weight: 700; }
-  .pick-card h3 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin: 4px 0 8px; }
-  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } .two { grid-template-columns: 1fr; } .gridw { grid-template-columns: 52px repeat(16, 1fr); gap: 2px; } }
+  .weekrow .r { text-align: right; font-weight: 700; }
+  .weekrow .c { text-align: right; color: var(--ink-3); }
+  .split { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px; }
+  .split:first-child { border-top: 0; }
+  .split b { font-variant-numeric: tabular-nums; }
+  .div { display: grid; grid-template-columns: 90px 1fr 48px; gap: 10px; align-items: center; padding: 8px 0; font-size: 14px; }
+  .div .bar { height: 8px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+  .div .bar span { display: block; height: 100%; background: var(--ink); }
+  .div b { text-align: right; font-variant-numeric: tabular-nums; }
+  .pc { display: flex; gap: 12px; align-items: center; padding: 12px 0; border-top: 1px solid var(--rule); }
+  .pc:first-child { border-top: 0; }
+  .pc img { width: 32px; height: 32px; }
+  .pc .t { font-weight: 600; font-size: 14.5px; }
+  .pc .m { font-size: 13px; color: var(--ink-3); }
+  .pc .chip { margin-left: auto; }
+  /* settings */
+  .form-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 16px; align-items: center; padding: 14px 16px; border-top: 1px solid var(--rule); }
+  .form-row:first-child { border-top: 0; }
+  .form-row label { font-weight: 600; font-size: 14px; }
+  .form-row label small { display: block; font-weight: 400; color: var(--ink-3); font-size: 12.5px; margin-top: 2px; }
+  .form-row input[type=text], .form-row input[type=email], .form-row select { height: 38px; border: 1px solid var(--rule); border-radius: 8px; padding: 0 12px; font: inherit; font-size: 14px; width: 100%; max-width: 360px; background: var(--paper); }
+  .seg { display: inline-flex; background: var(--chip); border-radius: 999px; padding: 3px; }
+  .seg button { height: 30px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .seg button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .switch { width: 42px; height: 24px; border-radius: 999px; background: var(--ink); position: relative; }
+  .switch::after { content: ''; position: absolute; top: 3px; right: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; }
+  .switch.off { background: #CFCFCB; } .switch.off::after { right: auto; left: 3px; }
+  .danger { color: var(--loss); font-weight: 600; font-size: 14px; }
+  .teamsel { display: flex; align-items: center; gap: 10px; }
+  .teamsel img { width: 28px; height: 28px; }
+  main { padding-top: 4px; padding-bottom: 20px; }
+  @media (max-width: 900px) {
+    .kpis { grid-template-columns: 1fr 1fr; } .two { grid-template-columns: 1fr; }
+    .profile .acts { margin-left: 0; width: 100%; } .form-row { grid-template-columns: 1fr; gap: 8px; }
+    .weekrow { grid-template-columns: 52px 1fr 44px; } .weekrow .c { display: none; }
+  }
 </style>
 </head><body>
 <div id="masthead"></div>
+
+<section class="profile"><div class="wrap">
+  <span class="avatar">ZW</span>
+  <div><h1>Zane Wolf</h1><div class="meta">@zane · <img data-logo="BUF" alt="">Bills fan · Joined August 2026</div></div>
+  <div class="acts"><a href="#" class="btn btn-sm btn-line">Share my season</a></div>
+  <nav class="ptabs" data-tabs="acct"><button data-tab="overview" class="on">Overview</button><button data-tab="picks">Picks</button><button data-tab="settings">Settings</button></nav>
+</div></section>
+
 <main class="wrap">
-  <div class="head"><span class="avatar">ZW</span><div><h1>Zane Wolf</h1><span class="muted">@zane · Bills fan · Joined August 2026</span></div>
-    <a href="#" class="btn btn-line btn-sm" style="margin-left:auto">Share my season</a></div>
-  <div class="kpis"><div><b>38–26</b><span>Record</span></div><div><b>412</b><span>Points</span></div><div><b>6 weeks</b><span>Streak · 1 freeze left</span></div><div><b>1,204th</b><span>Overall</span></div><div><b>88th</b><span>Among Bills fans</span></div></div>
-  <div class="two">
-    <div>
-      <section><h2 class="h-sec">You vs Clark vs fans</h2>
-        <svg viewBox="0 0 600 200" width="100%" role="img" aria-label="Cumulative wins by week">
-          <g stroke="#E4E4E0"><line x1="40" y1="20" x2="600" y2="20"/><line x1="40" y1="100" x2="600" y2="100"/><line x1="40" y1="180" x2="600" y2="180"/></g>
-          <g font-size="11" fill="#6B6B6B"><text x="0" y="24">45</text><text x="0" y="104">22</text><text x="0" y="184">0</text><text x="40" y="198">Wk 1</text><text x="560" y="198">Wk 5</text></g>
-          <polyline fill="none" stroke="#121212" stroke-width="2.5" points="40,152 180,124 320,98 460,66 590,46"/>
-          <polyline fill="none" stroke="#E4572E" stroke-width="2.5" points="40,148 180,116 320,88 460,60 590,36"/>
-          <polyline fill="none" stroke="#9A9A9A" stroke-width="2" stroke-dasharray="4 4" points="40,156 180,128 320,104 460,74 590,56"/>
-          <g font-size="12" font-weight="700"><text x="596" y="32" text-anchor="end" fill="#E4572E">Clark 41</text><text x="596" y="50" text-anchor="end" fill="#121212">You 38</text><text x="596" y="70" text-anchor="end" fill="#6B6B6B">Fans 36</text></g>
-        </svg></section>
-      <section><h2 class="h-sec">Your picks by week</h2>
-        <div class="gridw" id="gridw"></div></section>
-      <section><h2 class="h-sec">Your record by division</h2>
-        <table><thead><tr><th>Division</th><th>Record</th><th>Clark</th><th>Note</th></tr></thead><tbody>
-          <tr><td>NFC West</td><td>9–2</td><td>7–4</td><td class="muted">Your best</td></tr>
-          <tr><td>AFC East</td><td>8–4</td><td>8–4</td><td class="muted">Your team: 3–1 picking the Bills</td></tr>
-          <tr><td>NFC North</td><td>7–5</td><td>9–3</td><td></td></tr>
-          <tr><td>AFC West</td><td>2–7</td><td>6–3</td><td class="muted">Your worst</td></tr></tbody></table></section>
+  <!-- OVERVIEW -->
+  <div data-panel-group="acct" data-panel="overview">
+    <div class="kpis">
+      <div class="kpi"><span>Record</span><b>38–26</b><small>59% correct</small></div>
+      <div class="kpi"><span>Vs Clark</span><b>−3</b><small>Clark is 41–23</small></div>
+      <div class="kpi"><span>Streak</span><b>6 weeks</b><small>1 freeze left</small></div>
+      <div class="kpi"><span>Rank among Bills fans</span><b>88th</b><small class="up">▲ 12 this week</small></div>
     </div>
-    <aside>
-      <section><h2 class="h-sec">Splits</h2>
-        <table><tbody><tr><td>Going against Clark</td><td style="text-align:right"><b>9–8</b></td></tr><tr><td>Confidence 80%+</td><td style="text-align:right"><b>14–3</b></td></tr><tr><td>Confidence under 60%</td><td style="text-align:right"><b>8–10</b></td></tr><tr><td>Picking the Bills</td><td style="text-align:right"><b>3–1</b></td></tr></tbody></table></section>
-      <section><h2 class="h-sec">Best picks</h2>
-        <div class="pick-card"><div class="k" style="color:var(--win)">Correct · Week 3</div><h3>Cardinals over Seahawks at 90%</h3><span class="muted" style="font-size:13px">Clark had SEA 64%. Only 18% of fans had ARI.</span><br><a href="#" class="btn btn-sm btn-line" style="margin-top:10px">Share</a></div></section>
-      <section><h2 class="h-sec">Worst picks</h2>
-        <div class="pick-card"><div class="k" style="color:var(--loss)">Wrong · Week 4</div><h3>Chargers over Rams at 85%</h3><span class="muted" style="font-size:13px">Clark had LA 58%. Lost 17–27.</span></div></section>
-    </aside>
+    <div class="two">
+      <div>
+        <section class="card"><div class="ch"><h2>Wins by week</h2><div class="legend"><span><i style="background:var(--ink)"></i>You</span><span><i style="background:var(--brand)"></i>Clark</span><span><i style="background:#A8A8A8"></i>Fans</span></div></div>
+          <div class="cb"><svg viewBox="0 0 640 220" width="100%" role="img" aria-label="Wins by week: you, Clark and fans">
+            <g stroke="#ECECE8"><line x1="36" y1="20" x2="630" y2="20"/><line x1="36" y1="80" x2="630" y2="80"/><line x1="36" y1="140" x2="630" y2="140"/><line x1="36" y1="200" x2="630" y2="200"/></g>
+            <g font-size="11" fill="#6B6B6B" text-anchor="end"><text x="28" y="24">12</text><text x="28" y="84">8</text><text x="28" y="144">4</text><text x="28" y="204">0</text></g>
+            <g font-size="11" fill="#6B6B6B" text-anchor="middle"><text x="80" y="216">Wk 1</text><text x="215" y="216">Wk 2</text><text x="350" y="216">Wk 3</text><text x="485" y="216">Wk 4</text><text x="610" y="216">Wk 5</text></g>
+            <polyline fill="none" stroke="#A8A8A8" stroke-width="2" stroke-dasharray="4 4" points="80,80 215,95 350,65 485,95 610,140"/>
+            <polyline fill="none" stroke="#E4572E" stroke-width="2.5" points="80,65 215,80 350,50 485,80 610,80"/>
+            <polyline fill="none" stroke="#121212" stroke-width="2.5" points="80,50 215,95 350,35 485,80 610,110"/>
+            <g fill="#121212"><circle cx="80" cy="50" r="3.5"/><circle cx="215" cy="95" r="3.5"/><circle cx="350" cy="35" r="3.5"/><circle cx="485" cy="80" r="3.5"/><circle cx="610" cy="110" r="3.5"/></g>
+          </svg></div></section>
+        <section class="card"><div class="ch"><h2>Record by division</h2><span>Clark's record in brackets</span></div><div class="cb">
+          <div class="div"><span>NFC West</span><div class="bar"><span style="width:82%"></span></div><b>9–2</b></div>
+          <div class="div"><span>AFC East</span><div class="bar"><span style="width:67%"></span></div><b>8–4</b></div>
+          <div class="div"><span>NFC North</span><div class="bar"><span style="width:58%"></span></div><b>7–5</b></div>
+          <div class="div"><span>NFC South</span><div class="bar"><span style="width:55%"></span></div><b>6–5</b></div>
+          <div class="div"><span>AFC West</span><div class="bar"><span style="width:22%;background:var(--loss)"></span></div><b>2–7</b></div>
+        </div></section>
+      </div>
+      <aside>
+        <section class="card"><div class="ch"><h2>Splits</h2></div><div class="cb">
+          <div class="split"><span>Going against Clark</span><b>9–8</b></div>
+          <div class="split"><span>Confidence 80% or more</span><b>14–3</b></div>
+          <div class="split"><span>Confidence under 60%</span><b>8–10</b></div>
+          <div class="split"><span>Picking the Bills</span><b>3–1</b></div>
+        </div></section>
+        <section class="card"><div class="ch"><h2>Best and worst picks</h2></div><div class="cb">
+          <div class="pc"><img data-logo="ARI" alt=""><div><div class="t">Cardinals over Seahawks · 90%</div><div class="m">Week 3 · Clark had SEA 64%</div></div><span class="chip win">Correct</span></div>
+          <div class="pc"><img data-logo="NE" alt=""><div><div class="t">Patriots over Raiders · 90%</div><div class="m">Week 5 · Won 27–10</div></div><span class="chip win">Correct</span></div>
+          <div class="pc"><img data-logo="LAC" alt=""><div><div class="t">Chargers over Rams · 85%</div><div class="m">Week 4 · Lost 17–27</div></div><span class="chip loss">Wrong</span></div>
+        </div></section>
+      </aside>
+    </div>
+  </div>
+
+  <!-- PICKS -->
+  <div data-panel-group="acct" data-panel="picks" hidden>
+    <section class="card" style="margin-top:20px"><div class="ch"><h2>Every pick</h2><span>Green correct · red wrong · gray not graded yet</span></div><div class="cb" id="weeks"></div></section>
+  </div>
+
+  <!-- SETTINGS -->
+  <div data-panel-group="acct" data-panel="settings" hidden>
+    <section class="card" style="margin-top:20px"><div class="ch"><h2>Profile</h2></div><div class="cb" style="padding:4px 0 4px">
+      <div class="form-row"><label for="dn">Display name</label><input id="dn" type="text" value="Zane Wolf"></div>
+      <div class="form-row"><label for="hd">Handle<small>Shown on leaderboards and in chat</small></label><input id="hd" type="text" value="zane"></div>
+      <div class="form-row"><label>Favorite team<small>Sets your fanbase on the leaderboard</small></label><div class="teamsel"><img data-logo="BUF" alt=""><select aria-label="Favorite team"><option>Buffalo Bills</option></select></div></div>
+    </div></section>
+    <section class="card"><div class="ch"><h2>Account</h2></div><div class="cb" style="padding:4px 0 4px">
+      <div class="form-row"><label for="em">Email</label><input id="em" type="email" value="zane@example.com"></div>
+      <div class="form-row"><label>Password</label><div><a href="#" class="btn btn-sm btn-line">Change password</a></div></div>
+    </div></section>
+    <section class="card"><div class="ch"><h2>Display and privacy</h2></div><div class="cb" style="padding:4px 0 4px">
+      <div class="form-row"><label>Theme</label><div class="seg"><button class="on">Light</button><button>Dark</button><button>System</button></div></div>
+      <div class="form-row"><label>Show me on leaderboards</label><span class="switch" role="switch" aria-checked="true"></span></div>
+      <div class="form-row"><label>Season data<small>The 2024 demo grades picks right away; demo picks don't count</small></label><div class="seg"><button class="on">2026 season</button><button>2024 demo</button></div></div>
+    </div></section>
+    <section class="card"><div class="cb" style="display:flex;justify-content:space-between;align-items:center"><span><b>Delete account</b><br><span class="muted" style="font-size:13px">Removes your picks, comments and profile.</span></span><a href="#" class="danger">Delete account</a></div></section>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px"><a href="#" class="btn btn-line btn-sm">Cancel</a><a href="#" class="btn btn-ink btn-sm">Save changes</a></div>
   </div>
 </main>
 <div id="footer"></div>
 <script src="mock.js"></script>
 <script>
   renderMasthead('season', true); renderFooter();
-  const pat = ['wwlwwlwwwlwlwww', 'wlwwlwllwwwlwwlw', 'wwwlwwwlwwlwwwwl', 'lwwlwlwwlwlwwlnn', 'wlwwwlwwlnnnnnnn'];
-  document.getElementById('gridw').innerHTML = pat.map((p, i) => `<span>Week ${i + 1}</span>` +
-    Array.from({ length: 16 }, (_, j) => `<span class="sq ${p[j] || 'n'}"></span>`).join('')).join('');
+  const pat = [['wwlwwlwwwlwlwww', '10–5', '11–4'], ['wlwwlwllwwwlwwlw', '9–7', '10–6'], ['wwwlwwwlwwlwwwwl', '11–5', '12–4'], ['lwwlwlwwlwlwwlw', '8–7', '10–5'], ['wlwwwlwwlnnnn', '6–3', '8–2']];
+  document.getElementById('weeks').innerHTML = pat.map(([p, r, c], i) =>
+    `<div class="weekrow"><span>Week ${i + 1}</span><div class="sqs">${[...p].map((x) => `<span class="sq ${x}"></span>`).join('')}</div><span class="r">${r}</span><span class="c">Clark ${c}</span></div>`).join('');
+  document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+  wireTabs();
 </script>
 </body></html>
