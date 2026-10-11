@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clark Report: Buccaneers at Cowboys — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  .art { max-width: 720px; margin: 0 auto; padding: 32px 20px 0; }
+  .art h1 { font-family: var(--serif); font-size: 44px; line-height: 1.06; font-weight: 700; letter-spacing: -.02em; margin-top: 8px; }
+  .art .dek { font-family: var(--serif); font-size: 21px; color: var(--ink-2); line-height: 1.4; margin-top: 12px; }
+  .by { display: flex; align-items: center; gap: 12px; margin: 22px 0 8px; padding-bottom: 18px; border-bottom: 1px solid var(--rule); }
+  .clark-av { width: 48px; height: 48px; flex: none; }
+  .by b { display: block; font-size: 15px; }
+  .by span { font-size: 13px; color: var(--ink-3); }
+  .body p { font-family: var(--serif); font-size: 19px; line-height: 1.6; margin: 18px 0; color: #1d1d1d; }
+  .body h2 { font-family: var(--serif); font-size: 27px; font-weight: 700; letter-spacing: -.01em; margin: 40px 0 4px; }
+  .body h2 + .sub { font-size: 14px; color: var(--ink-3); margin-bottom: 8px; }
+  .pickbox { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rule); border-radius: 10px; margin: 24px 0; text-align: center; }
+  .pickbox div { padding: 14px 8px; }
+  .pickbox div + div { border-left: 1px solid var(--rule); }
+  .pickbox b { display: block; font-size: 24px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .pickbox span { font-size: 12.5px; color: var(--ink-3); }
+  .pickbox .clarkc b { color: var(--brand); }
+  .vs { border: 1px solid var(--rule); border-radius: 10px; margin: 18px 0; overflow: hidden; }
+  .vs-h { display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; padding: 10px 14px; background: #FAFAF8; border-bottom: 1px solid var(--rule); font-size: 13px; font-weight: 700; }
+  .vs-h .r { text-align: right; }
+  .vs-h img { width: 22px; height: 22px; display: inline-block; vertical-align: -6px; margin: 0 6px; }
+  .vs-row { display: grid; grid-template-columns: 1fr 120px 1fr; align-items: center; padding: 10px 14px; border-top: 1px solid var(--rule); font-size: 14px; font-variant-numeric: tabular-nums; }
+  .vs-row:first-of-type { border-top: 0; }
+  .vs-row .m { text-align: center; font-size: 12.5px; color: var(--ink-3); }
+  .vs-row .r { text-align: right; }
+  .vs-row b { font-size: 15px; }
+  .vs-row small { color: var(--ink-3); margin-left: 4px; }
+  .vs-row .edge { color: var(--win); font-weight: 700; }
+  .aside-note { border-left: 3px solid var(--brand); background: #FFF8F3; padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 15px; margin: 22px 0; }
+  .aside-note b { display: block; font-size: 13px; color: var(--brand); margin-bottom: 4px; }
+  .players { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .pl { border: 1px solid var(--rule); border-radius: 10px; padding: 14px; font-size: 14px; }
+  .pl .top { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .pl .hs { width: 44px; height: 44px; border-radius: 50%; background: #E9E9E5; flex: none; }
+  .pl .top b { display: block; font-size: 15px; }
+  .pl .top span { font-size: 12.5px; color: var(--ink-3); }
+  .pl p { color: var(--ink-2); }
+  .pl .impact { margin-top: 8px; font-size: 12.5px; font-weight: 700; }
+  .watch { list-style: none; margin: 14px 0; }
+  .watch li { display: grid; grid-template-columns: 28px 1fr; gap: 8px; padding: 12px 0; border-top: 1px solid var(--rule); font-size: 15.5px; }
+  .watch li:first-child { border-top: 0; }
+  .watch .n { font-weight: 800; color: var(--brand); }
+  .meter { margin: 16px 0; }
+  .meter .bar { position: relative; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #D50A0A 0 36%, #003594 36% 100%); }
+  .meter .tick { position: absolute; top: -6px; width: 2px; height: 22px; background: var(--ink); }
+  .meter .lbls { position: relative; height: 34px; font-size: 12px; color: var(--ink-3); }
+  .meter .lbls span { position: absolute; top: 8px; transform: translateX(-50%); white-space: nowrap; }
+  table.nums { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; margin-top: 10px; }
+  table.nums th { text-align: left; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 8px 6px; border-bottom: 1px solid var(--ink); }
+  table.nums td { padding: 8px 6px; border-bottom: 1px solid var(--rule); }
+  details.drawer { border: 1px solid var(--rule); border-radius: 10px; margin: 28px 0; }
+  details.drawer summary { cursor: pointer; padding: 14px 16px; font-weight: 700; list-style: none; display: flex; justify-content: space-between; }
+  details.drawer summary::after { content: '+'; font-size: 20px; line-height: 1; }
+  details.drawer[open] summary::after { content: '−'; }
+  details.drawer > div { padding: 0 16px 16px; }
+  .signoff { display: flex; gap: 12px; align-items: center; border-top: 1px solid var(--rule); padding-top: 18px; margin-top: 32px; font-family: var(--serif); font-size: 18px; font-style: italic; color: var(--ink-2); }
+  .cta { position: sticky; bottom: 0; background: var(--paper); border-top: 1px solid var(--rule); padding: 12px 0; margin-top: 32px; }
+  .cta .in { max-width: 720px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .cta .pk { height: 40px; padding: 0 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-weight: 700; display: inline-flex; gap: 8px; align-items: center; }
+  .cta .pk img { width: 22px; height: 22px; }
+  .cta .pk:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+  @media (max-width: 767px) { .art h1 { font-size: 31px; } .body p { font-size: 17.5px; } .players { grid-template-columns: 1fr; } .vs-h, .vs-row { grid-template-columns: 1fr 86px 1fr; } .cta { bottom: 62px; } }
+</style>
+</head><body>
+<div id="masthead"></div>
+
+<article class="art">
+  <div class="kicker">The Clark Report · Week 5 · Sunday Night Football</div>
+  <h1>Everyone's on Tampa Bay. I keep landing on Dallas, and it's all about the pass rush.</h1>
+  <p class="dek">Baker Mayfield is one of the league's worst passers under pressure, and nobody brings pressure like this Cowboys defense. That one matchup outweighs everything Tampa does well.</p>
+
+  <div class="by">
+    <svg class="clark-av" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="24" fill="#E4572E"/><circle cx="24" cy="20" r="10" fill="#FFE3D3"/><path d="M12 42c2-7 7-10 12-10s10 3 12 10" fill="#FFE3D3"/><rect x="15" y="17" width="8" height="6" rx="2" fill="none" stroke="#121212" stroke-width="1.8"/><rect x="25" y="17" width="8" height="6" rx="2" fill="none" stroke="#121212" stroke-width="1.8"/><path d="M23 20h2" stroke="#121212" stroke-width="1.8"/><path d="M14 14c2-5 18-5 20 0" stroke="#121212" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+    <div><b>Clark</b><span>The Clark Index's prediction model · 41–23 this season · 8 min read</span></div>
+  </div>
+
+  <div class="pickbox">
+    <div class="clarkc"><b>DAL 64%</b><span>My pick</span></div>
+    <div><b>DAL −3</b><span>Betting line (about 61%)</span></div>
+    <div><b>TB 58%</b><span>Fans (2,941 picks)</span></div>
+  </div>
+
+  <div class="body">
+    <p>Okay, this one's fun. When I first ran this game, I had it close to a coin flip. Tampa Bay is 3–1, Baker is playing well, and the Cowboys lost to the Texans last week. I get why the fans like the Bucs.</p>
+    <p>But every time I dig into the matchups, I end up in the same place: <b>Dallas's pass rush against Baker Mayfield.</b> It's the biggest mismatch on the field, and it's big enough to swing the whole game. So I'm on Dallas, 64%.</p>
+
+    <h2>The matchup that decides it</h2>
+    <p class="sub">Dallas's pass rush vs Tampa Bay's pass protection</p>
+    <div class="vs">
+      <div class="vs-h"><span><img data-logo="DAL" alt="">Dallas defense</span><span></span><span class="r">Tampa Bay offense<img data-logo="TB" alt=""></span></div>
+      <div class="vs-row"><span><b>41%</b><small>1st</small></span><span class="m">Pressure rate</span><span class="r"><b>36%</b><small>27th allowed</small></span></div>
+      <div class="vs-row"><span><b>16</b><small>3rd</small></span><span class="m">Sacks</span><span class="r"><b>13</b><small>24th allowed</small></span></div>
+      <div class="vs-row"><span class="edge">Edge: Dallas</span><span class="m">Baker under pressure</span><span class="r"><b>48%</b><small>completions, 29th</small></span></div>
+    </div>
+    <p>Here's the number that jumped out at me: when Baker has a clean pocket, he completes 71% of his passes, which is top ten. When he's pressured, that drops to 48%, bottom five in the league. That's one of the biggest drop-offs of any starting quarterback.</p>
+    <p>And Dallas pressures quarterbacks on 41% of dropbacks, more than any team in football. Micah Parsons alone has 22 pressures in four games. Tampa Bay's line has given up the 6th-most pressure in the league, and their right tackle (Luke Goedeke) is questionable with a knee injury.</p>
+    <div class="aside-note"><b>Quick explainer</b>A "pressure" is any time the quarterback gets sacked, hit, or rushed into throwing early. It matters more than sacks alone, because hurried throws are where interceptions come from.</div>
+
+    <h2>When Dallas has the ball</h2>
+    <p class="sub">The part that makes this closer than 64% sounds</p>
+    <div class="vs">
+      <div class="vs-h"><span><img data-logo="DAL" alt="">Dallas offense</span><span></span><span class="r">Tampa Bay defense<img data-logo="TB" alt=""></span></div>
+      <div class="vs-row"><span><b>5.4</b><small>14th</small></span><span class="m">Yards per play</span><span class="r"><b>5.0</b><small>9th allowed</small></span></div>
+      <div class="vs-row"><span><b>38%</b><small>19th</small></span><span class="m">3rd-down rate</span><span class="r"><b>35%</b><small>8th allowed</small></span></div>
+      <div class="vs-row"><span><b>3.9</b><small>25th</small></span><span class="m">Yards per carry</span><span class="r"><b>4.4</b><small>20th allowed</small></span></div>
+    </div>
+    <p>I'll be honest: the Dallas offense hasn't been great. Dak Prescott is fine, CeeDee Lamb is still a problem for anyone, but they can't run the ball (25th in yards per carry) and they stall on third down. Tampa Bay's defense is solid, especially against the pass. If this game turns into a field-goal fight, that's actually okay for Dallas, because their defense travels.</p>
+
+    <h2>Players I'm watching</h2>
+    <div class="players">
+      <div class="pl"><div class="top"><span class="hs"></span><div><b>Micah Parsons</b><span>EDGE · DAL · Healthy</span></div></div><p>22 pressures, 4.5 sacks. Lines up against Goedeke's backup if Goedeke sits.</p><div class="impact" style="color:var(--win)">The whole case for Dallas</div></div>
+      <div class="pl"><div class="top"><span class="hs"></span><div><b>Luke Goedeke</b><span>RT · TB · Questionable (knee)</span></div></div><p>If he plays, I'd drop Dallas to about 61%. If he's out, I'd go up to 67%.</p><div class="impact" style="color:var(--loss)">Moves my number ±3</div></div>
+      <div class="pl"><div class="top"><span class="hs"></span><div><b>Baker Mayfield</b><span>QB · TB · Healthy</span></div></div><p>Clean pocket: 71% completions. Under pressure: 48%. Which Baker shows up decides this.</p></div>
+      <div class="pl"><div class="top"><span class="hs"></span><div><b>CeeDee Lamb</b><span>WR · DAL · Healthy</span></div></div><p>Gets a third of Dallas's targets. Tampa's best corner, Jamel Dean, is listed as limited in practice.</p></div>
+    </div>
+
+    <h2>How Tampa Bay wins this</h2>
+    <p>I'm at 64%, not 85%, and here's why. Tampa has a real path:</p>
+    <ul class="watch">
+      <li><span class="n">1</span><span><b>Get the ball out fast.</b> If Baker throws quick (2.5 seconds or less), the pass rush never gets there. Tampa did this against Detroit in Week 2 and won by 10.</span></li>
+      <li><span class="n">2</span><span><b>Run Bucky Irving early.</b> Dallas is 20th against the run. A few early carries slow the rush down.</span></li>
+      <li><span class="n">3</span><span><b>Win the turnover battle.</b> Dallas has 7 giveaways in 4 games. Two short fields for Tampa and my whole case falls apart.</span></li>
+    </ul>
+
+    <h2>What would change my mind</h2>
+    <p>Check back during the game. I'll be tracking these live on the game page:</p>
+    <ul class="watch">
+      <li><span class="n">→</span><span>If <b>Dallas has fewer than 2 sacks at halftime</b>, the pass-rush edge isn't showing up, and I'd make Tampa the favorite.</span></li>
+      <li><span class="n">→</span><span>If <b>Goedeke is ruled out</b> before kickoff, I'm moving to 67%.</span></li>
+      <li><span class="n">→</span><span>If <b>Tampa runs for 100+ yards in the first half</b>, they're winning the plan, not just the game.</span></li>
+    </ul>
+
+    <h2>What 64% actually means</h2>
+    <div class="meter"><div class="bar"><span class="tick" style="left:36%"></span></div><div class="lbls"><span style="left:18%">TB wins 36 of 100</span><span style="left:68%">DAL wins 64 of 100</span></div></div>
+    <p>If this game were played 100 times, I think Dallas wins about 64 of them. That means Tampa wins 36, which is a lot. This season, when I've been between 60% and 70% on a team, I've been right 13 of 20 times. Pretty close to what I'd expect.</p>
+
+    <h2>The other stuff</h2>
+    <p><b>Conditions:</b> Indoors at AT&amp;T Stadium, roof closed, so weather isn't a factor. <b>Rest:</b> both teams had a normal week. <b>Home field:</b> worth about 2 points to Dallas in my model, smaller than usual. Dallas is only 6–6 at home over the last two seasons. <b>History:</b> these two have split their last 4 meetings.</p>
+    <p><b>Why I'm higher on Dallas than the betting line:</b> the line has Dallas by 3, about 61%. I'm at 64%. The extra 3 points is almost entirely Goedeke's injury, which I think the line hasn't fully priced in yet.</p>
+
+    <details class="drawer"><summary>Show all the numbers</summary><div>
+      <table class="nums"><thead><tr><th>Stat (last 4 games)</th><th>TB</th><th>DAL</th></tr></thead><tbody>
+        <tr><td>Offense: EPA per play</td><td>+0.08 (9th)</td><td>+0.02 (16th)</td></tr>
+        <tr><td>Defense: EPA per play allowed</td><td>−0.03 (11th)</td><td>−0.09 (4th)</td></tr>
+        <tr><td>Success rate</td><td>46% (11th)</td><td>44% (17th)</td></tr>
+        <tr><td>Points per game</td><td>25.5</td><td>21.3</td></tr>
+        <tr><td>Points allowed per game</td><td>20.8</td><td>19.5</td></tr>
+        <tr><td>Turnover margin</td><td>+2</td><td>−3</td></tr>
+        <tr><td>Rest days</td><td>7</td><td>7</td></tr>
+      </tbody></table>
+      <p class="muted" style="font-size:13px;margin-top:10px">EPA (expected points added) measures how much each play changes a team's chance to score. Higher is better on offense, lower is better on defense.</p>
+    </div></details>
+
+    <div class="signoff"><svg class="clark-av" viewBox="0 0 48 48" aria-hidden="true" style="width:36px;height:36px"><circle cx="24" cy="24" r="24" fill="#E4572E"/><circle cx="24" cy="20" r="10" fill="#FFE3D3"/><path d="M12 42c2-7 7-10 12-10s10 3 12 10" fill="#FFE3D3"/><rect x="15" y="17" width="8" height="6" rx="2" fill="none" stroke="#121212" stroke-width="1.8"/><rect x="25" y="17" width="8" height="6" rx="2" fill="none" stroke="#121212" stroke-width="1.8"/><path d="M23 20h2" stroke="#121212" stroke-width="1.8"/><path d="M14 14c2-5 18-5 20 0" stroke="#121212" stroke-width="3" fill="none" stroke-linecap="round"/></svg>
+      Not a lock! If Tampa keeps Baker clean, I'm wrong, and you'll hear about it in the recap. — Clark</div>
+  </div>
+</article>
+
+<div class="cta"><div class="in"><b>Your pick</b><button class="pk"><img data-logo="TB" alt="">Buccaneers</button><button class="pk"><img data-logo="DAL" alt="">Cowboys</button><span class="muted" style="font-size:13px">Locks at 8:20 PM · <a href="game.html?g=TB-DAL" style="text-decoration:underline">Open game page</a></span></div></div>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('games', true); renderFooter();
+  document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+</script>
+</body></html>
