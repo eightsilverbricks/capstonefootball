@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seattle Seahawks — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  .thead { background: #002244; color: #fff; }
+  .thead .wrap { display: flex; align-items: center; gap: 20px; padding: 28px 20px; }
+  .thead img { width: 96px; height: 96px; }
+  .thead h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; line-height: 1; }
+  .thead p { opacity: .85; margin-top: 6px; }
+  .ttabs { background: #002244; border-top: 1px solid rgba(255,255,255,.15); }
+  .ttabs .wrap { display: flex; gap: 4px; }
+  .ttabs button { height: 44px; padding: 0 12px; color: rgba(255,255,255,.7); font-weight: 600; font-size: 14px; position: relative; }
+  .ttabs button.on { color: #fff; }
+  .ttabs button.on::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: 0; height: 3px; background: #69BE28; }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; margin-top: 28px; }
+  section { margin-bottom: 32px; }
+  .field { position: relative; aspect-ratio: 16 / 9; background: #2E7D32; border-radius: 8px; overflow: hidden; background-image: repeating-linear-gradient(90deg, transparent 0 9.5%, rgba(255,255,255,.25) 9.5% 10%); }
+  .los { position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: rgba(255,255,255,.8); }
+  .pos { position: absolute; transform: translate(-50%, -50%); text-align: center; color: #fff; font-size: 11.5px; font-weight: 600; text-shadow: 0 1px 2px rgba(0,0,0,.5); cursor: pointer; }
+  .pos span { display: grid; place-items: center; width: 34px; height: 34px; margin: 0 auto 3px; border-radius: 50%; background: #002244; border: 2px solid #69BE28; font-size: 11px; }
+  .pos:hover span { background: #69BE28; color: #002244; }
+  .toggle { display: inline-flex; background: var(--chip); border-radius: 999px; padding: 3px; margin-bottom: 12px; }
+  .toggle button { height: 30px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .toggle button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .pcard { display: flex; gap: 12px; border: 1px solid var(--rule); border-radius: 8px; padding: 14px; margin-top: 12px; }
+  .pcard .hs { width: 56px; height: 56px; border-radius: 50%; background: #E9E9E5; flex: none; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  td { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  td img { width: 20px; height: 20px; display: inline-block; vertical-align: -5px; margin-right: 6px; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } .thead img { width: 64px; height: 64px; } .thead h1 { font-size: 28px; } .pos { font-size: 10px; } .pos span { width: 26px; height: 26px; font-size: 9.5px; } }
+</style>
+</head><body>
+<div id="masthead"></div>
+<div class="thead"><div class="wrap"><img data-logo="SEA" alt=""><div><h1>Seattle Seahawks</h1><p>3–1 · 2nd in NFC West · Clark power ranking: 7th</p></div></div></div>
+<nav class="ttabs"><div class="wrap"><button class="on">Overview</button><button>Roster</button><button>Schedule</button><button>Injuries</button></div></nav>
+<main class="wrap two">
+  <div>
+    <section><h2 class="h-sec">Roster</h2>
+      <div class="toggle"><button class="on">Offense</button><button>Defense</button></div>
+      <div class="field" id="field"><div class="los"></div></div>
+      <div class="pcard"><span class="hs"></span><div><b>Jaxon Smith-Njigba</b> · WR · #11<br><span class="muted" style="font-size:14px">Wide receivers line up outside and run routes to catch passes. They're the main deep threat.</span><br><span class="chip win" style="margin-top:8px">Top 5 WR this season</span> <span class="chip">Healthy</span> <a href="#" style="font-weight:600;font-size:13px;margin-left:6px">Player page ›</a></div></div>
+    </section>
+    <section class="gate"><h2 class="h-sec">Clark's outlook</h2>
+      <div class="blur"><p style="font-family:var(--serif);font-size:18px">Seattle's offense has climbed from 19th to 6th in yards per play since week 1, and Clark now has them favored in 9 of their remaining 13 games.</p></div>
+      <div class="gate-cta" style="top:40px"><a class="btn btn-ink" href="landing.html#signup">Create a free account to see the full report</a></div></section>
+  </div>
+  <aside>
+    <section><h2 class="h-sec">Schedule</h2><table><tbody>
+      <tr><td>Wk 1</td><td><img data-logo="DEN" alt="">vs DEN</td><td style="text-align:right"><span class="chip win">W 26–20</span></td></tr>
+      <tr><td>Wk 2</td><td><img data-logo="LA" alt="">at LA</td><td style="text-align:right"><span class="chip loss">L 17–24</span></td></tr>
+      <tr><td>Wk 3</td><td><img data-logo="ARI" alt="">vs ARI</td><td style="text-align:right"><span class="chip win">W 23–20</span></td></tr>
+      <tr><td>Wk 4</td><td><img data-logo="NO" alt="">at NO</td><td style="text-align:right"><span class="chip win">W 31–14</span></td></tr>
+      <tr><td>Wk 5</td><td><img data-logo="SF" alt="">vs SF</td><td style="text-align:right"><span class="chip live">Q3 17–13</span></td></tr>
+      <tr><td>Wk 6</td><td><img data-logo="CHI" alt="">at CHI</td><td style="text-align:right" class="muted">Sun 1:00 PM</td></tr></tbody></table></section>
+    <section><h2 class="h-sec">Injuries</h2><table><tbody>
+      <tr><td><b>Sam Darnold</b> QB</td><td style="text-align:right"><span class="chip">Questionable</span></td></tr>
+      <tr><td><b>Abe Lucas</b> RT</td><td style="text-align:right"><span class="chip loss">Out</span></td></tr></tbody></table></section>
+  </aside>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('teams', true); renderFooter();
+  const O = [['QB', 50, 66, 'Darnold'], ['RB', 50, 82, 'Walker'], ['WR', 8, 50, 'Smith-Njigba'], ['WR', 92, 50, 'Lockett'], ['WR', 78, 56, 'Kupp'], ['TE', 66, 52, 'Barner'],
+    ['LT', 34, 52, 'Cross'], ['LG', 42, 52, 'Zabel'], ['C', 50, 52, 'Sundell'], ['RG', 58, 52, 'Bradford'], ['RT', 66, 60, 'Fant']];
+  document.getElementById('field').insertAdjacentHTML('beforeend', O.map(([p, x, y, n]) => `<div class="pos" style="left:${x}%;top:${y}%"><span>${p}</span>${n}</div>`).join(''));
+  document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+</script>
+</body></html>

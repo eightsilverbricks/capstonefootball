@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  .front { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 32px; padding-top: 28px; }
+  .col-l > *, .col-r > section { margin-bottom: 28px; }
+  .lead-art { aspect-ratio: 16 / 9; border-radius: 4px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 40px; background: linear-gradient(105deg, #D50A0A 0 50%, #003594 50% 100%); }
+  .lead-art img { width: 130px; height: 130px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.4)); }
+  .lead-art .vs { color: #fff; font-family: var(--serif); font-size: 28px; font-weight: 600; }
+  .lead h1 { font-family: var(--serif); font-size: 38px; line-height: 1.08; font-weight: 700; letter-spacing: -.02em; margin-top: 14px; }
+  .lead .dek { font-family: var(--serif); font-size: 19px; line-height: 1.45; color: var(--ink-2); margin-top: 10px; }
+  .byline { font-size: 13px; color: var(--ink-3); margin-top: 10px; }
+  .lead-pick { display: flex; gap: 10px; align-items: center; margin-top: 16px; padding: 14px; border: 1px solid var(--rule); border-radius: 8px; flex-wrap: wrap; }
+  .lead-pick .pk { height: 40px; padding: 0 14px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-weight: 700; display: inline-flex; gap: 8px; align-items: center; }
+  .lead-pick .pk img { width: 22px; height: 22px; }
+  .lead-pick .pk:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+  .item { padding: 14px 0; border-bottom: 1px solid var(--rule); display: block; }
+  .item h3 { font-family: var(--serif); font-size: 18px; line-height: 1.25; font-weight: 600; margin-top: 3px; }
+  .item p { font-size: 14px; color: var(--ink-3); margin-top: 4px; }
+  .item .kicker { font-size: 11.5px; }
+  .item:hover h3 { text-decoration: underline; text-underline-offset: 3px; }
+  .bigplay { display: grid; grid-template-columns: 34px 1fr; gap: 10px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .bigplay img { width: 30px; height: 30px; }
+  .bigplay b { font-size: 14.5px; }
+  .bigplay p { font-size: 13.5px; color: var(--ink-2); margin-top: 2px; }
+  .bigplay .m { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .live-strip { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 14px; scrollbar-width: none; }
+  .ls { flex: none; width: 210px; border: 1px solid var(--rule); border-radius: 8px; padding: 10px 12px; font-size: 13.5px; }
+  .ls .r { display: flex; align-items: center; gap: 8px; height: 26px; }
+  .ls .r img { width: 20px; height: 20px; }
+  .ls .r b { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 16px; }
+  .ls .st { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; color: var(--live); margin-bottom: 4px; }
+  .ls .st span { color: var(--ink-3); font-weight: 600; }
+  .vs3 { display: grid; grid-template-columns: repeat(3, 1fr); text-align: center; border: 1px solid var(--rule); border-radius: 8px; margin-top: 12px; }
+  .vs3 div { padding: 12px 4px; }
+  .vs3 div + div { border-left: 1px solid var(--rule); }
+  .vs3 b { display: block; font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .vs3 span { font-size: 12px; color: var(--ink-3); }
+  .rank { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
+  .rank .n { width: 20px; font-weight: 700; color: var(--ink-3); }
+  .rank img { width: 22px; height: 22px; }
+  .rank .p { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .rank.me { background: #FFF6EF; margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
+  .switch { display: inline-flex; background: var(--chip); border-radius: 999px; padding: 3px; margin-top: 18px; }
+  .switch button { height: 30px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
+  .switch button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  @media (max-width: 1100px) { .front { grid-template-columns: minmax(0, 1fr) 280px; } .col-l { grid-column: 1 / -1; order: 3; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; } }
+  @media (max-width: 767px) { .front { grid-template-columns: 1fr; gap: 0; } .col-l { grid-template-columns: 1fr; gap: 0; } .lead h1 { font-size: 28px; } .lead-art img { width: 80px; height: 80px; } }
+</style>
+</head><body>
+<div id="masthead"></div>
+<div class="wrap"><div class="switch" data-tabs="mode"><button data-tab="gameday" class="on">Game day (Sunday)</button><button data-tab="week">During the week</button></div>
+  <span class="muted" style="font-size:12px;margin-left:8px">Mockup toggle: the home page changes with the day</span></div>
+<main class="wrap front">
+  <!-- Left: what's happening now -->
+  <div class="col-l">
+    <section data-panel-group="mode" data-panel="gameday">
+      <h2 class="h-sec">Live now <a href="games.html">All games</a></h2>
+      <div class="live-strip" id="live" style="flex-direction:column"></div>
+      <h2 class="h-sec" style="margin-top:6px">Big plays</h2>
+      <div class="bigplay"><img data-logo="SEA" alt=""><div><b>Walker 12-yd TD run</b><p>Seattle retakes the lead, 17–13. Your SF pick is now losing.</p><div class="m">SF @ SEA · Q3 2:05 · 🔥 212 · 💬 88</div></div></div>
+      <div class="bigplay"><img data-logo="DET" alt=""><div><b>Gibbs 41-yd catch and run</b><p>Detroit up 21–10; Lions now 89% to win.</p><div class="m">DET @ ARI · Q3 7:40 · 🔥 140</div></div></div>
+      <div class="bigplay"><img data-logo="DEN" alt=""><div><b>Strip sack, Denver ball</b><p>4th quarter coming with Denver down 3 and the ball at midfield.</p><div class="m">DEN @ LAC · Q3 4:12 · 😭 77</div></div></div>
+    </section>
+    <section data-panel-group="mode" data-panel="week" hidden>
+      <h2 class="h-sec">Injuries</h2>
+      <a class="item" href="#"><div class="kicker">BUF · Questionable</div><h3>Josh Allen (ankle)</h3><p>Moved Bills @ Rams 4 points toward Los Angeles.</p></a>
+      <a class="item" href="#"><div class="kicker">SEA · Questionable</div><h3>Sam Darnold (wrist)</h3><p>No change to Clark's number yet.</p></a>
+    </section>
+    <section><h2 class="h-sec">Busiest chats</h2>
+      <a class="item" href="game.html?g=SF-SEA"><h3 style="font-family:var(--sans);font-size:15px">SF @ SEA</h3><p>7.1k chatting · Q3 2:05</p></a>
+      <a class="item" href="game.html?g=TB-DAL"><h3 style="font-family:var(--sans);font-size:15px">TB @ DAL</h3><p>3.4k chatting · kicks off 8:20 PM</p></a>
+    </section>
+  </div>
+
+  <!-- Center: the Clark Report -->
+  <article class="lead">
+    <a href="game.html?g=TB-DAL"><div class="lead-art"><img data-logo="TB" alt=""><span class="vs">at</span><img data-logo="DAL" alt=""></div></a>
+    <div class="kicker" style="margin-top:14px">The Clark Report · Sunday Night Football</div>
+    <a href="game.html?g=TB-DAL"><h1>Fans are on Tampa Bay. Clark has Dallas at 64%, and the reason is the Cowboys' pass rush.</h1></a>
+    <p class="dek">Dallas leads the league in pressure rate, and Baker Mayfield's numbers fall off a cliff under pressure. That gap is bigger than anything Tampa Bay has going for it.</p>
+    <div class="byline">Clark's biggest disagreement with the fans this week · 8:20 PM on NBC</div>
+    <div class="lead-pick"><span style="font-weight:600">Your pick</span><button class="pk"><img data-logo="TB" alt="">Buccaneers</button><button class="pk"><img data-logo="DAL" alt="">Cowboys</button><span class="muted" style="font-size:13px">Locks at 8:20 PM</span></div>
+    <h2 class="h-sec" style="margin-top:32px">More from this week</h2>
+    <a class="item" href="game.html?g=BUF-LA"><div class="kicker">Monday Night Football</div><h3>Clark goes against the Bills in Los Angeles. Allen's ankle is most of the reason.</h3><p>Clark: Rams 60% · Betting line: Rams by 1.5</p></a>
+    <a class="item" href="game.html?g=DET-ARI"><div class="kicker">Clark vs the line</div><h3>The 3 games where Clark and the betting line disagree most, and how Clark does in games like these</h3><p>Clark is 14–9 when it goes against the line this season.</p></a>
+    <a class="item" href="game.html?g=CLE-NYJ"><div class="kicker">Recap</div><h3>Cleveland 16, New York 13: what Clark got wrong about the Jets' offense</h3><p>Clark had NYJ 53%. Report card: 1 of 3 factors held up.</p></a>
+  </article>
+
+  <!-- Right: you -->
+  <div class="col-r">
+    <section><h2 class="h-sec">Your week</h2>
+      <div class="stat" style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Picked</span><b>13 of 15</b></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Next lock</span><b>8:20 PM</b></div>
+      <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Streak</span><b>6 weeks</b></div>
+      <div class="vs3"><div><b>38–26</b><span>You</span></div><div><b>41–23</b><span>Clark</span></div><div><b>36–28</b><span>Fans</span></div></div>
+      <p class="muted" style="font-size:13px;margin-top:8px">You're 2–7 on AFC West games.</p></section>
+    <section><h2 class="h-sec">Fanbases this week <a href="leaderboard.html">All 32</a></h2>
+      <div class="rank"><span class="n">1</span><img data-logo="DET" alt="">Lions fans<span class="p">71%</span></div>
+      <div class="rank"><span class="n">2</span><img data-logo="PHI" alt="">Eagles fans<span class="p">69%</span></div>
+      <div class="rank me"><span class="n">3</span><img data-logo="BUF" alt="">Bills fans<span class="p">67%</span></div>
+      <div class="rank"><span class="n">4</span><img data-logo="KC" alt="">Chiefs fans<span class="p">66%</span></div></section>
+    <section><h2 class="h-sec">Top comments</h2>
+      <a class="item" href="game.html?g=SF-SEA"><p style="color:var(--ink);font-size:14.5px;margin:0">"Clark always overrates home field in the division games."</p><p>@ninerfaithful · SF · 70% · ▲ 128</p></a>
+      <a class="item" href="game.html?g=TB-DAL"><p style="color:var(--ink);font-size:14.5px;margin:0">"The pass-rush stat is the whole game. Bucs line is cooked."</p><p>@americasteam · DAL · 85% · ▲ 97</p></a></section>
+  </div>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('home', true); renderFooter();
+  document.getElementById('live').innerHTML = GAMES.filter((g) => g.st === 'live').map((g) => {
+    const mine = g.you ? (winnerOf(g) === g.you[0] ? '<span style="color:var(--win)">Your pick ✓</span>' : '<span style="color:var(--loss)">Your pick ✗</span>') : '';
+    return `<a class="ls" href="${gameUrl(g)}" style="width:auto"><div class="st">${g.clock}${mine}</div>
+      <div class="r"><img src="${logo(g.a)}" alt="">${name(g.a)}<b>${g.as}</b></div><div class="r"><img src="${logo(g.h)}" alt="">${name(g.h)}<b>${g.hs}</b></div></a>`;
+  }).join('');
+  document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+  wireTabs();
+</script>
+</body></html>

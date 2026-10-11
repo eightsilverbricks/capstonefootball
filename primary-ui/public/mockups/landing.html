@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Landing — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  .hero { display: grid; grid-template-columns: minmax(0, 1fr) 460px; gap: 56px; align-items: center; padding: 56px 0 48px; border-bottom: 1px solid var(--rule); }
+  .hero h1 { font-family: var(--serif); font-size: 56px; line-height: 1.02; font-weight: 700; letter-spacing: -.025em; }
+  .hero p { font-family: var(--serif); font-size: 21px; color: var(--ink-2); margin-top: 16px; max-width: 34ch; line-height: 1.4; }
+  .hero .ctas { display: flex; gap: 10px; margin-top: 24px; flex-wrap: wrap; }
+  .hero .ctas .btn { height: 46px; padding: 0 22px; font-size: 15px; }
+  .report { border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; box-shadow: 0 12px 32px rgba(0,0,0,.08); }
+  .report .rh { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; color: #fff; background: linear-gradient(90deg, #AA0000 50%, #002244 50%); }
+  .report .rh .t { display: flex; align-items: center; gap: 8px; font-weight: 700; }
+  .report .rh img { width: 34px; height: 34px; }
+  .report .rb { padding: 16px; }
+  .report .call { font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.2; }
+  .report .f { padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px; margin-top: 10px; }
+  .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; padding: 40px 0; border-bottom: 1px solid var(--rule); }
+  .three .n { font-family: var(--serif); font-size: 40px; font-weight: 700; color: var(--brand); line-height: 1; }
+  .three h3 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin-top: 8px; }
+  .three p { color: var(--ink-2); margin-top: 6px; }
+  .record { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; border: 1px solid var(--rule); border-radius: 10px; margin: 40px 0; }
+  .record div { padding: 20px; }
+  .record div + div { border-left: 1px solid var(--rule); }
+  .record b { display: block; font-size: 32px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .record span { color: var(--ink-3); font-size: 14px; }
+  .founders { display: flex; gap: 20px; align-items: center; padding: 32px 0; border-top: 1px solid var(--rule); flex-wrap: wrap; }
+  .founders img { width: 220px; border-radius: 8px; }
+  @media (max-width: 900px) { .hero { grid-template-columns: 1fr; gap: 32px; padding-top: 32px; } .hero h1 { font-size: 40px; } .three { grid-template-columns: 1fr; } .record { grid-template-columns: 1fr 1fr; } .record div:nth-child(3) { border-left: 0; } .record div:nth-child(n+3) { border-top: 1px solid var(--rule); } }
+</style>
+</head><body>
+<div id="masthead"></div>
+<main class="wrap">
+  <section class="hero">
+    <div>
+      <div class="kicker">Free · No betting</div>
+      <h1>Every NFL game, explained in plain English. Then pick against Clark.</h1>
+      <p>Clark is our prediction model. For every game it tells you who it picks, why, and how the other team could win.</p>
+      <div class="ctas"><a href="#signup" class="btn btn-ink">Create free account</a><a href="games.html" class="btn btn-line">See this week's games</a></div>
+    </div>
+    <div class="report">
+      <div class="rh"><span class="t"><img data-logo="SF" alt="">49ers</span><span style="font-size:13px;font-weight:700">Today 4:25 PM</span><span class="t">Seahawks<img data-logo="SEA" alt=""></span></div>
+      <div class="rb">
+        <div class="kicker">The Clark Report</div>
+        <p class="call" style="margin-top:4px">Clark picks Seattle, 63%. Home field and a hotter offense outweigh San Francisco's defense.</p>
+        <div class="f"><b>Seattle is at home.</b> Worth about 6.5 points of win chance on its own.</div>
+        <div class="gate"><div class="blur">
+          <div class="f"><b>Seattle's offense has been better lately.</b> 5.8 yards per play over the last three games.</div>
+          <div class="f"><b>What favors the 49ers:</b> a top-five pass rush against a line that has allowed the 8th most sacks.</div>
+          <div class="f"><b>Key players:</b> Darnold (questionable), Bosa, Walker.</div></div>
+          <div class="gate-cta"><a href="#signup" class="btn btn-ink">Create a free account to see the full report</a></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="three">
+    <div><div class="n">1</div><h3>Read the Clark Report</h3><p>Who Clark picks, the reasons in plain English, key players and injuries, and how the underdog wins.</p></div>
+    <div><div class="n">2</div><h3>Make your pick</h3><p>Pick a winner and set your confidence. Picks lock at kickoff.</p></div>
+    <div><div class="n">3</div><h3>Watch it live</h3><p>Play-by-play, a live check on Clark's reasons, and a chat with every fan in the game.</p></div>
+  </section>
+
+  <section class="record">
+    <div><b>41–23</b><span>Clark this season</span></div>
+    <div><b>64%</b><span>Correct picks</span></div>
+    <div><b>14–9</b><span>When Clark goes against the betting line</span></div>
+    <div><b>12,480</b><span>Fans picking this week</span></div>
+  </section>
+
+  <section class="founders"><img src="/founders/group.jpg" alt="Illustration of the three founders" onerror="this.style.display='none'">
+    <div><h2 class="serif" style="font-size:26px">Built by three fans</h2><p class="muted" style="margin-top:6px">Takuo Yamamoto (Seahawks), Nicholas Chan (Giants), Zane Wolf (Bills).</p><a href="#" style="font-weight:600;display:inline-block;margin-top:10px">About us ›</a></div></section>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('home', false); renderFooter();
+  document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+</script>
+</body></html>

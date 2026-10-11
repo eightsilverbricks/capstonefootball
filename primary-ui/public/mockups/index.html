@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Clark Index mockups</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; padding: 32px 0 8px; }
+  .pages { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 24px; }
+  .pages a { border: 1px solid var(--rule); border-radius: 10px; padding: 18px; }
+  .pages a:hover { border-color: var(--ink); }
+  .pages b { font-family: var(--serif); font-size: 22px; display: block; }
+  .pages span { color: var(--ink-3); font-size: 14px; }
+</style>
+</head><body>
+<div id="masthead"></div>
+<main class="wrap">
+  <h1>Redesign mockups</h1>
+  <p class="muted">The Athletic's masthead and score ticker (top of every page) + editorial type; Sleeper-style game page (tabs, live plays, chat beside the game). Matchups and Clark's % are this week's real numbers; scores, players and comments are made up.</p>
+  <div class="pages">
+    <a href="landing.html"><b>Landing</b><span>Signed out. Short pitch with a real report preview.</span></a>
+    <a href="home.html"><b>Home</b><span>Signed in. Front page with the Clark Report in the center. Toggle game day / weekday.</span></a>
+    <a href="games.html"><b>Games</b><span>Scoreboard rows by day, pick inside the row.</span></a>
+    <a href="game.html?g=SF-SEA"><b>Game: live</b><span>Sleeper-style: scorebug, tabs, plays, chat column.</span></a>
+    <a href="game.html?g=TB-DAL"><b>Game: before kickoff</b><span>Open the Preview tab for the Clark Report.</span></a>
+    <a href="my-season.html"><b>My season</b><span>Record, chart vs Clark and fans, splits, pick grid.</span></a>
+    <a href="leaderboard.html"><b>Leaderboard</b><span>Week, season, fanbases, beat Clark.</span></a>
+    <a href="team.html"><b>Team</b><span>Team colors, roster on a field, schedule, injuries.</span></a>
+  </div>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>renderMasthead('', true); renderFooter();</script>
+</body></html>

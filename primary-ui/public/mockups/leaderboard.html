@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  h1 { font-family: var(--serif); font-size: 40px; font-weight: 700; letter-spacing: -.02em; padding: 28px 0 14px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule); }
+  .tabs button { height: 44px; padding: 0 12px; font-weight: 600; font-size: 14px; color: var(--ink-3); position: relative; }
+  .tabs button.on { color: var(--ink); }
+  .tabs button.on::after { content: ''; position: absolute; left: 8px; right: 8px; bottom: -1px; height: 3px; background: var(--ink); }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 8px 6px; border-bottom: 2px solid var(--ink); }
+  td { padding: 11px 6px; border-bottom: 1px solid var(--rule); }
+  td.r, th.r { text-align: right; }
+  td .u { display: flex; align-items: center; gap: 10px; font-weight: 600; }
+  td .u img { width: 22px; height: 22px; }
+  td .u small { font-weight: 500; color: var(--ink-3); }
+  tr.me td { background: #FFF6EF; }
+  .gap td { text-align: center; color: var(--ink-3); font-size: 18px; padding: 2px; }
+  .card { border: 1px solid var(--rule); border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+  .card b.big { font-size: 30px; display: block; font-weight: 800; }
+  @media (max-width: 900px) { .two { grid-template-columns: 1fr; } .hide-sm { display: none; } h1 { font-size: 30px; } }
+</style>
+</head><body>
+<div id="masthead"></div>
+<main class="wrap">
+  <h1>Leaderboard</h1>
+  <div class="tabs" data-tabs="lb"><button class="on">This week</button><button>Season</button><button>Fanbases</button><button>Beat Clark</button></div>
+  <div class="two">
+    <table><thead><tr><th style="width:44px">#</th><th>Fan</th><th class="r">Record</th><th class="r hide-sm">vs Clark</th><th class="r">Points</th></tr></thead><tbody id="rows"></tbody></table>
+    <aside>
+      <div class="card"><span class="muted">Your rank this week</span><b class="big">1,204th</b><span class="muted">of 12,480 · up 310 since Thursday</span></div>
+      <div class="card"><span class="muted">Clark this week</span><b class="big">8–2</b><span class="muted">2,941 fans are ahead of Clark</span></div>
+    </aside>
+  </div>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('leaderboard', true); renderFooter();
+  const fans = [['gridiron_greg', 'DET', '10–0', '+2', 168], ['sundaysarah', 'PHI', '10–0', '+2', 161], ['bolt_up', 'LAC', '9–1', '+1', 152], ['ninerfaithful', 'SF', '9–1', '+1', 149], ['dawgpound', 'CLE', '9–1', '+1', 147], ['12thman_kate', 'SEA', '9–1', '+1', 141], ['purplepride', 'MIN', '9–1', '+1', 138], ['bmore_birds', 'BAL', '9–1', '+1', 136], ['jetsjetsjets', 'NYJ', '8–2', '0', 131], ['who_dey', 'CIN', '8–2', '0', 129]];
+  document.getElementById('rows').innerHTML = fans.map((f, i) => `<tr><td>${i + 1}</td><td><span class="u"><img src="${logo(f[1])}" alt="">${f[0]}<small>${name(f[1])}</small></span></td><td class="r">${f[2]}</td><td class="r hide-sm">${f[3]}</td><td class="r"><b>${f[4]}</b></td></tr>`).join('')
+    + `<tr class="gap"><td colspan="5">⋯</td></tr><tr class="me"><td>1,204</td><td><span class="u"><img src="${logo('BUF')}" alt="">zane<small>You</small></span></td><td class="r">6–3</td><td class="r hide-sm">−2</td><td class="r"><b>74</b></td></tr>`;
+</script>
+</body></html>

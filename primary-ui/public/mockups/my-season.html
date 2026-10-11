@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My season — Clark Index mockup</title>
+<link rel="stylesheet" href="mock.css">
+<style>
+  .head { display: flex; align-items: center; gap: 18px; padding: 32px 0 24px; border-bottom: 1px solid var(--rule); flex-wrap: wrap; }
+  .head .avatar { width: 64px; height: 64px; font-size: 22px; }
+  .head h1 { font-family: var(--serif); font-size: 34px; font-weight: 700; }
+  .kpis { display: grid; grid-template-columns: repeat(5, 1fr); border-bottom: 1px solid var(--rule); }
+  .kpis div { padding: 18px 0; }
+  .kpis b { display: block; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .kpis span { font-size: 13px; color: var(--ink-3); }
+  .two { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 32px; margin-top: 28px; }
+  section { margin-bottom: 32px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; font-variant-numeric: tabular-nums; }
+  th { text-align: left; font-size: 12px; color: var(--ink-3); font-weight: 600; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+  td { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  td img { width: 20px; height: 20px; display: inline-block; vertical-align: -5px; margin-right: 8px; }
+  .gridw { display: grid; grid-template-columns: 70px repeat(16, 1fr); gap: 4px; font-size: 12px; align-items: center; }
+  .sq { aspect-ratio: 1; border-radius: 3px; }
+  .sq.w { background: var(--win); } .sq.l { background: var(--loss); } .sq.n { background: var(--rule); }
+  .pick-card { border: 1px solid var(--rule); border-radius: 8px; padding: 14px; margin-bottom: 12px; }
+  .pick-card .k { font-size: 12px; font-weight: 700; }
+  .pick-card h3 { font-family: var(--serif); font-size: 18px; font-weight: 600; margin: 4px 0 8px; }
+  @media (max-width: 900px) { .kpis { grid-template-columns: repeat(3, 1fr); } .two { grid-template-columns: 1fr; } .gridw { grid-template-columns: 52px repeat(16, 1fr); gap: 2px; } }
+</style>
+</head><body>
+<div id="masthead"></div>
+<main class="wrap">
+  <div class="head"><span class="avatar">ZW</span><div><h1>Zane Wolf</h1><span class="muted">@zane · Bills fan · Joined August 2026</span></div>
+    <a href="#" class="btn btn-line btn-sm" style="margin-left:auto">Share my season</a></div>
+  <div class="kpis"><div><b>38–26</b><span>Record</span></div><div><b>412</b><span>Points</span></div><div><b>6 weeks</b><span>Streak · 1 freeze left</span></div><div><b>1,204th</b><span>Overall</span></div><div><b>88th</b><span>Among Bills fans</span></div></div>
+  <div class="two">
+    <div>
+      <section><h2 class="h-sec">You vs Clark vs fans</h2>
+        <svg viewBox="0 0 600 200" width="100%" role="img" aria-label="Cumulative wins by week">
+          <g stroke="#E4E4E0"><line x1="40" y1="20" x2="600" y2="20"/><line x1="40" y1="100" x2="600" y2="100"/><line x1="40" y1="180" x2="600" y2="180"/></g>
+          <g font-size="11" fill="#6B6B6B"><text x="0" y="24">45</text><text x="0" y="104">22</text><text x="0" y="184">0</text><text x="40" y="198">Wk 1</text><text x="560" y="198">Wk 5</text></g>
+          <polyline fill="none" stroke="#121212" stroke-width="2.5" points="40,152 180,124 320,98 460,66 590,46"/>
+          <polyline fill="none" stroke="#E4572E" stroke-width="2.5" points="40,148 180,116 320,88 460,60 590,36"/>
+          <polyline fill="none" stroke="#9A9A9A" stroke-width="2" stroke-dasharray="4 4" points="40,156 180,128 320,104 460,74 590,56"/>
+          <g font-size="12" font-weight="700"><text x="596" y="32" text-anchor="end" fill="#E4572E">Clark 41</text><text x="596" y="50" text-anchor="end" fill="#121212">You 38</text><text x="596" y="70" text-anchor="end" fill="#6B6B6B">Fans 36</text></g>
+        </svg></section>
+      <section><h2 class="h-sec">Your picks by week</h2>
+        <div class="gridw" id="gridw"></div></section>
+      <section><h2 class="h-sec">Your record by division</h2>
+        <table><thead><tr><th>Division</th><th>Record</th><th>Clark</th><th>Note</th></tr></thead><tbody>
+          <tr><td>NFC West</td><td>9–2</td><td>7–4</td><td class="muted">Your best</td></tr>
+          <tr><td>AFC East</td><td>8–4</td><td>8–4</td><td class="muted">Your team: 3–1 picking the Bills</td></tr>
+          <tr><td>NFC North</td><td>7–5</td><td>9–3</td><td></td></tr>
+          <tr><td>AFC West</td><td>2–7</td><td>6–3</td><td class="muted">Your worst</td></tr></tbody></table></section>
+    </div>
+    <aside>
+      <section><h2 class="h-sec">Splits</h2>
+        <table><tbody><tr><td>Going against Clark</td><td style="text-align:right"><b>9–8</b></td></tr><tr><td>Confidence 80%+</td><td style="text-align:right"><b>14–3</b></td></tr><tr><td>Confidence under 60%</td><td style="text-align:right"><b>8–10</b></td></tr><tr><td>Picking the Bills</td><td style="text-align:right"><b>3–1</b></td></tr></tbody></table></section>
+      <section><h2 class="h-sec">Best picks</h2>
+        <div class="pick-card"><div class="k" style="color:var(--win)">Correct · Week 3</div><h3>Cardinals over Seahawks at 90%</h3><span class="muted" style="font-size:13px">Clark had SEA 64%. Only 18% of fans had ARI.</span><br><a href="#" class="btn btn-sm btn-line" style="margin-top:10px">Share</a></div></section>
+      <section><h2 class="h-sec">Worst picks</h2>
+        <div class="pick-card"><div class="k" style="color:var(--loss)">Wrong · Week 4</div><h3>Chargers over Rams at 85%</h3><span class="muted" style="font-size:13px">Clark had LA 58%. Lost 17–27.</span></div></section>
+    </aside>
+  </div>
+</main>
+<div id="footer"></div>
+<script src="mock.js"></script>
+<script>
+  renderMasthead('season', true); renderFooter();
+  const pat = ['wwlwwlwwwlwlwww', 'wlwwlwllwwwlwwlw', 'wwwlwwwlwwlwwwwl', 'lwwlwlwwlwlwwlnn', 'wlwwwlwwlnnnnnnn'];
+  document.getElementById('gridw').innerHTML = pat.map((p, i) => `<span>Week ${i + 1}</span>` +
+    Array.from({ length: 16 }, (_, j) => `<span class="sq ${p[j] || 'n'}"></span>`).join('')).join('');
+</script>
+</body></html>
