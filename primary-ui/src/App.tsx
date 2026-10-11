@@ -11,6 +11,7 @@ import SettingsPage from "./pages/SettingsPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import TeamsPage from "./pages/TeamsPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
+import MockupsRedirect from "./pages/MockupsRedirect";
 import NotFound from "./pages/NotFound";
 import AuthDialogHost from "./components/auth/AuthDialogHost";
 import { SeasonModeProvider } from "./context/SeasonModeContext";
@@ -40,6 +41,7 @@ const App = () => (
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       {/* Developer-only account admin — not linked from any nav, see AdminPage.tsx */}
       <Route path="/admin" element={<AdminPage />} />
+      <Route path="/mockups/*" element={<MockupsRedirect />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
     {/* One account dialog for the whole app — opened via openAuthDialog() */}
