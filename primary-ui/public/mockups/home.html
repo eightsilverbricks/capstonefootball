@@ -8,6 +8,7 @@
   .col-l > *, .col-r > section { margin-bottom: 28px; }
   .lead-art { aspect-ratio: 16 / 9; border-radius: 14px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 40px; background-size: cover; background-position: center; }
   .lead-art .clark-tag { position: absolute; left: 14px; top: 14px; }
+  .lead-art .clark-tag img { width: 20px !important; height: 20px !important; filter: none; transform: none !important; }
   .lead-art:hover img { transform: scale(1.06) rotate(-3deg); } .lead-art img { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
   .lead-art img { width: 130px; height: 130px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.4)); }
   .lead-art .vs { color: #fff; font-family: var(--serif); font-size: 28px; font-weight: 600; }
@@ -93,6 +94,7 @@
 
   <!-- Right: you -->
   <div class="col-r">
+    <section><div class="clark-card"><img src="/brand/clark-logo.jpg" alt=""><div class="q">"I'm 8–2 this week. You're 6–3. Just saying."<small>Clark · tap to see where you disagreed</small></div></div></section>
     <section><h2 class="h-sec">Your week</h2>
       <div class="stat" style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Picked</span><b>13 of 15</b></div>
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Next lock</span><b>8:20 PM</b></div>

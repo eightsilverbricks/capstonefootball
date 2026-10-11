@@ -33,7 +33,8 @@
   .you .pk { transition: transform .15s, box-shadow .15s; }
   .you .pk img { width: 18px; height: 18px; }
   .chev { color: var(--ink-3); font-size: 20px; }
-  .side h2 { font-family: var(--serif); font-size: 20px; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+  .side h2 { font-family: var(--display); font-size: 18px; font-weight: 800; padding-bottom: 8px; border-bottom: 2px solid var(--ink); display: flex; align-items: center; gap: 10px; }
+  .side h2::before { content: ''; width: 6px; height: 18px; border-radius: 3px; background: var(--clark); }
   .stat { display: flex; justify-content: space-between; padding: 11px 0; border-bottom: 1px solid var(--rule); font-size: 14px; }
   .stat b { font-variant-numeric: tabular-nums; }
   .story { padding: 14px 0; border-bottom: 1px solid var(--rule); }
@@ -53,7 +54,7 @@
 <div id="masthead"></div>
 <main class="wrap">
   <div class="top"><div><div class="kicker">2026 regular season</div><h1>Week 5</h1></div>
-    <span class="muted" style="font-size:14px">Picks lock at each kickoff.</span></div>
+    <div class="clark-card" style="max-width:520px"><img src="/brand/clark-logo.jpg" alt=""><div class="q">"My lock of the week: Patriots at home, 79%. The Raiders are 0–4 for a reason."<small>Clark · picks lock at each kickoff</small></div></div></div>
   <div class="strip"><span>Picked <b>13 of 15</b></span><span>This week <b>6–3</b></span><span>Clark <b>8–2</b></span><span>Streak <b>6 weeks</b></span></div>
   <nav class="weeks" id="weeks"></nav>
   <div class="grid">

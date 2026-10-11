@@ -290,7 +290,11 @@ function mountSlider(root, away, home, initial = 50) {
       burst(r.left + (value / 100) * r.width - cr.left, r.top + r.height / 2 - cr.top, color(t), 3 + Math.round(Math.abs(value - 50) / 10));
     }
   }
-  const up = () => { root.classList.remove('drag'); window.removeEventListener('pointermove', move); };
+  const up = () => {
+    root.classList.remove('drag'); window.removeEventListener('pointermove', move);
+    const t = side();
+    if (t) { const r = thumb.getBoundingClientRect(); lockPick(t, conf(), r.left + r.width / 2, r.top); }
+  };
   const move = (e) => setFrom(e.clientX, true);
   track.addEventListener('pointerdown', (e) => { root.classList.add('drag'); setFrom(e.clientX, true); window.addEventListener('pointermove', move); window.addEventListener('pointerup', up, { once: true }); });
   thumb.addEventListener('keydown', (e) => {
@@ -298,3 +302,61 @@ function mountSlider(root, away, home, initial = 50) {
   });
   render();
 }
+
+/* ── Celebration: confetti in team colors + toast ─────────────────────── */
+function confetti(colors, x = innerWidth / 2, y = innerHeight / 2) {
+  if (REDUCED) return;
+  let cv = document.getElementById('confetti');
+  if (!cv) { cv = document.createElement('canvas'); cv.id = 'confetti'; document.body.appendChild(cv); }
+  const c = cv.getContext('2d');
+  cv.width = innerWidth * devicePixelRatio; cv.height = innerHeight * devicePixelRatio;
+  c.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+  const bits = Array.from({ length: 90 }, () => ({
+    x, y, vx: (Math.random() - .5) * 14, vy: -Math.random() * 12 - 4, r: Math.random() * Math.PI,
+    vr: (Math.random() - .5) * .4, w: 6 + Math.random() * 6, h: 4 + Math.random() * 4, c: colors[Math.floor(Math.random() * colors.length)], life: 1,
+  }));
+  const tick = () => {
+    c.clearRect(0, 0, innerWidth, innerHeight);
+    bits.forEach((b) => { b.x += b.vx; b.y += b.vy; b.vy += .38; b.vx *= .99; b.r += b.vr; b.life -= .011;
+      c.save(); c.globalAlpha = Math.max(0, b.life); c.translate(b.x, b.y); c.rotate(b.r); c.fillStyle = b.c; c.fillRect(-b.w / 2, -b.h / 2, b.w, b.h); c.restore(); });
+    if (bits.some((b) => b.life > 0)) requestAnimationFrame(tick); else c.clearRect(0, 0, innerWidth, innerHeight);
+  };
+  requestAnimationFrame(tick);
+}
+function toast(html, img = '/brand/clark-logo.jpg') {
+  let t = document.querySelector('.toast');
+  if (!t) { t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+  t.innerHTML = `<img src="${img}" alt="">${html}`;
+  t.classList.add('show');
+  clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('show'), 2400);
+}
+function lockPick(team, pct, x, y) {
+  confetti([color(team), '#ffffff', TEAM[team] ? '#FFB612' : '#C8272D'], x, y);
+  toast(`Locked: ${name(team)}${pct ? ` · ${pct}%` : ''}. Let's see if you beat Clark 😤`, logo(team));
+}
+
+/* Reactions float up and count; quick-pick buttons lock with confetti. */
+document.addEventListener('click', (e) => {
+  const react = e.target.closest('.reacts button');
+  if (react) {
+    const emoji = react.textContent.trim().split(' ')[0];
+    const n = react.textContent.match(/\d+/);
+    if (n && !react.classList.contains('on')) react.innerHTML = `${emoji} ${Number(n[0]) + 1}`;
+    react.classList.add('on');
+    if (!REDUCED) for (let i = 0; i < 5; i++) {
+      const f = document.createElement('span'); f.className = 'float-emoji'; f.textContent = emoji;
+      f.style.left = `${e.clientX}px`; f.style.top = `${e.clientY - 10}px`;
+      f.style.setProperty('--dx', `${(Math.random() - .5) * 80}px`); f.style.setProperty('--rot', `${(Math.random() - .5) * 60}deg`);
+      f.style.animationDelay = `${i * 70}ms`; document.body.appendChild(f); setTimeout(() => f.remove(), 1400);
+    }
+    return;
+  }
+  const pk = e.target.closest('button.pk');
+  if (pk) {
+    e.preventDefault(); e.stopPropagation();
+    const team = pk.textContent.trim().split(/\s+/).pop();
+    const abbr = TEAM[team] ? team : Object.keys(TEAM).find((k) => name(k) === team);
+    pk.parentElement.querySelectorAll('.pk').forEach((b) => b.classList.toggle('picked', b === pk));
+    if (abbr) { pk.style.setProperty('--tc', color(abbr)); lockPick(abbr, null, e.clientX, e.clientY); }
+  }
+}, true);

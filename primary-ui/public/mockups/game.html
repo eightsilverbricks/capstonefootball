@@ -111,15 +111,7 @@
     <!-- LIVE -->
     <div data-panel-group="game" data-panel="live">
       <section class="panel"><div class="ph">Win probability <span class="muted" style="font-size:13px;font-weight:500">Dashed line = Clark before kickoff</span></div>
-        <div class="pb"><svg viewBox="0 0 600 180" width="100%" role="img" aria-label="Seattle win probability over the game">
-          <line x1="0" y1="90" x2="600" y2="90" stroke="#E4E4E0"/>
-          <line x1="0" y1="66" x2="600" y2="66" stroke="#121212" stroke-dasharray="5 5" stroke-width="1.5"/>
-          <text x="596" y="60" text-anchor="end" font-size="11" fill="#6B6B6B">Clark 63% SEA</text>
-          <polyline fill="none" stroke="#002244" stroke-width="2.5" points="0,66 40,70 70,95 100,104 130,88 160,80 200,72 240,110 270,118 300,96 330,84 360,70 390,62 420,58 445,60"/>
-          <circle cx="445" cy="60" r="4.5" fill="#002244"/>
-          <text x="4" y="14" font-size="11" fill="#6B6B6B">SEA 100%</text><text x="4" y="176" font-size="11" fill="#6B6B6B">SF 100%</text>
-          <text x="150" y="176" font-size="11" fill="#6B6B6B">Q2</text><text x="300" y="176" font-size="11" fill="#6B6B6B">Q3</text><text x="450" y="176" font-size="11" fill="#6B6B6B">Q4</text>
-        </svg><p style="font-size:14px">Seattle <b>67%</b> to win now. Up from 41% after the Purdy touchdown in the 2nd quarter.</p></div></section>
+        <div class="pb" id="wp"></div></section>
 
       <section class="panel"><div class="ph">What Clark said, checked live</div>
         <div class="pb tracker">
@@ -146,23 +138,7 @@
         <div class="pb"><div id="slider"></div></div></section>
       <section class="panel"><div class="ph">The crew's picks <span class="muted" style="font-size:13px;font-weight:500">The three of us who built this</span></div>
         <div class="pb" id="crew"></div></section>
-      <section class="panel"><div class="pb" style="padding-top:18px">
-        <div class="kicker">The Clark Report</div>
-        <h1 class="call" style="margin-top:6px">"I'm on Seattle, 63%. Their offense is just hotter right now, and the 49ers have to travel."</h1>
-        <p class="dek">Clark, our stats-nerd model: "The line agrees with me here, Seattle by 3.5. If Bosa wrecks the right side early though, I'm in trouble."</p>
-        <a href="report.html" class="btn btn-ink btn-sm" style="margin-top:14px">Read the full Clark Report</a>
-        <h3 style="margin:20px 0 4px;font-size:16px">Why Clark picks the Seahawks</h3>
-        <div class="factor"><b>Seattle is at home.</b><p>Worth about 6.5 points of win chance before anything else. San Francisco is 1–2 on the road this year.</p><div class="fbar" style="width:100%"></div></div>
-        <div class="factor"><b>Seattle's offense has been better lately.</b><p>5.8 yards per play over the last three games, 6th in the league. San Francisco's is 22nd over the same stretch.</p><div class="fbar" style="width:74%"></div></div>
-        <h3 style="margin:20px 0 4px;font-size:16px">What favors the 49ers</h3>
-        <div class="factor"><b>A top-five pass rush.</b><p>Nick Bosa and the line have 14 sacks; Seattle's line has allowed the 8th most.</p><div class="fbar" style="width:46%;background:#AA0000"></div></div>
-        <h3 style="margin:20px 0 10px;font-size:16px">Key players</h3>
-        <div class="players">
-          <div class="pl"><span class="hs"></span><span><b>Sam Darnold</b> · QB · SEA<br><span class="muted">Played through a sore wrist. Questionable.</span></span></div>
-          <div class="pl"><span class="hs"></span><span><b>Nick Bosa</b> · DE · SF<br><span class="muted">4.5 sacks, most on the team.</span></span></div>
-        </div>
-        <details style="margin-top:18px;border-top:1px solid var(--rule);padding-top:12px"><summary style="cursor:pointer;font-weight:600">Show the numbers</summary><p class="muted" style="margin-top:8px">EPA per play, success rate, rest days and weather inputs, each with a league rank.</p></details>
-      </div></section>
+      <section class="panel" id="report-card"></section>
       <section class="panel"><div class="ph">Comments <span class="muted" style="font-size:13px;font-weight:500">Top · 214</span></div><div class="pb">
         <div class="comment"><div class="who">@ninerfaithful <span>SF · 70%</span></div>Clark always overrates home field in the division games. Bosa wrecks this line.<div class="acts"><span>▲ 128</span><span>Reply</span></div></div>
         <div class="comment"><div class="who">@12thman_kate <span>SEA · 80%</span></div>Walker is healthy now, that's the part the numbers don't have yet.<div class="acts"><span>▲ 96</span><span>Reply</span></div></div>
@@ -189,6 +165,7 @@
 
 <div id="footer"></div>
 <script src="mock.js"></script>
+<script src="game-data.js"></script>
 <script>
   const key = new URLSearchParams(location.search).get('g') || 'SF-SEA';
   const g = GAMES.find((x) => `${x.a}-${x.h}` === key) || GAMES.find((x) => x.a === 'SF');
@@ -222,10 +199,22 @@
       <div class="msg"><span class="av" style="background:#AA0000">BP</span><div><div class="who">bayarea_pat <span>SF · 90%</span></div>90% was a choice 💀</div></div>
     </div>
     <div class="composer"><input placeholder="Message as zane · SF 70%" aria-label="Message"><button class="btn btn-ink btn-sm">Send</button></div>`;
-  document.getElementById('chat-side').innerHTML = chat;
-  document.getElementById('chat-tab-body').innerHTML = chat;
+  const pregameChat = `<div class="chat-head">Game chat <small>${g.chat} here · opens fully 1 hour before kickoff</small></div>
+    <div class="msgs">
+      <div class="msg"><span class="av" style="background:${color(g.a)}">BK</span><div><div class="who">bucs_bruce <span>${g.a} · 80%</span></div>Clark is sleeping on us again 😴</div></div>
+      <div class="msg"><span class="av" style="background:${color(g.h)}">AT</span><div><div class="who">americasteam <span>${g.h} · 85%</span></div>pressure rate stat is the whole game. Bucs line is cooked</div></div>
+      <div class="playcard" style="border-left-color:var(--clark-solid)"><div class="k">CLARK · PREGAME</div><b>"I'm on ${name(g.clark[0])}, ${g.clark[1]}%. Not a lock!"</b><div class="reacts"><button>🔥 96</button><button>😭 12</button><button>🤡 41</button></div></div>
+      <div class="msg"><span class="av" style="background:#00338D">ZW</span><div><div class="who">zane <span>no pick yet</span></div>still deciding, slider's right there taunting me</div></div>
+    </div>
+    <div class="composer"><input placeholder="Message as zane" aria-label="Message"><button class="btn btn-ink btn-sm">Send</button></div>`;
+  const chatHtml = g.st === 'pre' ? pregameChat : chat;
+  document.getElementById('chat-side').innerHTML = chatHtml;
+  document.getElementById('chat-tab-body').innerHTML = chatHtml;
   mountSlider(document.getElementById('slider'), g.a, g.h, g.you ? (g.you[0] === g.h ? g.you[1] : 100 - g.you[1]) : 50);
   document.getElementById('crew').innerHTML = crewPicks([[g.h, 75, 'Home crowd is going to be insane. 12s all day.'], [g.a, 55, "Bosa eats. I'm fading the model on this one."], [g.h, 60, "Clark and I agree, which honestly scares me."]]);
+  renderReport(g);
+  renderWinProb(g);
+  trimLiveForPregame(g);
   wireTabs();
   // Open on the tab that fits the moment: Preview before kickoff, Live during, Recap after.
   const startTab = g.st === 'pre' ? 'preview' : g.st === 'final' ? 'recap' : 'live';

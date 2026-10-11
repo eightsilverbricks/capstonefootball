@@ -249,3 +249,62 @@ h1, .h-sec, .wordmark-text, .top h1, .lead h1, .hero h1, .call, .art h1, .body h
   .panel:hover, .card:hover, .kpi:hover, .pl:hover, .pages a:hover, .ls:hover { transform: none; }
 }
 @media (max-width: 767px) { .wordmark img { width: 34px; height: 34px; } .wordmark-text { font-size: 17px; } }
+
+/* ═══ v3: smoother + more playful ═══ */
+html { scroll-behavior: smooth; }
+body, .masthead, .panel, .card, .kpi, .bubble, .tabbar, .tabs, .yourbar, .report, .cc, .pl { transition: background-color .35s ease, color .35s ease, border-color .35s ease; }
+body {
+  background-image:
+    repeating-linear-gradient(0deg, transparent 0 119px, rgba(0,0,0,.028) 119px 120px),
+    radial-gradient(1200px 400px at 50% -100px, rgba(200,39,45,.06), transparent 70%);
+}
+:root[data-theme="dark"] body { background-image: repeating-linear-gradient(0deg, transparent 0 119px, rgba(255,255,255,.03) 119px 120px), radial-gradient(1200px 400px at 50% -100px, rgba(232,69,60,.12), transparent 70%); }
+
+/* Section titles get Clark's stripe */
+.h-sec { justify-content: flex-start !important; gap: 10px; align-items: center !important; }
+.h-sec::before { content: ''; flex: none; width: 6px; height: 20px; border-radius: 3px; background: var(--clark); }
+.h-sec a { margin-left: auto; }
+
+/* Tab panels fade in */
+[data-panel]:not([hidden]) { animation: rise .35s cubic-bezier(.16,1,.3,1); }
+
+/* Shine sweep on the red buttons */
+.btn-red { position: relative; overflow: hidden; }
+.btn-red::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(100deg, transparent, rgba(255,255,255,.45), transparent); transform: skewX(-20deg); transition: left .6s; }
+.btn-red:hover::after { left: 130%; }
+
+/* Clark says */
+.clark-says { display: flex; gap: 14px; align-items: flex-start; }
+.clark-says > img { width: 56px; height: 56px; border-radius: 50%; flex: none; box-shadow: var(--clark-glow); animation: bob 3.2s ease-in-out infinite; }
+.clark-says .call { font-size: 24px !important; line-height: 1.2; margin-top: 4px; }
+.clark-card { display: flex; gap: 14px; align-items: center; padding: 14px 16px; border-radius: 16px; background: var(--paper); border: 2px solid transparent; background-image: linear-gradient(var(--paper), var(--paper)), var(--clark); background-origin: border-box; background-clip: padding-box, border-box; }
+.clark-card img { width: 48px; height: 48px; border-radius: 50%; flex: none; animation: bob 3.2s ease-in-out infinite; }
+.clark-card .q { font-family: var(--display); font-weight: 800; font-size: 16px; line-height: 1.3; }
+.clark-card .q small { display: block; font-family: var(--sans); font-weight: 500; font-size: 12.5px; color: var(--ink-3); margin-top: 3px; }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-4px) rotate(-4deg); } }
+.fh { margin: 22px 0 4px; font-size: 16px; font-family: var(--display); font-weight: 800; }
+.fbar { height: 6px !important; border-radius: 3px; transform-origin: left; animation: grow .9s cubic-bezier(.16,1,.3,1) both; }
+@keyframes grow { from { transform: scaleX(0); } }
+
+/* Win chart draws itself */
+.wp-line { stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: draw 1.8s cubic-bezier(.65,0,.35,1) .2s forwards; }
+.wp-area { opacity: 0; animation: fadein .8s 1.4s forwards; }
+.wp-dot { animation: pulse-dot 1.6s infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes fadein { to { opacity: 1; } }
+@keyframes pulse-dot { 0%,100% { transform: scale(1); } 50% { transform: scale(1.35); } }
+
+/* Floating emoji + toast + confetti */
+.float-emoji { position: fixed; z-index: 90; pointer-events: none; font-size: 26px; animation: float-up 1.1s cubic-bezier(.16,1,.3,1) forwards; }
+@keyframes float-up { from { transform: translate(-50%, 0) scale(.6); opacity: 1; } to { transform: translate(calc(-50% + var(--dx)), -110px) scale(1.25) rotate(var(--rot)); opacity: 0; } }
+.toast { position: fixed; left: 50%; bottom: 28px; z-index: 95; transform: translate(-50%, 30px); opacity: 0; display: flex; align-items: center; gap: 10px; padding: 10px 16px 10px 10px; border-radius: 999px; background: #121212; color: #fff; font-weight: 700; font-size: 14px; box-shadow: 0 10px 30px rgba(0,0,0,.3); transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .25s; }
+.toast.show { transform: translate(-50%, 0); opacity: 1; }
+.toast img { width: 28px; height: 28px; border-radius: 50%; background: #fff; }
+#confetti { position: fixed; inset: 0; pointer-events: none; z-index: 89; width: 100%; height: 100%; }
+.pk.picked { box-shadow: inset 0 0 0 2px var(--tc) !important; background: color-mix(in srgb, var(--tc) 12%, transparent); animation: pop .35s cubic-bezier(.34,1.56,.64,1); }
+@keyframes pop { 50% { transform: scale(1.12); } }
+.reacts button.on { box-shadow: inset 0 0 0 2px var(--clark-solid); }
+.row { border-left: 3px solid transparent; padding-left: 8px !important; }
+.row:hover { border-left-color: var(--clark-solid); }
+@media (max-width: 767px) { .toast { bottom: 76px; } .clark-says .call { font-size: 20px !important; } .clark-says > img { width: 44px; height: 44px; } }
+@media (prefers-reduced-motion: reduce) { .clark-says > img, .clark-card img, .wp-dot { animation: none; } .wp-line { stroke-dashoffset: 0; animation: none; } .wp-area { opacity: 1; animation: none; } .fbar { animation: none; } [data-panel]:not([hidden]) { animation: none; } }
