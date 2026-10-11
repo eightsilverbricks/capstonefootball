@@ -391,3 +391,19 @@ From the current code (`primary-ui/src`) and the live site. **Remove** = delete 
 | Demo/preseason banners | One line: "Showing 2024 data (demo)" only when demo mode is on |
 
 **Rule for all future copy:** if a label could be replaced by a plain noun or a number without losing meaning, use the noun or number.
+
+---
+
+## 15. LLM tasks: cheapest path (decided 2026-10-11)
+
+Rule: **no LLM where a template or data lookup works; where text must be generated, generate it once, offline, and cache it.** Nothing calls a model per page view.
+
+| Task | How | Cost |
+|---|---|---|
+| Clark Report text (voice, depth) | Generated **once per game per week** in the Python export (`export_predictions.py`) with the Gemini free tier, from the computed stats only; saved into `predictions.json`. Template text in Clark's voice is the fallback. A validator checks every number in the AI text against the input stats before it ships. | $0 (≈272 calls/season, far under free limits) |
+| Big-play notes (live) | Template line for every play; free-tier AI sentence only for big plays, written once by the `live-sync` function and stored in `live_plays`, so all viewers share it. | $0 |
+| Clark in chat, Clark's confession, Wrapped, explain-this-play | Templates filled from data. Explain-this-play is a fixed glossary keyed by play type and penalty. | $0, no AI |
+| Ask Clark | 1) Suggested questions answered from the report JSON (no AI). 2) Free-typed questions go to an Edge Function using the Gemini free tier, with the game's report as the only context, answers cached by normalized question, and a per-user daily cap. Falls back to "Here's what I know" plus the report when the free quota runs out. | $0 within free tier |
+| Chat moderation | Keyword blocklist in a DB trigger (§4). | $0 |
+
+Backups if the Gemini free tier changes: Groq free tier, Cloudflare Workers AI free allocation. Everything degrades to templates, never to a broken page.
