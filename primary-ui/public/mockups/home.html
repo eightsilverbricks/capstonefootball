@@ -101,7 +101,6 @@
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Streak</span><b>6 weeks</b></div>
       <div class="vs3"><div><b>38–26</b><span>You</span></div><div><b>41–23</b><span>Clark</span></div><div><b>36–28</b><span>Fans</span></div></div>
       <p class="muted" style="font-size:13px;margin-top:8px">You're 2–7 on AFC West games.</p></section>
-    <section><h2 class="h-sec">The crew this week</h2><div id="crew" style="margin-top:12px"></div></section>
     <section><h2 class="h-sec">Fanbases this week <a href="leaderboard.html">All 32</a></h2>
       <div class="rank"><span class="n">1</span><img data-logo="DET" alt="">Lions fans<span class="p">71%</span></div>
       <div class="rank"><span class="n">2</span><img data-logo="PHI" alt="">Eagles fans<span class="p">69%</span></div>
@@ -123,7 +122,6 @@
   }).join('');
   document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
   document.getElementById('lead-art').style.backgroundImage = `linear-gradient(105deg, ${color('TB')}D9 0 48%, ${color('DAL')}D9 52% 100%), url("${stadium('DAL')}")`;
-  document.getElementById('crew').innerHTML = crewPicks([['SEA', 75, '7–3 this week. Carrying the group chat.'], ['WAS', 55, "6–4. Giants broke my heart again."], ['DAL', 70, "8–2. Don't tell Clark I copied him."]]);
   wireTabs();
 </script>
 </body></html>

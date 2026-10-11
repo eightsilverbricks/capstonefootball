@@ -136,8 +136,7 @@
     <div data-panel-group="game" data-panel="preview" hidden>
       <section class="panel"><div class="ph">Your pick <span class="muted" style="font-size:13px;font-weight:500">Locked at kickoff</span></div>
         <div class="pb"><div id="slider"></div></div></section>
-      <section class="panel"><div class="ph">The crew's picks <span class="muted" style="font-size:13px;font-weight:500">The three of us who built this</span></div>
-        <div class="pb" id="crew"></div></section>
+
       <section class="panel" id="report-card"></section>
       <section class="panel"><div class="ph">Comments <span class="muted" style="font-size:13px;font-weight:500">Top · 214</span></div><div class="pb">
         <div class="comment"><div class="who">@ninerfaithful <span>SF · 70%</span></div>Clark always overrates home field in the division games. Bosa wrecks this line.<div class="acts"><span>▲ 128</span><span>Reply</span></div></div>
@@ -211,7 +210,6 @@
   document.getElementById('chat-side').innerHTML = chatHtml;
   document.getElementById('chat-tab-body').innerHTML = chatHtml;
   mountSlider(document.getElementById('slider'), g.a, g.h, g.you ? (g.you[0] === g.h ? g.you[1] : 100 - g.you[1]) : 50);
-  document.getElementById('crew').innerHTML = crewPicks([[g.h, 75, 'Home crowd is going to be insane. 12s all day.'], [g.a, 55, "Bosa eats. I'm fading the model on this one."], [g.h, 60, "Clark and I agree, which honestly scares me."]]);
   renderReport(g);
   renderWinProb(g);
   trimLiveForPregame(g);
