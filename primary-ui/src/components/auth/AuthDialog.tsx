@@ -263,7 +263,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
             type="submit"
             disabled={submitting || resetSent}
             className="mt-1 inline-flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 text-sm font-semibold uppercase tracking-wide transition-opacity disabled:opacity-60"
-            style={{ background: 'var(--accent-gold)', color: '#111' }}
+            style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
           >
             {submitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
             {submitting ? 'Working…' : copy.submit}

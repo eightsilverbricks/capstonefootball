@@ -74,7 +74,7 @@ const LandingPage: React.FC = () => {
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
 
-      <main className="flex flex-col" style={{ gap: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
+      <main className="flex flex-col" style={{ gap: 'var(--space-landing)', paddingBottom: 'var(--space-landing)' }}>
         <LandingHero />
 
         <HowItWorks onPeek={() => setPeekOpen(true)} canPeek={peekGame != null} />
@@ -111,7 +111,7 @@ const LandingPage: React.FC = () => {
                 type="button"
                 onClick={() => openAuthDialog('signup')}
                 className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide"
-                style={{ background: 'var(--accent-gold)', color: '#111' }}
+                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
               >
                 Get started
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
@@ -144,7 +144,7 @@ const LandingPage: React.FC = () => {
                 type="button"
                 onClick={() => openAuthDialog('signup')}
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide transition-transform duration-150 hover:-translate-y-0.5"
-                style={{ background: 'var(--accent-gold)', color: '#111' }}
+                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
               >
                 Create account
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />

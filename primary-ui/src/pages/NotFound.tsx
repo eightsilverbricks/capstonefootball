@@ -43,7 +43,7 @@ const NotFound: React.FC = () => {
             <Link
               to="/"
               className="px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline"
-              style={{ background: 'var(--accent-gold)', color: '#111' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               Back home
             </Link>

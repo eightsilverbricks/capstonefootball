@@ -127,7 +127,7 @@ const ChallengeFactor: React.FC<ChallengeFactorProps> = ({ challenges, factorNam
               onClick={() => void submit()}
               disabled={!draft.trim() || busy}
               className="self-end px-3 py-1.5 rounded-md text-[11px] font-semibold transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-              style={{ background: 'var(--accent-gold)', color: '#1a1408' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               {busy ? 'Posting…' : isSignedIn ? 'Post challenge' : 'Post challenge — free account'}
             </button>

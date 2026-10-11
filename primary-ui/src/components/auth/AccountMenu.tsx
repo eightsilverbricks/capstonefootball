@@ -41,7 +41,7 @@ const AccountMenu: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="flex items-center gap-1.5 rounded-full pl-1 pr-2 py-1 transition-colors hover:bg-white/5 focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-gold)]"
+        className="flex items-center gap-1.5 rounded-full pl-1 pr-2 py-1 transition-colors hover:bg-[var(--surface-hover)] focus:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-gold)]"
         aria-label={`Account menu for ${user.displayName}`}
       >
         <span

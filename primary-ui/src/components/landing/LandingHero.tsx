@@ -56,7 +56,7 @@ const LandingHero: React.FC = () => (
               type="button"
               onClick={() => openAuthDialog('signup')}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide transition-transform duration-150 hover:-translate-y-0.5"
-              style={{ background: 'var(--accent-gold)', color: '#111' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               Create your free account
               <ArrowRight className="w-4 h-4" aria-hidden="true" />

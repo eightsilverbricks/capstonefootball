@@ -8,13 +8,11 @@
 
 :root {
   /* Atmosphere — only used on hero/landing surfaces */
-  --field-line:      rgba(255, 255, 255, 0.035);
-  --field-hash:      rgba(255, 255, 255, 0.055);
-  --glow-gold:       rgba(200, 169, 110, 0.16);
-  --glow-soft:       rgba(255, 255, 255, 0.05);
+  --field-hash:      transparent;
+  --glow-soft:       transparent;
 
   /* Landing rhythm — deliberately looser than the data pages */
-  --space-section:   clamp(3.5rem, 2.5rem + 4vw, 7rem);
+  --space-landing:   clamp(3.5rem, 2.5rem + 4vw, 7rem);
 
   --duration-slow:   600ms;
   --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);

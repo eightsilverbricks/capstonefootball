@@ -84,7 +84,7 @@ const HomeHero: React.FC<HomeHeroProps> = ({ user, week, gamesThisWeek, record, 
       <Link
         to="/games"
         className="inline-flex items-center gap-2 px-5 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline transition-transform duration-150 hover:-translate-y-0.5"
-        style={{ background: 'var(--accent-gold)', color: '#111' }}
+        style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
       >
         <Target className="w-4 h-4" aria-hidden="true" />
         Make this week's picks

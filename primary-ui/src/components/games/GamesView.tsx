@@ -101,7 +101,7 @@ const GamesView: React.FC = () => {
                 <h3 className="text-white font-semibold mb-1">Couldn't load predictions</h3>
                 <p className="text-red-300/70 text-sm mb-3">{error}</p>
                 <p className="text-white/30 text-xs mb-4">Make sure the prediction API is running, then try again.</p>
-                <button onClick={reload} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+                <button onClick={reload} className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--divider)] bg-[var(--surface)] hover:bg-[var(--surface-hover)] transition-colors">
                   Retry
                 </button>
               </div>

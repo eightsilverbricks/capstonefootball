@@ -83,7 +83,7 @@ const PassphraseGate: React.FC<{ onUnlock: () => void }> = ({ onUnlock }) => {
         <button
           type="submit"
           className="w-full rounded-lg px-4 py-2.5 text-sm font-semibold uppercase tracking-wide"
-          style={{ background: 'var(--accent-gold)', color: '#111' }}
+          style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
         >
           Unlock
         </button>

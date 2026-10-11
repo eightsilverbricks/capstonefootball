@@ -1,152 +1,111 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X } from 'lucide-react';
 import ClarkLogo from './brand/ClarkLogo';
-import FanIdentityPicker from './FanIdentityPicker';
-import SeasonSummary from './SeasonSummary';
 import AccountMenu from './auth/AccountMenu';
+import MobileTabBar from './layout/MobileTabBar';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
+import { usePredictions } from '@/hooks/usePredictions';
+import { useUserPicks } from '@/hooks/useUserPicks';
+import { computeSeasonSummary } from '@/lib/seasonSummary';
+import { isNavActive, PRIMARY_NAV } from './layout/nav';
 
-interface NavLink {
-  label: string;
-  to: string;
-  /** Hidden until there's an account to hang a season off of. */
-  requiresAccount?: boolean;
-}
+/** "Record 11–5" chip for signed-in users with at least one graded pick. */
+const RecordChip: React.FC = () => {
+  const { predictions } = usePredictions();
+  const { picks } = useUserPicks();
+  const summary = computeSeasonSummary(picks, predictions);
+  if (summary.resolvedCount === 0) return null;
 
-const NAV_LINKS: NavLink[] = [
-  { label: 'Home', to: '/' },
-  { label: 'Games', to: '/games' },
-  { label: 'My Season', to: '/my-season', requiresAccount: true },
-  { label: 'About', to: '/about' },
-];
+  return (
+    <Link
+      to="/my-season"
+      className="hidden md:inline-flex items-center gap-1.5 h-8 px-2.5 rounded-md text-[13px] no-underline transition-colors hover:bg-[var(--surface-hover)]"
+      style={{ color: 'var(--text-tertiary)' }}
+    >
+      Record
+      <span className="font-semibold tabular-nums" style={{ color: 'var(--text-primary)' }}>
+        {summary.wins}–{summary.losses}
+      </span>
+    </Link>
+  );
+};
 
+/**
+ * Site header: logo, the four primary destinations, and the account controls.
+ * On phones the destinations move to the bottom tab bar (rendered here so
+ * every page that renders <Header /> gets it).
+ */
 const Header: React.FC = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
   const { pathname } = useLocation();
   const { isSignedIn } = useAuth();
 
-  const links = NAV_LINKS.filter((link) => isSignedIn || !link.requiresAccount);
-
   return (
-    <header
-      className="sticky top-0 z-40 backdrop-blur-sm"
-      style={{ background: 'rgba(9,9,9,0.92)', borderBottom: '1px solid var(--border-subtle)' }}
-    >
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-14 gap-3">
-          <Link to="/" className="no-underline shrink-0" aria-label="The Clark Index — home">
-            <ClarkLogo size={26} />
+    <>
+      <header
+        className="sticky top-0 z-40"
+        style={{ background: 'var(--surface)', borderBottom: '1px solid var(--divider)' }}
+      >
+        <div className="mx-auto flex items-center gap-6 px-4" style={{ maxWidth: 'var(--content-max)', height: 'var(--header-h)' }}>
+          <Link to="/" className="no-underline shrink-0" aria-label="The Clark Index home">
+            <ClarkLogo size={28} />
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-1" aria-label="Main navigation">
-            {links.map(({ label, to }) => {
-              const active = pathname === to;
+          <nav className="hidden md:flex items-stretch self-stretch gap-1" aria-label="Main navigation">
+            {PRIMARY_NAV.map(({ label, to }) => {
+              const active = isNavActive(pathname, to);
               return (
                 <Link
                   key={to}
                   to={to}
-                  className="px-3 py-1.5 text-sm rounded-md transition-colors"
-                  style={{
-                    color: active ? 'var(--text-primary)' : 'var(--text-tertiary)',
-                    background: active ? 'var(--surface-raised)' : 'transparent',
-                  }}
+                  className="relative flex items-center px-3 text-[15px] font-medium no-underline transition-colors hover:text-[var(--text-primary)]"
+                  style={{ color: active ? 'var(--text-primary)' : 'var(--text-tertiary)' }}
                   aria-current={active ? 'page' : undefined}
                 >
                   {label}
+                  {active && (
+                    <span
+                      className="absolute left-3 right-3 bottom-0 h-[3px] rounded-t"
+                      style={{ background: 'var(--brand)' }}
+                      aria-hidden="true"
+                    />
+                  )}
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right rail — swaps entirely on auth state */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="ml-auto flex items-center gap-2">
             {isSignedIn ? (
               <>
-                <SeasonSummary />
+                <RecordChip />
                 <AccountMenu />
               </>
             ) : (
               <>
-                {/* The select's intrinsic width doesn't shrink like text does —
-                    at narrow widths it was the difference between the row
-                    fitting and overflowing the viewport. "Sign in" already
-                    hides the same way below `sm`. */}
-                <div className="hidden sm:block">
-                  <FanIdentityPicker />
-                </div>
                 <button
                   type="button"
                   onClick={() => openAuthDialog('signin')}
-                  className="hidden sm:inline text-sm px-2 py-1.5 rounded-md transition-colors hover:text-[var(--text-primary)]"
-                  style={{ color: 'var(--text-tertiary)' }}
+                  className="h-9 px-2 sm:px-3 rounded-md text-sm font-medium whitespace-nowrap transition-colors hover:bg-[var(--surface-hover)]"
+                  style={{ color: 'var(--text-primary)' }}
                 >
                   Sign in
                 </button>
                 <button
                   type="button"
                   onClick={() => openAuthDialog('signup')}
-                  className="text-xs font-semibold uppercase tracking-wide px-3 py-2 rounded-md transition-opacity hover:opacity-90 whitespace-nowrap"
-                  style={{ background: 'var(--accent-gold)', color: '#111' }}
+                  className="h-9 px-3.5 rounded-md text-sm font-semibold whitespace-nowrap transition-colors hover:bg-[var(--brand-hover)]"
+                  style={{ background: 'var(--brand)', color: 'var(--brand-contrast)' }}
                 >
-                  Get started
+                  Create account
                 </button>
               </>
             )}
-
-            <button
-              onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-1.5 rounded-md"
-              style={{ color: 'var(--text-tertiary)' }}
-              aria-label="Toggle navigation"
-              aria-expanded={menuOpen}
-            >
-              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
           </div>
         </div>
-
-        {/* Mobile nav */}
-        {menuOpen && (
-          <nav
-            className="md:hidden py-3 space-y-1"
-            style={{ borderTop: '1px solid var(--border-subtle)' }}
-            aria-label="Mobile navigation"
-          >
-            {links.map(({ label, to }) => {
-              const active = pathname === to;
-              return (
-                <Link
-                  key={to}
-                  to={to}
-                  onClick={() => setMenuOpen(false)}
-                  className="block px-3 py-2 text-sm rounded-md"
-                  style={{ color: active ? 'var(--text-primary)' : 'var(--text-secondary)' }}
-                  aria-current={active ? 'page' : undefined}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-            {!isSignedIn && (
-              <button
-                type="button"
-                onClick={() => {
-                  setMenuOpen(false);
-                  openAuthDialog('signin');
-                }}
-                className="block w-full text-left px-3 py-2 text-sm rounded-md"
-                style={{ color: 'var(--text-secondary)' }}
-              >
-                Sign in
-              </button>
-            )}
-          </nav>
-        )}
-      </div>
-    </header>
+      </header>
+      <MobileTabBar />
+    </>
   );
 };
 

@@ -71,7 +71,7 @@ const FeaturedGame: React.FC<FeaturedGameProps> = ({ game, isYourTeam = false })
             className="text-[10px] uppercase tracking-[0.22em] px-2.5 py-1 rounded-full"
             style={
               isYourTeam
-                ? { color: '#111', background: 'var(--accent-gold)' }
+                ? { color: 'var(--brand-contrast)', background: 'var(--accent-gold)' }
                 : { color: 'var(--accent-gold)', border: '1px solid rgba(200,169,110,0.3)' }
             }
           >
@@ -150,7 +150,7 @@ const FeaturedGame: React.FC<FeaturedGameProps> = ({ game, isYourTeam = false })
           <Link
             to={gamePath(game)}
             className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline"
-            style={{ background: 'var(--accent-gold)', color: '#111' }}
+            style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
           >
             Open the Clark Report
             <ArrowRight className="w-4 h-4" aria-hidden="true" />

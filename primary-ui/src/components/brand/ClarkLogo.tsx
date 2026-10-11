@@ -49,7 +49,7 @@ export const ClarkMark: React.FC<{ size?: number; className?: string; titled?: b
     />
 
     {/* The index — three ascending bars */}
-    <g fill="#121212">
+    <g fill="var(--brand-contrast)">
       <rect x="9" y="29" width="6" height="10" rx="2" />
       <rect x="18" y="23" width="6" height="16" rx="2" />
       <rect x="27" y="17" width="6" height="22" rx="2" />
@@ -57,7 +57,7 @@ export const ClarkMark: React.FC<{ size?: number; className?: string; titled?: b
 
     {/* The football, cresting the tallest bar */}
     <g transform="rotate(-38 36 12)">
-      <ellipse cx="36" cy="12" rx="8.4" ry="5.2" fill="#121212" />
+      <ellipse cx="36" cy="12" rx="8.4" ry="5.2" fill="var(--brand-contrast)" />
       <path
         d="M31.4 12h9.2M34 9.8v4.4M36 9.4v5.2M38 9.8v4.4"
         stroke="var(--accent-gold)"
@@ -82,7 +82,7 @@ const ClarkLogo: React.FC<ClarkLogoProps> = ({ variant = 'full', size = 32, clas
         Clark
       </span>
       <span
-        className="italic"
+        className="font-medium tracking-tight"
         style={{ fontFamily: 'var(--font-display)', fontSize: wordSize, color: 'var(--text-tertiary)' }}
       >
         Index

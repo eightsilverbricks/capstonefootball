@@ -88,7 +88,7 @@ const MySeasonPage: React.FC = () => {
               type="button"
               onClick={() => openAuthDialog('signup')}
               className="mt-2 px-5 py-2.5 rounded text-sm font-semibold uppercase tracking-wide"
-              style={{ background: 'var(--accent-gold)', color: '#111' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               Create your free account
             </button>
@@ -109,7 +109,7 @@ const MySeasonPage: React.FC = () => {
             <Link
               to="/games"
               className="mt-2 px-5 py-2.5 rounded text-sm font-semibold uppercase tracking-wide no-underline"
-              style={{ background: 'var(--accent-gold)', color: '#111' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               Make your first pick
             </Link>

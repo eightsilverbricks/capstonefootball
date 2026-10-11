@@ -92,7 +92,7 @@ const ResetPasswordPage: React.FC = () => {
           type="submit"
           disabled={submitting}
           className="mt-1 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold disabled:opacity-60"
-          style={{ background: 'var(--accent-gold)', color: '#111' }}
+          style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
         >
           {submitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
           Save new password
@@ -116,7 +116,7 @@ const ResetPasswordPage: React.FC = () => {
           type="button"
           onClick={() => openAuthDialog('reset')}
           className="rounded-lg px-4 py-3 text-sm font-semibold"
-          style={{ background: 'var(--accent-gold)', color: '#111' }}
+          style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
         >
           Send a new link
         </button>

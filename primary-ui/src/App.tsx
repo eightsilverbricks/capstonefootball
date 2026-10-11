@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
@@ -9,6 +9,8 @@ import AboutPage from "./pages/AboutPage";
 import AdminPage from "./pages/AdminPage";
 import SettingsPage from "./pages/SettingsPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import TeamsPage from "./pages/TeamsPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 import NotFound from "./pages/NotFound";
 import AuthDialogHost from "./components/auth/AuthDialogHost";
 import { SeasonModeProvider } from "./context/SeasonModeContext";
@@ -26,6 +28,10 @@ const App = () => (
       <Route path="/welcome" element={<LandingPage />} />
       <Route path="/games" element={<GamesPage />} />
       <Route path="/game/:season/:week/:away/:home" element={<GamePage />} />
+      {/* Live hub arrives with the live system; until then Live opens the week's games */}
+      <Route path="/live" element={<Navigate to="/games" replace />} />
+      <Route path="/teams" element={<TeamsPage />} />
+      <Route path="/leaderboard" element={<LeaderboardPage />} />
       <Route path="/my-season" element={<MySeasonPage />} />
       <Route path="/about" element={<AboutPage />} />
       {/* Where demo mode is switched on — see SettingsPage.tsx */}

@@ -112,7 +112,7 @@ const HomeDashboard: React.FC = () => {
               type="button"
               onClick={() => openAuthDialog('signup')}
               className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide"
-              style={{ background: 'var(--accent-gold)', color: '#111' }}
+              style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
             >
               Get started <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </button>
@@ -136,7 +136,7 @@ const HomeDashboard: React.FC = () => {
                 <h3 className="text-white font-semibold mb-1">Couldn't load predictions</h3>
                 <p className="text-red-300/70 text-sm mb-3">{error}</p>
                 <p className="text-white/30 text-xs mb-4">Make sure the prediction API is running, then try again.</p>
-                <button onClick={reload} className="px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-sm rounded-lg transition-colors">
+                <button onClick={reload} className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--divider)] bg-[var(--surface)] hover:bg-[var(--surface-hover)] transition-colors">
                   Retry
                 </button>
               </div>
@@ -184,7 +184,7 @@ const HomeDashboard: React.FC = () => {
                 <Link
                   to="/games"
                   className="inline-flex items-center gap-2 mt-5 px-5 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline transition-transform duration-150 hover:-translate-y-0.5"
-                  style={{ background: 'var(--accent-gold)', color: '#111' }}
+                  style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
                 >
                   View all games <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </Link>

@@ -159,7 +159,7 @@ const AboutPage: React.FC = () => {
               <Link
                 to="/games"
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline"
-                style={{ background: 'var(--accent-gold)', color: '#111' }}
+                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
               >
                 Go make some picks <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </Link>
@@ -168,7 +168,7 @@ const AboutPage: React.FC = () => {
                 type="button"
                 onClick={() => openAuthDialog('signup')}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-sm font-semibold uppercase tracking-wide"
-                style={{ background: 'var(--accent-gold)', color: '#111' }}
+                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
               >
                 Join The Clark Competition <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </button>

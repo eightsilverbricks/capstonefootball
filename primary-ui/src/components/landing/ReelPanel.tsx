@@ -93,7 +93,7 @@ const ReelPanel: React.FC = () => {
                 </div>
                 <span
                   className="relative w-14 h-14 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-110"
-                  style={{ background: 'var(--accent-gold)', color: '#111' }}
+                  style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
                 >
                   <Play className="w-6 h-6 ml-0.5" fill="currentColor" aria-hidden="true" />
                 </span>

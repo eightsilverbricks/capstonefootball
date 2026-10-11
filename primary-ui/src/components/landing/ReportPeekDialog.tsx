@@ -158,7 +158,7 @@ const ReportPeekDialog: React.FC<ReportPeekDialogProps> = ({ open, onOpenChange,
               openAuthDialog('signup');
             }}
             className="flex-1 inline-flex items-center justify-center gap-2 rounded-lg px-4 py-3 text-sm font-semibold uppercase tracking-wide"
-            style={{ background: 'var(--accent-gold)', color: '#111' }}
+            style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
           >
             Get every game <ArrowRight className="w-4 h-4" aria-hidden="true" />
           </button>

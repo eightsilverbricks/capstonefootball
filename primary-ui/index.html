@@ -1,9 +1,6 @@
 
 <!DOCTYPE html>
-<!-- The app is dark-only. Setting the class here (rather than at runtime) means
-     shadcn/Radix surfaces — dialogs, inputs, overlays — resolve their dark
-     tokens on first paint, with no light flash. -->
-<html lang="en" class="dark" style="color-scheme: dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,7 +8,19 @@
     <meta name="description" content="Understand any NFL matchup in 60 seconds. The Clark Index explains why teams win using evidence-based statistical analysis — built for fans and beginners alike." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/logo.svg" />
-    <meta name="theme-color" content="#090909" />
+    <meta name="theme-color" content="#F2F3F5" />
+    <!-- Apply the saved theme before first paint (light | dark | system) — see src/lib/theme.ts -->
+    <script>
+      (function () {
+        try {
+          var pref = localStorage.getItem('clark-theme') || 'light';
+          var dark = pref === 'dark' || (pref === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+          var root = document.documentElement;
+          root.classList.toggle('dark', dark);
+          root.style.colorScheme = dark ? 'dark' : 'light';
+        } catch (e) {}
+      })();
+    </script>
 
     <meta property="og:title" content="The Clark Index — NFL Football Intelligence" />
     <meta property="og:description" content="Understand any NFL matchup in 60 seconds. Evidence-based analysis that explains why teams win." />

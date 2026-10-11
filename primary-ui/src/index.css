@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;0,9..144,800;1,9..144,300;1,9..144,600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 @import './styles/tokens.css';
 @import './styles/landing.css';
 
@@ -8,122 +8,68 @@
 @tailwind utilities;
 
 @layer base {
+  /* shadcn/Radix tokens, mapped onto tokens.css (light default, html.dark) */
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
-
+    --background: 220 13% 95%;
+    --foreground: 216 12% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 216 12% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 221 83% 53%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221 83% 53%;
-
+    --popover-foreground: 216 12% 8%;
+    --primary: 222 83% 46%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 14% 94%;
+    --secondary-foreground: 216 12% 8%;
+    --muted: 220 14% 94%;
+    --muted-foreground: 215 8% 41%;
+    --accent: 220 14% 94%;
+    --accent-foreground: 216 12% 8%;
+    --destructive: 355 73% 47%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 216 9% 90%;
+    --input: 216 9% 85%;
+    --ring: 222 83% 46%;
     --radius: 0.5rem;
 
-    --sidebar-background: 220 23% 95%;
-    --sidebar-foreground: 215 25% 27%;
-    --sidebar-primary: 221 83% 53%;
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 216 12% 8%;
+    --sidebar-primary: 222 83% 46%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 14% 90%;
-    --sidebar-accent-foreground: 215 25% 27%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 221 83% 53%;
+    --sidebar-accent: 220 14% 94%;
+    --sidebar-accent-foreground: 216 12% 8%;
+    --sidebar-border: 216 9% 90%;
+    --sidebar-ring: 222 83% 46%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 216 16% 6%;
+    --foreground: 210 14% 95%;
+    --card: 217 15% 10%;
+    --card-foreground: 210 14% 95%;
+    --popover: 220 13% 13%;
+    --popover-foreground: 210 14% 95%;
+    --primary: 222 100% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 13% 16%;
+    --secondary-foreground: 210 14% 95%;
+    --muted: 220 13% 16%;
+    --muted-foreground: 215 8% 64%;
+    --accent: 220 13% 16%;
+    --accent-foreground: 210 14% 95%;
+    --destructive: 356 100% 68%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 12% 19%;
+    --input: 217 12% 23%;
+    --ring: 222 100% 65%;
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-
-    --sidebar-background: 215 28% 17%;
-    --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 217.2 91.2% 59.8%;
+    --sidebar-background: 217 15% 10%;
+    --sidebar-foreground: 210 14% 95%;
+    --sidebar-primary: 222 100% 65%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 215 25% 27%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 215 25% 27%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-}
-
-@layer base {
-  /* ── shadcn tokens, re-pointed at the Clark palette ───────────────────────
-     index.html hardcodes class="dark", so this block is the one that actually
-     ships. The generic slate defaults above are kept only so the light theme
-     still resolves if anything ever toggles it. Values mirror tokens.css:
-     background=--bg, card=--surface, popover=--surface-raised,
-     primary/ring=--accent-gold, destructive=--stake-negative. */
-  .dark {
-    --background: 0 0% 3.5%;
-    --foreground: 0 0% 94%;
-
-    --card: 240 6% 7%;
-    --card-foreground: 0 0% 94%;
-
-    --popover: 240 6% 10%;
-    --popover-foreground: 0 0% 94%;
-
-    --primary: 39 45% 61%;
-    --primary-foreground: 0 0% 7%;
-
-    --secondary: 240 6% 14%;
-    --secondary-foreground: 0 0% 94%;
-
-    --muted: 240 5% 13%;
-    --muted-foreground: 0 0% 55%;
-
-    --accent: 240 6% 15%;
-    --accent-foreground: 0 0% 94%;
-
-    --destructive: 0 91% 71%;
-    --destructive-foreground: 0 0% 7%;
-
-    --border: 240 4% 18%;
-    --input: 240 4% 18%;
-    --ring: 39 45% 61%;
+    --sidebar-accent: 220 13% 16%;
+    --sidebar-accent-foreground: 210 14% 95%;
+    --sidebar-border: 217 12% 19%;
+    --sidebar-ring: 222 100% 65%;
   }
 }
 
@@ -133,16 +79,29 @@
   }
 
   html, body {
-    background-color: #0a0a12;
-    color: #f5f0e8;
+    background-color: var(--bg);
+    color: var(--text-primary);
   }
 
   body {
-    @apply font-sans;
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    font-feature-settings: 'cv11', 'ss01';
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Numbers line up in every score, record and percentage */
+  .tabular-nums, table, [data-numeric] {
+    font-variant-numeric: tabular-nums;
   }
 
   pre, code {
     @apply font-mono;
+  }
+
+  /* Room for the phone tab bar so it never covers content */
+  @media (max-width: 767px) {
+    body { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom)); }
   }
 }
 

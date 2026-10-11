@@ -1,48 +1,70 @@
-/* ─── Clark Index Design Tokens ──────────────────────────────────────────────
-   Visual direction: Ruckus (editorial bold structure) × SecureDeep (data
-   intelligence panels). Dark, no gradients, intentional hierarchy.
+/* ─── Clark Index design tokens ───────────────────────────────────────────────
+   Modeled on ESPN + Real Sports (CLARK_OVERHAUL_PLAN.md §13): light by default,
+   dense and neutral, team colors and logos carry the visual interest. One
+   brand accent, used only for buttons and active tabs. Dark theme follows the
+   system setting or an explicit choice in Settings (html.dark).
+
+   The legacy names (--accent-gold, --surface-raised, --font-display, …) are
+   kept as aliases so every existing component picks up the new look; new code
+   should use the semantic names in the first block.
    ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* Surfaces — three levels of depth, no gradients */
-  --bg:               #090909;
-  --surface:          #111113;
-  --surface-raised:   #1a1a1d;
-  --surface-overlay:  #222226;
+  /* Surfaces */
+  --bg:               #F2F3F5;
+  --surface:          #FFFFFF;
+  --surface-raised:   #F7F8FA;
+  --surface-overlay:  #EEF0F3;
+  --surface-hover:    #F4F5F7;
 
-  /* Borders */
-  --border-subtle:    rgba(255,255,255,0.05);
-  --border-default:   rgba(255,255,255,0.09);
-  --border-emphasis:  rgba(255,255,255,0.16);
+  /* Lines */
+  --divider:          #E3E5E8;
+  --border-subtle:    #E3E5E8;
+  --border-default:   #D9DCE0;
+  --border-emphasis:  #C4C8CE;
 
-  /* Text hierarchy */
-  --text-primary:     #f0f0f0;
-  --text-secondary:   rgba(240,240,240,0.72);
-  --text-tertiary:    rgba(240,240,240,0.55);
-  --text-muted:       rgba(240,240,240,0.42);
+  /* Text */
+  --text-primary:     #121417;
+  --text-secondary:   #3B4047;
+  --text-tertiary:    #5F6670;
+  --text-muted:       #5F6670;
 
-  /* Accent — gold for status/confidence, not decoration */
-  --accent-gold:      #c8a96e;
-  --accent-gold-dim:  rgba(200,169,110,0.15);
+  /* Brand accent — buttons and active tabs only */
+  --brand:           #1450D8;
+  --brand-hover:     #0F42B8;
+  --brand-contrast:  #FFFFFF;
+  --brand-soft:      rgba(20, 80, 216, 0.10);
+  --accent-gold:      var(--brand);
+  --accent-gold-dim:  var(--brand-soft);
 
-  /* Status */
-  --status-decisive:  #4ade80;
-  --status-moderate:  #fbbf24;
-  --status-minor:     #64748b;
-  --status-neutral:   #334155;
+  /* Status — factual only: correct/winning, wrong/losing/live, pending */
+  --status-win:       #12813A;
+  --status-win-soft:  rgba(18, 129, 58, 0.10);
+  --status-loss:      #D0202E;
+  --status-loss-soft: rgba(208, 32, 46, 0.10);
+  --status-pending:   #8A9099;
+  --status-warn:      #B26B00;
 
-  /* Stake semantics — gains reuse the existing decisive green; losses need a
-     functional negative. This is a semantic positive/negative pair the
-     Competition mode requires, not a new decorative accent. */
-  --stake-positive:     var(--status-decisive);
-  --stake-positive-dim: rgba(74,222,128,0.12);
-  --stake-negative:     #f87171;
-  --stake-negative-dim: rgba(248,113,113,0.12);
+  --status-decisive:  var(--status-win);
+  --status-moderate:  var(--status-warn);
+  --status-minor:     var(--status-pending);
+  --status-neutral:   #C4C8CE;
+  --stake-positive:     var(--status-win);
+  --stake-positive-dim: var(--status-win-soft);
+  --stake-negative:     var(--status-loss);
+  --stake-negative-dim: var(--status-loss-soft);
 
-  /* Typography */
-  --font-display:     'Fraunces', Georgia, serif;
-  --font-data:        'Inter', system-ui, sans-serif;
-  --font-mono:        'JetBrains Mono', monospace;
+  /* Type — Inter everywhere, tabular figures for numbers */
+  --font-sans:        'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display:     var(--font-sans);
+  --font-data:        var(--font-sans);
+  --font-mono:        var(--font-sans);
+
+  --text-score:       clamp(2.5rem, 2rem + 2vw, 3.5rem); /* 40 → 56px */
+  --text-title:       1.75rem;   /* 28px page titles */
+  --text-section:     1.125rem;  /* 18px section titles */
+  --text-body:        0.9375rem; /* 15px */
+  --text-meta:        0.8125rem; /* 13px */
 
   /* Spacing rhythm */
   --space-1:  0.25rem;
@@ -53,14 +75,59 @@
   --space-6:  1.5rem;
   --space-8:  2rem;
   --space-10: 2.5rem;
+  --space-section: 2rem;
 
-  /* Radius */
+  /* Shape — one radius, thin borders, almost no shadow */
   --radius-sm:  4px;
   --radius-md:  8px;
-  --radius-lg:  12px;
+  --radius-lg:  8px;
+  --shadow-card: 0 1px 2px rgba(18, 20, 23, 0.04);
+  --shadow-pop:  0 8px 24px rgba(18, 20, 23, 0.12);
+
+  /* Layout */
+  --header-h:     56px;
+  --tabbar-h:     60px;
+  --content-max:  1200px;
 
   /* Motion — compositor-friendly only */
   --duration-fast:   120ms;
-  --duration-normal: 250ms;
+  --duration-normal: 200ms;
   --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
+  --glow-gold:       none;
+  --field-line:      var(--divider);
+}
+
+:root.dark {
+  --bg:               #0E1013;
+  --surface:          #171A1F;
+  --surface-raised:   #1D2026;
+  --surface-overlay:  #242830;
+  --surface-hover:    #1F2329;
+
+  --divider:          #2A2E35;
+  --border-subtle:    #2A2E35;
+  --border-default:   #333842;
+  --border-emphasis:  #454B56;
+
+  --text-primary:     #F1F3F5;
+  --text-secondary:   #C9CDD3;
+  --text-tertiary:    #9AA1AB;
+  --text-muted:       #9AA1AB;
+
+  --brand:           #4C82FF;
+  --brand-hover:     #6A97FF;
+  --brand-contrast:  #FFFFFF;
+  --brand-soft:      rgba(76, 130, 255, 0.16);
+
+  --status-win:       #3CC46B;
+  --status-win-soft:  rgba(60, 196, 107, 0.14);
+  --status-loss:      #FF5A64;
+  --status-loss-soft: rgba(255, 90, 100, 0.14);
+  --status-pending:   #7D848E;
+  --status-warn:      #E0A030;
+  --status-neutral:   #454B56;
+
+  --shadow-card: none;
+  --shadow-pop:  0 8px 24px rgba(0, 0, 0, 0.5);
 }
