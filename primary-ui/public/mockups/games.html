@@ -14,7 +14,7 @@
   .grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 32px; margin-top: 24px; }
   .day { font-size: 13px; font-weight: 700; padding: 18px 0 8px; border-bottom: 2px solid var(--ink); display: flex; justify-content: space-between; }
   .row { display: grid; grid-template-columns: 92px minmax(0, 1fr) 150px 170px 24px; gap: 16px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--rule); cursor: pointer; }
-  .row:hover { background: #FAFAF8; }
+  .row:hover { background: var(--card-hi); }
   .when { font-size: 13px; }
   .when b { display: block; font-size: 14px; }
   .when b.live { color: var(--live); }
@@ -26,10 +26,11 @@
   .teams .t.lost { color: var(--ink-3); }
   .clark { font-size: 13px; }
   .clark b { font-size: 14px; }
-  .clark .probbar { margin-top: 6px; }
+  .clark .probbar { margin-top: 8px; }
   .you { display: flex; gap: 6px; justify-content: flex-end; align-items: center; font-size: 13px; }
   .you .pk { height: 32px; padding: 0 10px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
-  .you .pk:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+  .you .pk:hover { box-shadow: inset 0 0 0 2px var(--tc, var(--ink)); transform: translateY(-1px) scale(1.04); }
+  .you .pk { transition: transform .15s, box-shadow .15s; }
   .you .pk img { width: 18px; height: 18px; }
   .chev { color: var(--ink-3); font-size: 20px; }
   .side h2 { font-family: var(--serif); font-size: 20px; font-weight: 600; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
@@ -85,12 +86,12 @@
       const pct = g.clark[0] === g.h ? g.clark[1] : 100 - g.clark[1];
       const result = g.st === 'final' && g.you ? `<span class="chip ${g.you[0] === w ? 'win' : 'loss'}">${g.you[0] === w ? 'Correct' : 'Wrong'}</span>` : '';
       const you = g.st === 'pre' && !g.you
-        ? `<button class="pk"><img src="${logo(g.a)}" alt="">${g.a}</button><button class="pk"><img src="${logo(g.h)}" alt="">${g.h}</button>`
+        ? `<button class="pk" style="--tc:${color(g.a)}"><img src="${logo(g.a)}" alt="">${g.a}</button><button class="pk" style="--tc:${color(g.h)}"><img src="${logo(g.h)}" alt="">${g.h}</button>`
         : g.you ? `<span>You: <b>${g.you[0]} ${g.you[1]}%</b></span> ${result}` : `<span class="muted">No pick</span>`;
       return `<a class="row" href="${gameUrl(g)}">
         <div class="when"><b class="${g.st === 'live' ? 'live' : ''}">${statusText(g)}</b><span class="muted">${g.st === 'pre' ? g.tv : g.st === 'live' ? g.tv : ''}</span></div>
         <div class="teams">${t(g.a, g.as)}${t(g.h, g.hs)}</div>
-        <div class="clark">Clark: <b>${name(g.clark[0])} ${g.clark[1]}%</b>
+        <div class="clark"><span class="clark-tag"><img src="/brand/clark-logo.jpg" alt="">${g.clark[0]} ${g.clark[1]}%</span>
           <div class="probbar"><span style="width:${100 - pct}%;background:${color(g.a)}"></span><span style="width:${pct}%;background:${color(g.h)}"></span></div>
           <div class="muted" style="margin-top:4px">💬 ${g.chat}</div></div>
         <div class="you">${you}</div><span class="chev">›</span></a>`;

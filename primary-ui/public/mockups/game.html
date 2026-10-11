@@ -6,10 +6,8 @@
 <style>
   body { background: var(--page); }
   .bug { color: #fff; position: relative; overflow: hidden; }
-  .bug::before, .bug::after { content: ''; position: absolute; top: 0; bottom: 0; width: 50%; }
-  .bug::before { left: 0; background: var(--ca); }
-  .bug::after { right: 0; background: var(--ch); }
-  .bug-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 22px 20px 18px; background: linear-gradient(90deg, rgba(0,0,0,.15), rgba(0,0,0,.55) 50%, rgba(0,0,0,.15)); }
+  .bug { background-size: cover; background-position: center 40%; }
+  .bug-inner { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px; padding: 22px 20px 18px; background: radial-gradient(ellipse at center, rgba(0,0,0,.55), rgba(0,0,0,.1) 70%); }
   .side { display: flex; align-items: center; gap: 14px; }
   .side.h { justify-content: flex-end; text-align: right; }
   .side img { width: 72px; height: 72px; filter: drop-shadow(0 2px 6px rgba(0,0,0,.35)); }
@@ -20,7 +18,7 @@
   .mid .clock { font-size: 13px; font-weight: 700; display: inline-flex; gap: 6px; align-items: center; }
   .mid .clock::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #ff3b42; }
   .mid .poss { font-size: 12px; opacity: .85; margin-top: 4px; }
-  .compare { position: relative; z-index: 1; background: rgba(0,0,0,.55); display: flex; gap: 24px; justify-content: center; padding: 8px 20px; font-size: 12.5px; flex-wrap: wrap; }
+  .compare { position: relative; z-index: 1; background: rgba(0,0,0,.6); align-items: center; display: flex; gap: 24px; justify-content: center; padding: 8px 20px; font-size: 12.5px; flex-wrap: wrap; }
   .compare b { font-weight: 700; }
   .yourbar { background: var(--paper); border-bottom: 1px solid var(--rule); }
   .yourbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 44px; font-size: 14px; }
@@ -44,7 +42,7 @@
   .msg .av { width: 28px; height: 28px; border-radius: 50%; flex: none; display: grid; place-items: center; color: #fff; font-size: 11px; font-weight: 700; }
   .msg .who { font-size: 12.5px; font-weight: 700; }
   .msg .who span { font-weight: 600; color: var(--ink-3); font-size: 11.5px; margin-left: 4px; }
-  .playcard { margin: 8px 14px; border: 1px solid var(--rule); border-left: 4px solid var(--ch); border-radius: 8px; padding: 10px 12px; background: #FAFAF8; font-size: 13.5px; }
+  .playcard { margin: 8px 14px; border: 1px solid var(--rule); border-left: 4px solid var(--ch); border-radius: 8px; padding: 10px 12px; background: var(--card-hi); font-size: 13.5px; }
   .playcard .k { font-size: 11.5px; font-weight: 700; color: var(--ink-3); }
   .reacts { display: flex; gap: 6px; margin-top: 8px; }
   .reacts button { height: 26px; padding: 0 8px; border-radius: 999px; background: var(--paper); box-shadow: inset 0 0 0 1px var(--rule); font-size: 12.5px; }
@@ -62,7 +60,7 @@
   .drive summary .res { font-weight: 700; }
   .drive summary .meta { color: var(--ink-3); font-size: 13px; margin-left: auto; }
   .play { display: grid; grid-template-columns: 70px 1fr auto; gap: 10px; padding: 9px 16px 9px 48px; font-size: 13.5px; border-top: 1px dashed var(--rule); }
-  .play.big { background: #FFF8F1; }
+  .play.big { background: var(--warm); }
   .play .t { color: var(--ink-3); font-size: 12.5px; }
   .play .note { display: block; margin-top: 4px; color: var(--ink-2); font-style: italic; }
   .play .wp { font-size: 12px; font-weight: 700; }
@@ -70,7 +68,7 @@
   .pick { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .pick button { height: 56px; border-radius: 10px; box-shadow: inset 0 0 0 1px var(--rule); display: flex; align-items: center; justify-content: center; gap: 10px; font-weight: 700; font-size: 16px; }
   .pick button img { width: 30px; height: 30px; }
-  .pick button.sel { box-shadow: inset 0 0 0 2px var(--ink); background: #FAFAF8; }
+  .pick button.sel { box-shadow: inset 0 0 0 2px var(--ink); background: var(--card-hi); }
   .conf { display: flex; align-items: center; gap: 12px; margin-top: 14px; font-size: 14px; }
   .conf input { flex: 1; accent-color: #121212; }
   .call { font-family: var(--serif); font-size: 28px; line-height: 1.15; font-weight: 600; letter-spacing: -.01em; }
@@ -81,7 +79,7 @@
   .fbar { height: 4px; background: var(--ch); border-radius: 2px; margin-top: 8px; }
   .players { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .pl { display: flex; gap: 10px; align-items: center; border: 1px solid var(--rule); border-radius: 8px; padding: 10px; font-size: 13.5px; }
-  .pl .hs { width: 44px; height: 44px; border-radius: 50%; background: #E9E9E5; flex: none; }
+  .pl .hs { width: 44px; height: 44px; border-radius: 50%; background: var(--chip); flex: none; }
   .comment { padding: 12px 0; border-top: 1px solid var(--rule); font-size: 14.5px; }
   .comment .who { font-size: 13px; font-weight: 700; }
   .comment .who span { color: var(--ink-3); font-weight: 600; }
@@ -145,8 +143,9 @@
     <!-- PREVIEW -->
     <div data-panel-group="game" data-panel="preview" hidden>
       <section class="panel"><div class="ph">Your pick <span class="muted" style="font-size:13px;font-weight:500">Locked at kickoff</span></div>
-        <div class="pb"><div class="pick"><button class="sel"><img data-logo="SF" alt="">49ers</button><button><img data-logo="SEA" alt="">Seahawks</button></div>
-          <div class="conf"><span>Confidence</span><input type="range" min="50" max="100" value="70" disabled><b>70%</b></div></div></section>
+        <div class="pb"><div id="slider"></div></div></section>
+      <section class="panel"><div class="ph">The crew's picks <span class="muted" style="font-size:13px;font-weight:500">The three of us who built this</span></div>
+        <div class="pb" id="crew"></div></section>
       <section class="panel"><div class="pb" style="padding-top:18px">
         <div class="kicker">The Clark Report</div>
         <h1 class="call" style="margin-top:6px">"I'm on Seattle, 63%. Their offense is just hotter right now, and the 49ers have to travel."</h1>
@@ -194,6 +193,8 @@
   const key = new URLSearchParams(location.search).get('g') || 'SF-SEA';
   const g = GAMES.find((x) => `${x.a}-${x.h}` === key) || GAMES.find((x) => x.a === 'SF');
   renderMasthead('live', true); renderFooter();
+  const hx = (c, a) => c + a;
+  document.getElementById('bug').style.backgroundImage = `linear-gradient(90deg, ${hx(color(g.a), 'F2')} 0%, ${hx(color(g.a), '99')} 42%, ${hx(color(g.h), '99')} 58%, ${hx(color(g.h), 'F2')} 100%), url("${stadium(g.h)}")`;
   document.documentElement.style.setProperty('--ca', color(g.a));
   document.documentElement.style.setProperty('--ch', color(g.h));
   const score = (s) => (g.st === 'pre' ? '' : `<div class="score">${s}</div>`);
@@ -203,7 +204,7 @@
       <div class="side"><img src="${logo(g.a)}" alt=""><div><div class="tname">${TEAM[g.a][0]} · ${rec(g.a)}</div><div class="tnick">${name(g.a)}</div></div>${score(g.as)}</div>
       <div class="mid">${mid}</div>
       <div class="side h">${score(g.hs)}<div><div class="tname">${TEAM[g.h][0]} · ${rec(g.h)}</div><div class="tnick">${name(g.h)}</div></div><img src="${logo(g.h)}" alt=""></div></div>
-    <div class="compare"><span>Clark <b>${g.clark[0]} ${g.clark[1]}%</b></span><span>Betting line <b>${g.h} by 3.5</b></span><span>Fans <b>${g.a} 54%</b></span>${g.st === 'live' ? `<span>Live <b>${g.h} 67%</b></span>` : ''}</div>`;
+    <div class="compare"><span class="clark-tag"><img src="/brand/clark-logo.jpg" alt="">Clark ${g.clark[0]} ${g.clark[1]}%</span><span>Betting line <b>${g.h} by 3.5</b></span><span>Fans <b>${g.a} 54%</b></span>${g.st === 'live' ? `<span>Live <b>${g.h} 67%</b></span>` : ''}</div>`;
   const youWinning = g.you && g.st !== 'pre' && winnerOf(g) === g.you[0];
   document.getElementById('yourbar').innerHTML = g.you
     ? `<span>Your pick: <b>${name(g.you[0])} · ${g.you[1]}%</b></span><span class="chip ${youWinning ? 'win' : 'loss'}">${g.st === 'final' ? (youWinning ? 'Correct' : 'Wrong') : youWinning ? 'Winning' : 'Losing'}</span>`
@@ -223,6 +224,11 @@
     <div class="composer"><input placeholder="Message as zane · SF 70%" aria-label="Message"><button class="btn btn-ink btn-sm">Send</button></div>`;
   document.getElementById('chat-side').innerHTML = chat;
   document.getElementById('chat-tab-body').innerHTML = chat;
+  mountSlider(document.getElementById('slider'), g.a, g.h, g.you ? (g.you[0] === g.h ? g.you[1] : 100 - g.you[1]) : 50);
+  document.getElementById('crew').innerHTML = crewPicks([[g.h, 75, 'Home crowd is going to be insane. 12s all day.'], [g.a, 55, "Bosa eats. I'm fading the model on this one."], [g.h, 60, "Clark and I agree, which honestly scares me."]]);
   wireTabs();
+  // Open on the tab that fits the moment: Preview before kickoff, Live during, Recap after.
+  const startTab = g.st === 'pre' ? 'preview' : g.st === 'final' ? 'recap' : 'live';
+  document.querySelector(`[data-tabs="game"] [data-tab="${startTab}"]`).click();
 </script>
 </body></html>

@@ -6,7 +6,9 @@
 <style>
   .front { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 32px; padding-top: 28px; }
   .col-l > *, .col-r > section { margin-bottom: 28px; }
-  .lead-art { aspect-ratio: 16 / 9; border-radius: 4px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 40px; background: linear-gradient(105deg, #D50A0A 0 50%, #003594 50% 100%); }
+  .lead-art { aspect-ratio: 16 / 9; border-radius: 14px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; gap: 40px; background-size: cover; background-position: center; }
+  .lead-art .clark-tag { position: absolute; left: 14px; top: 14px; }
+  .lead-art:hover img { transform: scale(1.06) rotate(-3deg); } .lead-art img { transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
   .lead-art img { width: 130px; height: 130px; filter: drop-shadow(0 6px 18px rgba(0,0,0,.4)); }
   .lead-art .vs { color: #fff; font-family: var(--serif); font-size: 28px; font-weight: 600; }
   .lead h1 { font-family: var(--serif); font-size: 38px; line-height: 1.08; font-weight: 700; letter-spacing: -.02em; margin-top: 14px; }
@@ -42,7 +44,7 @@
   .rank .n { width: 20px; font-weight: 700; color: var(--ink-3); }
   .rank img { width: 22px; height: 22px; }
   .rank .p { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .rank.me { background: #FFF6EF; margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
+  .rank.me { background: var(--warm); margin: 0 -8px; padding-left: 8px; padding-right: 8px; }
   .switch { display: inline-flex; background: var(--chip); border-radius: 999px; padding: 3px; margin-top: 18px; }
   .switch button { height: 30px; padding: 0 14px; border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--ink-3); }
   .switch button.on { background: var(--paper); color: var(--ink); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
@@ -77,9 +79,9 @@
 
   <!-- Center: the Clark Report -->
   <article class="lead">
-    <a href="game.html?g=TB-DAL"><div class="lead-art"><img data-logo="TB" alt=""><span class="vs">at</span><img data-logo="DAL" alt=""></div></a>
+    <a href="report.html"><div class="lead-art" id="lead-art"><span class="clark-tag"><img src="/brand/clark-logo.jpg" alt="">Clark: DAL 64%</span><img data-logo="TB" alt=""><span class="vs">at</span><img data-logo="DAL" alt=""></div></a>
     <div class="kicker" style="margin-top:14px">The Clark Report · Sunday Night Football</div>
-    <a href="game.html?g=TB-DAL"><h1>Fans are on Tampa Bay. Clark has Dallas at 64%, and the reason is the Cowboys' pass rush.</h1></a>
+    <a href="report.html"><h1>Fans are on Tampa Bay. Clark has Dallas at 64%, and the reason is the Cowboys' pass rush.</h1></a>
     <p class="dek">Dallas leads the league in pressure rate, and Baker Mayfield's numbers fall off a cliff under pressure. That gap is bigger than anything Tampa Bay has going for it.</p>
     <div class="byline">Clark's biggest disagreement with the fans this week · 8:20 PM on NBC</div>
     <div class="lead-pick"><span style="font-weight:600">Your pick</span><button class="pk"><img data-logo="TB" alt="">Buccaneers</button><button class="pk"><img data-logo="DAL" alt="">Cowboys</button><span class="muted" style="font-size:13px">Locks at 8:20 PM</span></div>
@@ -97,6 +99,7 @@
       <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule)"><span>Streak</span><b>6 weeks</b></div>
       <div class="vs3"><div><b>38–26</b><span>You</span></div><div><b>41–23</b><span>Clark</span></div><div><b>36–28</b><span>Fans</span></div></div>
       <p class="muted" style="font-size:13px;margin-top:8px">You're 2–7 on AFC West games.</p></section>
+    <section><h2 class="h-sec">The crew this week</h2><div id="crew" style="margin-top:12px"></div></section>
     <section><h2 class="h-sec">Fanbases this week <a href="leaderboard.html">All 32</a></h2>
       <div class="rank"><span class="n">1</span><img data-logo="DET" alt="">Lions fans<span class="p">71%</span></div>
       <div class="rank"><span class="n">2</span><img data-logo="PHI" alt="">Eagles fans<span class="p">69%</span></div>
@@ -117,6 +120,8 @@
       <div class="r"><img src="${logo(g.a)}" alt="">${name(g.a)}<b>${g.as}</b></div><div class="r"><img src="${logo(g.h)}" alt="">${name(g.h)}<b>${g.hs}</b></div></a>`;
   }).join('');
   document.querySelectorAll('[data-logo]').forEach((img) => (img.src = logo(img.dataset.logo)));
+  document.getElementById('lead-art').style.backgroundImage = `linear-gradient(105deg, ${color('TB')}D9 0 48%, ${color('DAL')}D9 52% 100%), url("${stadium('DAL')}")`;
+  document.getElementById('crew').innerHTML = crewPicks([['SEA', 75, '7–3 this week. Carrying the group chat.'], ['WAS', 55, "6–4. Giants broke my heart again."], ['DAL', 70, "8–2. Don't tell Clark I copied him."]]);
   wireTabs();
 </script>
 </body></html>

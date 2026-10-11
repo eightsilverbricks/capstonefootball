@@ -98,9 +98,10 @@ function communityItems(signedIn) {
 function renderMasthead(active, signedIn) {
   const live = GAMES.filter((g) => g.st === 'live');
   const order = [...live, ...GAMES.filter((g) => g.st === 'pre'), ...GAMES.filter((g) => g.st === 'final')];
-  const right = signedIn
+  const themeBtn = `<button class="theme-btn" id="theme-btn" aria-label="Switch light or dark mode">${currentTheme() === 'dark' ? '☀️' : '🌙'}</button>`;
+  const right = themeBtn + (signedIn
     ? `<span class="streak">Streak <b>6 weeks</b></span><span class="streak">Week <b>8–2</b></span><a href="my-season.html" class="avatar" title="Zane Wolf">ZW</a>`
-    : `<a href="#" class="btn btn-sm hide-sm">Sign in</a><a href="landing.html#signup" class="btn btn-sm btn-ink">Create account</a>`;
+    : `<a href="#" class="btn btn-sm hide-sm">Sign in</a><a href="landing.html#signup" class="btn btn-sm btn-red">Create account</a>`);
   const nav = NAV.map(([k, label, href]) => `<a href="${href}" class="${k === active ? 'on' : ''} ${k === 'live' ? 'live-dot' : ''}">${label}</a>`).join('');
   const tabs = NAV.filter(([k]) => k !== 'leaderboard').map(([k, label, href]) =>
     `<a href="${href}" class="${k === active ? 'on' : ''}">${svg(k)}${k === 'season' ? 'Me' : label}</a>`).join('');
@@ -115,13 +116,20 @@ function renderMasthead(active, signedIn) {
     <header class="masthead"><div class="wrap">
       <div class="mast-top">
         <div class="mast-left"><span>Sunday, October 11, 2026</span></div>
-        <a href="home.html" class="wordmark">The Clark Index<i>.</i></a>
+        <a href="home.html" class="wordmark" aria-label="Clark Index home"><img src="/brand/clark-logo.jpg" alt=""><span class="wordmark-text">CLARK <b>INDEX</b></span></a>
         <div class="mast-right">${right}</div>
       </div>
       <nav class="secnav" aria-label="Main">${nav}</nav>
     </div></header>
     <nav class="tabbar" aria-label="Main">${tabs}</nav>`;
   startTicker();
+  document.querySelectorAll('[data-count]').forEach(countUp);
+  document.getElementById('theme-btn').addEventListener('click', (e) => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    e.currentTarget.textContent = next === 'dark' ? '☀️' : '🌙';
+  });
+  revealAll();
 }
 
 /* Ticker advances one game every 5s; arrows page by four; hover pauses. */
@@ -158,4 +166,135 @@ function wireTabs(root = document) {
       document.querySelectorAll(`[data-panel-group="${group}"]`).forEach((p) => (p.hidden = p.dataset.panel !== btn.dataset.tab));
     }));
   });
+}
+
+
+/* ── Theme ─────────────────────────────────────────────────────────────── */
+function currentTheme() {
+  try { return localStorage.getItem('clark-mock-theme') || 'light'; } catch { return 'light'; }
+}
+function setTheme(t) {
+  try { localStorage.setItem('clark-mock-theme', t); } catch { /* private mode */ }
+  document.documentElement.dataset.theme = t;
+}
+document.documentElement.dataset.theme = currentTheme();
+
+/* ── Motion helpers ────────────────────────────────────────────────────── */
+const REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+/* Stagger-in the main blocks of every page. */
+function revealAll() {
+  const blocks = document.querySelectorAll('main section, main .panel, main .card, main .kpi, main .row, main .item, main article, .hero > *, .three > div, .pages a');
+  if (REDUCED || document.visibilityState === 'hidden') return;
+  blocks.forEach((el, i) => { el.classList.add('reveal'); el.style.animationDelay = `${Math.min(i, 14) * 45}ms`; });
+  // Never leave content invisible if animations are paused or skipped.
+  setTimeout(() => blocks.forEach((el) => el.classList.remove('reveal')), 1600);
+}
+/* Count a number up from 0, keeping any text around it (e.g. "38–26" counts both). */
+function countUp(el) {
+  const target = el.textContent;
+  if (REDUCED) return;
+  const nums = target.match(/\d+/g);
+  if (!nums) return;
+  const start = performance.now();
+  const tick = (now) => {
+    const k = Math.min(1, (now - start) / 900);
+    const ease = 1 - Math.pow(1 - k, 3);
+    let i = 0;
+    el.textContent = target.replace(/\d+/g, () => Math.round(Number(nums[i++]) * ease).toLocaleString());
+    if (k < 1) requestAnimationFrame(tick); else el.textContent = target;
+  };
+  requestAnimationFrame(tick);
+}
+
+/* ── Stadium photos (Wikimedia Commons) ────────────────────────────────── */
+const STADIUM = {
+  DAL: 'Arlington_June_2020_4_(AT&T_Stadium).jpg', SEA: '2026_FIFA_World_Cup_-_Belgium_v._Egypt_in_Seattle_-_04.jpg',
+  LAC: 'SoFi_Stadium_2023.jpg', LA: 'SoFi_Stadium_2023.jpg', ARI: 'State_Farm_Stadium_2022.jpg',
+  GB: 'Lambeau_Field_-_Green_Bay_Packers_Football_Stadium_-_Wisconsin.jpg',
+  ATL: 'Mercedes_Benz_Stadium_time_lapse_capture_2017-08-13.jpg',
+};
+const stadium = (t, w = 1400) => STADIUM[t] ? `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(STADIUM[t])}?width=${w}` : '';
+
+/* ── The crew ──────────────────────────────────────────────────────────── */
+const CREW = [
+  { id: 'takuo', name: 'Takuo', team: 'SEA' },
+  { id: 'nick', name: 'Nick', team: 'NYG' },
+  { id: 'zane', name: 'Zane', team: 'BUF' },
+];
+/* picks: [[pick, pct, line], …] in CREW order */
+function crewPicks(picks) {
+  return `<div class="crew">${CREW.map((c, i) => `<div class="crew-row"><span class="crew-av ${c.id}" role="img" aria-label="${c.name}"></span>
+    <div class="bubble"><b>${c.name}</b> · <span class="pk">${picks[i][0]} ${picks[i][1]}%</span><br>${picks[i][2]}</div></div>`).join('')}</div>`;
+}
+
+/* ── Fun confidence slider ─────────────────────────────────────────────── */
+/* value: 0 = 100% away … 50 = no pick … 100 = 100% home. Sparks fly in the team's color while dragging. */
+function mountSlider(root, away, home, initial = 50) {
+  root.classList.add('fslider');
+  root.innerHTML = `<div class="fs-labels"><span data-side="a">${name(away)}</span><span data-side="h">${name(home)}</span></div>
+    <div class="fs-track"><span class="fs-fill"></span><span class="fs-mid"></span><span class="fs-thumb" role="slider" tabindex="0" aria-label="Your pick and confidence" aria-valuemin="0" aria-valuemax="100"><img alt=""></span></div>
+    <div class="fs-read"></div><canvas class="fs-canvas"></canvas>`;
+  const track = root.querySelector('.fs-track'), fill = root.querySelector('.fs-fill'), thumb = root.querySelector('.fs-thumb');
+  const img = thumb.querySelector('img'), read = root.querySelector('.fs-read'), canvas = root.querySelector('.fs-canvas');
+  const ctx = canvas.getContext('2d');
+  let value = initial, sparks = [], raf = null;
+
+  const side = () => (value === 50 ? null : value > 50 ? home : away);
+  const conf = () => 50 + Math.abs(value - 50);
+  function render() {
+    const t = side();
+    const tc = t ? color(t) : 'var(--ink-3)';
+    thumb.style.left = `${value}%`;
+    thumb.style.setProperty('--tc', tc);
+    img.src = t ? logo(t) : '/brand/clark-logo.jpg';
+    fill.style.background = tc;
+    fill.style.left = value >= 50 ? '50%' : `${value}%`;
+    fill.style.width = `${Math.abs(value - 50)}%`;
+    root.querySelectorAll('.fs-labels span').forEach((s) => {
+      const on = (s.dataset.side === 'h' && value > 50) || (s.dataset.side === 'a' && value < 50);
+      s.classList.toggle('on', on); s.style.color = on ? tc : '';
+    });
+    read.innerHTML = t ? `${name(t)} · ${conf()}%<small>${conf() >= 90 ? 'Lock it in 🔒' : conf() >= 75 ? 'Feeling good' : conf() >= 60 ? 'Leaning' : 'Coin flip-ish'}</small>` : `Drag toward a team<small>Further = more confident</small>`;
+    thumb.setAttribute('aria-valuenow', String(value));
+  }
+  function burst(x, y, c, n) {
+    if (REDUCED) return;
+    const room = Math.max(0, 90 - sparks.length);
+    for (let i = 0; i < Math.min(n, room); i++) {
+      const a = Math.random() * Math.PI * 2, v = 1.5 + Math.random() * 3.5;
+      sparks.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 1.5, life: 1, c, r: 1.5 + Math.random() * 2.5 });
+    }
+    if (!raf) raf = requestAnimationFrame(step);
+  }
+  function step() {
+    canvas.width = canvas.clientWidth * devicePixelRatio; canvas.height = canvas.clientHeight * devicePixelRatio;
+    ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+    sparks = sparks.filter((p) => p.life > 0);
+    sparks.forEach((p) => {
+      p.x += p.vx; p.y += p.vy; p.vy += 0.18; p.life -= 0.03;
+      ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.c;
+      ctx.shadowColor = p.c; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r * p.life + 0.5, 0, Math.PI * 2); ctx.fill();
+    });
+    raf = sparks.length ? requestAnimationFrame(step) : null;
+  }
+  function setFrom(clientX, spark) {
+    const r = track.getBoundingClientRect();
+    const prev = value;
+    value = Math.round(Math.min(100, Math.max(0, ((clientX - r.left) / r.width) * 100)));
+    if (Math.abs(value - 50) < 3) value = 50;
+    render();
+    const t = side();
+    if (spark && t && value !== prev) {
+      const cr = canvas.getBoundingClientRect();
+      burst(r.left + (value / 100) * r.width - cr.left, r.top + r.height / 2 - cr.top, color(t), 3 + Math.round(Math.abs(value - 50) / 10));
+    }
+  }
+  const up = () => { root.classList.remove('drag'); window.removeEventListener('pointermove', move); };
+  const move = (e) => setFrom(e.clientX, true);
+  track.addEventListener('pointerdown', (e) => { root.classList.add('drag'); setFrom(e.clientX, true); window.addEventListener('pointermove', move); window.addEventListener('pointerup', up, { once: true }); });
+  thumb.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { value = Math.min(100, Math.max(0, value + (e.key === 'ArrowRight' ? 5 : -5))); render(); e.preventDefault(); }
+  });
+  render();
 }

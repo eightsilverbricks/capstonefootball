@@ -2,7 +2,7 @@
    Direction: The Athletic's masthead + score ticker and editorial type,
    Sleeper's game-page functionality (tabs, live feed, chat beside the game). */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@600;700;800;900&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap');
 
 :root {
   --paper: #FFFFFF;
@@ -137,3 +137,115 @@ img { display: block; }
 }
 
 @media (prefers-reduced-motion: reduce) { .community-rail { animation: none !important; } .community-inner { overflow-x: auto; } }
+
+/* ═══ v2: playful layer — logo red, Clark's colors, dark mode, motion ═══ */
+
+:root {
+  --brand: #C8272D;              /* logo red */
+  --brand-2: #E8453C;
+  --clark: linear-gradient(135deg, #E23B3B 0%, #FF8A3D 100%);
+  --clark-solid: #F05A34;
+  --clark-glow: 0 0 0 3px rgba(240, 90, 52, .18), 0 6px 18px rgba(240, 90, 52, .28);
+  --display: 'Montserrat', 'Inter', sans-serif;
+  --page: #F5F3EF;
+  --card-hi: #FAFAF8;
+  --warm: #FFF6EF;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 6px 20px rgba(0,0,0,.06);
+}
+:root[data-theme="dark"] {
+  --paper: #16181C;
+  --page: #0E0F12;
+  --ink: #F2F2F0;
+  --ink-2: #C9C9C6;
+  --ink-3: #8E8E8A;
+  --rule: #2A2C31;
+  --rule-strong: #F2F2F0;
+  --chip: #23252B;
+  --card-hi: #1C1E23;
+  --warm: #2A1B16;
+  --win: #3DD07A;
+  --loss: #FF5C64;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+:root[data-theme="dark"] body { background: var(--page); }
+:root[data-theme="dark"] .btn-ink { background: #F2F2F0; color: #121212; }
+:root[data-theme="dark"] .chip.win { background: rgba(61,208,122,.14); }
+:root[data-theme="dark"] .chip.loss { background: rgba(255,92,100,.14); }
+:root[data-theme="dark"] .chip.live { background: rgba(255,92,100,.14); }
+
+/* Display type matches the logo */
+h1, .h-sec, .wordmark-text, .top h1, .lead h1, .hero h1, .call, .art h1, .body h2, .tnick { font-family: var(--display) !important; font-weight: 800 !important; letter-spacing: -.02em; }
+.h-sec { font-size: 20px; }
+
+/* Logo lockup */
+.wordmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); }
+.wordmark img { width: 42px; height: 42px; border-radius: 50%; transition: transform .4s cubic-bezier(.34,1.56,.64,1); }
+.wordmark:hover img { transform: rotate(-12deg) scale(1.06); }
+.wordmark-text { font-size: 22px; font-weight: 900 !important; letter-spacing: .01em; color: var(--ink); }
+.wordmark-text b { color: var(--brand); font-weight: 900; }
+.theme-btn { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; box-shadow: inset 0 0 0 1px var(--rule); font-size: 16px; transition: transform .3s; }
+.theme-btn:hover { transform: rotate(20deg); }
+
+/* Chunky, pressable buttons */
+.btn { transition: transform .12s, box-shadow .12s, background .15s; }
+.btn-ink, .btn-red { box-shadow: 0 3px 0 rgba(0,0,0,.25); }
+.btn-ink:active, .btn-red:active, .btn-line:active { transform: translateY(2px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.btn-red { background: var(--brand); color: #fff; }
+.btn-red:hover { background: var(--brand-2); transform: translateY(-1px); }
+.btn-ink:hover { transform: translateY(-1px); }
+
+/* Clark's identity */
+.clark-tag { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding: 0 10px 0 3px; border-radius: 999px; background: var(--clark); color: #fff; font-weight: 800; font-size: 12.5px; box-shadow: var(--clark-glow); white-space: nowrap; }
+.clark-tag img { width: 20px; height: 20px; border-radius: 50%; background: #fff; }
+.clark-av { border-radius: 50%; box-shadow: var(--clark-glow); }
+.kicker { color: var(--brand); }
+
+/* The crew (founder avatars cropped from founders/group.jpg) */
+.crew-av { display: block; width: 44px; height: 44px; border-radius: 50%; background-image: url('/founders/group.jpg'); background-size: 300% auto; background-color: #000; flex: none; box-shadow: 0 0 0 3px var(--team, #333); }
+.crew-av.takuo { background-position: 7% 18%; --team: #69BE28; }
+.crew-av.nick { background-position: 49% 18%; --team: #0B2265; }
+.crew-av.zane { background-position: 91% 18%; --team: #C60C30; }
+.crew { display: grid; gap: 10px; }
+.crew-row { display: flex; gap: 10px; align-items: flex-start; }
+.bubble { position: relative; background: var(--card-hi); border: 1px solid var(--rule); border-radius: 14px; padding: 8px 12px; font-size: 14px; flex: 1; }
+.bubble::before { content: ''; position: absolute; left: -6px; top: 14px; width: 10px; height: 10px; background: var(--card-hi); border-left: 1px solid var(--rule); border-bottom: 1px solid var(--rule); transform: rotate(45deg); }
+.bubble b { font-size: 12.5px; }
+.bubble .pk { font-weight: 800; }
+
+/* Stadium photos */
+.stadium-bg { position: relative; background-size: cover; background-position: center; }
+.stadium-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.65)); }
+.stadium-bg > * { position: relative; z-index: 1; }
+
+/* Motion */
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes pulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,59,66,.6); } 70% { box-shadow: 0 0 0 7px rgba(255,59,66,0); } }
+@keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-6deg); } 75% { transform: rotate(6deg); } }
+.reveal { opacity: 0; animation: rise .6s cubic-bezier(.16,1,.3,1) forwards; }
+.tk-status.live::before, .mid .clock::before, .secnav .live-dot::before { animation: pulse 1.6s infinite; }
+.panel, .card, .kpi, .ls, .pl, .pc, .row, .item, .report, .pages a { transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s; }
+.panel:hover, .card:hover, .kpi:hover, .pl:hover, .pages a:hover, .ls:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.reacts button:active { animation: wiggle .3s; }
+
+/* Fun slider: team logo thumb, team-color fill, sparks */
+.fslider { position: relative; padding: 18px 0 8px; user-select: none; touch-action: none; }
+.fs-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.fs-labels span { transition: transform .2s, color .2s; }
+.fs-labels span.on { transform: scale(1.12); }
+.fs-track { position: relative; height: 12px; border-radius: 999px; background: var(--chip); box-shadow: inset 0 1px 2px rgba(0,0,0,.15); cursor: pointer; }
+.fs-fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; transition: background .2s; }
+.fs-mid { position: absolute; left: 50%; top: -4px; bottom: -4px; width: 2px; background: var(--ink-3); opacity: .5; }
+.fs-thumb { position: absolute; top: 50%; width: 46px; height: 46px; margin: -23px 0 0 -23px; border-radius: 50%; background: var(--paper); box-shadow: 0 4px 14px rgba(0,0,0,.25), 0 0 0 3px var(--tc, var(--ink-3)); display: grid; place-items: center; cursor: grab; transition: box-shadow .2s, transform .15s; }
+.fs-thumb img { width: 32px; height: 32px; transition: transform .2s; }
+.fslider.drag .fs-thumb { cursor: grabbing; transform: scale(1.15); box-shadow: 0 6px 20px rgba(0,0,0,.3), 0 0 0 4px var(--tc), 0 0 22px var(--tc); }
+.fs-read { text-align: center; margin-top: 14px; font-family: var(--display); font-weight: 800; font-size: 18px; min-height: 26px; }
+.fs-read small { display: block; font-family: var(--sans); font-weight: 500; font-size: 12.5px; color: var(--ink-3); }
+.fs-canvas { position: absolute; inset: -40px -20px; pointer-events: none; width: calc(100% + 40px); height: calc(100% + 80px); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; animation: none; }
+  .tk-status.live::before, .mid .clock::before, .secnav .live-dot::before { animation: none; }
+  .panel:hover, .card:hover, .kpi:hover, .pl:hover, .pages a:hover, .ls:hover { transform: none; }
+}
+@media (max-width: 767px) { .wordmark img { width: 34px; height: 34px; } .wordmark-text { font-size: 17px; } }
