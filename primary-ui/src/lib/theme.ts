@@ -7,7 +7,7 @@ export type ThemePreference = 'light' | 'dark' | 'system';
 
 export const THEME_STORAGE_KEY = 'clark-theme';
 const DEFAULT_THEME: ThemePreference = 'light';
-const THEME_COLORS = { light: '#F2F3F5', dark: '#0E1013' } as const;
+const THEME_COLORS = { light: '#F5F3EF', dark: '#0E0F12' } as const;
 
 export function isThemePreference(value: unknown): value is ThemePreference {
   return value === 'light' || value === 'dark' || value === 'system';

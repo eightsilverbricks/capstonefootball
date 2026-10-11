@@ -1,128 +1,150 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import PreSeasonNotice from '@/components/PreSeasonNotice';
+import { useEffect, useMemo, useState } from 'react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 import Header from '@/components/Header';
-import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
 import WeekStrip from '@/components/WeekStrip';
-import RecordPreview from '@/components/RecordPreview';
-import SlateSection from '@/components/games/SlateSection';
+import PreSeasonNotice from '@/components/PreSeasonNotice';
+import GameRow from '@/components/games/GameRow';
 import { usePredictions } from '@/hooks/usePredictions';
+import { useUserPicks } from '@/hooks/useUserPicks';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import { groupBySlate } from '@/lib/slate';
 import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import { gameKey } from '@/lib/threeWaySignal';
+import { weekRecords, weekStats } from '@/lib/rail';
+import { isFinal } from '@/lib/gameStatus';
+import { toast } from '@/lib/fx';
+import { getTeam } from '@/data/teams';
+import { ApiPrediction } from '@/types/prediction';
 
-/**
- * The Games page — the week laid out the way it's actually watched.
- *
- * Two ideas drive the structure. Games are grouped into their kickoff windows
- * (Thursday night, the 1 o'clock slate, Sunday night, Monday night) because
- * that's the order fans experience a week in, and it makes any single game
- * findable by when it's on rather than by scanning a ranked list. And the
- * week's most consequential matchup is pulled out as a lead card at display
- * scale, so the page opens with a point of view instead of row one of sixteen.
- *
- * Both the lead and the grouping are derived in lib/slate.ts — this component
- * only composes them.
- */
-const GamesView: React.FC = () => {
+function ClarkLock({ games }: { games: ApiPrediction[] }) {
+  const open = games.filter((g) => !isFinal(g));
+  const pool = open.length ? open : games;
+  if (pool.length === 0) return null;
+  const prob = (g: ApiPrediction) => Math.max(g.home_win_prob, g.away_win_prob);
+  const lock = [...pool].sort((a, b) => prob(b) - prob(a))[0];
+  const loser = lock.predicted_winner === lock.home_team ? lock.away_team : lock.home_team;
+  const name = (t: string) => getTeam(t)?.name ?? t;
+  return (
+    <div className="clark-card" style={{ maxWidth: 520 }}>
+      <img src="/brand/clark-logo.jpg" alt="" />
+      <p>
+        "My most confident pick this week: the {name(lock.predicted_winner)}, {Math.round(prob(lock) * 100)}% over the {name(loser)}."
+        <small>Clark · picks lock at each kickoff</small>
+      </p>
+    </div>
+  );
+}
+
+function YourWeek({ games }: { games: ApiPrediction[] }) {
+  const { picks } = useUserPicks();
+  const picked = games.filter((g) => picks[gameKey(g)]).length;
+  const graded = games.filter((g) => picks[gameKey(g)] && isFinal(g) && g.actual_winner);
+  const right = graded.filter((g) => picks[gameKey(g)].team === g.actual_winner).length;
+  const clark = weekStats(games).find((s) => s.id === 'clark-record');
+  return (
+    <section>
+      <h2>Your week</h2>
+      <div className="gp-stat"><span>Picked</span><b>{picked} of {games.length}</b></div>
+      <div className="gp-stat"><span>Your record</span><b>{graded.length ? `${right}–${graded.length - right}` : '—'}</b></div>
+      <div className="gp-stat"><span>Clark</span><b>{clark?.value ?? '—'}</b></div>
+    </section>
+  );
+}
+
+/** The Games page: the week as scoreboard rows grouped by viewing window, picks made in the row. */
+export default function GamesView() {
   const { predictions, loading, error, reload } = usePredictions();
-  // Demo seasons are finished, so they open on week 1 rather than the calendar.
+  const { picks } = useUserPicks();
   const { config: seasonConfig } = useSeasonMode();
   const isDemo = seasonConfig.isDemo;
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
 
-  const availableWeeks = useMemo(
-    () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
-    [predictions],
-  );
+  const availableWeeks = useMemo(() => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b), [predictions]);
 
-  // Initialise / repair the selected week from the data (default = current week).
   useEffect(() => {
     if (availableWeeks.length === 0) return;
     if (selectedWeek === null || !availableWeeks.includes(selectedWeek)) {
       setSelectedWeek(resolveCurrentWeek(availableWeeks, { isDemo }));
     }
-  }, [availableWeeks, selectedWeek]);
+  }, [availableWeeks, selectedWeek, isDemo]);
 
   const activeWeek = selectedWeek ?? resolveCurrentWeek(availableWeeks, { isDemo });
-
-  const weekGames = useMemo(
-    () => predictions.filter((g) => g.week === activeWeek),
-    [predictions, activeWeek],
-  );
-
+  const weekGames = useMemo(() => predictions.filter((g) => g.week === activeWeek), [predictions, activeWeek]);
   const slate = useMemo(() => groupBySlate(weekGames), [weekGames]);
+  const records = useMemo(() => weekRecords(predictions, picks), [predictions, picks]);
 
-  const handleWeekChange = (week: number) => setSelectedWeek(week);
-
-  const hasResults = weekGames.length > 0;
+  const copyChallenge = async () => {
+    const link = `${window.location.origin}/games?challenge=${activeWeek}`;
+    try {
+      await navigator.clipboard.writeText(link);
+      toast('Challenge link copied. Send it to someone who thinks they know ball 🏈');
+    } catch {
+      toast(`Copy this link: ${link}`);
+    }
+  };
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
+    <div className="min-h-screen">
       <Header />
-
-      {/* Week navigation — the primary action on this page */}
-      {availableWeeks.length > 0 && (
-        <div className="sticky top-[57px] z-30">
-          <WeekStrip
-            availableWeeks={availableWeeks}
-            selectedWeek={activeWeek}
-            onChange={handleWeekChange}
-          />
+      <main className="mx-auto px-4 sm:px-5 pb-16" style={{ maxWidth: 'var(--content-max)' }}>
+        <div className="mt-5"><PreSeasonNotice /></div>
+        <div className="gp-top">
+          <div>
+            <div className="gp-kicker">{seasonConfig.season} {isDemo ? 'demo season' : 'regular season'}</div>
+            <h1 className="gp-title">{weekTitle(activeWeek)}</h1>
+          </div>
+          <ClarkLock games={weekGames} />
         </div>
-      )}
+        <WeekStrip availableWeeks={availableWeeks} selectedWeek={activeWeek} onChange={setSelectedWeek} records={records} />
 
-      <main className="max-w-7xl mx-auto px-4 pt-8 pb-16">
-        <div className="mb-5"><PreSeasonNotice /></div>
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
-          <h1
-            className="font-bold leading-[0.92] tracking-tight"
-            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 4rem)', color: 'var(--text-primary)' }}
-          >
-            {weekTitle(activeWeek)}
-          </h1>
-          <RecordPreview variant="compact" />
-        </div>
-
-        {/* Loading */}
         {loading && (
-          <div className="flex flex-col items-center justify-center py-20 gap-4">
-            <RefreshCw className="w-8 h-8 text-white/30 animate-spin" />
-            <p className="text-sm text-white/40">Loading predictions…</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-3" style={{ color: 'var(--ink-3)' }}>
+            <RefreshCw className="w-6 h-6 animate-spin" />
+            <p className="text-sm">Loading games</p>
           </div>
         )}
 
-        {/* Error */}
         {!loading && error && (
-          <div className="rounded-xl border border-red-800/50 bg-red-950/20 p-6">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-red-400 mt-0.5 shrink-0" />
-              <div>
-                <h3 className="text-white font-semibold mb-1">Couldn't load predictions</h3>
-                <p className="text-red-300/70 text-sm mb-3">{error}</p>
-                <p className="text-white/30 text-xs mb-4">Make sure the prediction API is running, then try again.</p>
-                <button onClick={reload} className="px-4 py-2 text-sm font-medium rounded-md border border-[var(--divider)] bg-[var(--surface)] hover:bg-[var(--surface-hover)] transition-colors">
-                  Retry
-                </button>
-              </div>
-            </div>
+          <div className="clark-card my-8">
+            <AlertCircle className="w-8 h-8 shrink-0" style={{ color: 'var(--loss)' }} />
+            <p>
+              Couldn't load this week's games.
+              <small>{error}</small>
+            </p>
+            <button type="button" className="pill pill-red ml-auto" onClick={reload}>Try again</button>
           </div>
         )}
 
-        {/* The week */}
-        {!loading && !error && hasResults && (
-          <>
-            {slate.map((group) => (
-              <SlateSection key={group.window.id} group={group} />
-            ))}
-          </>
+        {!loading && !error && weekGames.length > 0 && (
+          <div className="gp-grid">
+            <div>
+              {slate.map((group) => (
+                <section key={group.window.id} aria-labelledby={`slate-${group.window.id}`}>
+                  <div className="gp-day">
+                    <span id={`slate-${group.window.id}`}>{group.window.label}</span>
+                    <span className="muted">{group.games.length} {group.games.length === 1 ? 'game' : 'games'}</span>
+                  </div>
+                  {group.games.map((g) => <GameRow key={gameKey(g)} game={g} />)}
+                </section>
+              ))}
+            </div>
+            <aside className="gp-side">
+              <YourWeek games={weekGames} />
+              <section className="gp-h2h">
+                <h2>Head-to-head</h2>
+                <p>Send a friend a link. You both pick this week's games, and the winner gets bragging rights.</p>
+                <button type="button" className="pill" onClick={copyChallenge}>Copy challenge link</button>
+              </section>
+            </aside>
+          </div>
         )}
 
+        {!loading && !error && weekGames.length === 0 && (
+          <p className="py-16 text-center" style={{ color: 'var(--ink-3)' }}>No games this week.</p>
+        )}
       </main>
-
       <Footer />
     </div>
   );
-};
-
-export default GamesView;
+}

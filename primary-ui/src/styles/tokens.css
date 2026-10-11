@@ -1,133 +1,105 @@
 /* ─── Clark Index design tokens ───────────────────────────────────────────────
-   Modeled on ESPN + Real Sports (CLARK_OVERHAUL_PLAN.md §13): light by default,
-   dense and neutral, team colors and logos carry the visual interest. One
-   brand accent, used only for buttons and active tabs. Dark theme follows the
-   system setting or an explicit choice in Settings (html.dark).
+   From the approved mockups (public/mockups): The Athletic-style masthead and
+   score rail, the logo's red as the brand color, Clark's red→orange gradient
+   for everything that is his, Montserrat display type, light by default with
+   a dark theme (html.dark — see src/lib/theme.ts).
 
-   The legacy names (--accent-gold, --surface-raised, --font-display, …) are
-   kept as aliases so every existing component picks up the new look; new code
-   should use the semantic names in the first block.
+   Legacy names (--accent-gold, --surface-raised, --text-*, …) stay as aliases
+   so older components keep working while pages are rebuilt.
    ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
-  /* Surfaces */
-  --bg:               #F2F3F5;
-  --surface:          #FFFFFF;
-  --surface-raised:   #F7F8FA;
-  --surface-overlay:  #EEF0F3;
-  --surface-hover:    #F4F5F7;
+  --paper:      #FFFFFF;
+  --page:       #F5F3EF;
+  --ink:        #121212;
+  --ink-2:      #3A3A3A;
+  --ink-3:      #6B6B6B;
+  --rule:       #E4E4E0;
+  --chip:       #F0F0EC;
+  --card-hi:    #FAFAF8;
+  --warm:       #FFF6EF;
 
-  /* Lines */
-  --divider:          #E3E5E8;
-  --border-subtle:    #E3E5E8;
-  --border-default:   #D9DCE0;
-  --border-emphasis:  #C4C8CE;
+  --brand:          #C8272D;
+  --brand-hover:    #E8453C;
+  --brand-contrast: #FFFFFF;
+  --brand-soft:     rgba(200, 39, 45, .10);
+  --clark:          linear-gradient(135deg, #E23B3B 0%, #FF8A3D 100%);
+  --clark-solid:    #F05A34;
+  --clark-glow:     0 0 0 3px rgba(240, 90, 52, .18), 0 6px 18px rgba(240, 90, 52, .28);
 
-  /* Text */
-  --text-primary:     #121417;
-  --text-secondary:   #3B4047;
-  --text-tertiary:    #5F6670;
-  --text-muted:       #5F6670;
+  --win:  #13804A;
+  --loss: #C8102E;
+  --live: #E0242E;
 
-  /* Brand accent — buttons and active tabs only */
-  --brand:           #1450D8;
-  --brand-hover:     #0F42B8;
-  --brand-contrast:  #FFFFFF;
-  --brand-soft:      rgba(20, 80, 216, 0.10);
-  --accent-gold:      var(--brand);
-  --accent-gold-dim:  var(--brand-soft);
+  --font-sans:    'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Montserrat', 'Inter', sans-serif;
+  --font-serif:   'Newsreader', Georgia, serif;
+  --font-data:    var(--font-sans);
+  --font-mono:    var(--font-sans);
 
-  /* Status — factual only: correct/winning, wrong/losing/live, pending */
-  --status-win:       #12813A;
-  --status-win-soft:  rgba(18, 129, 58, 0.10);
-  --status-loss:      #D0202E;
-  --status-loss-soft: rgba(208, 32, 46, 0.10);
-  --status-pending:   #8A9099;
-  --status-warn:      #B26B00;
+  --text-score:   clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  --text-title:   2.25rem;
+  --text-section: 1.25rem;
+  --text-body:    0.9375rem;
+  --text-meta:    0.8125rem;
 
-  --status-decisive:  var(--status-win);
-  --status-moderate:  var(--status-warn);
-  --status-minor:     var(--status-pending);
-  --status-neutral:   #C4C8CE;
-  --stake-positive:     var(--status-win);
-  --stake-positive-dim: var(--status-win-soft);
-  --stake-negative:     var(--status-loss);
-  --stake-negative-dim: var(--status-loss-soft);
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.06), 0 6px 20px rgba(0,0,0,.06);
 
-  /* Type — Inter everywhere, tabular figures for numbers */
-  --font-sans:        'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-display:     var(--font-sans);
-  --font-data:        var(--font-sans);
-  --font-mono:        var(--font-sans);
+  --header-h:    64px;
+  --tabbar-h:    62px;
+  --content-max: 1240px;
 
-  --text-score:       clamp(2.5rem, 2rem + 2vw, 3.5rem); /* 40 → 56px */
-  --text-title:       1.75rem;   /* 28px page titles */
-  --text-section:     1.125rem;  /* 18px section titles */
-  --text-body:        0.9375rem; /* 15px */
-  --text-meta:        0.8125rem; /* 13px */
-
-  /* Spacing rhythm */
-  --space-1:  0.25rem;
-  --space-2:  0.5rem;
-  --space-3:  0.75rem;
-  --space-4:  1rem;
-  --space-5:  1.25rem;
-  --space-6:  1.5rem;
-  --space-8:  2rem;
-  --space-10: 2.5rem;
-  --space-section: 2rem;
-
-  /* Shape — one radius, thin borders, almost no shadow */
-  --radius-sm:  4px;
-  --radius-md:  8px;
-  --radius-lg:  8px;
-  --shadow-card: 0 1px 2px rgba(18, 20, 23, 0.04);
-  --shadow-pop:  0 8px 24px rgba(18, 20, 23, 0.12);
-
-  /* Layout */
-  --header-h:     56px;
-  --tabbar-h:     60px;
-  --content-max:  1200px;
-
-  /* Motion — compositor-friendly only */
   --duration-fast:   120ms;
-  --duration-normal: 200ms;
+  --duration-normal: 220ms;
   --ease-out:        cubic-bezier(0.16, 1, 0.3, 1);
   --ease-spring:     cubic-bezier(0.34, 1.56, 0.64, 1);
-  --glow-gold:       none;
-  --field-line:      var(--divider);
+
+  /* Legacy aliases */
+  --bg:               var(--page);
+  --surface:          var(--paper);
+  --surface-raised:   var(--card-hi);
+  --surface-overlay:  var(--chip);
+  --surface-hover:    var(--card-hi);
+  --divider:          var(--rule);
+  --border-subtle:    var(--rule);
+  --border-default:   var(--rule);
+  --border-emphasis:  #C9C9C4;
+  --text-primary:     var(--ink);
+  --text-secondary:   var(--ink-2);
+  --text-tertiary:    var(--ink-3);
+  --text-muted:       var(--ink-3);
+  --accent-gold:      var(--brand);
+  --accent-gold-dim:  var(--brand-soft);
+  --status-win:       var(--win);
+  --status-loss:      var(--loss);
+  --status-decisive:  var(--win);
+  --status-moderate:  #B26B00;
+  --status-minor:     var(--ink-3);
+  --status-neutral:   var(--rule);
+  --stake-positive:     var(--win);
+  --stake-positive-dim: rgba(19, 128, 74, .10);
+  --stake-negative:     var(--loss);
+  --stake-negative-dim: rgba(200, 16, 46, .10);
+  --space-section: 2rem;
+  --glow-gold: none;
+  --field-line: var(--rule);
 }
 
 :root.dark {
-  --bg:               #0E1013;
-  --surface:          #171A1F;
-  --surface-raised:   #1D2026;
-  --surface-overlay:  #242830;
-  --surface-hover:    #1F2329;
-
-  --divider:          #2A2E35;
-  --border-subtle:    #2A2E35;
-  --border-default:   #333842;
-  --border-emphasis:  #454B56;
-
-  --text-primary:     #F1F3F5;
-  --text-secondary:   #C9CDD3;
-  --text-tertiary:    #9AA1AB;
-  --text-muted:       #9AA1AB;
-
-  --brand:           #4C82FF;
-  --brand-hover:     #6A97FF;
-  --brand-contrast:  #FFFFFF;
-  --brand-soft:      rgba(76, 130, 255, 0.16);
-
-  --status-win:       #3CC46B;
-  --status-win-soft:  rgba(60, 196, 107, 0.14);
-  --status-loss:      #FF5A64;
-  --status-loss-soft: rgba(255, 90, 100, 0.14);
-  --status-pending:   #7D848E;
-  --status-warn:      #E0A030;
-  --status-neutral:   #454B56;
-
-  --shadow-card: none;
-  --shadow-pop:  0 8px 24px rgba(0, 0, 0, 0.5);
+  --paper:   #16181C;
+  --page:    #0E0F12;
+  --ink:     #F2F2F0;
+  --ink-2:   #C9C9C6;
+  --ink-3:   #8E8E8A;
+  --rule:    #2A2C31;
+  --chip:    #23252B;
+  --card-hi: #1C1E23;
+  --warm:    #2A1B16;
+  --win:     #3DD07A;
+  --loss:    #FF5C64;
+  --border-emphasis: #3A3D44;
+  --shadow-card: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
 }

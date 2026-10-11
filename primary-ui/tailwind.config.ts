@@ -68,7 +68,8 @@ export default {
       fontFamily: {
         mono: ['Inter', 'system-ui', 'sans-serif'],
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        serif: ['Inter', 'system-ui', 'sans-serif'],
+        serif: ['Newsreader', 'Georgia', 'serif'],
+        display: ['Montserrat', 'Inter', 'sans-serif'],
       },
       borderRadius: {
         lg: 'calc(var(--radius) + 2px)',

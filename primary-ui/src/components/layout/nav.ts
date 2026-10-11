@@ -1,4 +1,4 @@
-/** Primary destinations — desktop header (CLARK_OVERHAUL_PLAN.md §7, Navigation). */
+/** Primary destinations (section nav on desktop, tab bar on phones). */
 export interface NavItem {
   label: string;
   to: string;
@@ -9,9 +9,9 @@ export const PRIMARY_NAV: readonly NavItem[] = [
   { label: 'Games', to: '/games' },
   { label: 'Teams', to: '/teams' },
   { label: 'Leaderboard', to: '/leaderboard' },
+  { label: 'My season', to: '/my-season' },
 ];
 
-/** Phone bottom tab bar. */
 export const MOBILE_TABS: readonly NavItem[] = [
   { label: 'Home', to: '/' },
   { label: 'Games', to: '/games' },

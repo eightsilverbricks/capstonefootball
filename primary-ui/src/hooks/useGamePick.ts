@@ -31,6 +31,8 @@ export interface GamePickState {
   hasPosition: boolean;
   /** Locks the draft, routing through sign-up first when signed out. */
   lock: () => void;
+  /** Locks a specific pick directly (same sign-up gate as lock). */
+  lockAs: (pick: Pick) => void;
   /** Releases a locked pick back into the slider, pre-seeded with its value. */
   changePick: () => void;
   /** Points riding on the locked pick, rounded for display. */
@@ -59,9 +61,9 @@ export function useGamePick(game: ApiPrediction): GamePickState {
 
   const hasPosition = draft.confidence > NO_POSITION;
 
-  const lock = useCallback(() => {
-    if (draft.confidence <= NO_POSITION) return;
-    const pick: UserPick = { team: draft.team, confidence: draft.confidence, fanTeam };
+  const lockAs = useCallback((chosen: Pick) => {
+    if (chosen.confidence <= NO_POSITION) return;
+    const pick: UserPick = { team: chosen.team, confidence: chosen.confidence, fanTeam };
 
     // Picking is the moment the account actually matters — the gate lives here
     // rather than upfront on the slider. The pick is stashed and replayed once
@@ -72,7 +74,9 @@ export function useGamePick(game: ApiPrediction): GamePickState {
       return;
     }
     setPick(key, pick);
-  }, [draft, fanTeam, isSignedIn, key, setPick]);
+  }, [fanTeam, isSignedIn, key, setPick]);
+
+  const lock = useCallback(() => lockAs(draft), [draft, lockAs]);
 
   const changePick = useCallback(() => {
     if (userPick) setDraft({ team: userPick.team, confidence: userPick.confidence });
@@ -92,6 +96,7 @@ export function useGamePick(game: ApiPrediction): GamePickState {
     setDraft,
     hasPosition,
     lock,
+    lockAs,
     changePick,
     stake,
   };
