@@ -20,10 +20,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
       className="flex flex-wrap items-end justify-between gap-4 mb-6 pb-4"
       style={{ borderBottom: '1px solid var(--border-subtle)' }}
     >
-      <SectionIntro id="how-it-works-heading" kicker="How it works" heading="Read it. Call it. Live with it." />
-      <span className="text-[11px] uppercase tracking-[0.2em] pb-1" style={{ color: 'var(--text-muted)' }}>
-        Three steps
-      </span>
+      <SectionIntro id="how-it-works-heading" heading="How it works" />
     </div>
 
     <div className="grid gap-3 md:grid-cols-2">
@@ -45,7 +42,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
               <BookOpen className="w-[18px] h-[18px]" aria-hidden="true" />
             </span>
             <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
-              Step one
+              1
             </span>
           </div>
 
@@ -53,7 +50,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
             className="font-bold leading-tight mb-3"
             style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--text-primary)' }}
           >
-            Read the matchup, not the spread
+            Read the Clark Report for every game
           </h3>
           <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
             Every game gets a Clark Report: who Clark likes and by how much, the three or four
@@ -75,7 +72,7 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
             }}
           >
             <Eye className="w-4 h-4" style={{ color: 'var(--accent-gold)' }} aria-hidden="true" />
-            Peek inside a real report
+            See an example
           </button>
         )}
       </article>
@@ -97,14 +94,14 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
             <Flame className="w-[18px] h-[18px]" aria-hidden="true" />
           </span>
           <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
-            Step two
+            2
           </span>
         </div>
         <h3
           className="font-bold leading-tight mb-2"
           style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--text-primary)' }}
         >
-          Pick a side — and say how sure you are
+          Pick a winner and set your confidence
         </h3>
         <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
           Back a team, then slide your conviction from 50% to 100%. Sure things are worth up to 50
@@ -130,14 +127,14 @@ const HowItWorks: React.FC<HowItWorksProps> = ({ onPeek, canPeek }) => (
             <Trophy className="w-[18px] h-[18px]" aria-hidden="true" />
           </span>
           <span className="text-[10px] uppercase tracking-[0.22em]" style={{ color: 'var(--text-muted)' }}>
-            Step three
+            3
           </span>
         </div>
         <h3
           className="font-bold leading-tight mb-2"
           style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', color: 'var(--text-primary)' }}
         >
-          Beat the model. Then beat your friends.
+          Track your record against Clark and other fans
         </h3>
         <p className="text-sm leading-relaxed mb-4" style={{ color: 'var(--text-secondary)' }}>
           Your record, your streak, and your score against Clark on the exact same games — so you

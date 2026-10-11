@@ -5,11 +5,11 @@ build_wind_impact.py
 Computes historical pass EPA by wind speed tier from PBP data.
 
 Wind tiers (mph):
-  dome     — enclosed roof (dome/closed/retractable)
-  calm     — 0–10 mph
-  moderate — 11–20 mph
-  high     — 21–30 mph
-  severe   — 31+ mph
+  dome     - enclosed roof (dome/closed/retractable)
+  calm     - 0-10 mph
+  moderate - 11-20 mph
+  high     - 21-30 mph
+  severe   - 31+ mph
 
 Outputs data/processed/wind_impact.json:
 {
@@ -17,7 +17,7 @@ Outputs data/processed/wind_impact.json:
     "avg_pass_epa":   0.130,
     "delta_vs_calm":  0.000,
     "game_count":     450,
-    "consequence":    "Normal conditions — no weather impact on passing."
+    "consequence":    "Normal conditions - no weather impact on passing."
   },
   ...
 }
@@ -41,11 +41,11 @@ OUT_PATH = PRED_DIR / "data" / "processed" / "wind_impact.json"
 _COLS = ["game_id", "pass_attempt", "epa", "wind", "roof"]
 
 _CONSEQUENCES: dict[str, str] = {
-    "dome":     "Indoors — no weather impact on passing.",
-    "calm":     "Normal conditions — no weather impact on passing.",
-    "moderate": "Moderate wind (11–20 mph): minimal impact; deep routes may be affected.",
-    "high":     "High wind (21–30 mph): passing efficiency is significantly reduced. Expect more short-to-intermediate routes and potential run-game emphasis.",
-    "severe":   "Severe wind (31+ mph): extreme weather. Passing game is heavily compromised — ground game and field position dominate.",
+    "dome":     "Indoors - no weather impact on passing.",
+    "calm":     "Normal conditions - no weather impact on passing.",
+    "moderate": "Moderate wind (11-20 mph): minimal impact; deep routes may be affected.",
+    "high":     "High wind (21-30 mph): passing efficiency is significantly reduced. Expect more short-to-intermediate routes and potential run-game emphasis.",
+    "severe":   "Severe wind (31+ mph): extreme weather. Passing game is heavily compromised - ground game and field position dominate.",
 }
 
 
@@ -73,7 +73,7 @@ def build_wind_impact(pbp_path: Path = PBP_PATH) -> dict[str, dict]:
 
     pass_plays = df[(df["pass_attempt"] == 1) & df["epa"].notna()].copy()
 
-    # Game-level wind/roof (consistent within a game — take first non-null value)
+    # Game-level wind/roof (consistent within a game - take first non-null value)
     game_meta = (
         pass_plays.groupby("game_id")
         .agg(wind=("wind", "first"), roof=("roof", "first"))

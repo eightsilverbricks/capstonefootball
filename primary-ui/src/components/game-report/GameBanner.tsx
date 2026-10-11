@@ -12,7 +12,7 @@ import StadiumScene from './StadiumScene';
 import StadiumImage from './StadiumImage';
 import WeatherScene from './WeatherScene';
 import WeatherBadges from './WeatherBadges';
-import { AlertTriangle, MapPin } from 'lucide-react';
+import { MapPin } from 'lucide-react';
 
 interface GameBannerProps {
   game: ApiPrediction;
@@ -120,14 +120,7 @@ const GameBanner: React.FC<GameBannerProps> = ({ game }) => {
             >
               Final · {game.away_team} {game.away_score} — {game.home_team} {game.home_score}
             </span>
-          ) : (
-            <span
-              className="text-xs uppercase tracking-[0.2em]"
-              style={{ color: 'rgba(255,255,255,0.90)' }}
-            >
-              {game.confidence_label} confidence
-            </span>
-          )}
+          ) : null}
         </div>
 
         {/* Teams row — away left, win prob center, home right */}
@@ -226,17 +219,6 @@ const GameBanner: React.FC<GameBannerProps> = ({ game }) => {
           )}
         </div>
 
-        {game.confidence_label === 'Low' && (
-          <div
-            className="flex items-start gap-2 mt-4 px-3 py-2 rounded"
-            style={{ background: 'rgba(251,191,36,0.10)', border: '1px solid rgba(251,191,36,0.22)' }}
-          >
-            <AlertTriangle className="w-3.5 h-3.5 mt-0.5 shrink-0" style={{ color: '#fde68a' }} aria-hidden="true" />
-            <p className="text-xs" style={{ color: '#fde68a' }}>
-              Close game — only a slight edge. Either outcome is plausible.
-            </p>
-          </div>
-        )}
       </div>
     </header>
   );

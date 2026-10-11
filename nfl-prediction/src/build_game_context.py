@@ -90,7 +90,7 @@ def _is_weather_notable(roof: str, temp: float | None, wind: float | None) -> bo
     """Returns True if weather is meaningfully unusual (cold, windy, or dome)."""
     roof = str(roof or "").lower()
     if roof in ("dome", "closed"):
-        return False  # perfectly controlled — not unusual
+        return False  # perfectly controlled - not unusual
     if temp is not None and temp <= 40:
         return True
     if wind is not None and wind >= 15:

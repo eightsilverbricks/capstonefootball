@@ -42,7 +42,7 @@ describe('GameCard', () => {
 
   it('offers the conviction slider before kickoff', () => {
     renderCard(game());
-    expect(screen.getByText('Drag toward your pick')).toBeInTheDocument();
+    expect(screen.getByText('Your pick')).toBeInTheDocument();
   });
 
   it('reports the final score once the game is played', () => {
@@ -52,7 +52,7 @@ describe('GameCard', () => {
 
   it('closes picking on a played game', () => {
     renderCard(game({ home_score: 14, away_score: 26, actual_winner: 'ARI' }));
-    expect(screen.queryByText('Drag toward your pick')).not.toBeInTheDocument();
-    expect(screen.getByText('Picks closed')).toBeInTheDocument();
+    expect(screen.queryByText('Your pick')).not.toBeInTheDocument();
+    expect(screen.getByText('Final')).toBeInTheDocument();
   });
 });

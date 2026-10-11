@@ -31,7 +31,7 @@ const AboutPage: React.FC = () => {
               className="text-[11px] uppercase tracking-[0.22em]"
               style={{ color: 'var(--accent-gold)' }}
             >
-              Who's behind this
+              About us
             </span>
             <h1
               className="font-bold leading-[0.95] tracking-tight mt-3 mb-6"
@@ -41,7 +41,7 @@ const AboutPage: React.FC = () => {
                 color: 'var(--text-primary)',
               }}
             >
-              Three fans, one very long spreadsheet.
+              Three fans who built a model.
             </h1>
             <div className="w-full max-w-sm mx-auto">
               <FoundersPortrait showLabels={false} />
@@ -80,7 +80,6 @@ const AboutPage: React.FC = () => {
               The founders
             </h2>
             <span className="text-[11px] uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>
-              And who they yell at on Sundays
             </span>
           </div>
 

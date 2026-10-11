@@ -8,6 +8,7 @@ import MySeasonPage from "./pages/MySeasonPage";
 import AboutPage from "./pages/AboutPage";
 import AdminPage from "./pages/AdminPage";
 import SettingsPage from "./pages/SettingsPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import NotFound from "./pages/NotFound";
 import AuthDialogHost from "./components/auth/AuthDialogHost";
 import { SeasonModeProvider } from "./context/SeasonModeContext";
@@ -29,6 +30,8 @@ const App = () => (
       <Route path="/about" element={<AboutPage />} />
       {/* Where demo mode is switched on — see SettingsPage.tsx */}
       <Route path="/settings" element={<SettingsPage />} />
+      {/* Landing page for the password-reset email link */}
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
       {/* Developer-only account admin — not linked from any nav, see AdminPage.tsx */}
       <Route path="/admin" element={<AdminPage />} />
       <Route path="*" element={<NotFound />} />

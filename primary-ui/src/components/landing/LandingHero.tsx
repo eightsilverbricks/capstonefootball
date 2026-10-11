@@ -7,7 +7,6 @@ import { openAuthDialog } from '@/hooks/useAuthDialog';
 /** Hardcoded on purpose — this is a hype date, not derived from the shipped
  * dataset (which stays pinned to the 2024 demo season). Bump it by hand each
  * offseason. */
-const UPCOMING_SEASON = 2026;
 
 /**
  * An editorial split rather than a centered stack: the words on one side, the
@@ -28,13 +27,6 @@ const LandingHero: React.FC = () => (
 
         {/* ── Copy ── */}
         <div className="text-center lg:text-left">
-          <p
-            className="rise-in text-[11px] uppercase tracking-[0.24em] mb-5"
-            style={{ color: 'var(--accent-gold)' }}
-          >
-            Not another wall of stats
-          </p>
-
           <h1
             id="landing-hero-heading"
             className="rise-in font-bold leading-[0.92] tracking-tight"
@@ -45,19 +37,15 @@ const LandingHero: React.FC = () => (
               '--rise-delay': '70ms',
             } as React.CSSProperties}
           >
-            Learn football{' '}
-            <em className="not-italic" style={{ color: 'var(--accent-gold)' }}>
-              alongside us
-            </em>
-            .
+            NFL predictions, explained in plain English.
           </h1>
 
           <p
             className="rise-in mt-5 text-base sm:text-lg leading-relaxed mx-auto lg:mx-0 max-w-lg"
             style={{ color: 'var(--text-secondary)', '--rise-delay': '140ms' } as React.CSSProperties}
           >
-            Anybody can hand you a win probability. We're three fans who'd rather tell you where it
-            came from — every matchup taken apart in plain English, then you go make your picks.
+            Every game gets a Clark Report: who Clark picks, why, and how the other team
+            could win. Then make your own picks and track your record.
           </p>
 
           <div
@@ -92,32 +80,16 @@ const LandingHero: React.FC = () => (
           </div>
 
           <p className="mt-3 text-xs" style={{ color: 'var(--text-muted)' }}>
-            No card, no odds, no risk — just bragging rights.
+            Free. No betting.
           </p>
         </div>
 
-        {/* ── The three of us, with the season tag pinned to the frame ── */}
+        {/* ── The three of us ── */}
         <div
           className="rise-in relative w-full max-w-md lg:max-w-none mx-auto"
           style={{ '--rise-delay': '280ms' } as React.CSSProperties}
         >
           <FoundersPortrait />
-          <div
-            className="stadium-sign absolute -top-3 right-2 sm:right-4 px-3.5 py-1.5 z-10"
-            aria-hidden="true"
-          >
-            <p className="leading-tight text-center whitespace-nowrap">
-              <span className="block text-[8px] font-semibold uppercase tracking-[0.18em] opacity-80">
-                Get ready for the
-              </span>
-              <span
-                className="block font-bold uppercase tracking-wide"
-                style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem' }}
-              >
-                {UPCOMING_SEASON} Season
-              </span>
-            </p>
-          </div>
         </div>
       </div>
     </div>

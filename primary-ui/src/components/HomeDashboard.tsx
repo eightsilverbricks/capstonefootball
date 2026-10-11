@@ -159,7 +159,7 @@ const HomeDashboard: React.FC = () => {
             {/* ── Quick reads ── */}
             {pulse.length > 0 && (
               <section aria-labelledby="pulse-heading">
-                <SectionHead id="pulse-heading" title="The week at a glance" meta={`${pulse.length} reads`} />
+                <SectionHead id="pulse-heading" title="This week" meta={`${pulse.length} reads`} />
                 <WeekPulseGrid items={pulse} />
               </section>
             )}
@@ -169,7 +169,7 @@ const HomeDashboard: React.FC = () => {
               <section aria-labelledby="storylines-heading">
                 <SectionHead
                   id="storylines-heading"
-                  title="Around the league"
+                  title="News"
                   meta="Model write-ups"
                 />
                 <StorylineRail storylines={storylines} />
@@ -179,7 +179,7 @@ const HomeDashboard: React.FC = () => {
             {/* ── Rest of the board ── */}
             {restOfBoard.length > 0 && (
               <section aria-labelledby="board-heading">
-                <SectionHead id="board-heading" title="Rest of the board" meta={`${restOfBoard.length} games`} />
+                <SectionHead id="board-heading" title="All games" meta={`${restOfBoard.length} games`} />
                 <HomeHighlights games={restOfBoard} limit={4} />
                 <Link
                   to="/games"

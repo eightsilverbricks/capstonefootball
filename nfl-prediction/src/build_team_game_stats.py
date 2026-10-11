@@ -166,14 +166,14 @@ def _apply_carry_forward(
     The shift(1) passes cannot do this on their own. `expanding()` happens to
     work (NaN is skipped, so the mean stops moving), but `rolling(3)` does not:
     its window slides forward over the NaN fixtures until it holds no played
-    game at all, so last3_* first drifts — averaging 2 games, then 1 — and then
+    game at all, so last3_* first drifts - averaging 2 games, then 1 - and then
     goes NaN from the fourth unplayed game on, which the dropna at the end of
     main() would silently delete. That is the whole upcoming season.
 
     So state it explicitly instead: an unplayed game sees the mean of every
     played game (season_*) and of the last three played games (last3_*). Every
     fixture in the season therefore shares one pre-season vector, which is
-    correct — nothing new is known until a game is actually played. Re-running
+    correct - nothing new is known until a game is actually played. Re-running
     the pipeline once results land moves the played games onto real form.
     """
     upcoming = ~team_games["is_played"]
@@ -230,7 +230,7 @@ def main() -> None:
     # Unplayed fixtures are kept, not dropped. The upcoming season's schedule is
     # published long before kickoff, and those rows are exactly what the model
     # has to score. They carry no scores and no play-by-play, so every stat below
-    # stays NaN for them — which is deliberate: the shift(1).expanding() and
+    # stays NaN for them - which is deliberate: the shift(1).expanding() and
     # rolling(3) passes skip NaN, so an unplayed game inherits its team's form
     # through its last *played* game and contributes nothing back. Filling these
     # with 0.0 instead would tell the model every upcoming team is a zero-EPA

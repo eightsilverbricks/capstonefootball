@@ -75,11 +75,13 @@ class TestFactorPredictionAlignment(unittest.TestCase):
                 self.assertFalse(missing,
                                  f"Card missing {missing} in {game.get('game_id')}")
 
-    def test_factor_explanation_contains_real_numbers(self):
-        """Explanation or baseline_note must contain at least one number (not a generic placeholder)."""
+    def test_confident_factor_explanation_contains_real_numbers(self):
+        """Confident factor claims must cite a number; neutral fallbacks may say data is unavailable."""
         number_pattern = re.compile(r'\d+')
         for game in self.predictions:
             for card in game.get("factor_cards", []):
+                if not card.get("confident", True):
+                    continue
                 text = card.get("explanation", "") + " " + card.get("baseline_note", "")
                 self.assertTrue(
                     number_pattern.search(text),
@@ -99,7 +101,7 @@ class TestComputeFactorContributions(unittest.TestCase):
         try:
             from src.api import compute_factor_contributions  # noqa: F401
         except ImportError:
-            self.fail("compute_factor_contributions not found in src/api.py — implement it")
+            self.fail("compute_factor_contributions not found in src/api.py - implement it")
 
     def test_home_favored_market_edge(self):
         """Positive spread_line (home favored) → Market Edge advantage = home team."""
@@ -109,8 +111,14 @@ class TestComputeFactorContributions(unittest.TestCase):
             self.skipTest("Not yet implemented")
         row = {
             "home_team": "KC", "away_team": "PHI",
-            "spread_line": 3.5, "home_moneyline": -180.0, "away_moneyline": 155.0,
+            "mkt_home_prob": 0.64, "has_market": 1.0,
+            "spread_line_clean": 3.5, "has_spread": 1.0,
             "rest_diff": 0.0, "div_game": 0.0,
+            "elo_diff": 0.0, "diff_season_qb_epa_per_play": 0.0,
+            "diff_season_turnover_diff_pg": 0.0,
+            "diff_season_epa_per_play": 0.0,
+            "diff_season_epa_per_play_allowed": 0.0,
+            "diff_season_success_rate": 0.0,
             "diff_last3_point_diff_pg": 0.0, "diff_last3_win_pct": 0.0,
             "diff_last3_epa_per_play": 0.0, "diff_last3_epa_per_play_allowed": 0.0,
             "diff_last3_success_rate": 0.0, "diff_last3_success_rate_allowed": 0.0,
@@ -130,8 +138,14 @@ class TestComputeFactorContributions(unittest.TestCase):
             self.skipTest("Not yet implemented")
         row = {
             "home_team": "KC", "away_team": "PHI",
-            "spread_line": -4.5, "home_moneyline": 170.0, "away_moneyline": -200.0,
+            "mkt_home_prob": 0.36, "has_market": 1.0,
+            "spread_line_clean": -4.5, "has_spread": 1.0,
             "rest_diff": 0.0, "div_game": 0.0,
+            "elo_diff": 0.0, "diff_season_qb_epa_per_play": 0.0,
+            "diff_season_turnover_diff_pg": 0.0,
+            "diff_season_epa_per_play": 0.0,
+            "diff_season_epa_per_play_allowed": 0.0,
+            "diff_season_success_rate": 0.0,
             "diff_last3_point_diff_pg": 0.0, "diff_last3_win_pct": 0.0,
             "diff_last3_epa_per_play": 0.0, "diff_last3_epa_per_play_allowed": 0.0,
             "diff_last3_success_rate": 0.0, "diff_last3_success_rate_allowed": 0.0,
@@ -140,22 +154,28 @@ class TestComputeFactorContributions(unittest.TestCase):
         market = contribs.get("Market Edge")
         self.assertEqual(market["advantage_team"], "PHI")
 
-    def test_all_five_buckets_present(self):
-        """compute_factor_contributions must return exactly 5 buckets."""
+    def test_all_six_buckets_present(self):
+        """compute_factor_contributions must return exactly 6 buckets (5 matchup factors + home field)."""
         try:
             from src.api import compute_factor_contributions
         except ImportError:
             self.skipTest("Not yet implemented")
         row = {
             "home_team": "KC", "away_team": "PHI",
-            "spread_line": 0.0, "home_moneyline": -110.0, "away_moneyline": -110.0,
+            "mkt_home_prob": 0.5, "has_market": 1.0,
+            "spread_line_clean": 0.0, "has_spread": 1.0,
             "rest_diff": 0.0, "div_game": 0.0,
+            "elo_diff": 0.0, "diff_season_qb_epa_per_play": 0.0,
+            "diff_season_turnover_diff_pg": 0.0,
+            "diff_season_epa_per_play": 0.0,
+            "diff_season_epa_per_play_allowed": 0.0,
+            "diff_season_success_rate": 0.0,
             "diff_last3_point_diff_pg": 0.0, "diff_last3_win_pct": 0.0,
             "diff_last3_epa_per_play": 0.0, "diff_last3_epa_per_play_allowed": 0.0,
             "diff_last3_success_rate": 0.0, "diff_last3_success_rate_allowed": 0.0,
         }
         contribs = compute_factor_contributions(row)
-        self.assertEqual(len(contribs), 5, f"Expected 5 buckets, got {list(contribs.keys())}")
+        self.assertEqual(len(contribs), 6, f"Expected 6 buckets, got {list(contribs.keys())}")
 
 
 if __name__ == "__main__":

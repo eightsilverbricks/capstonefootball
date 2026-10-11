@@ -40,80 +40,38 @@ const makeFactors = (): FactorCard[] => [
 ];
 
 describe('FactorList', () => {
-  it('renders the section heading', () => {
-    render(<FactorList factors={makeFactors()} />);
-    expect(screen.getByText(/factors to victory/i)).toBeInTheDocument();
-  });
+  const renderList = () => render(<FactorList factors={makeFactors()} winner="KC" loser="BUF" />);
 
-  it('renders all factor names', () => {
-    render(<FactorList factors={makeFactors()} />);
-    expect(screen.getByText('Market Edge')).toBeInTheDocument();
-    expect(screen.getByText('Recent Offense')).toBeInTheDocument();
-    expect(screen.getByText('Defensive Edge')).toBeInTheDocument();
-  });
-
-  it('renders explanation text from backend for non-neutral factors', () => {
-    render(<FactorList factors={makeFactors()} />);
+  it('splits factors by the team they help', () => {
+    renderList();
+    expect(screen.getByRole('heading', { name: 'Why Clark picks KC' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'What favors BUF' })).toBeInTheDocument();
     expect(screen.getByText(/KC favored by 6.5/)).toBeInTheDocument();
     expect(screen.getByText(/BUF EPA \+0\.18/)).toBeInTheDocument();
   });
 
-  it('sorts factors by contribution_strength descending', () => {
-    render(<FactorList factors={makeFactors()} />);
-    const names = screen.getAllByText(/Market Edge|Recent Offense|Defensive Edge/);
-    const mIdx = names.findIndex((el) => el.textContent === 'Market Edge');
-    const rIdx = names.findIndex((el) => el.textContent === 'Recent Offense');
-    expect(mIdx).toBeLessThan(rIdx);
+  it('uses reader-facing factor names', () => {
+    renderList();
+    expect(screen.getAllByText('Betting line').length).toBeGreaterThan(0);
+    expect(screen.queryByText('Market Edge')).not.toBeInTheDocument();
   });
 
-  it('shows team badge for non-Even advantage teams', () => {
-    render(<FactorList factors={makeFactors()} />);
-    // KC badge from Market Edge row
-    const kcBadges = screen.getAllByText('KC');
-    expect(kcBadges.length).toBeGreaterThan(0);
+  it('lists hedged reads by headline only, under About even', () => {
+    renderList();
+    expect(screen.getByRole('heading', { name: 'About even' })).toBeInTheDocument();
+    expect(screen.getByText('Recent defense grades out close.')).toBeInTheDocument();
+    expect(screen.queryByText('Defenses roughly equal over last 3 games.')).not.toBeInTheDocument();
   });
 
-  it('renders "Key edge" status label for DECISIVE factor', () => {
-    render(<FactorList factors={makeFactors()} />);
-    expect(screen.getByText('Key edge')).toBeInTheDocument();
+  it('keeps raw numbers in the Show the numbers drawer', () => {
+    renderList();
+    expect(screen.getByText('Show the numbers')).toBeInTheDocument();
+    expect(screen.getByText('BUF hold a +0.18 EPA/play edge.')).toBeInTheDocument();
   });
 
-  it('renders "Notable" status label for MODERATE factor', () => {
-    render(<FactorList factors={makeFactors()} />);
-    expect(screen.getByText('Notable')).toBeInTheDocument();
-  });
-
-  it('renders "Even" status label for NEUTRAL factor (not a team badge)', () => {
-    render(<FactorList factors={makeFactors()} />);
-    // "Even" appears as the status label, not as a team advantage badge
-    expect(screen.getByText('Even')).toBeInTheDocument();
-    // But "Even" should NOT appear inside a team badge element
-    // The badge is only rendered when !isEven, so no badge span for the neutral row
-    const badges = screen.queryAllByText('Even');
-    // Should be exactly one instance (the status label), not a team badge
-    expect(badges).toHaveLength(1);
-  });
-
-  it('renders the headline and full explanation inline with no second dropdown', () => {
-    render(<FactorList factors={makeFactors()} />);
-    // The reasoning is visible immediately — no "why does this matter?" toggle exists.
-    expect(screen.queryByText(/why does this matter/i)).not.toBeInTheDocument();
-    expect(screen.getByText('The market leans KC.')).toBeInTheDocument();
-    expect(screen.getByText(/KC favored by 6\.5/)).toBeInTheDocument();
-  });
-
-  it('does not render an explanation paragraph when the field is missing (no crash)', () => {
-    const factors = makeFactors();
-    delete factors[0].explanation;
-    delete factors[0].headline;
-    render(<FactorList factors={factors} />);
-    // The row still renders (name + bar), just without a reasoning paragraph.
-    expect(screen.getByText('Market Edge')).toBeInTheDocument();
-    expect(screen.queryByText(/KC favored by 6\.5/)).not.toBeInTheDocument();
-  });
-
-  it('renders with empty factors array without crashing', () => {
-    render(<FactorList factors={[]} />);
-    expect(screen.getByText(/factors to victory/i)).toBeInTheDocument();
+  it('shows no status chips or per-factor threads', () => {
+    renderList();
+    expect(screen.queryByText('Key edge')).not.toBeInTheDocument();
+    expect(screen.queryByText(/challenge this factor/i)).not.toBeInTheDocument();
   });
 });

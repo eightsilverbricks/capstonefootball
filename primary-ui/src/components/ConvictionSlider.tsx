@@ -59,7 +59,7 @@ const ConvictionSlider: React.FC<ConvictionSliderProps> = ({
           {awayTeam} {awayPct}%
         </span>
         <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-          your conviction
+          confidence
         </span>
         <span
           className="text-xs font-semibold tracking-wide tabular-nums"

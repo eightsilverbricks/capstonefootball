@@ -7,7 +7,7 @@ import { useCallback, useSyncExternalStore } from 'react';
 import { localAuthClient } from '@/auth/localAuthClient';
 import { supabaseAuthClient } from '@/auth/supabaseAuthClient';
 import { isSupabaseConfigured } from '@/auth/supabaseClient';
-import { AuthClient, AuthResult, ClarkProfile, ProfilePatch, SignInInput, SignUpInput } from '@/auth/types';
+import { AuthClient, AuthError, AuthResult, ClarkProfile, ProfilePatch, SignInInput, SignUpInput } from '@/auth/types';
 import { clearFanTeam, setFanTeam } from './useFanIdentity';
 
 // Real accounts whenever Supabase is configured; the device-local client is the
@@ -37,6 +37,8 @@ export interface AuthState {
   signIn: (input: SignInInput) => Promise<AuthResult>;
   signOut: () => Promise<void>;
   updateProfile: (patch: ProfilePatch) => Promise<AuthResult>;
+  requestPasswordReset: (email: string) => Promise<{ error: AuthError | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: AuthError | null }>;
 }
 
 export function useAuth(): AuthState {
@@ -69,5 +71,7 @@ export function useAuth(): AuthState {
     signIn,
     signOut,
     updateProfile,
+    requestPasswordReset: client.requestPasswordReset,
+    updatePassword: client.updatePassword,
   };
 }

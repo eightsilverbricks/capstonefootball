@@ -61,7 +61,7 @@ const MySeasonPage: React.FC = () => {
       <section className="px-4 pt-10 pb-6">
         <div className="max-w-7xl mx-auto">
           <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
-            Your record against Clark, Vegas & the crowd
+            You vs Clark vs fans
           </span>
           <h1
             className="font-bold leading-[0.92] tracking-tight mt-1"
@@ -101,7 +101,7 @@ const MySeasonPage: React.FC = () => {
         <section className="px-4 py-24">
           <div className="max-w-xl mx-auto text-center flex flex-col items-center gap-4">
             <p className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
-              You haven't staked a single call yet.
+              No picks yet.
             </p>
             <p className="text-sm" style={{ color: 'var(--text-tertiary)' }}>
               Head to the games, drag your conviction on a matchup, and your season starts building here.
@@ -145,11 +145,11 @@ const MySeasonPage: React.FC = () => {
                 {latestWeek && <ShareableWeekCard week={latestWeek} bestCall={latestBestCall} />}
               </div>
 
-              {/* Strongest calls / biggest misses */}
+              {/* Best picks / biggest misses */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="flex flex-col gap-3">
                   <h2 className="text-xs uppercase tracking-widest" style={{ color: 'var(--stake-positive)' }}>
-                    Strongest calls
+                    Best picks
                   </h2>
                   {history.strongestCalls.length > 0 ? (
                     history.strongestCalls.map((c) => (
@@ -167,7 +167,7 @@ const MySeasonPage: React.FC = () => {
                 </div>
                 <div className="flex flex-col gap-3">
                   <h2 className="text-xs uppercase tracking-widest" style={{ color: 'var(--stake-negative)' }}>
-                    Biggest misses
+                    Worst picks
                   </h2>
                   {history.biggestMisses.length > 0 ? (
                     history.biggestMisses.map((c) => (
@@ -180,7 +180,7 @@ const MySeasonPage: React.FC = () => {
                       />
                     ))
                   ) : (
-                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No misses — flawless so far.</p>
+                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No wrong picks yet.</p>
                   )}
                 </div>
               </div>

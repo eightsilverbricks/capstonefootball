@@ -5,15 +5,11 @@ import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
 import WeekStrip from '@/components/WeekStrip';
 import RecordPreview from '@/components/RecordPreview';
-import LeadGame from '@/components/games/LeadGame';
 import SlateSection from '@/components/games/SlateSection';
-import SlateFilter, { FilterCount } from '@/components/games/SlateFilter';
 import { usePredictions } from '@/hooks/usePredictions';
-import { ApiPrediction, ConfidenceFilter } from '@/types/prediction';
-import { gameKey } from '@/lib/threeWaySignal';
-import { groupBySlate, selectLeadGame } from '@/lib/slate';
+import { groupBySlate } from '@/lib/slate';
 import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
-import { AlertCircle, Filter, RefreshCw } from 'lucide-react';
+import { AlertCircle, RefreshCw } from 'lucide-react';
 
 /**
  * The Games page — the week laid out the way it's actually watched.
@@ -34,7 +30,6 @@ const GamesView: React.FC = () => {
   const { config: seasonConfig } = useSeasonMode();
   const isDemo = seasonConfig.isDemo;
   const [selectedWeek, setSelectedWeek] = useState<number | null>(null);
-  const [filterConfidence, setFilterConfidence] = useState<ConfidenceFilter>('all');
 
   const availableWeeks = useMemo(
     () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
@@ -56,39 +51,11 @@ const GamesView: React.FC = () => {
     [predictions, activeWeek],
   );
 
-  const filteredGames = useMemo(() => {
-    if (filterConfidence === 'all') return weekGames;
-    return weekGames.filter((g) => (g.confidence_label ?? '').toLowerCase() === filterConfidence);
-  }, [weekGames, filterConfidence]);
+  const slate = useMemo(() => groupBySlate(weekGames), [weekGames]);
 
-  // The lead comes from the filtered set so it never contradicts the filter,
-  // and it's held out of the windows below so the same game is never shown
-  // twice on one page.
-  const leadGame = useMemo(() => selectLeadGame(filteredGames), [filteredGames]);
+  const handleWeekChange = (week: number) => setSelectedWeek(week);
 
-  const slate = useMemo(() => {
-    const leadKey = leadGame ? gameKey(leadGame) : null;
-    const rest = leadKey ? filteredGames.filter((g) => gameKey(g) !== leadKey) : filteredGames;
-    return groupBySlate(rest);
-  }, [filteredGames, leadGame]);
-
-  const filterCounts: FilterCount[] = useMemo(() => {
-    const countOf = (label: string) =>
-      weekGames.filter((g) => (g.confidence_label ?? '') === label).length;
-    return [
-      { id: 'all', label: 'Games', count: weekGames.length },
-      { id: 'high', label: 'High conf.', count: countOf('High') },
-      { id: 'medium', label: 'Medium conf.', count: countOf('Medium') },
-      { id: 'low', label: 'Low conf.', count: countOf('Low') },
-    ];
-  }, [weekGames]);
-
-  const handleWeekChange = (week: number) => {
-    setSelectedWeek(week);
-    setFilterConfidence('all');
-  };
-
-  const hasResults = filteredGames.length > 0;
+  const hasResults = weekGames.length > 0;
 
   return (
     <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
@@ -107,32 +74,15 @@ const GamesView: React.FC = () => {
 
       <main className="max-w-7xl mx-auto px-4 pt-8 pb-16">
         <div className="mb-5"><PreSeasonNotice /></div>
-        {/* Masthead + record bar */}
-        <div className="flex flex-wrap items-end justify-between gap-4 mb-6">
-          <div>
-            <span className="text-[11px] uppercase tracking-[0.24em]" style={{ color: 'var(--text-muted)' }}>
-              Season {seasonConfig.season} · the slate
-            </span>
-            <h1
-              className="font-bold leading-[0.92] tracking-tight"
-              style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 4rem)', color: 'var(--text-primary)' }}
-            >
-              {weekTitle(activeWeek)}
-            </h1>
-          </div>
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-8">
+          <h1
+            className="font-bold leading-[0.92] tracking-tight"
+            style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2rem, 5vw, 4rem)', color: 'var(--text-primary)' }}
+          >
+            {weekTitle(activeWeek)}
+          </h1>
           <RecordPreview variant="compact" />
         </div>
-
-        {/* Counts and confidence filter, one control */}
-        {weekGames.length > 1 && (
-          <div className="mb-10">
-            <SlateFilter
-              counts={filterCounts}
-              active={filterConfidence}
-              onChange={setFilterConfidence}
-            />
-          </div>
-        )}
 
         {/* Loading */}
         {loading && (
@@ -162,23 +112,12 @@ const GamesView: React.FC = () => {
         {/* The week */}
         {!loading && !error && hasResults && (
           <>
-            {leadGame && <LeadGame key={gameKey(leadGame)} game={leadGame} />}
             {slate.map((group) => (
               <SlateSection key={group.window.id} group={group} />
             ))}
           </>
         )}
 
-        {/* Empty filter state */}
-        {!loading && !error && weekGames.length > 0 && !hasResults && (
-          <div className="flex flex-col items-center justify-center py-16 gap-3">
-            <Filter className="w-10 h-10 text-white/15" />
-            <p className="text-sm text-white/40">No {filterConfidence} confidence games this week</p>
-            <button onClick={() => setFilterConfidence('all')} className="text-xs text-white/50 hover:text-white underline">
-              Show all
-            </button>
-          </div>
-        )}
       </main>
 
       <Footer />

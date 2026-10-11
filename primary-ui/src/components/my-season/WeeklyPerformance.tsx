@@ -25,7 +25,7 @@ const WeeklyPerformance: React.FC<WeeklyPerformanceProps> = ({ weeks, totals }) 
     <div className="rounded p-6" style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}>
       <div className="flex items-baseline justify-between mb-5 flex-wrap gap-3">
         <h2 className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-          Weekly net · You vs the field
+          Points by week
         </h2>
         <div className="flex items-center gap-4">
           {LEGEND.map(({ key, label, color }) => (

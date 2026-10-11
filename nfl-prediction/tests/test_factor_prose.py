@@ -111,7 +111,7 @@ class TestProseIntegrity(unittest.TestCase):
         prose = build_factor_prose(ctx)
         self.assertIn("ARI", prose.explanation)
         # The advantage clause should not claim BUF is more efficient
-        self.assertTrue(prose.explanation.startswith("Over the last three weeks ARI"))
+        self.assertTrue(prose.explanation.startswith("Over the last three games, ARI"))
 
     def test_unknown_factor_falls_back(self):
         ctx = _base_ctx("Special Teams")
@@ -124,15 +124,35 @@ class TestFamilySpecifics(unittest.TestCase):
 
     def test_market_agreement_vs_divergence(self):
         agree = build_factor_prose(_base_ctx(
-            "Market Edge", adv="BUF", spread=6.5, home_ml=-260, away_ml=210))
-        self.assertIn("Vegas", agree.explanation)
+            "Market Edge", adv="BUF", predicted_winner="BUF",
+            spread=6.5, home_ml=-260, away_ml=210))
+        self.assertIn("Sportsbooks have BUF", agree.explanation)
+        self.assertIn("Clark also picks BUF", agree.explanation)
         self.assertIn("%", agree.baseline_note)  # implied probability rendered
 
         # Model on away team while spread favors home -> divergence language
         diverge = build_factor_prose(_base_ctx(
             "Market Edge", adv="ARI", opp="BUF", adv_is_home=False,
-            spread=6.5, home_ml=-260, away_ml=210))
-        self.assertIn("other side", diverge.explanation.lower())
+            predicted_winner="ARI", spread=6.5, home_ml=-260, away_ml=210))
+        self.assertIn("Clark disagrees and picks ARI", diverge.explanation)
+
+    def test_market_prose_uses_market_favorite_when_contribution_is_neutral(self):
+        prose = build_factor_prose(_base_ctx(
+            "Market Edge", home="DET", away="LA", adv="Even", opp="DET",
+            adv_is_home=False, predicted_winner="DET", spread=5.0,
+            home_ml=-225, away_ml=185,
+        ))
+        self.assertIn("DET", prose.headline)
+        self.assertNotIn("Even", prose.headline)
+        self.assertIn("66%", prose.baseline_note)   # vig removed from -225/+185
+
+    def test_unposted_market_is_not_described_as_pickem(self):
+        prose = build_factor_prose(_base_ctx(
+            "Market Edge", adv="Even", opp="BUF", spread=0.0,
+            home_ml=0, away_ml=0,
+        ))
+        self.assertIn("not posted", prose.baseline_note.lower())
+        self.assertNotIn("pick'em", prose.explanation.lower())
 
     def test_defensive_pressure_optional(self):
         with_p = build_factor_prose(_base_ctx(
@@ -164,6 +184,7 @@ class TestHelpers(unittest.TestCase):
     def test_implied_prob(self):
         self.assertAlmostEqual(_implied_prob(-200), 200 / 300, places=4)
         self.assertAlmostEqual(_implied_prob(150), 100 / 250, places=4)
+        self.assertGreater(_implied_prob(-101), 0.5)
         self.assertIsNone(_implied_prob(0))
         self.assertIsNone(_implied_prob(None))
 
@@ -207,7 +228,7 @@ class TestSynthesisLede(unittest.TestCase):
         lead = _card("Defensive Edge", "BUF", "BUF's defense is the tougher unit.",
                      "BUF allow 0.07 fewer EPA/play than ARI.")
         risk = _card("Recent Offense", "ARI", "ARI still move the ball.",
-                     "ARI produce +0.12 EPA/play — elite.", status="MODERATE")
+                     "ARI produce +0.12 EPA/play - elite.", status="MODERATE")
         lede = build_synthesis_lede(LedeContext(
             winner="BUF", opponent="ARI", probability=0.73,
             primary=primary, football_lead=lead, secondary=None, risk=risk,
@@ -216,18 +237,19 @@ class TestSynthesisLede(unittest.TestCase):
         self._clean(lede)
         self.assertIn("Clark", lede)
         self.assertIn("BUF", lede)
-        self.assertIn("signal Clark keeps coming back to", lede)
+        self.assertNotIn("keeps coming back", lede)     # filler removed
         self.assertIn("J.Allen", lede)                 # A4 QB note fired
-        self.assertIn("could turn it", lede)            # risk clause present
+        self.assertNotIn("could turn it", lede)        # upset path lives in its own section
 
-    def test_no_risk_uses_variance_fallback(self):
+    def test_lede_leads_with_pick_without_filler(self):
         primary = _card("Momentum", "KC", "KC are trending up.",
                         "Last three: KC 3-0, DEN 1-2.")
         lede = build_synthesis_lede(LedeContext(
             winner="KC", opponent="DEN", probability=0.61,
             primary=primary, football_lead=primary, secondary=None, risk=None))
         self._clean(lede)
-        self.assertIn("plain variance", lede)
+        self.assertIn("Clark picks KC with a 61% chance to win.", lede)
+        self.assertNotIn("variance", lede)
 
     def test_qb_note_suppressed_for_average_qb(self):
         # epa at the mean -> middle-of-the-pack -> no note
@@ -243,15 +265,15 @@ class TestSynthesisLede(unittest.TestCase):
         self.assertIn("J.Allen", note)
         self.assertIn("this season", note)
 
-    def test_conviction_scales_with_probability(self):
+    def test_lede_states_pick_and_chance_plainly(self):
         primary = _card("Market Edge", "SF", "The market leans SF.",
                         "Vegas priced SF as a 9-point favorite.")
         strong = build_synthesis_lede(LedeContext(
             winner="SF", opponent="CHI", probability=0.80, primary=primary))
         weak = build_synthesis_lede(LedeContext(
             winner="SF", opponent="CHI", probability=0.52, primary=primary))
-        self.assertIn("confident in SF", strong)
-        self.assertIn("slight edge to SF", weak)
+        self.assertIn("Clark picks SF with an 80% chance to win.", strong)
+        self.assertIn("Clark picks SF with a 52% chance to win.", weak)
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ starting quarterback changed, and what the game is being played in.
 
 The model has been blind to all of this. Two teams with identical season EPA are
 not the same matchup if one has lost its starting quarterback, and nothing in
-the season_/last3_ rollups can express that — they average over the games the
+the season_/last3_ rollups can express that - they average over the games the
 previous starter played.
 
 Writes data/processed/availability.parquet, keyed by (season, week, team).

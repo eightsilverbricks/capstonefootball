@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { EVAL_SEASON, MODEL_ACCURACY, formatPct } from '@/lib/modelFacts';
+import { Link } from 'react-router-dom';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
 import GameBanner from './GameBanner';
@@ -8,7 +8,7 @@ import WeatherPanel from './WeatherPanel';
 import StadiumPanel from './StadiumPanel';
 import PlayerMatchupCard from './PlayerMatchupCard';
 import ThreeWayCompare from './ThreeWayCompare';
-import BeliefTracker from './BeliefTracker';
+import KeyPlayersPanel from './KeyPlayersPanel';
 import PickShareCard from './PickShareCard';
 import ConvictionSlider from '@/components/ConvictionSlider';
 import { gameKey, getVegasPick, getFanPick } from '@/lib/threeWaySignal';
@@ -22,9 +22,8 @@ import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { Pick } from '@/competition/types';
 import { stakeFromConfidence, stakePreview, resolvePick } from '@/competition/scoring';
 import { signed, stakeColor } from '@/lib/format';
-import { getHeroInsight } from '@/lib/heroInsight';
 import { isPickingClosed } from '@/lib/gameStatus';
-import { AlertTriangle, Sparkles, Share2 } from 'lucide-react';
+import { AlertTriangle, Share2 } from 'lucide-react';
 
 interface GameReportProps {
   game: ApiPrediction;
@@ -52,8 +51,14 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
   const { sentiment } = useFanSentiment(sentimentKeys);
   const vegas    = getVegasPick(game);
   const fan      = getFanPick(game, sentiment);
-  const insight  = getHeroInsight(game);
-  const insightColors = insight ? getTeamColors(insight.team) : null;
+  const loser    = game.predicted_winner === game.home_team ? game.away_team : game.home_team;
+  // Clark's record on this season's finished games - the one accuracy number
+  // the report shows, so it always matches what fans can check themselves.
+  const clarkRecord = useMemo(() => {
+    const done = predictions.filter((g) => g.season === game.season && g.actual_winner);
+    const wins = done.filter((g) => g.actual_winner === g.predicted_winner).length;
+    return { wins, losses: done.length - wins };
+  }, [predictions, game.season]);
   // A played live-season game is closed to picking — see lib/gameStatus.
   const closed = isPickingClosed(game);
 
@@ -116,13 +121,8 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
       >
         <div className="flex items-baseline justify-between mb-3">
           <span className="text-xs font-semibold uppercase tracking-[0.2em]" style={{ color: 'var(--accent-gold)' }}>
-            {showSlider ? 'Make your call' : userPick ? 'Your call' : 'Final'}
+            {showSlider || userPick ? 'Your pick' : 'Final'}
           </span>
-          {game.actual_winner && !closed && (
-            <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-              Pick as if it hasn't kicked off
-            </span>
-          )}
         </div>
 
         {showSlider ? (
@@ -161,29 +161,29 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                     color: hasPosition ? '#111' : 'var(--text-muted)',
                   }}
                 >
-                  {hasPosition ? `Lock in ${draft.team}` : 'Pick a side'}
+                  {hasPosition ? `Pick ${draft.team}` : 'Make pick'}
                 </button>
               </div>
             </div>
           </div>
         ) : !userPick ? (
           <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
-            This one is played — {game.away_team} {game.away_score}, {game.home_team} {game.home_score}.
-            Clark had {game.predicted_winner}.
+            Final: {game.away_team} {game.away_score}, {game.home_team} {game.home_score}.
+            Clark picked {game.predicted_winner}.
           </p>
         ) : (
           <div className="flex items-center justify-between gap-3">
             <div className="flex flex-col">
               <span className="font-bold" style={{ fontFamily: 'var(--font-display)', color: getTeamColors(userPick.team).primary }}>
-                {userPick.team} · {Math.round(userPick.confidence * 100)}% conviction
+                {userPick.team} · {Math.round(userPick.confidence * 100)}% confidence
               </span>
               {resolvedNet != null ? (
                 <span className="text-xs font-semibold tabular-nums" style={{ color: stakeColor(resolvedNet), fontFamily: 'var(--font-mono)' }}>
-                  {resolvedNet > 0 ? 'Cashed' : 'Missed'} {signed(resolvedNet)} pts
+                  {resolvedNet > 0 ? 'Correct' : 'Wrong'} {signed(resolvedNet)} pts
                 </span>
               ) : (
                 <span className="text-xs tabular-nums" style={{ color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
-                  ±{lockedStake} pts on the line
+                  {lockedStake} pts at stake
                 </span>
               )}
             </div>
@@ -196,7 +196,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                 aria-expanded={shareOpen}
               >
                 <Share2 className="w-3.5 h-3.5" aria-hidden="true" />
-                {shareOpen ? 'Hide card' : 'Share your call'}
+                {shareOpen ? 'Hide' : 'Share'}
               </button>
               {!closed && (
                 <button
@@ -237,7 +237,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
           rows={[
             ...(userPick ? [{ label: 'You', team: userPick.team, pct: userPick.confidence }] : []),
             { label: 'Clark', team: game.predicted_winner, pct: getPredictedProbability(game) },
-            ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
+            ...(vegas ? [{ label: 'Betting line', team: vegas.team, pct: vegas.prob }] : []),
             ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
           ]}
           size="large"
@@ -245,51 +245,14 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
         />
       </div>
 
-      {/* ── Belief tracker: takeaway, fan sentiment, fanbase splits ── */}
-      <BeliefTracker game={game} />
-
-      {/* ── "Clark noticed…" — the non-obvious insight, visible before anyone
-          opts into the full evidence (B2). Team-colored, one claim + one line. ── */}
-      {insight && (
-        <div
-          className="rounded-lg p-5 mb-4"
-          style={{
-            background: 'var(--surface)',
-            border: `1px solid ${insightColors?.primary ?? 'var(--border-default)'}40`,
-            borderLeft: `3px solid ${insightColors?.primary ?? 'var(--accent-gold)'}`,
-          }}
-        >
-          <div className="flex items-center gap-1.5 mb-2">
-            <Sparkles className="w-3.5 h-3.5" style={{ color: insightColors?.primary ?? 'var(--accent-gold)' }} aria-hidden="true" />
-            <span
-              className="text-[11px] font-semibold uppercase tracking-widest"
-              style={{ color: insightColors?.secondary ?? 'var(--accent-gold)' }}
-            >
-              Clark noticed
-            </span>
-          </div>
-          <p
-            className="font-bold text-lg leading-snug"
-            style={{ fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}
-          >
-            {insight.headline}
-          </p>
-          {insight.line && (
-            <p className="text-sm leading-relaxed mt-1.5" style={{ color: 'var(--text-secondary)' }}>
-              {insight.line}
-            </p>
-          )}
-        </div>
-      )}
-
       {/* ── Clark Report — the evidence, always on the page. It used to sit
           behind a disclosure; the reasoning is the point of this page, so it
           is stated outright under one heading. ── */}
       <section aria-labelledby="clark-report-heading">
         <h2
           id="clark-report-heading"
-          className="text-sm font-semibold uppercase tracking-[0.2em] mb-3"
-          style={{ fontFamily: 'var(--font-display)', color: 'var(--accent-gold)' }}
+          className="text-lg font-semibold mb-3"
+          style={{ color: 'var(--text-primary)' }}
         >
           Clark Report
         </h2>
@@ -302,8 +265,8 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
               {(game.football_story || game.explanation_summary) && (
                 <div className="rounded-lg px-5 py-4"
                   style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}>
-                  <p className="leading-relaxed text-[15px] italic"
-                    style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
+                  <p className="leading-relaxed text-[15px]"
+                    style={{ color: 'var(--text-primary)' }}>
                     {game.football_story ?? game.explanation_summary}
                   </p>
                 </div>
@@ -312,7 +275,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
               {factors.length > 0 && (
                 <div className="rounded-lg px-5 py-4"
                   style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}>
-                  <FactorList factors={factors} gameId={game.game_id} />
+                  <FactorList factors={factors} winner={game.predicted_winner} loser={loser} />
                 </div>
               )}
 
@@ -323,7 +286,7 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                   <div>
                     <p className="text-[11px] font-semibold uppercase tracking-wider mb-1"
                       style={{ color: 'var(--accent-gold)' }}>
-                      Upset path
+                      How {loser} wins
                     </p>
                     <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
                       {game.risk_factor}
@@ -343,18 +306,27 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
                 location={game.location}
                 homeTeam={game.home_team}
               />
-              <PlayerMatchupCard
-                awayTeam={game.away_team}
-                homeTeam={game.home_team}
-                awayPlayers={game.away_players}
-                homePlayers={game.home_players}
-              />
+              {game.key_players?.length || game.injury_notes?.length ? (
+                <KeyPlayersPanel
+                  awayTeam={game.away_team}
+                  homeTeam={game.home_team}
+                  players={game.key_players ?? []}
+                  injuries={game.injury_notes ?? []}
+                />
+              ) : (
+                <PlayerMatchupCard
+                  awayTeam={game.away_team}
+                  homeTeam={game.home_team}
+                  awayPlayers={game.away_players}
+                  homePlayers={game.home_players}
+                />
+              )}
               {game.market_note && (
                 <div className="rounded-lg p-4"
                   style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}>
                   <h3 className="text-[11px] font-semibold uppercase tracking-widest mb-2"
                     style={{ color: 'var(--text-muted)' }}>
-                    Market
+                    Betting line
                   </h3>
                   <p className="text-sm leading-relaxed" style={{ color: 'var(--text-tertiary)' }}>
                     {game.market_note}
@@ -369,8 +341,12 @@ const GameReport: React.FC<GameReportProps> = ({ game }) => {
             className="mt-4 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-2 text-[11px]"
             style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
           >
-            <span>Logistic regression · expanding-window backtest · {EVAL_SEASON} holdout</span>
-            <span style={{ color: 'var(--text-tertiary)' }}>{formatPct(MODEL_ACCURACY)} model accuracy</span>
+            <span>
+              Clark's record this season: {clarkRecord.wins}–{clarkRecord.losses}
+            </span>
+            <Link to="/about" className="underline underline-offset-2" style={{ color: 'var(--text-tertiary)' }}>
+              How Clark works
+            </Link>
           </footer>
       </section>
     </article>

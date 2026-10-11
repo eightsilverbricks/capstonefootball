@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ApiPrediction } from '@/types/prediction';
-import { getVegasPick, getFanPick, getPrePickTeaser } from '@/lib/threeWaySignal';
+import { getVegasPick, getFanPick } from '@/lib/threeWaySignal';
 import { getPickReading } from '@/lib/pickReading';
 import { formatKickoff } from '@/lib/slate';
 import { finalScore, isPickingClosed } from '@/lib/gameStatus';
@@ -49,25 +49,23 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
   const resolvedNet = userPick && game.actual_winner
     ? resolvePick({ team: userPick.team, confidence: userPick.confidence }, game.actual_winner)
     : null;
-  const opensReport = hasPicked || closed;
+  const clarkPct = Math.round(Math.max(game.home_win_prob, game.away_win_prob) * 100);
 
+  // The whole card opens the game. The pick controls stop propagation so a
+  // drag or a button press never navigates by accident.
   return (
     <article
-      role={opensReport ? 'button' : undefined}
-      tabIndex={opensReport ? 0 : undefined}
-      onClick={opensReport ? handleOpenReport : undefined}
-      onKeyDown={
-        opensReport
-          ? (e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                handleOpenReport();
-              }
-            }
-          : undefined
-      }
-      aria-label={opensReport ? `${game.away_team} at ${game.home_team} — open Clark Report` : undefined}
-      className={`relative rounded overflow-hidden transition-transform duration-150 group ${opensReport ? 'cursor-pointer hover:-translate-y-0.5' : ''}`}
+      role="link"
+      tabIndex={0}
+      onClick={handleOpenReport}
+      onKeyDown={(e) => {
+        if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault();
+          handleOpenReport();
+        }
+      }}
+      aria-label={`${game.away_team} at ${game.home_team}, open game`}
+      className="relative rounded overflow-hidden transition-transform duration-150 group cursor-pointer hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2"
       style={{
         background: 'var(--surface)',
         border: `1px solid ${isSelected ? 'var(--border-emphasis)' : 'var(--border-subtle)'}`,
@@ -122,11 +120,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
 
         {!hasPicked && !closed ? (
           <div className="flex flex-col gap-3 pt-1" onClick={(e) => e.stopPropagation()}>
-            <p className="text-sm italic leading-snug" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
-              {getPrePickTeaser(game, vegas, fan)}
+            <p className="text-sm tabular-nums" style={{ color: 'var(--text-secondary)' }}>
+              Clark: {game.predicted_winner} {clarkPct}%
             </p>
-            <span className="text-xs uppercase tracking-widest" style={{ color: 'var(--accent-gold)' }}>
-              Drag toward your pick
+            <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
+              Your pick
             </span>
 
             <ConvictionSlider
@@ -154,21 +152,12 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
                 }}
               >
                 {!hasPosition
-                  ? 'Pick a side'
+                  ? 'Make pick'
                   : isSignedIn
-                    ? `Lock in ${draft.team}`
-                    : `Lock in ${draft.team} — free account`}
+                    ? `Pick ${draft.team}`
+                    : `Pick ${draft.team} (free account)`}
               </button>
             </div>
-
-            <button
-              type="button"
-              onClick={handleOpenReport}
-              className="self-start text-[10px] uppercase tracking-widest transition-colors hover:text-white"
-              style={{ color: 'var(--text-muted)' }}
-            >
-              Read the evidence first →
-            </button>
           </div>
         ) : (
           <>
@@ -176,7 +165,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
               rows={[
                 ...(hasPicked ? [{ label: 'You', team: userPick!.team, pct: userPick!.confidence }] : []),
                 { label: 'Clark', team: game.predicted_winner, pct: indexConfidenceFromScore(game.confidence_score) },
-                ...(vegas ? [{ label: 'Vegas', team: vegas.team, pct: vegas.prob }] : []),
+                ...(vegas ? [{ label: 'Betting line', team: vegas.team, pct: vegas.prob }] : []),
                 // No row at all until real accounts have picked this game.
                 ...(fan ? [{ label: 'Fans', team: fan.team, pct: fan.prob, sampleSize: fan.picks }] : []),
               ]}
@@ -193,15 +182,15 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
             <div className="flex items-center justify-between pt-1">
               {resolvedNet != null ? (
                 <span className="text-[10px] font-semibold uppercase tracking-widest tabular-nums" style={{ color: stakeColor(resolvedNet), fontFamily: 'var(--font-mono)' }}>
-                  {resolvedNet > 0 ? 'Cashed' : 'Missed'} {signed(resolvedNet)} pts
+                  {resolvedNet > 0 ? 'Correct' : 'Wrong'} {signed(resolvedNet)} pts
                 </span>
               ) : hasPicked ? (
                 <span className="text-[10px] uppercase tracking-widest tabular-nums" style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                  ±{stake} pts on the line
+                  {stake} pts at stake
                 </span>
               ) : (
                 <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                  Picks closed
+                  {score ? 'Final' : 'Game started'}
                 </span>
               )}
               <div className="flex items-center gap-3">
@@ -224,7 +213,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, isSelected = false }) => {
                   </button>
                 )}
                 <span className="text-[10px] uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
-                  View evidence →
+                  Open game →
                 </span>
               </div>
             </div>

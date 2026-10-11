@@ -6,8 +6,6 @@ import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
 import HomeHighlights from '@/components/HomeHighlights';
 import LandingHero from '@/components/landing/LandingHero';
-import WhyClark from '@/components/landing/WhyClark';
-import FoundersLetter from '@/components/landing/FoundersLetter';
 import HowItWorks from '@/components/landing/HowItWorks';
 import ReelPanel from '@/components/landing/ReelPanel';
 import ReportPeekDialog from '@/components/landing/ReportPeekDialog';
@@ -15,7 +13,6 @@ import SectionIntro from '@/components/landing/SectionIntro';
 import { usePredictions } from '@/hooks/usePredictions';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
 import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
-import { computeModelRecord } from '@/lib/modelRecord';
 import { getHeroFactor } from '@/lib/heroInsight';
 import { getConfidenceScore } from '@/types/prediction';
 
@@ -29,13 +26,11 @@ import { getConfidenceScore } from '@/types/prediction';
  * stays reachable at /welcome so the story is always linkable.
  */
 const LandingPage: React.FC = () => {
-  const { predictions, loading } = usePredictions();
+  const { predictions } = usePredictions();
   // Demo seasons are finished, so they open on week 1 rather than the calendar.
   const { config: seasonConfig } = useSeasonMode();
   const isDemo = seasonConfig.isDemo;
   const [peekOpen, setPeekOpen] = useState(false);
-
-  const record = useMemo(() => computeModelRecord(predictions), [predictions]);
 
   const availableWeeks = useMemo(
     () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
@@ -82,13 +77,6 @@ const LandingPage: React.FC = () => {
       <main className="flex flex-col" style={{ gap: 'var(--space-section)', paddingBottom: 'var(--space-section)' }}>
         <LandingHero />
 
-        {/* Prove the claim before asking anyone to care who we are. */}
-        {!loading && peekGame && (
-          <WhyClark game={peekGame} record={record} onPeek={() => setPeekOpen(true)} />
-        )}
-
-        <FoundersLetter />
-
         <HowItWorks onPeek={() => setPeekOpen(true)} canPeek={peekGame != null} />
 
         <ReelPanel />
@@ -102,8 +90,7 @@ const LandingPage: React.FC = () => {
             >
               <SectionIntro
                 id="week-peek-heading"
-                kicker="Live right now"
-                heading="Go read one yourself."
+                heading="This week's games"
               />
               <span className="text-[11px] uppercase tracking-[0.2em] pb-1" style={{ color: 'var(--text-muted)' }}>
                 {weekTitle(currentWeek)} · {weekGames.length} games
@@ -118,8 +105,7 @@ const LandingPage: React.FC = () => {
             >
               <p className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
                 <Lock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--accent-gold)' }} aria-hidden="true" />
-                Reading is free. Making picks, tracking your record, and going head-to-head with
-                Clark needs an account.
+                Create a free account to read full reports, make picks and track your record.
               </p>
               <button
                 type="button"
@@ -148,11 +134,10 @@ const LandingPage: React.FC = () => {
                 color: 'var(--text-primary)',
               }}
             >
-              Your first pick is one click away.
+              Make your picks for this week.
             </h2>
             <p className="text-base mb-8 mx-auto max-w-lg" style={{ color: 'var(--text-secondary)' }}>
-              Free forever, no card, no odds. Just you, the numbers, and whoever you can talk into
-              playing against you.
+              Free. No betting.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
@@ -161,7 +146,7 @@ const LandingPage: React.FC = () => {
                 className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide transition-transform duration-150 hover:-translate-y-0.5"
                 style={{ background: 'var(--accent-gold)', color: '#111' }}
               >
-                Create your free account
+                Create account
                 <ArrowRight className="w-4 h-4" aria-hidden="true" />
               </button>
               <Link

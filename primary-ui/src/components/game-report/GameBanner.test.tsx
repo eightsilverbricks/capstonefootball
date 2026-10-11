@@ -40,16 +40,9 @@ describe('GameBanner', () => {
     expect(screen.getByText(/Final · ARI 28 — BUF 34/)).toBeInTheDocument();
   });
 
-  it('shows the confidence label when the game has not resolved', () => {
-    render(<GameBanner game={game()} />);
-    expect(screen.getByText('High confidence')).toBeInTheDocument();
-  });
-
-  it('shows the low-confidence alert only for Low confidence games', () => {
-    const { rerender } = render(<GameBanner game={game({ confidence_label: 'Low' })} />);
-    expect(screen.getByText(/Close game/)).toBeInTheDocument();
-
-    rerender(<GameBanner game={game({ confidence_label: 'High' })} />);
+  it('shows no confidence chip or close-game note (the % already says it)', () => {
+    render(<GameBanner game={game({ confidence_label: 'Low' })} />);
+    expect(screen.queryByText(/confidence/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/Close game/)).not.toBeInTheDocument();
   });
 

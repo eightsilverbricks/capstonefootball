@@ -6,7 +6,7 @@ import TeamPicker from './TeamPicker';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthError } from '@/auth/types';
 
-export type AuthMode = 'signup' | 'signin';
+export type AuthMode = 'signup' | 'signin' | 'reset';
 
 interface AuthDialogProps {
   open: boolean;
@@ -25,18 +25,25 @@ const inputStyle: React.CSSProperties = {
 
 const COPY = {
   signup: {
-    title: 'Join The Clark Competition',
-    blurb: 'Free, no risk, no card. Make picks, track your record, talk trash.',
-    submit: 'Create my account',
+    title: 'Create your account',
+    blurb: 'Free. Make picks and track your record against Clark.',
+    submit: 'Create account',
     switchPrompt: 'Already have an account?',
     switchAction: 'Sign in',
   },
   signin: {
-    title: 'Welcome back',
-    blurb: 'Pick up your season right where you left it.',
+    title: 'Sign in',
+    blurb: 'Sign in to make picks and see your record.',
     submit: 'Sign in',
     switchPrompt: 'New here?',
     switchAction: 'Create an account',
+  },
+  reset: {
+    title: 'Reset your password',
+    blurb: "Enter your email and we'll send you a link to set a new password.",
+    submit: 'Send reset link',
+    switchPrompt: 'Remembered it?',
+    switchAction: 'Sign in',
   },
 } as const;
 
@@ -54,7 +61,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
   defaultMode = 'signup',
   onSuccess,
 }) => {
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, requestPasswordReset } = useAuth();
   const fieldId = useId();
 
   const [mode, setMode] = useState<AuthMode>(defaultMode);
@@ -65,6 +72,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState<AuthError | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
 
   // Reopening should always land on the mode the caller asked for, with no
   // stale error text from the previous attempt.
@@ -73,16 +81,20 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
       setMode(defaultMode);
       setError(null);
       setSubmitting(false);
+      setResetSent(false);
     }
   }, [open, defaultMode]);
 
   const isSignUp = mode === 'signup';
+  const isReset = mode === 'reset';
   const copy = COPY[mode];
 
-  const switchMode = () => {
-    setMode(isSignUp ? 'signin' : 'signup');
+  const goTo = (next: AuthMode) => {
+    setMode(next);
     setError(null);
+    setResetSent(false);
   };
+  const switchMode = () => goTo(mode === 'signin' ? 'signup' : 'signin');
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -90,6 +102,14 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
     setSubmitting(true);
     setError(null);
+
+    if (isReset) {
+      const { error: resetError } = await requestPasswordReset(email);
+      setSubmitting(false);
+      if (resetError) setError(resetError);
+      else setResetSent(true);
+      return;
+    }
 
     const result = isSignUp
       ? await signUp({ email, password, displayName, favoriteTeam: team })
@@ -177,6 +197,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
             {errorFor('email') && <FieldError message={errorFor('email')!} />}
           </div>
 
+          {!isReset && (
           <div className="flex flex-col gap-1.5">
             <label
               htmlFor={`${fieldId}-password`}
@@ -208,12 +229,23 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
               </button>
             </div>
             {errorFor('password') && <FieldError message={errorFor('password')!} />}
+            {mode === 'signin' && (
+              <button
+                type="button"
+                onClick={() => goTo('reset')}
+                className="self-end text-xs underline underline-offset-2"
+                style={{ color: 'var(--text-tertiary)' }}
+              >
+                Forgot password?
+              </button>
+            )}
           </div>
+          )}
 
           {isSignUp && (
             <div className="flex flex-col gap-1.5">
               <span className="text-[11px] uppercase tracking-[0.18em]" style={{ color: 'var(--text-muted)' }}>
-                Who do you root for?
+                Favorite team
               </span>
               <TeamPicker value={team} onChange={setTeam} label="Your favorite team" />
             </div>
@@ -221,21 +253,27 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
           {error && !error.field && <FieldError message={error.message} />}
 
+          {resetSent && (
+            <p className="text-sm" role="status" style={{ color: 'var(--text-secondary)' }}>
+              If an account uses that email, a reset link is on its way. Check your inbox.
+            </p>
+          )}
+
           <button
             type="submit"
-            disabled={submitting}
+            disabled={submitting || resetSent}
             className="mt-1 inline-flex items-center justify-center gap-2 w-full rounded-lg px-4 py-3 text-sm font-semibold uppercase tracking-wide transition-opacity disabled:opacity-60"
             style={{ background: 'var(--accent-gold)', color: '#111' }}
           >
             {submitting && <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />}
-            {submitting ? 'One second…' : copy.submit}
+            {submitting ? 'Working…' : copy.submit}
           </button>
 
           <p className="text-center text-xs" style={{ color: 'var(--text-muted)' }}>
             {copy.switchPrompt}{' '}
             <button
               type="button"
-              onClick={switchMode}
+              onClick={isReset ? () => goTo('signin') : switchMode}
               className="underline underline-offset-2"
               style={{ color: 'var(--accent-gold)' }}
             >
@@ -245,7 +283,7 @@ const AuthDialog: React.FC<AuthDialogProps> = ({
 
           {isSignUp && (
             <p className="text-center text-[11px] leading-relaxed" style={{ color: 'var(--text-muted)' }}>
-              No money, no odds, no card — The Clark Competition is played for bragging rights only.
+              Free. No betting.
             </p>
           )}
         </form>

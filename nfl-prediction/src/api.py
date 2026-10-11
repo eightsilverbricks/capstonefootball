@@ -1,21 +1,18 @@
-"""
-NFL Matchup Lab — FastAPI backend
-==================================
-Data mode: historical_backtest (2024 season)
-Model:      Logistic Regression, 71.2% accuracy on expanding-window backtest
-Trained on: 2018–2023 seasons (1,640 games), evaluated on 2024 (285 games)
-
-See the TODO block below for the live-season upgrade path.
-"""
+"""Clark Index prediction API for the live 2026 and completed demo seasons."""
 
 from pathlib import Path
+from datetime import datetime, timezone
+from typing import Any, Literal
+from zoneinfo import ZoneInfo
 import json
 import math
 import joblib
 import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, ConfigDict, Field
 
+from src.odds import market_view
 from src.factor_prose import (
     FactorContext, build_factor_prose, LedeContext, build_synthesis_lede,
 )
@@ -35,7 +32,7 @@ PLAYER_CONTEXT_PATH  = BASE_DIR / "data" / "processed" / "player_context.json"
 GAME_CONTEXT_PATH    = BASE_DIR / "data" / "processed" / "game_context.json"
 
 # ---------------------------------------------------------------------------
-# Feature sets — must match train_model.py exactly
+# Feature sets - must match train_model.py exactly
 # ---------------------------------------------------------------------------
 
 FEATURES = [
@@ -68,7 +65,7 @@ from src.train_model import (  # noqa: E402
 # ── Seasons ──────────────────────────────────────────────────────────────────
 # ACTIVE_SEASON is what the site serves by default: the season being played (or
 # about to be). DEMO_SEASON is a completed season kept for demo mode, where
-# every game has a real outcome so picks actually resolve — the live season
+# every game has a real outcome so picks actually resolve - the live season
 # cannot do that until games are played.
 ACTIVE_SEASON = 2026
 DEMO_SEASON = 2024
@@ -77,12 +74,14 @@ DATA_MODE = "historical_backtest"
 
 CURRENT_SEASON_READY_NOTE = (
     "This version runs on historical backtest data. During a live season, "
-    "the same pipeline refreshes weekly using current nflfastR/nflverse data — "
+    "the same pipeline refreshes weekly using current nflfastR/nflverse data - "
     "only games already played are used to build features."
 )
 
 PREDICTION_VERSION = "game_diagnosis_engine_v1"
 SEASON_MODE = "historical_expanding_backtest"
+KICKOFF_TIMEZONE = "America/New_York"
+DATASET_GENERATED_AT = datetime.now(timezone.utc)
 
 # Real metrics loaded from outputs/metrics.json
 def _load_model_meta() -> dict:
@@ -102,9 +101,9 @@ def _load_model_meta() -> dict:
         "accuracy":          accuracy_pct,
         "train_seasons":     train_seasons,
         "test_season":       test_season,
-        "n_train_games":     1640,
-        "n_test_games":      285,
-        "evaluation_method": "Expanding-window weekly validation — trained on all prior weeks, predicted each week forward",
+        "n_train_games":     m.get("n_initial_train_games", 0) if METRICS_PATH.exists() else 0,
+        "n_test_games":      m.get("n_test_games", 0) if METRICS_PATH.exists() else 0,
+        "evaluation_method": "Expanding-window weekly validation, trained on prior games and predicted forward",
         "feature_categories": [
             "QB EPA per play (season + last 3 games)",
             "Turnover differential per game",
@@ -160,10 +159,49 @@ schedule_df = pd.read_csv(SCHEDULE_DATES_PATH) if SCHEDULE_DATES_PATH.exists() e
 model       = joblib.load(MODEL_PATH)
 
 
+class PredictionResponse(BaseModel):
+    """Validated public contract. Rich diagnosis fields remain forward-compatible."""
+
+    model_config = ConfigDict(extra="allow")
+
+    game_id: str
+    season: int
+    week: int
+    week_label: str
+    game_date: str | None = None
+    weekday: str | None = None
+    gametime: str | None = None
+    kickoff_at: datetime | None = None
+    kickoff_timezone: str | None = None
+    game_type: str | None = None
+    location: str | None = None
+    stadium: str | None = None
+    home_team: str
+    away_team: str
+    predicted_winner: str
+    home_win_prob: float = Field(ge=0, le=1)
+    away_win_prob: float = Field(ge=0, le=1)
+    confidence_label: Literal["High", "Medium", "Low"]
+    confidence_score: float = Field(ge=0, le=100)
+    actual_winner: str | None = None
+    home_score: int | None = None
+    away_score: int | None = None
+
+
+class HealthResponse(BaseModel):
+    status: Literal["ok"]
+    dataset_season: int
+    generated_at: datetime
+    game_count: int
+    schedule_complete: bool
+    scheduled_games: int
+    games_with_kickoff: int
+
+
 # ---------------------------------------------------------------------------
 # Actual results
 # ---------------------------------------------------------------------------
-# The frontend resolves every pick against `actual_winner` — records, streaks,
+# The frontend resolves every pick against `actual_winner` - records, streaks,
 # Clark Differential and the whole My Season page are derived from it. The
 # static export gets these fields patched in by add_actual_results.py; this API
 # has to serve the same three fields from the same source, or a frontend
@@ -177,7 +215,7 @@ def _load_results_map() -> dict[str, dict]:
     try:
         sched = pd.read_parquet(SCHEDULES_RAW_PATH)
     except Exception:
-        # Missing parquet engine or unreadable file — degrade to "no outcomes"
+        # Missing parquet engine or unreadable file - degrade to "no outcomes"
         # rather than taking the whole API down.
         return {}
 
@@ -190,7 +228,7 @@ def _load_results_map() -> dict[str, dict]:
         elif away_score > home_score:
             winner = row.away_team
         else:
-            winner = None  # tie — the pick stays unresolved, same as the export
+            winner = None  # tie - the pick stays unresolved, same as the export
         out[row.game_id] = {
             "actual_winner": winner,
             "home_score": home_score,
@@ -211,16 +249,24 @@ _clf            = _fitted_model.named_steps["clf"]
 MODEL_SCALER_MEAN  = dict(zip(PRODUCTION_FEATURES, _scaler.mean_))
 MODEL_SCALER_SCALE = dict(zip(PRODUCTION_FEATURES, _scaler.scale_))
 MODEL_COEFS        = dict(zip(PRODUCTION_FEATURES, _clf.coef_[0]))
+MODEL_INTERCEPT    = float(_clf.intercept_[0])
+# Home field in win-probability points, e.g. 6.5 for a 56.5% coin flip.
+HOME_FIELD_PTS     = (1.0 / (1.0 + math.exp(-MODEL_INTERCEPT)) - 0.5) * 100.0
 
 # Factor buckets: display name -> PRODUCTION_FEATURES subset
 # advantage_team is derived from sign of sum(coef_i * scaled_val_i)
 FACTOR_BUCKETS: dict[str, list[str]] = {
-    "Market Edge":    ["spread_line", "home_moneyline", "away_moneyline"],
+    "Market Edge":    ["mkt_home_prob", "has_market", "spread_line_clean",
+                       "has_spread"],
     "Recent Offense": ["diff_last3_epa_per_play", "diff_last3_success_rate",
-                       "diff_last3_point_diff_pg"],
+                       "diff_last3_point_diff_pg", "diff_season_epa_per_play",
+                       "diff_season_success_rate"],
     "Defensive Edge": ["diff_last3_epa_per_play_allowed",
-                       "diff_last3_success_rate_allowed"],
-    "Momentum":       ["diff_last3_win_pct"],
+                       "diff_last3_success_rate_allowed",
+                       "diff_season_epa_per_play_allowed"],
+    "Momentum":       ["elo_diff", "diff_last3_win_pct",
+                       "diff_season_qb_epa_per_play",
+                       "diff_season_turnover_diff_pg"],
     "Game Context":   ["rest_diff", "div_game"],
 }
 
@@ -245,6 +291,11 @@ def compute_factor_contributions(row: dict) -> dict[str, dict]:
             coef  = MODEL_COEFS.get(feat, 0.0)
             s += ((val - mean) / scale) * coef
         raw[name] = s
+
+    # The intercept is the home team's edge before any matchup data. Without it
+    # the factors can't add up to the pick: a 52% home favorite can have every
+    # listed factor leaning away and still win on home field alone.
+    raw["Home Field"] = MODEL_INTERCEPT
 
     max_abs = max(abs(v) for v in raw.values()) or 1.0
 
@@ -305,7 +356,7 @@ LEAGUE_BASELINES = _compute_league_baselines(GAME_CONTEXT)
 
 
 def _compute_qb_league_baselines(player_ctx: dict) -> dict[str, dict]:
-    """Per-season league distribution of QB EPA/att — used only to make a
+    """Per-season league distribution of QB EPA/att - used only to make a
     quarterback's efficiency legible ("elite" / "above-average"), never to alter
     the model."""
     baselines: dict[str, dict] = {}
@@ -377,7 +428,7 @@ def clean_record(record: dict) -> dict:
 
 
 # ===========================================================================
-# Helper 1 — Confidence
+# Helper 1 - Confidence
 # ===========================================================================
 
 def get_confidence(prob: float) -> tuple[str, float]:
@@ -397,7 +448,7 @@ def get_confidence(prob: float) -> tuple[str, float]:
 
 
 # ===========================================================================
-# Helper 2 — Team advantage from signed diff value
+# Helper 2 - Team advantage from signed diff value
 # ===========================================================================
 
 def get_team_advantage(value: float, home_team: str, away_team: str) -> str:
@@ -414,7 +465,7 @@ def get_opponent(advantage_team: str, home_team: str, away_team: str) -> str:
 
 
 # ===========================================================================
-# Helper 3 — Factor magnitude descriptor
+# Helper 3 - Factor magnitude descriptor
 # ===========================================================================
 
 def magnitude_word(score: float) -> str:
@@ -431,7 +482,7 @@ def magnitude_word(score: float) -> str:
 def factor_tier(score: float) -> str:
     """
     strong  ≥ 7  → green, used in explanations
-    medium  4–6.9 → amber, used in explanations
+    medium  4-6.9 → amber, used in explanations
     weak    < 4   → gray, labeled 'Minor Factor', excluded from explanations
     """
     if score >= 7:
@@ -442,7 +493,7 @@ def factor_tier(score: float) -> str:
 
 
 # ===========================================================================
-# Helper 4 — Build a single factor object
+# Helper 4 - Build a single factor object
 # ===========================================================================
 
 def build_factor(
@@ -455,12 +506,12 @@ def build_factor(
 ) -> dict:
     """
     reason_template placeholders:
-      {team}      — the team with the advantage
-      {opponent}  — the other team
-      {value}     — absolute value of the diff
-      {magnitude} — 'significantly' / 'meaningfully' / 'modestly' / 'slightly'
-      {home}      — home team abbr
-      {away}      — away team abbr
+      {team}      - the team with the advantage
+      {opponent}  - the other team
+      {value}     - absolute value of the diff
+      {magnitude} - 'significantly' / 'meaningfully' / 'modestly' / 'slightly'
+      {home}      - home team abbr
+      {away}      - away team abbr
     """
     adv  = get_team_advantage(value, home_team, away_team)
     opp  = get_opponent(adv, home_team, away_team)
@@ -483,7 +534,7 @@ def build_factor(
 
 
 # ===========================================================================
-# Helper 5 — Build all five football factors
+# Helper 5 - Build all five football factors
 # ===========================================================================
 
 def build_football_factors(row: dict) -> list[dict]:
@@ -507,7 +558,7 @@ def build_football_factors(row: dict) -> list[dict]:
     qb = build_factor(
         "QB Efficiency", qb_val, home, away,
         "{team}'s QB efficiency is {magnitude} higher than {opponent}'s this season "
-        "({value:.3f} EPA/play difference) — a gap that shapes drive consistency and big-play rate.",
+        "({value:.3f} EPA/play difference) - a gap that shapes drive consistency and big-play rate.",
         max_val=0.25,
     )
 
@@ -516,7 +567,7 @@ def build_football_factors(row: dict) -> list[dict]:
               + safe_get(row, "diff_last3_turnover_diff_pg")) / 2
     to = build_factor(
         "Turnover Edge", to_val, home, away,
-        "{team} wins the turnover battle {magnitude} — a {value:.2f} turnover-per-game edge "
+        "{team} wins the turnover battle {magnitude} - a {value:.2f} turnover-per-game edge "
         "that creates shorter fields and extra possessions.",
         max_val=1.5,
     )
@@ -535,7 +586,7 @@ def build_football_factors(row: dict) -> list[dict]:
     def_val = -safe_get(row, "diff_season_epa_per_play_allowed")
     defs = build_factor(
         "Defensive Resistance", def_val, home, away,
-        "{team}'s defense is {magnitude} more stingy than {opponent}'s — "
+        "{team}'s defense is {magnitude} more stingy than {opponent}'s - "
         "allowing {value:.3f} fewer EPA per play and limiting opponent scoring opportunities.",
         max_val=0.2,
     )
@@ -546,7 +597,7 @@ def build_football_factors(row: dict) -> list[dict]:
     pres = build_factor(
         "Pressure Matchup", -pres_raw, home, away,
         "{team} wins the pass rush vs. protection battle {magnitude} "
-        "({value:.3f} sack-rate edge) — a mismatch that can collapse key third-down drives.",
+        "({value:.3f} sack-rate edge) - a mismatch that can collapse key third-down drives.",
         max_val=0.08,
     )
 
@@ -554,20 +605,21 @@ def build_football_factors(row: dict) -> list[dict]:
 
 
 # ===========================================================================
-# Helper 6 — Key battle
+# Helper 6 - Key battle
 # ===========================================================================
 
-def build_key_battle(row: dict, factors: list[dict]) -> str:
-    top = max(factors, key=lambda f: f["score"])
-    opp = top["opponent"]
-    return (
-        f"{top['name']}: {top['advantage_team']} has the clearest edge over {opp} — "
-        f"score {top['score']:.1f}/10."
-    )
+def build_key_battle(row: dict, factor_cards: list[dict]) -> str:
+    """The headline of the strongest confident factor behind the pick."""
+    winner = row["predicted_winner"]
+    backing = [c for c in factor_cards
+               if c["advantage_team"] == winner and c.get("confident")]
+    if not backing:
+        return f"No single factor decides this; the pick comes from several small edges for {winner}."
+    return max(backing, key=lambda c: c["contribution_strength"])["headline"]
 
 
 # ===========================================================================
-# Helper 7 — Football-first explanation (skips weak factors)
+# Helper 7 - Football-first explanation (skips weak factors)
 # ===========================================================================
 
 def build_explanation(row: dict, factors: list[dict]) -> str:
@@ -599,50 +651,46 @@ def build_explanation(row: dict, factors: list[dict]) -> str:
 
 
 # ===========================================================================
-# Helper 8 — Market note
+# Helper 8 - Market note
 # ===========================================================================
 
-def build_market_note(row: dict, factors: list[dict]) -> str:
-    if not (safe_get(row, "spread_line") or safe_get(row, "home_moneyline")):
-        return (
-            "No betting line has been posted for this game yet. The projection "
-            "below is built purely from team form and ratings."
-        )
-
-    spread  = safe_get(row, "spread_line")
-    home_ml = safe_get(row, "home_moneyline")
-    home, away, winner = row["home_team"], row["away_team"], row["predicted_winner"]
-
-    has_spread = abs(spread) > 0.1
-    has_ml     = abs(home_ml) > 1
-
-    if not has_spread and not has_ml:
-        return "Market comparison unavailable for this game."
-
-    if has_spread:
-        market_fav  = home if spread > 0 else away
-        spread_desc = f"a {abs(spread):.1f}-point spread"
-    else:
-        market_fav  = home if home_ml < 0 else away
-        spread_desc = "the moneyline"
-
-    top2_names = [
-        f["name"]
-        for f in sorted(factors, key=lambda f: f["score"], reverse=True)[:2]
-    ]
-    factors_str = " and ".join(top2_names)
-
-    if market_fav == winner:
-        return (
-            f"The market also favors {winner} via {spread_desc}, aligning with the model. "
-            f"Football factors — {factors_str} — are the primary driver, "
-            f"with market data providing secondary confirmation."
-        )
-    return (
-        f"The model diverges from market consensus here: the model picks {winner} despite "
-        f"the market favoring {market_fav} via {spread_desc}. "
-        f"Football factors — {factors_str} — outweigh the market signal in this matchup."
+def _row_market(row: dict) -> dict | None:
+    return market_view(
+        row["home_team"], row["away_team"],
+        safe_get(row, "spread_line"),
+        safe_get(row, "home_moneyline"), safe_get(row, "away_moneyline"),
     )
+
+
+def _market_sentence(row: dict, winner: str) -> str:
+    """One sentence for the report summary: does the betting line agree?"""
+    view = _row_market(row)
+    if view is None:
+        return ""
+    if view["favorite"] is None:
+        return "The betting line has this as a toss-up."
+    if view["favorite"] == winner:
+        return "The betting line agrees."
+    return (f"The betting line disagrees: it favors {view['favorite']}"
+            f" (about {view['favorite_prob']:.0%} to win).")
+
+
+def build_market_note(row: dict, factors: list[dict]) -> str:
+    """Plain-English betting-line summary. Names no factors, so it can never
+    cite one the report doesn't show."""
+    view = _row_market(row)
+    winner = row["predicted_winner"]
+    if view is None:
+        return "No betting line has been posted for this game yet."
+    if view["favorite"] is None:
+        return f"Sportsbooks have this game as a toss-up. Clark picks {winner}."
+    fav, prob, pts = view["favorite"], view["favorite_prob"], view["spread"]
+    price = f"a {pts:.1f}-point favorite" if pts >= 0.5 else "a slight favorite"
+    verdict = (f"Clark agrees." if fav == winner
+               else f"Clark disagrees and picks {winner}.")
+    article = "an" if round(prob * 100) // 10 == 8 else "a"
+    return (f"Sportsbooks have {fav} as {price}, about {article} {prob:.0%} chance to win."
+            f" {verdict}")
 
 
 # ===========================================================================
@@ -841,7 +889,7 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
     away_pts_ag    = _game_ctx.get("away_last3_pts_ag")
     _league        = LEAGUE_BASELINES.get(str(season), {})
 
-    # Weather context — derive wind_tier from numeric wind + roof
+    # Weather context - derive wind_tier from numeric wind + roof
     weather  = _game_ctx.get("weather", {})
     wind_mph = weather.get("wind") or 0
     temp_f   = weather.get("temp")
@@ -866,6 +914,7 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
             name=name, home=home, away=away, adv=adv, opp=opp,
             adv_is_home=adv_is_home, contribution_strength=strength,
             spread=spread, home_ml=home_ml, away_ml=away_ml,
+            predicted_winner=str(row.get("predicted_winner") or ""),
             season_epa=season_epa, last3_epa=home_epa,
             season_epa_allowed=season_epa_allowed, last3_epa_allowed=home_def,
             season_sr=season_sr, last3_sr=home_sr,
@@ -874,6 +923,10 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
             opp_last3_epa=pick(away_last3_epa, home_last3_epa),
             adv_pts_for=pick(home_pts_for, away_pts_for),
             adv_pts_ag=pick(home_pts_ag, away_pts_ag),
+            opp_pts_for=pick(away_pts_for, home_pts_for),
+            opp_pts_ag=pick(away_pts_ag, home_pts_ag),
+            home_field_pts=HOME_FIELD_PTS,
+            neutral_site=str(row.get("location") or "").lower() == "neutral",
             adv_last3_rec=pick(home_last3, away_last3),
             opp_last3_rec=pick(away_last3, home_last3),
             adv_season_rec=pick(home_season_rec, away_season_rec),
@@ -885,14 +938,21 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
             rest_diff=rest_diff, div_game=div_game,
             wind_mph=wind_mph or 0.0, temp_f=temp_f, wind_tier=wind_tier,
             wind_consequence=wind_consequence, roof=_roof,
-            stadium=weather.get("stadium", "") or "",
+            stadium=weather.get("stadium", "") or str(row.get("stadium") or ""),
             league=_league,
         )
 
     # Build sorted cards from contributions
     cards = []
+    market = market_view(home, away, spread, home_ml, away_ml)
     for name, contrib in contributions.items():
         adv = contrib["advantage_team"]
+        if name == "Market Edge":
+            # Show who the betting line actually favors. The model's market
+            # contribution is measured against an average game, so a 2.5-point
+            # home favorite can "push" toward the road team - true for the math,
+            # nonsense to a reader.
+            adv = (market or {}).get("favorite") or "Even"
         opp = away if adv == home else home
         prose = build_factor_prose(
             _prose_ctx(name, adv, opp, contrib["contribution_strength"])
@@ -909,7 +969,18 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
             "confident":            prose.confident,
         })
 
-    cards.sort(key=lambda c: c["contribution_strength"], reverse=True)
+    # Lead with evidence that supports the published pick, then neutral context,
+    # then the strongest counterargument. Raw contribution strength remains on
+    # every card, so the UI can still show magnitude without opening a report on
+    # an unexplained contradiction.
+    predicted_winner = str(row.get("predicted_winner") or "")
+    cards.sort(
+        key=lambda card: (
+            0 if card["advantage_team"] == predicted_winner else
+            1 if card["advantage_team"] == "Even" else 2,
+            -card["contribution_strength"],
+        )
+    )
 
     # Assign status labels based on relative contribution within this game
     thresholds = contribution_percentiles(cards)
@@ -939,7 +1010,7 @@ def build_market_context(row: dict) -> dict:
 
     # No line posted yet. Most of an upcoming season sits here for months, and
     # calling that "Even" would render a fabricated pick'em on the comparison
-    # rows — the market has not spoken, which is different from it saying the
+    # rows - the market has not spoken, which is different from it saying the
     # game is a coin flip.
     has_line = bool(spread) or bool(home_ml and away_ml)
 
@@ -965,6 +1036,17 @@ def build_market_context(row: dict) -> dict:
             "sections intentionally avoid citing Vegas as the cause."
         ),
     }
+
+
+def build_kickoff_at(gameday: str | None, gametime: str | None) -> str | None:
+    """Combine nflverse's Eastern schedule fields into one RFC 3339 timestamp."""
+    if not gameday or not gametime:
+        return None
+    try:
+        local = datetime.fromisoformat(f"{gameday}T{gametime}")
+        return local.replace(tzinfo=ZoneInfo(KICKOFF_TIMEZONE)).isoformat()
+    except (TypeError, ValueError):
+        return None
 
 
 def build_flip_scenarios(row: dict, factor_cards: list[dict]) -> list[str]:
@@ -1085,13 +1167,12 @@ def game_diagnosis_engine(row: dict) -> dict:
         if card["advantage_team"] not in {winner, "Even"} and card["status"] in {"DECISIVE", "MODERATE", "MINOR"}
     ]
     # Only a factor whose own prose genuinely supports the opponent counts as a
-    # real upset path — a hedged "close to even" factor is not a risk.
+    # real upset path - a hedged "close to even" factor is not a risk.
     confident_risks = [card for card in risks if card.get("confident")]
     risk = confident_risks[0] if confident_risks else None
 
     # ── Headline ───────────────────────────────────────────────────────────────
-    conf_label = "Clear edge" if probability >= 0.65 else "Slight lean" if probability <= 0.57 else "Model lean"
-    headline = f"{conf_label}: {winner} at {probability * 100:.1f}%"
+    headline = f"Clark picks {winner} ({probability * 100:.0f}%)"
 
     # ── Primary / secondary reasons (now the plain-English explanation) ────────
     if primary:
@@ -1104,21 +1185,24 @@ def game_diagnosis_engine(row: dict) -> dict:
         )
         primary_reason = (
             best["explanation"] if best
-            else f"Clark's lean on {winner} rides on the overall blend — no single football factor dominates."
+            else f"No single factor decides this; the pick comes from several small edges for {winner}."
         )
 
     if secondary:
         secondary_reason = secondary["explanation"]
     else:
-        secondary_reason = f"The main edge carries most of the weight — no clear secondary factor reinforces {winner}."
+        secondary_reason = ""
 
     # ── Risk factor ────────────────────────────────────────────────────────────
     if risk:
-        risk_factor = f"{risk['headline']} {risk['explanation']}"
+        risk_factor = (
+            f"{loser} have home field, worth about {HOME_FIELD_PTS:.1f} points of win chance."
+            if risk["name"] == "Home Field" else risk["explanation"]
+        )
     else:
         risk_factor = (
-            "The main risk is game-state variance: a turnover, a special-teams breakdown, "
-            "or an early injury can compress the statistical edge quickly."
+            f"No factor clearly favors {loser}, so an upset would most likely come from "
+            "turnovers, a big special-teams play, or an early injury."
         )
 
     # ── Football story (A3 synthesis lede) ─────────────────────────────────────
@@ -1150,6 +1234,14 @@ def game_diagnosis_engine(row: dict) -> dict:
         winner_qb=winner_qb, winner_qb_epa=winner_qb_epa,
         qb_league=QB_LEAGUE_BASELINES.get(str(season), {}),
         spread_desc=spread_desc,
+        market_sentence=_market_sentence(row, winner),
+        backing=tuple(sorted(
+            (c for c in factor_cards
+             if c["advantage_team"] == winner and c.get("confident")
+             and c["name"] != "Market Edge"),
+            key=lambda c: -c["contribution_strength"],
+        )),
+        home_field_pts=HOME_FIELD_PTS,
     ))
 
     return {
@@ -1178,12 +1270,36 @@ def root():
 
 @app.get("/model-info")
 def model_info():
-    """Returns model metadata — accuracy, features, evaluation method."""
+    """Returns model metadata - accuracy, features, evaluation method."""
     return MODEL_META
 
 
-@app.get("/predictions")
-def get_predictions(season: int | None = None):
+@app.get("/health", response_model=HealthResponse)
+def health() -> dict[str, Any]:
+    season_games = df[df["season"] == ACTIVE_SEASON]
+    scheduled_ids = set(season_games["game_id"].astype(str))
+    current_schedule = schedule_df[
+        schedule_df["game_id"].astype(str).isin(scheduled_ids)
+    ] if not schedule_df.empty else pd.DataFrame()
+    games_with_kickoff = 0
+    if not current_schedule.empty:
+        games_with_kickoff = int(
+            current_schedule[["gameday", "gametime"]].notna().all(axis=1).sum()
+        )
+    game_count = len(season_games)
+    return {
+        "status": "ok",
+        "dataset_season": ACTIVE_SEASON,
+        "generated_at": DATASET_GENERATED_AT,
+        "game_count": game_count,
+        "schedule_complete": game_count > 0 and games_with_kickoff == game_count,
+        "scheduled_games": len(current_schedule),
+        "games_with_kickoff": games_with_kickoff,
+    }
+
+
+@app.get("/predictions", response_model=list[PredictionResponse])
+def get_predictions(season: int | None = None) -> list[dict[str, Any]]:
     """
     Return enriched game predictions for the latest season.
 
@@ -1202,8 +1318,8 @@ def get_predictions(season: int | None = None):
 
     # The backtest CSV only covers the held-out evaluation season, and its
     # probabilities come from the stricter expanding-week refit, so prefer it
-    # when it actually has rows for this season. Every other season — the
-    # upcoming one included — is scored with the production model.
+    # when it actually has rows for this season. Every other season - the
+    # upcoming one included - is scored with the production model.
     backtest = pd.DataFrame()
     if PREDICTIONS_PATH.exists():
         predictions = pd.read_csv(PREDICTIONS_PATH)
@@ -1239,6 +1355,7 @@ def get_predictions(season: int | None = None):
     results = []
     for record in latest_games.to_dict(orient="records"):
         record = clean_record(record)
+        kickoff_at = build_kickoff_at(record.get("gameday"), record.get("gametime"))
 
         home_win_prob = record.get("home_win_prob") or 0.5
         away_win_prob = record.get("away_win_prob") or 0.5
@@ -1250,9 +1367,9 @@ def get_predictions(season: int | None = None):
         away_ctx    = get_player_context(season_int, record.get("away_team", ""))
         game_ctx    = get_game_context(game_id_str)
         factors     = build_football_factors(record)
-        key_battle  = build_key_battle(record, factors)
         market_note = build_market_note(record, factors)
         diagnosis   = game_diagnosis_engine(record)
+        key_battle  = build_key_battle(record, diagnosis["factor_cards"])
         legacy_explanation_factors = diagnosis["model_contributions"] or [
             {
                 "feature": card["name"],
@@ -1273,8 +1390,13 @@ def get_predictions(season: int | None = None):
             "game_date":          record.get("gameday"),
             "weekday":            record.get("weekday"),
             "gametime":           record.get("gametime"),
+            "kickoff_at":          kickoff_at,
+            "kickoff_timezone":    KICKOFF_TIMEZONE if kickoff_at else None,
             "game_type":          record.get("game_type"),
-            "location":           record.get("location"),
+            # nflverse's `location` is "Home"/"Neutral", but the frontend reads
+            # `location` as the venue's city - so publish the flag separately.
+            "location":           None,
+            "neutral_site":       str(record.get("location") or "").lower() == "neutral",
             "stadium":            record.get("stadium"),
             "home_team":         record.get("home_team"),
             "away_team":         record.get("away_team"),
@@ -1282,7 +1404,7 @@ def get_predictions(season: int | None = None):
             "predicted_winner":  record.get("predicted_winner"),
             "home_win_prob":     round(float(home_win_prob), 4),
             "away_win_prob":     round(float(away_win_prob), 4),
-            # Actual outcome — null winner means a tie or an unplayed game.
+            # Actual outcome - null winner means a tie or an unplayed game.
             **RESULTS_MAP.get(game_id_str, {
                 "actual_winner": None, "home_score": None, "away_score": None,
             }),

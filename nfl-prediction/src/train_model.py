@@ -57,7 +57,7 @@ FEATURES = [
 ]
 
 # Implied probability rather than raw American odds, plus explicit flags for
-# whether a line exists at all — see src/features.py for why. `home_field` is
+# whether a line exists at all - see src/features.py for why. `home_field` is
 # deliberately absent: it is 1 for every row, so it has zero variance and the
 # scaler zeroes it out. It was never a feature, only an intercept in disguise.
 MARKET_FEATURES = [
@@ -110,7 +110,7 @@ NO_MARKET_FEATURES = (
 )
 
 # The legacy FEATURES list still carries the raw odds columns, so the ablation
-# has to exclude those by name — MARKET_FEATURES now holds the encoded versions.
+# has to exclude those by name - MARKET_FEATURES now holds the encoded versions.
 RAW_MARKET_FEATURES = ["spread_line", "home_moneyline", "away_moneyline"]
 
 PURE_FOOTBALL_FEATURES = [
@@ -164,7 +164,7 @@ def load_training_data() -> pd.DataFrame:
         raise ValueError(f"Training table is missing required columns: {missing_columns}")
 
     # Played games only. The table also carries the upcoming season's fixtures so
-    # the exporter can score them, but they have no home_win — left in, they would
+    # the exporter can score them, but they have no home_win - left in, they would
     # become `latest_season` in split_train_test() and the whole evaluation would
     # "test" against a column of NaN.
     played = df[df["is_played"]].copy()
@@ -572,7 +572,7 @@ def main() -> None:
         ),
         # The regime most of an upcoming season runs in. Once no line is posted
         # mkt_home_prob is a constant 0.5, so the production model effectively
-        # collapses to these features — worth measuring rather than assuming,
+        # collapses to these features - worth measuring rather than assuming,
         # because it is the number that describes an unlined fixture.
         "no_market_regime": evaluate_feature_set_expanding(
             df=df,

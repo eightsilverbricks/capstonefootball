@@ -7,7 +7,7 @@ Feature and model sweep for the game-winner model.
 Every variant is scored by walk-forward backtest over several held-out seasons:
 for each test season, train on every prior season only, predict that season,
 then pool the predictions. Pooling ~2,000 games instead of one 285-game season
-matters — at 285 games a single result is 0.35% of accuracy, so picking a winner
+matters - at 285 games a single result is 0.35% of accuracy, so picking a winner
 on one season mostly selects noise.
 
     .venv/bin/python src/experiment_model.py
@@ -51,7 +51,7 @@ def compute_elo(
     """Pregame Elo ratings, optionally scaled by margin of victory.
 
     Binary Elo throws away how much a team won by, which is the more predictive
-    signal — a 3-point win and a 30-point win move the rating identically. The
+    signal - a 3-point win and a 30-point win move the rating identically. The
     margin multiplier is the FiveThirtyEight formulation, including its
     autocorrelation correction: without the denominator term, running up the
     score against an already-weak opponent would inflate a rating without bound.
@@ -212,7 +212,7 @@ def main() -> None:
     ]
     market = ["mkt_home_prob", "has_market", "spread_line_clean", "has_spread"]
 
-    print(f"Walk-forward over {TEST_SEASONS[0]}–{TEST_SEASONS[-1]}, "
+    print(f"Walk-forward over {TEST_SEASONS[0]}-{TEST_SEASONS[-1]}, "
           f"training only on prior seasons.\n")
 
     # ── Elo tuning, judged on the no-market regime where it actually matters ──

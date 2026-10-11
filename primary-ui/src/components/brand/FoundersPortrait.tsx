@@ -3,7 +3,7 @@ import { FOUNDERS } from '@/data/founders';
 import { getTeamColors } from '@/data/nflData';
 
 interface FoundersPortraitProps {
-  /** Name / team / fan-line labels anchored under each of us. Off for small decorative uses. */
+  /** Name / team labels anchored under each of us. Off for small decorative uses. */
   showLabels?: boolean;
   /** The slow zoom breathing effect. Off for small decorative uses. */
   animate?: boolean;
@@ -59,12 +59,6 @@ const FoundersPortrait: React.FC<FoundersPortraitProps> = ({
                 style={{ color: colors.secondary }}
               >
                 {founder.teamName} · {founder.role}
-              </p>
-              <p
-                className="hidden sm:block text-xs mt-1 leading-snug"
-                style={{ color: 'var(--text-muted)' }}
-              >
-                {founder.line}
               </p>
             </div>
           );

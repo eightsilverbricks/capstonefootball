@@ -16,7 +16,7 @@ class TestPressureContextOutput(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not OUTPUT.exists():
-            raise unittest.SkipTest("pressure_context.json not built yet — run build_pressure_context.py")
+            raise unittest.SkipTest("pressure_context.json not built yet - run build_pressure_context.py")
         with open(OUTPUT) as f:
             cls.data = json.load(f)
 

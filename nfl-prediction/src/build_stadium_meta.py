@@ -1,4 +1,4 @@
-"""Build stadium_meta.json — geographic + capacity metadata for each NFL team's home venue.
+"""Build stadium_meta.json - geographic + capacity metadata for each NFL team's home venue.
 
 Output:
   - nfl-prediction/data/processed/stadium_meta.json

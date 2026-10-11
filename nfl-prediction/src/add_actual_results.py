@@ -6,7 +6,7 @@ Patches real 2024 game outcomes into the exported predictions.json so the
 frontend can resolve picks (You / Clark / Vegas / Fans correct-or-not) and
 build season records.
 
-predictions.json ships with predictions only — no outcome field. The 2024
+predictions.json ships with predictions only - no outcome field. The 2024
 season is historical, so the actual results already exist in the nflverse
 schedules parquet. This script joins them in by `game_id` (which is
 nflverse-native, e.g. "2024_01_ARI_BUF") and writes three fields onto each
@@ -16,7 +16,7 @@ game:
     home_score    : final home points (int) or null
     away_score    : final away points (int) or null
 
-It is idempotent — safe to re-run. Run after export_predictions.py:
+It is idempotent - safe to re-run. Run after export_predictions.py:
 
     cd nfl-prediction
     .venv/bin/python src/add_actual_results.py

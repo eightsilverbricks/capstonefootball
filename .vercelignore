@@ -1,0 +1,11 @@
+.git/
+.pytest_cache/
+.claude/
+supabase/.temp/
+nfl-prediction/
+nfl-frontend/
+primary-ui/node_modules/
+primary-ui/dist/
+primary-ui/.claude/
+**/.DS_Store
+**/*.log

@@ -2,7 +2,7 @@ import React from 'react';
 
 interface SectionIntroProps {
   /** Small gold kicker — the running voice that ties the bands together. */
-  kicker: string;
+  kicker?: string;
   heading: string;
   /** Optional one-line lede under the heading. */
   lede?: string;
@@ -25,9 +25,11 @@ const SectionIntro: React.FC<SectionIntroProps> = ({
   className = '',
 }) => (
   <div className={`${align === 'center' ? 'text-center mx-auto max-w-2xl' : 'max-w-2xl'} ${className}`}>
-    <p className="text-[11px] uppercase tracking-[0.24em] mb-3" style={{ color: 'var(--accent-gold)' }}>
-      {kicker}
-    </p>
+    {kicker && (
+      <p className="text-[11px] uppercase tracking-[0.24em] mb-3" style={{ color: 'var(--accent-gold)' }}>
+        {kicker}
+      </p>
+    )}
     <h2
       id={id}
       className="font-bold leading-[1.05] tracking-tight"

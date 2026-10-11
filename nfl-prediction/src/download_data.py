@@ -7,7 +7,7 @@ RAW_DIR.mkdir(parents=True, exist_ok=True)
 # Schedules run one season ahead of play-by-play: the upcoming season's fixtures
 # are published months before a snap is taken, and those unplayed rows are what
 # the model predicts. nflreadpy raises if asked for play-by-play it does not
-# have, so the two ranges are deliberately separate — keep PBP_SEASONS ending at
+# have, so the two ranges are deliberately separate - keep PBP_SEASONS ending at
 # the last *completed* season.
 # History starts at 2006, not earlier: cpoe, pass_oe and xpass are all NaN before
 # then (nflfastR's completion/pass-rate models need air-yards charting that only

@@ -28,7 +28,7 @@ def american_to_prob(odds: pd.Series) -> pd.Series:
     """American odds -> implied probability. 0 means 'no line posted'.
 
     Raw American odds cannot be fed to a linear model: they run from -2540 to
-    +1000 across a true probability range of roughly 0.5–0.96, and the sign
+    +1000 across a true probability range of roughly 0.5-0.96, and the sign
     flips discontinuously at even money, so the model reads a heavy favourite
     and a coin flip as thousands of units apart. Implied probability is the
     scale the coefficient actually means something on.
@@ -55,7 +55,7 @@ def devigged_home_prob(df: pd.DataFrame) -> pd.Series:
 def add_market_features(df: pd.DataFrame) -> pd.DataFrame:
     """Market columns that behave when no line has been posted.
 
-    Most of an upcoming season has no line months out — 160 of 2026's 272
+    Most of an upcoming season has no line months out - 160 of 2026's 272
     fixtures at time of writing. The old encoding filled those with 0.0, which
     is not a valid moneyline and sat in the middle of the real range, so an
     unpriced game silently read as a near-even matchup. Here the probability is
@@ -124,9 +124,9 @@ def add_elo(df: pd.DataFrame) -> pd.DataFrame:
 
         # Margin of victory. Binary Elo treats a 3-point win and a 30-point win
         # identically, throwing away the more predictive half of the result;
-        # measured over 2019–2025 this is worth ~0.004 log loss in the no-market
+        # measured over 2019-2025 this is worth ~0.004 log loss in the no-market
         # regime. The denominator is FiveThirtyEight's autocorrelation
-        # correction — without it, blowouts by an already-strong team inflate
+        # correction - without it, blowouts by an already-strong team inflate
         # its rating without bound.
         multiplier = 1.0
         margin = row.get("point_margin")

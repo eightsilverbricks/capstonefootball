@@ -21,6 +21,9 @@ import { isSupabaseConfigured, requireSupabase } from './supabaseClient';
  */
 const AUTH_TIMEOUT_MS = 15_000;
 
+/** Same floor as sign-up (Supabase's project setting is 8). */
+const MIN_PASSWORD_LENGTH = 8;
+
 class AuthTimeoutError extends Error {}
 
 function withTimeout<T>(promise: PromiseLike<T>): Promise<T> {
@@ -260,6 +263,35 @@ export const supabaseAuthClient: AuthClient = {
     const profile = toProfile(data as ProfileRow, currentSession.user.email);
     setSession({ user: profile });
     return { session: { user: profile }, error: null };
+  },
+
+  async requestPasswordReset(email: string) {
+    const trimmed = email.trim();
+    if (!trimmed.includes('@')) {
+      return { error: { message: 'Enter the email you signed up with.', field: 'email' as const } };
+    }
+    try {
+      const { error } = await withTimeout(requireSupabase().auth.resetPasswordForEmail(trimmed, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      }));
+      // Supabase deliberately doesn't reveal whether the email has an account,
+      // so success here means "if it exists, a link is on its way".
+      return { error: error ? friendlyError(error.message) : null };
+    } catch (err) {
+      return { error: failureResult(err).error };
+    }
+  },
+
+  async updatePassword(newPassword: string) {
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      return { error: { message: `Use at least ${MIN_PASSWORD_LENGTH} characters.`, field: 'password' as const } };
+    }
+    try {
+      const { error } = await withTimeout(requireSupabase().auth.updateUser({ password: newPassword }));
+      return { error: error ? friendlyError(error.message) : null };
+    } catch (err) {
+      return { error: failureResult(err).error };
+    }
   },
 
   subscribe(listener: () => void) {

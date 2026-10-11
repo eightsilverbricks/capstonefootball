@@ -264,6 +264,23 @@ export const localAuthClient: AuthClient = {
     return { session: { user: nextProfile }, error: null };
   },
 
+  async requestPasswordReset() {
+    // Device-local accounts have no email server behind them.
+    return { error: { message: 'Password reset needs the live account server. Ask an admin to reset it.' } };
+  },
+
+  async updatePassword(newPassword: string) {
+    if (!currentUser) return { error: { message: 'You are not signed in.' } };
+    if (newPassword.length < MIN_PASSWORD_LENGTH) {
+      return { error: { message: `Use at least ${MIN_PASSWORD_LENGTH} characters.`, field: 'password' as const } };
+    }
+    const accounts = readAccounts();
+    const salt = randomSalt();
+    const digest = await hashPassword(newPassword, salt);
+    writeAccounts(accounts.map((a) => (a.profile.id === currentUser!.id ? { ...a, salt, digest } : a)));
+    return { error: null };
+  },
+
   subscribe(listener: () => void) {
     listeners.add(listener);
     return () => {

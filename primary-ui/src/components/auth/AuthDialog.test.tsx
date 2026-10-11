@@ -21,7 +21,7 @@ describe('AuthDialog', () => {
 
   it('mounts the sign-up form without crashing', () => {
     renderDialog();
-    expect(screen.getByText('Join The Clark Competition')).toBeInTheDocument();
+    expect(screen.getByText('Create your account')).toBeInTheDocument();
     expect(screen.getByLabelText('Display name')).toBeInTheDocument();
     expect(screen.getByLabelText('Email')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
@@ -29,17 +29,17 @@ describe('AuthDialog', () => {
 
   it('opens on the sign-in side when asked, and hides sign-up-only fields', () => {
     renderDialog({ defaultMode: 'signin' });
-    expect(screen.getByText('Welcome back')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
     expect(screen.queryByLabelText('Display name')).not.toBeInTheDocument();
   });
 
   it('switches between modes in place', () => {
     renderDialog({ defaultMode: 'signup' });
     fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
-    expect(screen.getByText('Welcome back')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: 'Create an account' }));
-    expect(screen.getByText('Join The Clark Competition')).toBeInTheDocument();
+    expect(screen.getByText('Create your account')).toBeInTheDocument();
   });
 
   it('surfaces a validation error against the offending field', async () => {
@@ -47,7 +47,7 @@ describe('AuthDialog', () => {
     fireEvent.change(screen.getByLabelText('Display name'), { target: { value: 'Zane Wolf' } });
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'zane@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'short' } });
-    fireEvent.click(screen.getByRole('button', { name: /create my account/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^create account$/i }));
 
     expect(await screen.findByRole('alert')).toHaveTextContent('at least 8 characters');
     expect(localAuthClient.getSession()).toBeNull();
@@ -66,7 +66,7 @@ describe('AuthDialog', () => {
     fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'zane@example.com' } });
     fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'billsmafia24' } });
     fireEvent.click(screen.getByRole('radio', { name: 'BUF' }));
-    fireEvent.click(screen.getByRole('button', { name: /create my account/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^create account$/i }));
 
     await waitFor(() => expect(localAuthClient.getSession()).not.toBeNull());
     expect(localAuthClient.getSession()?.user).toMatchObject({
@@ -84,5 +84,20 @@ describe('AuthDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Show password' }));
     expect(password).toHaveAttribute('type', 'text');
+  });
+
+  it('offers password reset from the sign-in side', async () => {
+    renderDialog({ defaultMode: 'signin' });
+    fireEvent.click(screen.getByRole('button', { name: 'Forgot password?' }));
+    expect(screen.getByRole('heading', { name: 'Reset your password' })).toBeInTheDocument();
+    expect(screen.queryByLabelText('Password')).not.toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText('Email'), { target: { value: 'zane@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
+    // The local client has no mail server, so it explains instead of pretending.
+    expect(await screen.findByRole('alert')).toHaveTextContent('live account server');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Sign in' }));
+    expect(screen.getByRole('heading', { name: 'Sign in' })).toBeInTheDocument();
   });
 });

@@ -102,6 +102,6 @@ export function indexConfidenceFromScore(confidenceScore: number): number {
 /** A human stake preview string, e.g. "+50 if BUF wins" / "−35 if CIN wins". */
 export function stakePreview(pick: Pick): string {
   const stake = Math.round(stakeFromConfidence(pick.confidence));
-  if (stake === 0) return 'No position — 50/50';
+  if (stake === 0) return 'Drag toward a team to pick';
   return `+${stake} if ${pick.team} wins · −${stake} if not`;
 }

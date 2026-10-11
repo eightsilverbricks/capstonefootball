@@ -174,7 +174,7 @@ def main() -> None:
 
     # Per-season detail for the best pooled variant, and for the market.
     winner = max(pooled_store, key=lambda k: summarise(pooled_store[k])["acc"])
-    print(f"\nPer-season accuracy — best variant: {winner}")
+    print(f"\nPer-season accuracy - best variant: {winner}")
     print(f"{'season':>7s} {'n':>5s} {'model':>8s} {'vegas':>8s}")
     print("-" * 32)
     pooled = pooled_store[winner]

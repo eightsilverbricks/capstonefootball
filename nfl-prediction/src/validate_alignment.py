@@ -2,7 +2,7 @@
 """
 validate_alignment.py
 =====================
-CI gate: exits 1 if factor–prediction alignment is below 90%.
+CI gate: exits 1 if factor-prediction alignment is below 90%.
 
 Run from nfl-prediction/ after exporting predictions.json:
     .venv/bin/python3 src/validate_alignment.py
@@ -30,7 +30,7 @@ def check_alignment(predictions: list[dict]) -> tuple[float, int, int]:
 
 def main() -> None:
     if not JSON_PATH.exists():
-        print(f"❌  {JSON_PATH} not found — run export_predictions.py first", file=sys.stderr)
+        print(f"❌  {JSON_PATH} not found - run export_predictions.py first", file=sys.stderr)
         sys.exit(1)
 
     with open(JSON_PATH) as f:
@@ -38,7 +38,7 @@ def main() -> None:
 
     rate, aligned, total = check_alignment(predictions)
     status = "✅" if rate >= THRESHOLD else "❌"
-    print(f"{status}  Factor alignment: {rate:.1%} ({aligned}/{total}) — threshold {THRESHOLD:.0%}")
+    print(f"{status}  Factor alignment: {rate:.1%} ({aligned}/{total}) - threshold {THRESHOLD:.0%}")
 
     if rate < THRESHOLD:
         print("FAIL: alignment below threshold. Re-run export after fixing api.py.", file=sys.stderr)

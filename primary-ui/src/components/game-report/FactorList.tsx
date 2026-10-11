@@ -1,148 +1,115 @@
 import React from 'react';
 import { FactorCard } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
-import ChallengeFactor from '@/components/competition/ChallengeFactor';
-import { ChallengesData, useChallenges } from '@/hooks/useChallenges';
-import { useAuth } from '@/hooks/useAuth';
 
-const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
-  DECISIVE: { label: 'Key edge',  color: 'var(--status-decisive)' },
-  MODERATE: { label: 'Notable',   color: 'var(--status-moderate)' },
-  MINOR:    { label: 'Slight',    color: 'var(--status-minor)' },
-  NEUTRAL:  { label: 'Even',      color: 'var(--status-neutral)' },
+/** Reader-facing names for the model's factor buckets. */
+const FACTOR_LABELS: Record<string, string> = {
+  'Home Field': 'Home field',
+  'Market Edge': 'Betting line',
+  'Recent Offense': 'Offense',
+  'Defensive Edge': 'Defense',
+  'Momentum': 'Recent form',
+  'Game Context': 'Rest and setting',
 };
 
-interface FactorRowProps {
-  factor: FactorCard;
-  rank: number;
-  /** Null when the report has no game key to attach a thread to. */
-  challenges: ChallengesData | null;
+export function factorLabel(name: string): string {
+  return FACTOR_LABELS[name] ?? name;
 }
 
-const FactorRow: React.FC<FactorRowProps> = ({ factor, rank, challenges }) => {
-  const isEven     = factor.advantage_team === 'Even';
-  const teamColors = isEven ? null : getTeamColors(factor.advantage_team);
-  const accentColor = teamColors?.primary ?? '#475569';
-  const labelColor  = teamColors?.secondary ?? '#94a3b8';
-  const fillPct     = Math.round(factor.contribution_strength * 100);
-  const statusCfg   = STATUS_CONFIG[factor.status] ?? STATUS_CONFIG.NEUTRAL;
-  const displayText = factor.explanation || '';
+const FactorRow: React.FC<{ factor: FactorCard }> = ({ factor }) => {
+  const color = getTeamColors(factor.advantage_team).primary;
+  const fillPct = Math.max(4, Math.round(factor.contribution_strength * 100));
 
   return (
-    <article
-      className="rounded-lg overflow-hidden"
-      style={{ border: '1px solid var(--border-default)', background: 'var(--surface)' }}
-    >
-      {/* Header: rank · name · team badge */}
-      <div className="flex items-center justify-between gap-3 px-4 pt-3.5 pb-2">
-        <div className="flex items-center gap-2.5 min-w-0">
-          <span
-            className="text-[11px] font-mono shrink-0 w-4 text-right tabular-nums"
-            style={{ color: 'var(--text-muted)' }}
-          >
-            {rank}
-          </span>
-          <span
-            className="font-semibold text-sm truncate"
-            style={{ color: 'var(--text-primary)' }}
-          >
-            {factor.name}
-          </span>
-        </div>
-        {!isEven && (
-          <span
-            className="shrink-0 text-[11px] font-bold px-2 py-0.5 rounded"
-            style={{
-              background: `${accentColor}1a`,
-              color: labelColor,
-              border: `1px solid ${accentColor}28`,
-            }}
-          >
-            {factor.advantage_team}
-          </span>
-        )}
+    <li className="py-3 first:pt-0 last:pb-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
+      <div className="flex items-center gap-3 mb-1.5">
+        <span className="text-xs w-28 shrink-0" style={{ color: 'var(--text-muted)' }}>
+          {factorLabel(factor.name)}
+        </span>
+        <span
+          className="flex-1 h-1 rounded-full overflow-hidden"
+          style={{ background: 'var(--surface-overlay)' }}
+          aria-hidden="true"
+        >
+          <span className="block h-full rounded-full" style={{ width: `${fillPct}%`, background: color }} />
+        </span>
       </div>
-
-      {/* Contribution bar + status label */}
-      <div className="px-4 pb-3">
-        <div className="flex items-center gap-3">
-          <div
-            className="flex-1 h-1 rounded-full overflow-hidden"
-            style={{ background: 'var(--surface-overlay)' }}
-          >
-            <div
-              className="h-full rounded-full"
-              style={{
-                width: `${fillPct}%`,
-                backgroundColor: accentColor,
-                transition: `width 400ms var(--ease-out)`,
-              }}
-            />
-          </div>
-          <span
-            className="text-[11px] shrink-0 font-medium tabular-nums"
-            style={{ color: statusCfg.color }}
-          >
-            {statusCfg.label}
-          </span>
-        </div>
-      </div>
-
-      {/* Headline + full explanation — inline, expanded by default.
-          This is the core reasoning; it must never hide behind a second
-          dropdown (see CLARK_REPORT_AND_VIRALITY_PLAN.md, B1). */}
-      {displayText && (
-        <div className="px-4 pb-4">
-          {factor.headline && (
-            <p
-              className="text-sm font-semibold mb-1"
-              style={{ color: 'var(--text-primary)' }}
-            >
-              {factor.headline}
-            </p>
-          )}
-          <p
-            className="text-sm leading-relaxed"
-            style={{ color: 'var(--text-secondary)' }}
-          >
-            {displayText}
-          </p>
-        </div>
+      {factor.headline && (
+        <p className="text-sm font-semibold mb-0.5" style={{ color: 'var(--text-primary)' }}>
+          {factor.headline}
+        </p>
       )}
-
-      {/* Community challenge thread — the only thing that stays collapsed;
-          secondary to the reasoning above, never competes with it. */}
-      {challenges && <ChallengeFactor challenges={challenges} factorName={factor.name} />}
-    </article>
+      {factor.explanation && (
+        <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          {factor.explanation}
+        </p>
+      )}
+    </li>
   );
 };
 
+const FactorGroup: React.FC<{ title: string; factors: FactorCard[] }> = ({ title, factors }) => (
+  <section>
+    <h3 className="text-sm font-semibold mb-3" style={{ color: 'var(--text-primary)' }}>{title}</h3>
+    <ul className="flex flex-col">
+      {factors.map((f) => <FactorRow key={f.name} factor={f} />)}
+    </ul>
+  </section>
+);
+
 interface FactorListProps {
   factors: FactorCard[];
-  gameId?: string;
+  winner: string;
+  loser: string;
 }
 
-const FactorList: React.FC<FactorListProps> = ({ factors, gameId }) => {
-  const sorted = [...factors].sort((a, b) => b.contribution_strength - a.contribution_strength);
-  // Loaded once for the whole report: the RPC returns every challenge on this
-  // game, and each factor row filters to its own thread.
-  const { user } = useAuth();
-  const challenges = useChallenges(gameId ?? '', user?.id ?? null);
+/**
+ * The factors split by which team they help, so the report can never look
+ * like it argues against its own pick. Hedged reads ("about even") are listed
+ * by headline only; every raw number lives in one drawer at the bottom.
+ */
+const FactorList: React.FC<FactorListProps> = ({ factors, winner, loser }) => {
+  const byStrength = [...factors].sort((a, b) => b.contribution_strength - a.contribution_strength);
+  const isClaim = (f: FactorCard) => f.confident !== false;
+  const forWinner = byStrength.filter((f) => isClaim(f) && f.advantage_team === winner);
+  const forLoser = byStrength.filter((f) => isClaim(f) && f.advantage_team === loser);
+  const even = byStrength.filter((f) => !forWinner.includes(f) && !forLoser.includes(f));
+  const numbers = byStrength.filter((f) => f.baseline_note);
 
   return (
-    <section aria-label="Factors to victory">
-      <h3
-        className="text-[11px] font-semibold uppercase tracking-widest mb-3"
-        style={{ color: 'var(--text-muted)' }}
-      >
-        Factors to victory
-      </h3>
-      <div className="flex flex-col gap-2">
-        {sorted.map((factor, i) => (
-          <FactorRow key={factor.name} factor={factor} rank={i + 1} challenges={gameId ? challenges : null} />
-        ))}
-      </div>
-    </section>
+    <div className="flex flex-col gap-6">
+      {forWinner.length > 0 && <FactorGroup title={`Why Clark picks ${winner}`} factors={forWinner} />}
+      {forLoser.length > 0 && <FactorGroup title={`What favors ${loser}`} factors={forLoser} />}
+
+      {even.length > 0 && (
+        <section>
+          <h3 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-primary)' }}>About even</h3>
+          <ul className="flex flex-col gap-1">
+            {even.map((f) => (
+              <li key={f.name} className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>{factorLabel(f.name)}:</span> {f.headline}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {numbers.length > 0 && (
+        <details className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+          <summary className="cursor-pointer select-none" style={{ color: 'var(--text-tertiary)' }}>
+            Show the numbers
+          </summary>
+          <dl className="mt-3 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2">
+            {numbers.map((f) => (
+              <React.Fragment key={f.name}>
+                <dt style={{ color: 'var(--text-muted)' }}>{factorLabel(f.name)}</dt>
+                <dd className="tabular-nums">{f.baseline_note}</dd>
+              </React.Fragment>
+            ))}
+          </dl>
+        </details>
+      )}
+    </div>
   );
 };
 

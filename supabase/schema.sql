@@ -1,5 +1,6 @@
 -- ─── The Clark Index — database schema ───────────────────────────────────────
--- Run this once in the Supabase SQL editor (Dashboard → SQL Editor → New query).
+-- Canonical schema reference. Production changes ship through the versioned
+-- files in supabase/migrations with `npx supabase db push`.
 -- Safe to re-run: everything is IF NOT EXISTS / CREATE OR REPLACE.
 --
 -- Two tables:

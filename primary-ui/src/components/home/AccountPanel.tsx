@@ -68,7 +68,7 @@ const AccountPanel: React.FC<AccountPanelProps> = ({ user, allGames, weekGames }
     <section
       className="rounded-xl overflow-hidden"
       style={{ background: 'var(--surface)', border: '1px solid var(--border-subtle)' }}
-      aria-label="Your account and season"
+      aria-label="Your season"
     >
       {/* Identity bar */}
       <div

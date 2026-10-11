@@ -1,5 +1,5 @@
 """
-factor_prose.py — plain-English reasoning layer for factor cards
+factor_prose.py - plain-English reasoning layer for factor cards
 =================================================================
 Pure, template-driven text generation. There is NO model math here: this module
 consumes values that api.py has already computed (edges, records, baselines) and
@@ -13,7 +13,7 @@ Every explanation follows one shape:  claim  ->  evidence  ->  implication
 
 Guardrails (mirrors CLARK_REPORT_AND_VIRALITY_PLAN.md):
     - Template-driven only; degrade gracefully. A missing value narrows the
-      sentence — it never emits "None"/"undefined"/an empty string.
+      sentence - it never emits "None"/"undefined"/an empty string.
     - No fabricated specifics beyond the numbers passed in.
     - All prose is written from the *advantage team's* perspective.
 """
@@ -21,9 +21,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
+from src.odds import market_view
+
 
 # ---------------------------------------------------------------------------
-# Context object — everything a template might need, all optional/defaulted
+# Context object - everything a template might need, all optional/defaulted
 # ---------------------------------------------------------------------------
 
 @dataclass(frozen=True)
@@ -42,6 +44,7 @@ class FactorContext:
     spread: float = 0.0            # convention: positive = home favored
     home_ml: int = 0
     away_ml: int = 0
+    predicted_winner: str = ""
 
     # Recent-form differentials (home-minus-away sign convention)
     season_epa: float = 0.0
@@ -58,6 +61,8 @@ class FactorContext:
     opp_last3_epa: float | None = None
     adv_pts_for: float | None = None
     adv_pts_ag: float | None = None
+    opp_pts_for: float | None = None
+    opp_pts_ag: float | None = None
 
     # Records (raw game_context strings, may carry a " last 3" suffix)
     adv_last3_rec: str = ""
@@ -82,6 +87,11 @@ class FactorContext:
     wind_consequence: str = ""
     roof: str = ""
     stadium: str = ""
+
+    # Home field: the model intercept, i.e. the home team's edge before any
+    # matchup data. Expressed as win-probability points (e.g. 6.5).
+    home_field_pts: float = 0.0
+    neutral_site: bool = False
 
     # Per-season league baselines, e.g. {"epa_mean": .., "epa_std": ..}
     league: dict = field(default_factory=dict)
@@ -191,62 +201,55 @@ def _parse_record(rec: str) -> tuple[int, int] | None:
 # Per-family builders
 # ---------------------------------------------------------------------------
 
+def _how_much(edge: float, small: float, big: float) -> str:
+    """Plain-English size of an edge: 'slightly', 'noticeably' or 'much'."""
+    if edge >= big:
+        return "much"
+    if edge >= small:
+        return "noticeably"
+    return "slightly"
+
+
 def _market_prose(c: FactorContext) -> FactorProse:
-    adv, opp = c.adv, c.opp
-    abs_spread = abs(c.spread)
-    market_fav = c.home if c.spread > 0 else (c.away if c.spread < 0 else "Even")
-    adv_ml = c.home_ml if c.adv_is_home else c.away_ml
-    implied = _implied_prob(adv_ml)
-
-    # Spread descriptor
-    if abs_spread < 0.5:
-        spread_desc = "a pick'em line"
-    else:
-        spread_desc = f"a {abs_spread:.1f}-point favorite"
-
-    # Headline scales with how firm the market is
-    if abs_spread >= 7:
-        headline = f"Vegas is firmly behind {adv}."
-    elif abs_spread >= 3:
-        headline = f"The market leans {adv}."
-    elif abs_spread >= 0.5:
-        headline = f"Vegas gives {adv} the slight nod."
-    else:
-        headline = "The market sees a near coin-flip."
-
-    implied_clause = ""
-    if implied is not None:
-        implied_clause = f" — about a {implied:.0%} implied win probability"
-
-    if market_fav == adv or market_fav == "Even":
-        # Model + market agree (the common, reassuring case)
-        explanation = _join([
-            f"The betting market lands on {adv} too:"
-            f" Vegas made them {spread_desc}{implied_clause}.",
-            "Lines quietly fold in injury news, weather, and where the sharp"
-            " money is going — things a box score can't see.",
-            f"When Clark and Vegas independently arrive at {adv}, it's usually"
-            " the steadiest kind of agreement.",
-        ])
-    else:
-        explanation = _join([
-            f"Here Clark is taking the other side of the market — Vegas actually"
-            f" made {market_fav} {spread_desc}{implied_clause}.",
-            "That disagreement is the interesting part: the model sees something"
-            " in the football matchup the line is underrating.",
-        ])
-
-    if implied is not None and market_fav == adv:
-        baseline_note = (
-            f"Vegas priced {adv} as {spread_desc} — roughly a {implied:.0%}"
-            " implied win probability."
+    view = market_view(c.home, c.away, c.spread, c.home_ml, c.away_ml)
+    if view is None:
+        return FactorProse(
+            "No betting line yet.",
+            "Sportsbooks haven't posted a line for this game yet.",
+            "Betting line: not posted.",
+            confident=False,
         )
-    elif abs_spread >= 0.5:
-        baseline_note = f"Market line: {market_fav} {spread_desc}."
-    else:
-        baseline_note = "Market line: a near pick'em."
 
-    return FactorProse(headline, explanation, baseline_note)
+    fav = view["favorite"]
+    model_pick = c.predicted_winner
+    if fav is None:
+        agree = f" Clark picks {model_pick}." if model_pick else ""
+        return FactorProse(
+            "The betting line sees a toss-up.",
+            f"Sportsbooks have this game as a pick'em.{agree}",
+            "Betting line: pick'em.",
+            confident=False,
+        )
+
+    prob = view["favorite_prob"]
+    points = view["spread"]
+    if points >= 7:
+        headline = f"The betting line strongly favors {fav}."
+    else:
+        headline = f"The betting line favors {fav}."
+
+    price = (f"a {points:.1f}-point favorite" if points >= 0.5
+             else "a slight favorite")
+    if not model_pick:
+        verdict = ""
+    elif model_pick == fav:
+        verdict = f" Clark also picks {fav}."
+    else:
+        verdict = f" Clark disagrees and picks {model_pick}."
+    explanation = (f"Sportsbooks have {fav} as {price}, which works out to about"
+                   f" {_a_pct(round(prob * 100))} chance to win.{verdict}")
+    baseline = f"Betting line: {fav} by {points:.1f} ({prob:.0%} implied)."
+    return FactorProse(headline, explanation, baseline, confident=True)
 
 
 # Below this the raw per-play edge is treated as "essentially even", so the
@@ -255,173 +258,146 @@ def _market_prose(c: FactorContext) -> FactorProse:
 _EPA_SUPPORT_EPS = 0.01
 
 
-def _offense_baseline(c: FactorContext, epa_adv: float, legible: str) -> str:
-    """Honest baseline line for Recent Offense, whichever branch we took.
+def _league_phrase(legible: str) -> str:
+    return {
+        "elite": "one of the best in the league right now",
+        "above-average": "better than most of the league",
+        "middle-of-the-pack": "about league average",
+        "below-average": "below league average",
+        "bottom-tier": "one of the worst in the league right now",
+    }.get(legible, "")
 
-    Only leads with the absolute value when it's genuinely good; a below-average
-    offense that merely out-rates a worse opponent is reported as a *relative*
-    edge, so the claim and the evidence never disagree.
-    """
-    if c.adv_last3_epa is not None and legible in ("elite", "above-average"):
-        return (f"{c.adv}'s offense is producing {_epa(c.adv_last3_epa)} EPA/play"
-                f" over its last three — {legible} vs the rest of the league.")
-    if epa_adv >= _EPA_SUPPORT_EPS:
-        return (f"{c.adv} hold a {_epa(epa_adv)} EPA/play edge over {c.opp}"
-                " across the last three games.")
+
+def _offense_baseline(c: FactorContext, epa_adv: float, legible: str) -> str:
+    """Numbers line for Recent Offense (shown under 'Show the numbers')."""
+    bits = [f"Last 3 games, EPA/play edge: {c.adv} {_epa(epa_adv)}"]
     if c.adv_last3_epa is not None:
-        tail = f" — {legible} vs the rest of the league" if legible else ""
-        return (f"{c.adv}'s offense is producing {_epa(c.adv_last3_epa)} EPA/play"
-                f" over its last three{tail}.")
-    return f"Recent per-play offense grades out close between {c.adv} and {c.opp}."
+        tail = f" ({legible})" if legible else ""
+        bits.append(f"{c.adv} offense {_epa(c.adv_last3_epa)} EPA/play{tail}")
+    return "; ".join(bits) + "."
 
 
 def _recent_offense_prose(c: FactorContext) -> FactorProse:
     adv, opp = c.adv, c.opp
     epa_adv = _perspective(c.last3_epa, c.adv_is_home)
-    sr_adv = _perspective(c.last3_sr, c.adv_is_home)
     trend = _trend_word(c.season_epa, c.last3_epa, c.adv_is_home, eps=0.02)
     legible = _legibility(c.adv_last3_epa,
                           c.league.get("epa_mean"), c.league.get("epa_std"))
+    baseline = _offense_baseline(c, epa_adv, legible)
 
-    supportive = epa_adv >= _EPA_SUPPORT_EPS
+    if epa_adv < _EPA_SUPPORT_EPS:
+        return FactorProse(
+            "The offenses have been about even.",
+            (f"Over the last three games, {adv} and {opp} have gained about the"
+             " same on a typical play, so offense isn't where this game gets"
+             " decided."),
+            baseline,
+            confident=False,
+        )
 
-    if not supportive:
-        # The raw last-3 per-play edge does NOT clearly favor the advantage team,
-        # so we do not claim it does. State the honest, close picture instead.
-        headline = "Recent offense is close to even."
-        legible_clause = ""
-        if legible in ("elite", "above-average") and c.adv_last3_epa is not None:
-            legible_clause = (f" {adv}'s offense has still been {legible} in"
-                              " absolute terms, so this isn't a weakness —")
-            tail = " it's just not where the edge in this matchup comes from."
-        else:
-            tail = (" so treat this as a near-wash rather than a difference-maker"
-                    " in the matchup.")
-        explanation = _join([
-            f"This is the model's thinnest read: on a per-play basis {adv} and"
-            f" {opp} have been about even on offense over the last three weeks.",
-            legible_clause + tail,
-        ])
-        return FactorProse(headline, explanation,
-                           _offense_baseline(c, epa_adv, legible),
-                           confident=False)
+    headline = (f"{adv}'s offense is heating up." if trend == "widening"
+                else f"{adv}'s offense has been more productive.")
 
-    if trend == "widening":
-        headline = f"{adv}'s offense is heating up."
-    else:
-        headline = f"{adv} own the better recent offense."
-
-    evidence_bits = [f"averaging {_epa(epa_adv)} EPA/play more than {opp}"]
-    if sr_adv >= 0.01:
-        evidence_bits.append(f"staying on schedule {_pct(sr_adv, signed=True)}"
-                             " more often")
-    evidence = " and ".join(evidence_bits)
-
-    legible_clause = ""
-    if legible:
-        legible_clause = (f" That production is {legible} by league standards"
-                          " this season.")
-
-    trend_clause = ""
-    if trend == "widening":
-        trend_clause = " And the gap has grown over the last few weeks, not shrunk."
-    elif trend == "narrowing":
-        trend_clause = f" The edge has tightened lately, but it still favors {adv}."
-
-    pressure_clause = ""
-    if c.opp_pressure_faced is not None and c.opp_pressure_faced >= 0.30:
-        pressure_clause = (f" It helps that {opp} have been leakier up front,"
-                           f" facing pressure on {_pct(c.opp_pressure_faced)} of"
-                           " dropbacks.")
+    points = ""
+    if (c.adv_pts_for is not None and c.opp_pts_for is not None
+            and c.adv_pts_for > c.opp_pts_for):
+        points = (f", scoring {c.adv_pts_for:.0f} points a game to {opp}'s"
+                  f" {c.opp_pts_for:.0f}")
+    league = _league_phrase(legible) if legible in ("elite", "above-average") else ""
 
     explanation = _join([
-        f"Over the last three weeks {adv} have been the more efficient"
-        f" offense — {evidence}.",
-        legible_clause,
-        trend_clause,
-        pressure_clause,
-        f"Against {opp}, expect {adv} to move the ball more consistently and"
-        " lean on that efficiency on early downs.",
+        f"Over the last three games, {adv} have gained {_how_much(epa_adv, 0.04, 0.10)}"
+        f" more on a typical play than {opp}{points}.",
+        f"That offense has been {league}." if league else "",
+        (f"{opp}'s quarterback has also been under pressure on"
+         f" {_pct(c.opp_pressure_faced)} of dropbacks."
+         if c.opp_pressure_faced is not None and c.opp_pressure_faced >= 0.30 else ""),
+        f"Expect {adv} to move the ball more consistently.",
     ])
-
-    return FactorProse(headline, explanation,
-                       _offense_baseline(c, epa_adv, legible))
+    return FactorProse(headline, explanation, baseline)
 
 
 def _defensive_prose(c: FactorContext) -> FactorProse:
     adv, opp = c.adv, c.opp
-    opp_qb = c.opp_qb or f"{opp}'s offense"
+    opp_qb = c.opp_qb or f"{opp}'s quarterback"
     has_pressure = c.adv_pressure_gen is not None and c.adv_pressure_gen > 0
     pressure_pct = _pct(c.adv_pressure_gen) if has_pressure else None
 
     # diff_*_epa_per_play_allowed is home-minus-away; lower allowed is better.
-    # Flip so a positive number = adv allows that many FEWER EPA/play than opp.
+    # Flip so a positive number = adv allows that much LESS per play than opp.
     def_last3 = -c.last3_epa_allowed if c.adv_is_home else c.last3_epa_allowed
     def_season = -c.season_epa_allowed if c.adv_is_home else c.season_epa_allowed
 
-    # Cite the window that genuinely supports "allows fewer"; never a negative.
     if def_last3 >= _EPA_SUPPORT_EPS:
-        edge, window = def_last3, "over the last three weeks"
+        edge, window = def_last3, "over the last three games"
     elif def_season >= _EPA_SUPPORT_EPS:
-        edge, window = def_season, "on the season"
+        edge, window = def_season, "this season"
     else:
         edge, window = None, ""
 
-    pressure_clause = ""
-    if has_pressure:
-        lead = "A lot of it is pressure" if edge is not None else (
-            f"{adv}'s defensive edge here is more about disruption than raw"
-            " yardage")
-        pressure_clause = (
-            f" {lead} — {adv} are getting to the quarterback on {pressure_pct} of"
-            f" dropbacks, the kind of heat that rattles {opp_qb}.")
-    implication = (f"If they keep {opp_qb} uncomfortable, {opp}'s scoring drives"
-                   " are the ones that stall out.")
+    baseline_bits = [f"EPA/play allowed edge, last 3: {adv} {_epa(def_last3)}",
+                     f"season: {_epa(def_season)}"]
+    if pressure_pct:
+        baseline_bits.append(f"{adv} pressure rate {pressure_pct}")
+    baseline = "; ".join(baseline_bits) + "."
+
+    pressure = (f"{adv} have pressured the quarterback on {pressure_pct} of"
+                " dropbacks." if has_pressure else "")
 
     if edge is not None:
-        trend = _trend_word(-c.season_epa_allowed, -c.last3_epa_allowed,
-                            c.adv_is_home, eps=0.02)
-        headline = (f"{adv}'s defense is tightening up." if trend == "widening"
-                    else f"{adv}'s defense has been the tougher unit.")
-        trend_clause = (" And they've been trending sharper over the last month."
-                        if trend == "widening" and window.startswith("over") else "")
+        points = ""
+        if (c.adv_pts_ag is not None and c.opp_pts_ag is not None
+                and c.adv_pts_ag < c.opp_pts_ag and window.startswith("over")):
+            points = (f", giving up {c.adv_pts_ag:.0f} points a game to {opp}'s"
+                      f" {c.opp_pts_ag:.0f}")
         explanation = _join([
-            f"{adv}'s defense has been the sturdier of the two, giving up"
-            f" {_epa(edge, signed=False)} fewer EPA/play than {opp} {window}.",
-            pressure_clause, trend_clause, implication,
+            f"{adv} have allowed {_how_much(edge, 0.04, 0.10)} less on a typical"
+            f" play than {opp} {window}{points}.",
+            pressure,
+            f"That makes it harder for {opp_qb} to put together scoring drives.",
         ])
-        baseline_bits = [f"{adv} allow {_epa(edge, signed=False)} fewer EPA/play"
-                         f" than {opp} {window}"]
-        if pressure_pct:
-            baseline_bits.append(f"pressure on {pressure_pct} of dropbacks")
-        return FactorProse(headline, explanation, ", ".join(baseline_bits) + ".")
+        return FactorProse(f"{adv}'s defense has been tougher.", explanation, baseline)
 
     if has_pressure:
-        # No clean per-play allowed edge, but a real pressure edge to stand on.
-        headline = f"{adv} bring the pass rush that matters here."
-        explanation = _join([
-            f"The two defenses have been close on a per-play basis, so {adv}'s"
-            " edge is about disruption:"
-            f" they're getting to the quarterback on {pressure_pct} of dropbacks.",
-            f"That pressure is what tilts the matchup — keeping {opp_qb}"
-            f" uncomfortable is how {opp}'s scoring drives stall out.",
-        ])
-        return FactorProse(headline, explanation,
-                           f"{adv} pressure the quarterback on {pressure_pct} of"
-                           " dropbacks; per-play EPA allowed is otherwise close.")
+        return FactorProse(
+            f"{adv}'s pass rush is the difference.",
+            _join([
+                f"The two defenses have allowed about the same per play, but {pressure}",
+                f"Pressure like that disrupts {opp_qb} and stalls drives.",
+            ]),
+            baseline,
+        )
 
-    # Nothing concrete supports a confident claim — keep it honest and modest,
-    # but still ground it with the real (near-zero) differential rather than a
-    # purely qualitative "close" claim.
-    headline = f"{adv} grade out as the slightly better defense."
-    explanation = (f"Neither defense has clearly separated on a per-play basis"
-                   f" lately — {adv} allow {_epa(def_last3, signed=True)} EPA/play"
-                   f" more than {opp} recently, essentially a wash. The model gives"
-                   f" {adv} a slight edge in the overall blend rather than in any"
-                   f" one number. {implication}")
-    return FactorProse(headline, explanation,
-                       f"EPA/play allowed differential: {_epa(def_last3, signed=True)}"
-                       f" ({adv} vs {opp}, essentially even).", confident=False)
+    if def_last3 <= -_EPA_SUPPORT_EPS:
+        explanation = (f"{opp}'s defense has actually allowed less per play over the"
+                       f" last three games, so defense isn't a real edge for {adv}"
+                       " in this game.")
+    else:
+        explanation = (f"{adv} and {opp} have allowed about the same per play"
+                       " lately, so defense isn't where this game gets decided.")
+    return FactorProse("The defenses have been about even.", explanation, baseline,
+                       confident=False)
+
+
+def _home_field_prose(c: FactorContext) -> FactorProse:
+    pts = c.home_field_pts
+    where = f" at {c.stadium}" if c.stadium else ""
+    if c.neutral_site:
+        return FactorProse(
+            "Neutral site.",
+            (f"The game is{where}, a neutral site, but Clark's model still gives"
+             f" {c.home} the standard home-team bump of about {pts:.1f} points of"
+             " win chance."),
+            f"Home-team bump: +{pts:.1f} win-chance points (neutral site).",
+            confident=False,
+        )
+    return FactorProse(
+        f"{c.home} are at home.",
+        (f"The game is{where}. Before any matchup data, playing at home is worth"
+         f" about {pts:.1f} points of win chance in Clark's model."),
+        f"Home field: +{pts:.1f} win-chance points.",
+        confident=True,
+    )
 
 
 def _momentum_prose(c: FactorContext) -> FactorProse:
@@ -436,87 +412,79 @@ def _momentum_prose(c: FactorContext) -> FactorProse:
     pts = abs(pt_adv)
     pt_word = "point" if round(pts) == 1 else "points"
     has_swing = pts >= 1
-    pt_sep = f"roughly {pts:.0f} {pt_word} per game of margin separation"
-    carries = ("Form like that tends to carry: healthier rotations, cleaner"
-               " execution, and more belief in the tight moments.")
+    pt_sep = f"about {pts:.0f} more {pt_word} of scoring margin per game"
+    carries = ""
 
     # Case 1: both records known and the advantage team is genuinely hotter.
     if adv_wl and opp_wl and adv_wl[0] > opp_wl[0]:
-        headline = f"{adv} are the team trending up."
-        swing_sentence = (f"On top of that, {adv} hold {pt_sep} their way."
+        headline = f"{adv} have been playing better lately."
+        swing_sentence = (f"They also have {pt_sep}."
                           if has_swing else "")
         explanation = _join([
-            f"{adv} come in playing the better football — they're {adv_rec} over"
-            f" their last three while {opp} are {opp_rec}.",
+            f"{adv} are {adv_rec} over their last three games; {opp} are {opp_rec}.",
             swing_sentence, carries,
         ])
         tail = f" ({pts:.0f} pt/gm margin swing)." if has_swing else "."
         return FactorProse(headline, explanation,
                            f"Last three: {adv} {adv_rec}, {opp} {opp_rec}{tail}")
 
-    # Case 2: records level — lean on scoring margin if it exists, else even.
+    # Case 2: records level - lean on scoring margin if it exists, else even.
     if adv_wl and opp_wl and adv_wl[0] == opp_wl[0]:
         if has_swing:
-            headline = f"Records level, but {adv} hit harder."
+            headline = f"{adv} have the better scoring margin."
             explanation = _join([
                 f"Both teams are {adv_rec} over their last three, so the"
-                " win-loss trend is a wash.",
-                f"The tiebreaker is scoring margin — {adv} hold {pt_sep}"
-                " their way.",
+                " records are even.",
+                f"The difference is scoring margin: {adv} have {pt_sep}.",
                 carries,
             ])
             return FactorProse(headline, explanation,
                                f"Last three: both {adv_rec}; {adv} +"
                                f"{pts:.0f} pt/gm scoring margin.")
-        headline = "Recent form is a near-wash."
+        headline = "Recent form is about even."
         explanation = (f"{adv} and {opp} are both {adv_rec} over their last three"
-                       " with little separating them, so momentum barely tips this"
-                       " matchup either way.")
+                       " with similar scoring margins, so recent form barely matters"
+                       " here.")
         return FactorProse(headline, explanation,
                            f"Last three: both {adv_rec}, scoring margins even.",
                            confident=False)
 
-    # Case 3: advantage team's record is not better — do not claim it is.
+    # Case 3: advantage team's record is not better - do not claim it is.
     if adv_wl and opp_wl:  # adv_wl[0] < opp_wl[0]
         if has_swing:
-            headline = f"{adv} hide better numbers than their record."
+            headline = f"{adv}'s scoring margin is better than their record."
             explanation = _join([
                 f"{opp} own the better recent record ({opp_rec} vs {adv_rec}),"
-                f" but {adv} have the stronger scoring margin — {pt_sep}"
-                " their way.",
-                "That gap between record and margin is often the truer signal of"
-                " where a team is headed.",
+                f" but {adv} have {pt_sep}.",
+                "Scoring margin is usually a better guide to how good a team is than"
+                " its record.",
             ])
             return FactorProse(headline, explanation,
                                f"Last three: {adv} {adv_rec} but +"
                                f"{pts:.0f} pt/gm margin vs {opp} {opp_rec}.")
-        headline = "Recent form slightly favors the other side."
+        headline = "Recent form favors the other side."
         explanation = (f"{opp} have the better recent record ({opp_rec} vs"
-                       f" {adv_rec}); the model's lean on {adv} is coming from the"
-                       " other factors, not momentum.")
+                       f" {adv_rec}), so recent form isn't a real edge for {adv}.")
         return FactorProse(headline, explanation,
                            f"Last three: {adv} {adv_rec}, {opp} {opp_rec}.",
                            confident=False)
 
-    # Case 4: records missing — fall back to win-rate / margin differentials.
+    # Case 4: records missing - fall back to win-rate / margin differentials.
     if wpc_adv >= 0.01:
-        headline = f"{adv} carry the hotter form."
-        swing_sentence = (f"They also hold {pt_sep} their way." if has_swing
-                          else "")
-        explanation = _join([
-            f"{adv} have been the hotter team, with a {_pct(wpc_adv, signed=True)}"
-            " win-rate edge over the last three games.",
-            swing_sentence, carries,
-        ])
+        headline = f"{adv} have been playing better lately."
+        margin = (f", and their scoring margin is about {pts:.0f} {pt_word} a game"
+                  " better" if has_swing else "")
+        explanation = (f"Over the last three games, {adv} have won more often than"
+                       f" {opp}{margin}.")
         return FactorProse(headline, explanation,
-                           f"{adv} hold a {_pct(wpc_adv, signed=True)} win-rate"
-                           " edge over the last three games.")
+                           f"Last 3 games: {adv} win rate {_pct(wpc_adv, signed=True)}"
+                           f" vs {opp}; margin {pt_adv:+.0f} pts/game.")
 
-    headline = "Recent form is close to even."
-    explanation = (f"There's little between {adv} and {opp} in recent form; this"
-                   " factor barely moves the matchup either way.")
+    headline = "Recent form is about even."
+    explanation = (f"{adv} and {opp} have played about as well as each other"
+                   " lately, so recent form barely matters here.")
     return FactorProse(headline, explanation,
-                       f"Recent form grades out close between {adv} and {opp}.",
+                       f"Last 3 games: win rate and margin about even.",
                        confident=False)
 
 
@@ -530,39 +498,35 @@ def _game_context_prose(c: FactorContext) -> FactorProse:
     if big_rest:
         headline = f"Rest tilts toward {rested}."
     elif notable_wind:
-        headline = "Weather is a real factor here."
+        headline = "Weather could matter."
     elif c.div_game:
-        headline = "Divisional familiarity keeps this tight."
+        headline = "Division game."
     else:
-        headline = "The setting is close to neutral."
+        headline = "Rest and weather are about even."
 
     parts: list[str] = []
     if big_rest:
-        parts.append(f"{rested} get {abs(c.rest_diff):.0f} extra days to rest and"
-                     f" game-plan over {short} — a small but real edge in a close"
-                     " game.")
+        parts.append(f"{rested} get {abs(c.rest_diff):.0f} more days of rest than"
+                     f" {short}, which helps in a close game.")
     if c.div_game:
-        parts.append("It's a division game, so both staffs know each other cold;"
-                     " expect a grindier, tighter margin than the raw numbers"
-                     " suggest.")
+        parts.append("It's a division game. These teams play twice a year, and"
+                     " those games tend to be closer than expected.")
     if notable_wind:
         wlabel = f"{c.wind_mph:.0f} mph wind" if c.wind_mph else c.wind_tier.title()
         parts.append(f"{wlabel}: {c.wind_consequence}")
     elif c.wind_tier == "dome":
-        parts.append("Indoors, so weather is off the table and passing games can"
-                     " play at full speed.")
+        parts.append("It's indoors, so weather won't matter.")
     if c.temp_f is not None and c.wind_tier != "dome":
         parts.append(f"Game-time temperature is around {c.temp_f:.0f}°F.")
 
     if not parts:
-        parts.append("Rest, venue, and weather all come out close to even here,"
-                     " so this factor barely moves the needle.")
+        parts.append("Rest, travel and weather are about even for both teams.")
 
     explanation = _join(parts)
 
     # Compact baseline line. Rest differential is always included (even when
     # ~0) so this line always carries a real number grounding the claim,
-    # matching every other factor family — never a purely qualitative fallback.
+    # matching every other factor family - never a purely qualitative fallback.
     bl: list[str] = [f"{rested} {'+' if big_rest else ''}{abs(c.rest_diff):.0f}d rest"]
     if c.div_game:
         bl.append("divisional")
@@ -590,6 +554,7 @@ _BUILDERS = {
     "Defensive Edge": _defensive_prose,
     "Momentum":       _momentum_prose,
     "Game Context":   _game_context_prose,
+    "Home Field":     _home_field_prose,
 }
 
 
@@ -634,6 +599,11 @@ class LedeContext:
     winner_qb_epa: float = 0.0
     qb_league: dict = field(default_factory=dict)   # {"epa_mean":.., "epa_std":..}
     spread_desc: str = ""              # e.g. "a 6.5-point favorite" ("" if none)
+    market_sentence: str = ""          # e.g. "The betting line agrees."
+    # Confident factors favoring the winner, strongest first (market excluded
+    # from the lead because it is summarised separately).
+    backing: tuple = ()
+    home_field_pts: float = 0.0
 
 
 def _conviction(prob: float) -> str:
@@ -674,70 +644,62 @@ def _factor_subject(card: dict | None) -> str:
 
 
 def qb_form_note(ctx: LedeContext) -> str:
-    """A4: an honest, season-labeled QB-efficiency sentence when data supports it.
-
-    Only fires when the winner's QB is clearly above the league baseline — we
-    never manufacture a storyline for an average or below-average passer.
-    """
+    """One plain sentence about the winner's QB, only when he is clearly above
+    league average. Never manufactures a storyline for an average passer."""
     name, epa = ctx.winner_qb, ctx.winner_qb_epa
     if not name or name == ctx.winner or not epa:
         return ""
     adj = _legibility(epa, ctx.qb_league.get("epa_mean"),
                       ctx.qb_league.get("epa_std"))
     if adj == "elite":
-        phrase = "one of the league's most efficient passers"
-    elif adj == "above-average":
-        phrase = "an above-average passer"
-    else:
-        return ""
-    return f"{name} has been {phrase} this season ({epa:.2f} EPA/att)."
+        return f"{name} has been one of the league's most efficient passers this season."
+    if adj == "above-average":
+        return f"{name} has been an above-average passer this season."
+    return ""
+
+
+def _a_pct(pct: int) -> str:
+    """'a 52%' / 'an 80%' / 'an 11%' - the article follows how it's spoken."""
+    spoken_vowel = str(pct).startswith("8") or pct in (11, 18)
+    return f"{'an' if spoken_vowel else 'a'} {pct}%"
+
+
+def _first_sentence(text: str) -> str:
+    text = (text or "").strip()
+    for i, ch in enumerate(text):
+        if ch in ".!?" and (i + 1 == len(text) or text[i + 1] == " "):
+            return text[: i + 1]
+    return _sent(text)
 
 
 def build_synthesis_lede(ctx: LedeContext) -> str:
-    """A3: the editorial football_story — a single connected narrative."""
-    pct = f"{ctx.probability * 100:.0f}%"
-    parts: list[str] = [f"Clark {_conviction(ctx.probability)} {ctx.winner}"
-                        f" at {pct}."]
+    """The short summary at the top of the Clark Report.
 
-    lead = ctx.football_lead
-    market_is_primary = bool(ctx.primary and ctx.primary.get("name") == "Market Edge")
+    Pick and chance -> the main reason -> one supporting reason -> what the
+    betting line says. The upset path lives in its own section, so it is not
+    repeated here.
+    """
+    parts: list[str] = [f"Clark picks {ctx.winner} with"
+                        f" {_a_pct(round(ctx.probability * 100))} chance to win."]
 
-    if lead:
-        # Elevate the non-obvious football factor over the market signal.
-        if market_is_primary:
-            market_bit = (f"Vegas leans the same way — {ctx.winner} are"
-                          f" {ctx.spread_desc}" if ctx.spread_desc
-                          else "The market leans the same way")
-            parts.append(f"{market_bit}, but the signal Clark keeps coming back"
-                         f" to is {_factor_subject(lead)}.")
-        parts.append(_sent(lead.get("baseline_note", "")))
-    elif ctx.primary:
-        parts.append(f"The case starts with {_factor_subject(ctx.primary)}:"
-                     f" {_sent(ctx.primary.get('baseline_note', ''))}")
+    backing = ctx.backing
+    lead = backing[0] if backing else (ctx.football_lead or ctx.primary)
+    if lead and lead.get("name") == "Home Field":
+        parts.append(f"The biggest reason is home field, worth about"
+                     f" {ctx.home_field_pts:.1f} points of win chance on its own.")
+        support = next((c for c in backing[1:] if c.get("name") != "Market Edge"), None)
+    elif lead:
+        parts.append(_first_sentence(lead.get("explanation", "")))
+        support = next((c for c in backing[1:] if c.get("name") != "Market Edge"), None)
     else:
-        parts.append("No single factor dominates — the lean rides on the overall"
-                     " blend more than any one number.")
+        parts.append(f"No single factor decides this; the pick comes from several"
+                     f" small edges for {ctx.winner}.")
+        support = None
+    if support:
+        parts.append(_sent(support.get("headline", "")))
 
-    # One reinforcing reason (distinct from the lead / primary, and only if its
-    # own prose is a confident claim — never reinforce with a "near-wash").
-    secondary = ctx.secondary
-    if (secondary and secondary is not lead and secondary is not ctx.primary
-            and secondary.get("confident", True)):
-        parts.append(f"It's not the only thing pointing {ctx.winner}'s way:"
-                     f" {_sent(secondary.get('headline', ''))}")
-
-    # A4 player-form narrative (season-labeled, only when supported).
-    note = qb_form_note(ctx)
-    if note:
-        parts.append(note)
-
-    # The single thing that could go wrong (ties to risk_factor).
-    if ctx.risk:
-        parts.append(f"The one thing that could turn it:"
-                     f" {_sent(ctx.risk.get('headline', ''))}"
-                     f" {_sent(ctx.risk.get('baseline_note', ''))}")
-    else:
-        parts.append("The main risk is plain variance — a turnover or a"
-                     " special-teams swing can compress the edge fast.")
-
+    parts.append(qb_form_note(ctx))
+    # When the lead itself was the betting line, don't summarise it twice.
+    if not (lead and lead.get("name") == "Market Edge"):
+        parts.append(ctx.market_sentence)
     return _join(parts)

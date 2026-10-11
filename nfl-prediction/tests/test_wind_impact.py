@@ -18,7 +18,7 @@ class TestWindImpactOutput(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         if not OUTPUT.exists():
-            raise unittest.SkipTest("wind_impact.json not built yet — run build_wind_impact.py")
+            raise unittest.SkipTest("wind_impact.json not built yet - run build_wind_impact.py")
         with open(OUTPUT) as f:
             cls.data = json.load(f)
 
@@ -43,7 +43,7 @@ class TestWindImpactOutput(unittest.TestCase):
 
     def test_high_wind_has_negative_delta(self):
         """High wind (≥20 games) should not improve pass EPA vs calm.
-        Severe tier is skipped when n < 10 — too sparse to be meaningful."""
+        Severe tier is skipped when n < 10 - too sparse to be meaningful."""
         min_games = 10
         for tier in ("high", "severe"):
             stats = self.data.get(tier, {})
@@ -51,7 +51,7 @@ class TestWindImpactOutput(unittest.TestCase):
                 continue  # too few games for reliable EPA estimate
             delta = stats.get("delta_vs_calm", 0)
             self.assertLess(delta, 0.05,
-                f"Tier '{tier}' delta {delta:.3f} unexpectedly high (n={stats['game_count']}) — "
+                f"Tier '{tier}' delta {delta:.3f} unexpectedly high (n={stats['game_count']}) - "
                 "high wind should not improve pass EPA vs calm")
 
     def test_game_counts_are_positive(self):

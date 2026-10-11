@@ -33,7 +33,7 @@ const NotFound: React.FC = () => {
           </h1>
 
           <p className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
-            That play isn't in the book.
+            Page not found.
           </p>
           <p className="text-sm break-all" style={{ color: 'var(--text-muted)' }}>
             Nothing lives at <span style={{ fontFamily: 'var(--font-mono)' }}>{pathname}</span>.

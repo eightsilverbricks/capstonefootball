@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ExternalLink, Instagram, Play } from 'lucide-react';
+import { ExternalLink, Play } from 'lucide-react';
 import FoundersPortrait from '@/components/brand/FoundersPortrait';
 
 // The reel that introduces us. Swap this one constant to change the video.
@@ -29,14 +29,7 @@ const ReelPanel: React.FC = () => {
       >
         {/* Copy */}
         <div className="p-6 sm:p-10 flex flex-col justify-center">
-          <span
-            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.22em] mb-4"
-            style={{ color: 'var(--accent-gold)' }}
-          >
-            <Instagram className="w-3.5 h-3.5" aria-hidden="true" />
-            Watch the intro
-          </span>
-          <h2
+                    <h2
             id="reel-heading"
             className="font-bold leading-tight mb-3"
             style={{
@@ -45,7 +38,7 @@ const ReelPanel: React.FC = () => {
               color: 'var(--text-primary)',
             }}
           >
-            Sixty seconds with the three of us
+            Intro video
           </h2>
           <p className="text-sm sm:text-base leading-relaxed mb-6" style={{ color: 'var(--text-secondary)' }}>
             What The Clark Index is, why we built it, and what you actually do with it — from the
@@ -108,7 +101,7 @@ const ReelPanel: React.FC = () => {
                   className="text-[11px] uppercase tracking-[0.2em]"
                   style={{ color: 'var(--text-tertiary)' }}
                 >
-                  Tap to play
+                  Play
                 </span>
               </button>
             )}

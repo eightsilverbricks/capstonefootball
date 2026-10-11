@@ -31,10 +31,10 @@ def load_gsis_to_espn() -> dict[str, str]:
     """gsis_id -> espn_id crosswalk for building real headshot URLs.
 
     Returns {} (graceful degradation to TeamLogo fallback) if the crosswalk
-    hasn't been fetched yet — run download_data.py to populate it.
+    hasn't been fetched yet - run download_data.py to populate it.
     """
     if not PLAYER_IDS_PATH.exists():
-        print(f"  (no {PLAYER_IDS_PATH.name} — run download_data.py for headshots; "
+        print(f"  (no {PLAYER_IDS_PATH.name} - run download_data.py for headshots; "
               "continuing without espn_id)")
         return {}
     ids = pd.read_parquet(PLAYER_IDS_PATH, columns=["gsis_id", "espn_id"])

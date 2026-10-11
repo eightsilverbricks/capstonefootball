@@ -16,6 +16,26 @@ export interface FactorCard {
   confident?: boolean;
 }
 
+// ─── Current-season players and injuries (from ESPN, see espn_extras.py) ──────
+export interface KeyPlayer {
+  name: string;
+  team: string;
+  position: string;
+  /** e.g. "Leads NO in passing" */
+  role: string;
+  /** e.g. "917 yards, 8 TD, 3 INT this season" */
+  stat_line: string;
+  espn_id: string | null;
+}
+
+export interface InjuryNote {
+  name: string;
+  team: string;
+  position: string;
+  status: 'Out' | 'Doubtful' | 'Questionable';
+  injury: string;
+}
+
 // ─── Market context ────────────────────────────────────────────────────────────
 export interface MarketContext {
   market_used: boolean;
@@ -93,6 +113,8 @@ export interface ApiPrediction {
   key_battle?: string;
 
   // Player context
+  key_players?: KeyPlayer[];
+  injury_notes?: InjuryNote[];
   home_players?: PlayerContext;
   away_players?: PlayerContext;
 

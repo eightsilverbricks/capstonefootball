@@ -27,19 +27,6 @@ export function gameKey(game: ApiPrediction): string {
   return game.game_id ?? `${game.season}_${game.week}_${game.away_team}_${game.home_team}`;
 }
 
-// ─── Deterministic seeded PRNG (djb2 hash → [0,1)) ─────────────────────────────
-// NOT cryptographic, and no longer used for any *data*. Its only remaining job
-// is choosing between equivalent phrasings of the pre-pick teaser, so adjacent
-// cards in a sorted feed don't read identically. Stable per game across renders.
-function seededRandom01(seed: string): number {
-  let hash = 5381;
-  for (let i = 0; i < seed.length; i++) {
-    hash = (hash * 33) ^ seed.charCodeAt(i);
-  }
-  // Convert to unsigned 32-bit, then normalize to [0, 1)
-  return (hash >>> 0) / 4294967296;
-}
-
 // ─── Vegas — real data, derived from moneylines ────────────────────────────────
 function moneylineToImpliedProb(moneyline: number): number {
   return moneyline < 0 ? -moneyline / (-moneyline + 100) : 100 / (moneyline + 100);
@@ -79,46 +66,6 @@ export function getFanPick(game: ApiPrediction, sentiment: SentimentMap): FanPic
   return home >= away
     ? { team: game.home_team, prob: home / counted, picks: counted }
     : { team: game.away_team, prob: away / counted, picks: counted };
-}
-
-// ─── Pre-pick teaser — a qualitative hook shown BEFORE the user commits ────────
-// Deliberately withholds every number (team names, percentages) so it can't bias
-// the blind pick — only describes the *shape* of the disagreement. Several games
-// in the same week often land in the same bucket (e.g. several near-locks), so
-// each bucket has a few phrasings, chosen deterministically per game so adjacent
-// cards in a confidence-sorted feed don't read identically.
-function pickVariant(seed: string, options: string[]): string {
-  const idx = Math.floor(seededRandom01(`${seed}:teaser`) * options.length);
-  return options[idx];
-}
-
-export function getPrePickTeaser(
-  game: ApiPrediction,
-  vegas: TeamPick | null,
-  fan: FanPick | null,
-): string {
-  const clarkProb = getPredictedProbability(game);
-  const seed = gameKey(game);
-  const disagreementCount =
-    (fan && fan.team !== game.predicted_winner ? 1 : 0) +
-    (vegas && vegas.team !== game.predicted_winner ? 1 : 0);
-
-  if (disagreementCount >= 2) {
-    return pickVariant(seed, ['Nobody agrees on this one.', 'Three different opinions on this game.']);
-  }
-  if (fan && Math.abs(fan.prob - 0.5) < 0.06) {
-    return pickVariant(seed, ['Fans are genuinely split.', "This fanbase can't agree with itself."]);
-  }
-  if (vegas && vegas.team !== game.predicted_winner) {
-    return pickVariant(seed, ["The market isn't so sure about this.", 'Vegas sees it differently than Clark.']);
-  }
-  if (clarkProb >= 0.75) {
-    return pickVariant(seed, ['Clark sees this as a near-lock.', 'Clark isn\'t hedging on this one.', "One of Clark's more confident reads."]);
-  }
-  if (clarkProb <= 0.56) {
-    return pickVariant(seed, ["This one's close to a coin flip.", 'A genuine toss-up, per Clark.']);
-  }
-  return pickVariant(seed, ['A clean read this week.', 'Nothing unusual here — steady favorite.']);
 }
 
 // ─── Fan support over time — real, from pick timestamps ───────────────────────

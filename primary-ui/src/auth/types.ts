@@ -53,6 +53,10 @@ export interface AuthClient {
   signIn(input: SignInInput): Promise<AuthResult>;
   signOut(): Promise<{ error: AuthError | null }>;
   updateProfile(patch: ProfilePatch): Promise<AuthResult>;
+  /** Email a password-reset link that lands on /reset-password. */
+  requestPasswordReset(email: string): Promise<{ error: AuthError | null }>;
+  /** Set a new password for the signed-in (or just-recovered) account. */
+  updatePassword(newPassword: string): Promise<{ error: AuthError | null }>;
   /** Subscribe to session changes. Returns an unsubscribe function. */
   subscribe(listener: () => void): () => void;
 }

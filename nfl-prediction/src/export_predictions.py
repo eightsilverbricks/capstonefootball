@@ -12,7 +12,7 @@ directory with the venv activated:
     python3 src/export_predictions.py
 
 The output lands in primary-ui/public/predictions.json, which Vite serves as a
-static asset in both dev and production — there is no dev proxy. The frontend
+static asset in both dev and production - there is no dev proxy. The frontend
 only talks to the live FastAPI backend when VITE_API_BASE_URL is set.
 """
 
@@ -31,7 +31,7 @@ if str(PRED_DIR) not in sys.path:
 
 # ---------------------------------------------------------------------------
 # Import the live enrichment pipeline from api.py.
-# Importing the module runs the model + data load at module level — that's
+# Importing the module runs the model + data load at module level - that's
 # intentional; it's exactly the same path the FastAPI server takes.
 # ---------------------------------------------------------------------------
 print("Loading model and data...")
@@ -42,6 +42,7 @@ from src.api import (  # noqa: E402
     DATA_MODE,
     MODEL_META,
 )
+from src.validate_report import validate_game  # noqa: E402
 
 PUBLIC_DIR = REPO_ROOT / "primary-ui" / "public"
 
@@ -56,12 +57,51 @@ EXPORTS = {
 }
 
 
+def validate_predictions(season: int, predictions: list[dict]) -> None:
+    """Stop the export before incomplete or contradictory schedules ship."""
+    if not predictions:
+        raise ValueError(f"No predictions generated for {season}.")
+
+    game_ids: set[str] = set()
+    team_weeks: set[tuple[int, str]] = set()
+    for game in predictions:
+        game_id = str(game.get("game_id") or "")
+        if not game_id or game_id in game_ids:
+            raise ValueError(f"Duplicate or missing game_id in {season}: {game_id!r}")
+        game_ids.add(game_id)
+
+        week = int(game.get("week") or 0)
+        for team in (game.get("away_team"), game.get("home_team")):
+            key = (week, str(team or ""))
+            if not team or key in team_weeks:
+                raise ValueError(f"Duplicate or missing team/week in {season}: {key}")
+            team_weeks.add(key)
+
+        if game.get("game_type") == "REG" and season == ACTIVE_SEASON:
+            missing = [
+                field for field in ("game_date", "weekday", "gametime", "stadium", "kickoff_at")
+                if not game.get(field)
+            ]
+            if missing:
+                raise ValueError(f"{game_id} is missing schedule fields: {', '.join(missing)}")
+
+    # Every report must agree with itself (pick vs factors, odds, filler, jargon).
+    report_errors = [e for game in predictions for e in validate_game(game)]
+    if report_errors:
+        shown = "\n  ".join(report_errors[:20])
+        raise ValueError(
+            f"{len(report_errors)} Clark Report problem(s) in {season}:\n  {shown}"
+        )
+
+
+
 def main() -> None:
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 
     for season, out_path in EXPORTS.items():
         print(f"Running enrichment pipeline for {season}...")
         predictions = get_predictions(season=season)
+        validate_predictions(season, predictions)
 
         with open(out_path, "w", encoding="utf-8") as fh:
             json.dump(predictions, fh, indent=2, ensure_ascii=False)
@@ -74,7 +114,7 @@ def main() -> None:
     print(f"\n✅  Done.  Data mode: {DATA_MODE}   "
           f"Model accuracy: {MODEL_META.get('accuracy', '?')}")
     print(
-        "   Commit both JSON files and push — Vercel serves them as static files."
+        "   Commit both JSON files and push - Vercel serves them as static files."
     )
 
 
