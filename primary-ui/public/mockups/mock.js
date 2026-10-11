@@ -1,8 +1,19 @@
 /* Clark Index mockups — shared sample data, masthead, ticker, tab bar.
    Sample data only: week 5 matchups and Clark's % are real; scores are invented. */
 
-const ESPN = { LA: 'lar', WAS: 'wsh' };
-const logo = (t) => `https://a.espncdn.com/i/teamlogos/nfl/500/${(ESPN[t] || t).toLowerCase()}.png`;
+/* Our own team badges (no NFL logos, nothing loaded from ESPN): team-color disc, accent ring, city code. */
+const ACCENT = { ARI: '#FFB612', ATL: '#000000', BAL: '#9E7C0C', BUF: '#C60C30', CAR: '#0085CA', CHI: '#C83803', CIN: '#000000', CLE: '#FF3C00',
+  DAL: '#869397', DEN: '#002244', DET: '#B0B7BC', GB: '#FFB612', HOU: '#A71930', IND: '#A2AAAD', JAX: '#9F792C', KC: '#FFB81C', LA: '#FFA300',
+  LAC: '#FFC20E', LV: '#A5ACAF', MIA: '#FC4C02', MIN: '#FFC62F', NE: '#C60C30', NO: '#101820', NYG: '#A71930', NYJ: '#FFFFFF', PHI: '#A5ACAF',
+  PIT: '#101820', SEA: '#69BE28', SF: '#B3995D', TB: '#34302B', TEN: '#4B92DB', WAS: '#FFB612' };
+const BADGE_FILL = { KC: '#E31837', CAR: '#101820' };
+const logo = (t) => {
+  const fill = BADGE_FILL[t] || (TEAM[t] ? TEAM[t][2] : '#444');
+  const ring = ACCENT[t] || '#ffffff';
+  const fs = t.length > 2 ? 30 : 36;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="48" fill="${fill}"/><circle cx="50" cy="50" r="41" fill="none" stroke="${ring}" stroke-width="5"/><text x="50" y="50" dy=".36em" text-anchor="middle" font-family="Montserrat, Arial Black, Arial, sans-serif" font-weight="900" font-size="${fs}" fill="#fff" letter-spacing="-1">${t}</text></svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+};
 
 const TEAM = {
   ARI: ['Arizona', 'Cardinals', '#97233F', '1-3'], ATL: ['Atlanta', 'Falcons', '#A71930', '2-2'],
@@ -108,7 +119,7 @@ function renderMasthead(active, signedIn) {
 
   document.getElementById('masthead').innerHTML = `
     <div class="ticker"><div class="ticker-inner">
-      <div class="ticker-league">NFL<small>Week 5</small></div>
+      <div class="ticker-league">The Rail<small>Week 5 scores</small></div>
       <div class="ticker-track"><div class="ticker-rail">${order.map(tickerCell).join('')}</div></div>
       <div class="ticker-arrows"><button aria-label="Previous games" data-dir="-1">‹</button><button aria-label="More games" data-dir="1">›</button></div>
     </div></div>
