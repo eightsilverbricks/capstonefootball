@@ -232,12 +232,12 @@ function crewPicks(picks) {
 function mountSlider(root, away, home, initial = 50) {
   root.classList.add('fslider');
   root.innerHTML = `<div class="fs-labels"><span data-side="a">${name(away)}</span><span data-side="h">${name(home)}</span></div>
-    <div class="fs-track"><span class="fs-fill"></span><span class="fs-mid"></span><span class="fs-thumb" role="slider" tabindex="0" aria-label="Your pick and confidence" aria-valuemin="0" aria-valuemax="100"><img alt=""></span></div>
+    <div class="fs-track"><span class="fs-fill"></span><span class="fs-mid"></span><span class="fs-thumb" role="slider" tabindex="0" aria-label="Your pick and confidence" aria-valuemin="0" aria-valuemax="100"><img alt="" draggable="false"></span></div>
     <div class="fs-read"></div><canvas class="fs-canvas"></canvas>`;
   const track = root.querySelector('.fs-track'), fill = root.querySelector('.fs-fill'), thumb = root.querySelector('.fs-thumb');
   const img = thumb.querySelector('img'), read = root.querySelector('.fs-read'), canvas = root.querySelector('.fs-canvas');
   const ctx = canvas.getContext('2d');
-  let value = initial, sparks = [], raf = null;
+  let value = initial, sparks = [], raf = null, shownLogo = '', pending = null, dragging = false;
 
   const side = () => (value === 50 ? null : value > 50 ? home : away);
   const conf = () => 50 + Math.abs(value - 50);
@@ -246,7 +246,8 @@ function mountSlider(root, away, home, initial = 50) {
     const tc = t ? color(t) : 'var(--ink-3)';
     thumb.style.left = `${value}%`;
     thumb.style.setProperty('--tc', tc);
-    img.src = t ? logo(t) : '/brand/clark-logo.jpg';
+    const want = t ? logo(t) : '/brand/clark-logo.jpg';
+    if (want !== shownLogo) { img.src = want; shownLogo = want; }
     fill.style.background = tc;
     fill.style.left = value >= 50 ? '50%' : `${value}%`;
     fill.style.width = `${Math.abs(value - 50)}%`;
@@ -290,13 +291,30 @@ function mountSlider(root, away, home, initial = 50) {
       burst(r.left + (value / 100) * r.width - cr.left, r.top + r.height / 2 - cr.top, color(t), 3 + Math.round(Math.abs(value - 50) / 10));
     }
   }
-  const up = () => {
-    root.classList.remove('drag'); window.removeEventListener('pointermove', move);
-    const t = side();
-    if (t) { const r = thumb.getBoundingClientRect(); lockPick(t, conf(), r.left + r.width / 2, r.top); }
+  // Pointer capture keeps the drag alive even if the pointer leaves the track or the window.
+  const onMove = (e) => {
+    if (!dragging) return;
+    pending = e.clientX;
+    if (!onMove.queued) { onMove.queued = true; requestAnimationFrame(() => { onMove.queued = false; if (pending != null) setFrom(pending, true); }); }
   };
-  const move = (e) => setFrom(e.clientX, true);
-  track.addEventListener('pointerdown', (e) => { root.classList.add('drag'); setFrom(e.clientX, true); window.addEventListener('pointermove', move); window.addEventListener('pointerup', up, { once: true }); });
+  const end = (e) => {
+    if (!dragging) return;
+    dragging = false; root.classList.remove('drag');
+    try { if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId); } catch { /* already released */ }
+    const t = side();
+    if (e.type === 'pointerup' && t) { const r = thumb.getBoundingClientRect(); lockPick(t, conf(), r.left + r.width / 2, r.top); }
+  };
+  track.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    dragging = true; root.classList.add('drag');
+    try { track.setPointerCapture(e.pointerId); } catch { /* synthetic events have no capturable pointer */ }
+    setFrom(e.clientX, true);
+  });
+  track.addEventListener('pointermove', onMove);
+  track.addEventListener('pointerup', end);
+  track.addEventListener('pointercancel', end);
+  track.addEventListener('lostpointercapture', end);
   thumb.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { value = Math.min(100, Math.max(0, value + (e.key === 'ArrowRight' ? 5 : -5))); render(); e.preventDefault(); }
   });

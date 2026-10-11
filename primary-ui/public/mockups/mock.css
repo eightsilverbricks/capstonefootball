@@ -308,3 +308,15 @@ body {
 .row:hover { border-left-color: var(--clark-solid); }
 @media (max-width: 767px) { .toast { bottom: 76px; } .clark-says .call { font-size: 20px !important; } .clark-says > img { width: 44px; height: 44px; } }
 @media (prefers-reduced-motion: reduce) { .clark-says > img, .clark-card img, .wp-dot { animation: none; } .wp-line { stroke-dashoffset: 0; animation: none; } .wp-area { opacity: 1; animation: none; } .fbar { animation: none; } [data-panel]:not([hidden]) { animation: none; } }
+
+/* Slider drag fixes: no native image drag, no text selection, card doesn't move under the pointer */
+.fs-thumb img { pointer-events: none; -webkit-user-drag: none; user-select: none; }
+.fslider, .fslider * { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+.fs-track { touch-action: none; }
+.fs-track::before { content: ''; position: absolute; left: -12px; right: -12px; top: -18px; bottom: -18px; } /* bigger grab area */
+.fs-fill { transition: none; }
+.panel:has(.fslider):hover { transform: none; box-shadow: none; }
+.fslider.drag .fs-thumb { transition: box-shadow .2s; }
+
+.fslider { padding-left: 24px; padding-right: 24px; }
+.fs-labels { margin-left: -24px; margin-right: -24px; }
