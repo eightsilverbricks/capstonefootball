@@ -20,9 +20,6 @@ import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 const nick = (t: string) => getTeam(t)?.name ?? t;
 const pct = (p: number) => Math.round(p * 100);
 
-/** The avatar shows the group photo at 3× width; this centres one face (x as 0–100 of the photo) in the circle. */
-const AVATAR_ZOOM = 3;
-const faceOffset = (x: number) => Math.min(100, Math.max(0, ((x / 100) * AVATAR_ZOOM - 0.5) / (AVATAR_ZOOM - 1) * 100));
 
 const STEPS = [
   { title: 'Read the Clark Report', body: 'Who Clark picks, the reasons in plain English, key players and injuries, and how the underdog wins.' },
@@ -115,24 +112,12 @@ export default function LandingPage() {
           </section>
         )}
 
-        <section className="ld-crew" aria-labelledby="ld-crew-title">
-          <img className="ld-crew-art" src="/founders/group.jpg" alt="Illustration of Takuo, Nicholas and Zane in their team jerseys" width={460} height={307} loading="lazy" />
-          <div>
-            <div className="gp-kicker">Meet the crew</div>
-            <h2 id="ld-crew-title" className="ld-h2">Three fans, one model, a lot of arguing.</h2>
-            <div className="ld-cards">
-              {FOUNDERS.map((f) => (
-                <div key={f.id} className="ld-card">
-                  <span className="ld-av" style={{ backgroundPosition: `${faceOffset(f.photoXPercent)}% 18%`, ['--team' as string]: getTeamColors(f.team).primary }} />
-                  <b>{f.firstName}</b>
-                  <span>{f.teamName} · #{f.number}</span>
-                  <p>{f.line}</p>
-                </div>
-              ))}
-            </div>
-            <p className="gr-muted ld-note">We pick every game too. Beat us on the leaderboard.</p>
-          </div>
-        </section>
+        <figure className="ld-crew">
+          <img className="ld-crew-art" src="/founders/group.jpg" alt="Illustration of Takuo, Nicholas and Zane in their team jerseys" width={720} height={480} loading="lazy" />
+          <figcaption>
+            {FOUNDERS.map((f) => <span key={f.id}>{f.name}</span>)}
+          </figcaption>
+        </figure>
 
         <section className="ld-close">
           <h2 className="ld-h2">Make your picks for this week.</h2>
