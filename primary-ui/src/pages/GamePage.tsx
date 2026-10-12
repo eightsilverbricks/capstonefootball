@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { usePredictions } from '@/hooks/usePredictions';
-import GameReport from '@/components/game-report/GameReport';
+import GameView from '@/components/game/GameView';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Card from '@/components/layout/Card';
@@ -28,7 +28,7 @@ const GamePage: React.FC = () => {
     <div className="min-h-screen flex flex-col" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
       <Header />
 
-      <main className="flex-1 w-full mx-auto px-4 py-6" style={{ maxWidth: 'var(--content-max)' }}>
+      <main className="w-full mx-auto px-4" style={{ maxWidth: 'var(--content-max)' }}>
         {loading && (
           <div className="flex flex-col items-center justify-center py-24 gap-4" style={{ color: 'var(--text-tertiary)' }}>
             <RefreshCw className="w-7 h-7 animate-spin" />
@@ -70,8 +70,8 @@ const GamePage: React.FC = () => {
           </Card>
         )}
 
-        {!loading && !error && game && <GameReport game={game} />}
       </main>
+      {!loading && !error && game && <GameView game={game} />}
 
       <Footer />
     </div>
