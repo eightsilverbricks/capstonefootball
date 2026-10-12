@@ -1,5 +1,5 @@
 import React from 'react';
-import HomeDashboard from '@/components/HomeDashboard';
+import HomeView from '@/components/home/HomeView';
 import LandingPage from './LandingPage';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
  */
 const Index: React.FC = () => {
   const { isSignedIn } = useAuth();
-  return isSignedIn ? <HomeDashboard /> : <LandingPage />;
+  return isSignedIn ? <HomeView /> : <LandingPage />;
 };
 
 export default Index;
