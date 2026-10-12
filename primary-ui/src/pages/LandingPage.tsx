@@ -1,171 +1,146 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Lock } from 'lucide-react';
 import Header from '@/components/Header';
-import { useSeasonMode } from '@/context/SeasonModeContext';
 import Footer from '@/components/Footer';
-import HomeHighlights from '@/components/HomeHighlights';
-import LandingHero from '@/components/landing/LandingHero';
-import HowItWorks from '@/components/landing/HowItWorks';
-import ReelPanel from '@/components/landing/ReelPanel';
-import ReportPeekDialog from '@/components/landing/ReportPeekDialog';
-import SectionIntro from '@/components/landing/SectionIntro';
 import { usePredictions } from '@/hooks/usePredictions';
+import { useFanSentiment } from '@/hooks/useFanSentiment';
+import { useSeasonMode } from '@/context/SeasonModeContext';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
-import { resolveCurrentWeek, weekTitle } from '@/lib/currentWeek';
-import { getHeroFactor } from '@/lib/heroInsight';
-import { getConfidenceScore } from '@/types/prediction';
+import { resolveCurrentWeek } from '@/lib/currentWeek';
+import { gameKey } from '@/lib/threeWaySignal';
+import { formatKickoff } from '@/lib/slate';
+import { isFinal } from '@/lib/gameStatus';
+import { recordStrip, showcaseGame } from '@/lib/landingFeed';
+import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
+import { getTeam } from '@/data/teams';
+import { stadiumImageUrl } from '@/data/stadiumImages';
+import { FOUNDERS } from '@/data/founders';
+import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 
-/**
- * The signed-out front door. Everything a first-time visitor needs: who we are,
- * what the product does (with a real report they can open), the intro reel, a
- * live look at this week's board, and one account button repeated wherever the
- * decision naturally lands.
- *
- * Signed-in visitors get HomeDashboard instead — see pages/Index.tsx. This page
- * stays reachable at /welcome so the story is always linkable.
- */
-const LandingPage: React.FC = () => {
-  const { predictions } = usePredictions();
-  // Demo seasons are finished, so they open on week 1 rather than the calendar.
-  const { config: seasonConfig } = useSeasonMode();
-  const isDemo = seasonConfig.isDemo;
-  const [peekOpen, setPeekOpen] = useState(false);
+const nick = (t: string) => getTeam(t)?.name ?? t;
+const pct = (p: number) => Math.round(p * 100);
 
-  const availableWeeks = useMemo(
-    () => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b),
-    [predictions],
-  );
-  const currentWeek = resolveCurrentWeek(availableWeeks, { isDemo });
-  const weekGames = useMemo(
-    () => predictions.filter((g) => g.week === currentWeek),
-    [predictions, currentWeek],
-  );
+/** The avatar shows the group photo at 3× width; this centres one face (x as 0–100 of the photo) in the circle. */
+const AVATAR_ZOOM = 3;
+const faceOffset = (x: number) => Math.min(100, Math.max(0, ((x / 100) * AVATAR_ZOOM - 0.5) / (AVATAR_ZOOM - 1) * 100));
 
-  // The showcase game fronts the whole pitch, so pick the strongest example in
-  // the season rather than whatever happens to lead the current week.
-  //
-  // Week >= 4 matters: the "last 3" fields carry over from the prior season
-  // early on, so a Week 1 game shows both teams at an identical, unexplained
-  // 1-2 — confusing on a panel whose entire claim is that the numbers are real.
-  // Requiring a factor headline guarantees the right-hand column has prose.
-  const peekGame = useMemo(() => {
-    const byConfidence = (a: typeof predictions[number], b: typeof predictions[number]) =>
-      getConfidenceScore(b) - getConfidenceScore(a);
+const STEPS = [
+  { title: 'Read the Clark Report', body: 'Who Clark picks, the reasons in plain English, key players and injuries, and how the underdog wins.' },
+  { title: 'Make your pick', body: 'Pick a winner and set how sure you are. Picks lock at kickoff.' },
+  { title: 'Beat Clark', body: 'Every pick is graded. See your record next to Clark, the betting line, and every fanbase.' },
+];
 
-    // The right-hand column has to earn its place. Momentum just restates the
-    // last-3 records already sitting in the left column, and Market Edge just
-    // restates the spread — pick a game whose lead factor surfaces something
-    // the stat sheet genuinely cannot show, like a pass-rush or efficiency edge.
-    const ADDS_NEW_INFORMATION = new Set(['Defensive Edge', 'Recent Offense']);
-
-    const strongExample = predictions
-      .filter((g) => {
-        if (g.week < 4) return false;
-        const hero = getHeroFactor(g);
-        return Boolean(hero?.headline) && ADDS_NEW_INFORMATION.has(hero!.name);
-      })
-      .sort(byConfidence)[0];
-
-    return strongExample ?? [...weekGames].sort(byConfidence)[0] ?? null;
-  }, [predictions, weekGames]);
+/** A real Clark Report, first reason open, the rest blurred behind sign-up. */
+function ReportTeaser({ game }: { game: ApiPrediction }) {
+  const a = getTeamColors(game.away_team).primary;
+  const h = getTeamColors(game.home_team).primary;
+  const photo = stadiumImageUrl(game.home_team, 1000);
+  const wash = `linear-gradient(90deg, ${a}E6, ${a}88 45%, ${h}88 55%, ${h}E6)`;
+  const factors = (game.factor_cards ?? []).filter((f) => f.headline).slice(0, 4);
+  const [first, ...rest] = factors;
+  const loser = game.predicted_winner === game.home_team ? game.away_team : game.home_team;
+  const story = (game.football_story ?? game.explanation_summary ?? '')
+    .replace(/^Clark picks [A-Z]{2,3} with an? \d+% chance to win\.\s*/, '');
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--bg)', color: 'var(--text-primary)' }}>
+    <div className="ld-report">
+      <div className="ld-rh" style={{ backgroundImage: photo ? `${wash}, url("${photo}")` : wash }}>
+        <span><img src={getEspnLogoUrl(game.away_team)} alt="" width={34} height={34} />{nick(game.away_team)}</span>
+        <small>{isFinal(game) ? 'Final' : [game.weekday, formatKickoff(game.gametime)].filter(Boolean).join(' ')}</small>
+        <span>{nick(game.home_team)}<img src={getEspnLogoUrl(game.home_team)} alt="" width={34} height={34} /></span>
+      </div>
+      <div className="ld-rb">
+        <div className="gp-kicker">The Clark Report</div>
+        <p className="ld-call">"I'm on the {nick(game.predicted_winner)}, {pct(getPredictedProbability(game))}%."{story && ` ${story}`}</p>
+        {first && <div className="ld-f"><b>{first.headline}</b>{first.explanation && ` ${first.explanation}`}</div>}
+        <div className="ld-gate">
+          <div className="ld-blur" aria-hidden="true">
+            {rest.map((f) => <div key={f.name} className="ld-f"><b>{f.headline}</b></div>)}
+            {game.risk_factor && <div className="ld-f"><b>How the {nick(loser)} win:</b> {game.risk_factor}</div>}
+            {rest.length === 0 && !game.risk_factor && <div className="ld-f"><b>Key players, injuries, and what would change Clark's mind.</b></div>}
+          </div>
+          <div className="ld-gate-cta">
+            <button type="button" className="pill pill-red" onClick={() => openAuthDialog('signup')}>Create a free account to read it all</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** The signed-out front door: the pitch, a real report teaser, how it works, Clark's record, the crew. */
+export default function LandingPage() {
+  const { predictions } = usePredictions();
+  const { config: seasonConfig } = useSeasonMode();
+  const weeks = useMemo(() => [...new Set(predictions.map((g) => g.week))].sort((a, b) => a - b), [predictions]);
+  const week = resolveCurrentWeek(weeks, { isDemo: seasonConfig.isDemo });
+  const weekGames = useMemo(() => predictions.filter((g) => g.week === week), [predictions, week]);
+  const weekKeys = useMemo(() => weekGames.map(gameKey), [weekGames]);
+  const { sentiment } = useFanSentiment(weekKeys);
+
+  const teaser = useMemo(() => showcaseGame(predictions, weekGames), [predictions, weekGames]);
+  const stats = useMemo(() => recordStrip(predictions, weekGames, sentiment), [predictions, weekGames, sentiment]);
+
+  return (
+    <div className="min-h-screen">
       <Header />
-
-      <main className="flex flex-col" style={{ gap: 'var(--space-landing)', paddingBottom: 'var(--space-landing)' }}>
-        <LandingHero />
-
-        <HowItWorks onPeek={() => setPeekOpen(true)} canPeek={peekGame != null} />
-
-        <ReelPanel />
-
-        {/* ── A live look at the board ── */}
-        {weekGames.length > 0 && (
-          <section aria-labelledby="week-peek-heading" className="max-w-5xl mx-auto px-4 w-full">
-            <div
-              className="flex flex-wrap items-end justify-between gap-3 mb-6 pb-4"
-              style={{ borderBottom: '1px solid var(--border-subtle)' }}
-            >
-              <SectionIntro
-                id="week-peek-heading"
-                heading="This week's games"
-              />
-              <span className="text-[11px] uppercase tracking-[0.2em] pb-1" style={{ color: 'var(--text-muted)' }}>
-                {weekTitle(currentWeek)} · {weekGames.length} games
-              </span>
+      <main className="ld-wrap">
+        <section className="ld-hero" aria-labelledby="ld-title">
+          <div>
+            <img className="ld-logo" src="/brand/clark-logo.jpg" alt="Clark Index logo" width={84} height={84} />
+            <div className="gp-kicker">Free · No betting</div>
+            <h1 id="ld-title" className="ld-h1">Every NFL game, explained in plain English. Then pick against Clark.</h1>
+            <p className="ld-lede">Clark is our prediction model. For every game he tells you who he picks, why, and how the other team could win.</p>
+            <div className="ld-ctas">
+              <button type="button" className="pill pill-red" onClick={() => openAuthDialog('signup')}>Create free account</button>
+              <Link to="/games" className="pill pill-line">See this week's games</Link>
             </div>
+          </div>
+          {teaser && <ReportTeaser game={teaser} />}
+        </section>
 
-            <HomeHighlights games={weekGames} limit={4} />
-
-            <div
-              className="mt-4 rounded-xl px-5 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-              style={{ background: 'var(--surface)', border: '1px dashed var(--border-default)' }}
-            >
-              <p className="flex items-start gap-2.5 text-sm" style={{ color: 'var(--text-secondary)' }}>
-                <Lock className="w-4 h-4 mt-0.5 shrink-0" style={{ color: 'var(--accent-gold)' }} aria-hidden="true" />
-                Create a free account to read full reports, make picks and track your record.
-              </p>
-              <button
-                type="button"
-                onClick={() => openAuthDialog('signup')}
-                className="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold uppercase tracking-wide"
-                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
-              >
-                Get started
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </button>
+        <section className="ld-steps" aria-label="How it works">
+          {STEPS.map((s, i) => (
+            <div key={s.title}>
+              <div className="ld-n">{i + 1}</div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
             </div>
+          ))}
+        </section>
+
+        {stats.length > 0 && (
+          <section className="ld-record" aria-label="Clark's record" style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}>
+            {stats.map((s) => <div key={s.id}><b>{s.value}</b><span>{s.label}</span></div>)}
           </section>
         )}
 
-        {/* ── Closing band ── */}
-        <section className="max-w-5xl mx-auto px-4 w-full">
-          <div
-            className="field-texture rounded-2xl px-6 py-12 sm:px-12 sm:py-16 text-center"
-            style={{ background: 'var(--surface)', border: '1px solid var(--border-default)' }}
-          >
-            <h2
-              className="font-bold leading-tight mb-4 mx-auto max-w-2xl"
-              style={{
-                fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1.9rem, 5vw, 3.25rem)',
-                color: 'var(--text-primary)',
-              }}
-            >
-              Make your picks for this week.
-            </h2>
-            <p className="text-base mb-8 mx-auto max-w-lg" style={{ color: 'var(--text-secondary)' }}>
-              Free. No betting.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-              <button
-                type="button"
-                onClick={() => openAuthDialog('signup')}
-                className="inline-flex items-center gap-2 px-7 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide transition-transform duration-150 hover:-translate-y-0.5"
-                style={{ background: 'var(--accent-gold)', color: 'var(--brand-contrast)' }}
-              >
-                Create account
-                <ArrowRight className="w-4 h-4" aria-hidden="true" />
-              </button>
-              <Link
-                to="/about"
-                className="inline-flex items-center px-7 py-3.5 rounded-lg text-sm font-semibold uppercase tracking-wide no-underline"
-                style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-default)' }}
-              >
-                Meet the team
-              </Link>
+        <section className="ld-crew" aria-labelledby="ld-crew-title">
+          <img className="ld-crew-art" src="/founders/group.jpg" alt="Illustration of Takuo, Nicholas and Zane in their team jerseys" width={460} height={307} loading="lazy" />
+          <div>
+            <div className="gp-kicker">Meet the crew</div>
+            <h2 id="ld-crew-title" className="ld-h2">Three fans, one model, a lot of arguing.</h2>
+            <div className="ld-cards">
+              {FOUNDERS.map((f) => (
+                <div key={f.id} className="ld-card">
+                  <span className="ld-av" style={{ backgroundPosition: `${faceOffset(f.photoXPercent)}% 18%`, ['--team' as string]: getTeamColors(f.team).primary }} />
+                  <b>{f.firstName}</b>
+                  <span>{f.teamName} · #{f.number}</span>
+                  <p>{f.line}</p>
+                </div>
+              ))}
             </div>
+            <p className="gr-muted ld-note">We pick every game too. Beat us on the leaderboard.</p>
           </div>
         </section>
+
+        <section className="ld-close">
+          <h2 className="ld-h2">Make your picks for this week.</h2>
+          <p>Free. No betting. Takes a minute.</p>
+          <button type="button" className="pill pill-red" onClick={() => openAuthDialog('signup')}>Create free account</button>
+        </section>
       </main>
-
-      <ReportPeekDialog open={peekOpen} onOpenChange={setPeekOpen} game={peekGame} />
-
       <Footer />
     </div>
   );
-};
-
-export default LandingPage;
+}
