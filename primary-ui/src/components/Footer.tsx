@@ -8,7 +8,7 @@ const FOOTER_LINKS = [
   { label: 'Leaderboard', to: '/leaderboard' },
   { label: 'My season', to: '/my-season' },
   { label: 'About', to: '/about' },
-  { label: 'Settings', to: '/settings' },
+  { label: 'Settings', to: '/my-season?tab=settings' },
 ];
 
 const Footer: React.FC = () => (

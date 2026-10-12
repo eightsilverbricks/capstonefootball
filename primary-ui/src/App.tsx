@@ -4,10 +4,9 @@ import Index from "./pages/Index";
 import LandingPage from "./pages/LandingPage";
 import GamesPage from "./pages/GamesPage";
 import GamePage from "./pages/GamePage";
-import MySeasonPage from "./pages/MySeasonPage";
+import MySeasonPage, { SettingsRedirect } from "./pages/MySeasonPage";
 import AboutPage from "./pages/AboutPage";
 import AdminPage from "./pages/AdminPage";
-import SettingsPage from "./pages/SettingsPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import TeamsPage from "./pages/TeamsPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
@@ -35,8 +34,8 @@ const App = () => (
       <Route path="/leaderboard" element={<LeaderboardPage />} />
       <Route path="/my-season" element={<MySeasonPage />} />
       <Route path="/about" element={<AboutPage />} />
-      {/* Where demo mode is switched on — see SettingsPage.tsx */}
-      <Route path="/settings" element={<SettingsPage />} />
+      {/* Settings now live in the My season Settings tab */}
+      <Route path="/settings" element={<SettingsRedirect />} />
       {/* Landing page for the password-reset email link */}
       <Route path="/reset-password" element={<ResetPasswordPage />} />
       {/* Developer-only account admin — not linked from any nav, see AdminPage.tsx */}

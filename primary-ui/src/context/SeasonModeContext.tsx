@@ -1,6 +1,6 @@
 // ─── Season mode provider ────────────────────────────────────────────────────
 // Holds which dataset the whole app is reading. Lives above the router so that
-// flipping the toggle on /settings re-renders every surface at once rather than
+// flipping the toggle in My season > Settings re-renders every surface at once rather than
 // leaving stale 2024 cards behind on pages the user has already visited.
 
 import { createContext, useCallback, useContext, useMemo, useState, ReactNode } from 'react';

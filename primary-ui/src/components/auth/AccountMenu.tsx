@@ -96,7 +96,7 @@ const AccountMenu: React.FC = () => {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link to="/settings" className="flex items-center gap-2 cursor-pointer no-underline">
+          <Link to="/my-season?tab=settings" className="flex items-center gap-2 cursor-pointer no-underline">
             <Settings className="w-4 h-4" aria-hidden="true" />
             Settings
           </Link>
