@@ -17,7 +17,7 @@
 | Home, landing, My season (+ settings tab), Leaderboard, Team/roster | Not started in React (mockups exist) |
 | Live system P1 (`supabase/functions/live-sync`) | Function code written; **no `live_games`/`live_plays` tables, no cron, not deployed** |
 | Chat, comments, polls, Fade Clark, head-to-head scoring, streaks, leaderboards | Backend not started |
-| Clark Report in Clark's voice, in depth | Not started (pipeline work, see §5) |
+| Clark Report in Clark's voice, in depth | **Built** as templates (`clark_report` in predictions JSON, rendered by `ClarkReportArticle`); optional Gemini polish wired but needs `GEMINI_API_KEY` (see §5) |
 
 Tests: `cd primary-ui && npx vitest run` → 323 passing. `npx tsc --noEmit -p tsconfig.app.json` is clean apart from pre-existing `import.meta.env` typing errors.
 
@@ -77,7 +77,11 @@ Mockup source of truth: `public/mockups/{index,home,games,game,report,landing,my
 
 ---
 
-## 5. Clark Report generation (plan, not built)
+## 5. Clark Report generation (built)
+
+`nfl-prediction/src/team_ranks.py` ranks all 32 teams from played games of the season (last season until every team has 3 games). `clark_report.py` builds the report (matchup tables, underdog path, what would change my mind, meaning of the %, line, numbers drawer) as templates in Clark's voice. `clark_llm.py` rewrites only the prose with Gemini Flash-Lite when `GEMINI_API_KEY` is set, for the next unplayed week only, cached in `outputs/clark_report_cache.json`; any number not in the template or any validator error falls back to the template. `export_predictions.py` now keeps live fields (scores, key players, injuries) from the existing JSON. Not yet: player-level stats and injuries in the report, Clark's calibration record per % band.
+
+Original plan:
 
 In `nfl-prediction/src/export_predictions.py`: after computing factors, build a compact JSON of the game's stats (ranks, matchup tables, injuries) and ask Gemini Flash-Lite (free tier) for the report in Clark's voice using **only** those numbers; store as new fields in `predictions.json` (e.g. `clark_report: {headline, dek, sections[]}`). Validate every number in the output against the input before accepting (extend `validate_report.py`); on failure or quota, fall back to templates written in Clark's voice. ~272 calls per season, which is well within the free tier.
 

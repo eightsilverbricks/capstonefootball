@@ -40,7 +40,29 @@ def _prose_fields(game: dict) -> list[tuple[str, str]]:
     for i, card in enumerate(game.get("factor_cards") or []):
         fields.append((f"factor_cards[{i}].headline", card.get("headline") or ""))
         fields.append((f"factor_cards[{i}].explanation", card.get("explanation") or ""))
+    fields.extend(_clark_report_prose(game.get("clark_report")))
     return fields
+
+
+def _clark_report_prose(report: dict | None) -> list[tuple[str, str]]:
+    """Every reader-facing sentence of the in-depth report (not the numbers drawer)."""
+    if not report:
+        return []
+    out = [("clark_report.headline", report.get("headline") or ""),
+           ("clark_report.dek", report.get("dek") or ""),
+           ("clark_report.signoff", report.get("signoff") or "")]
+    out += [(f"clark_report.intro[{i}]", t) for i, t in enumerate(report.get("intro") or [])]
+    for part in ("deciding", "other_side"):
+        out += [(f"clark_report.{part}.body[{i}]", t)
+                for i, t in enumerate((report.get(part) or {}).get("body") or [])]
+    for i, item in enumerate((report.get("underdog") or {}).get("items") or []):
+        out += [(f"clark_report.underdog[{i}].lead", item.get("lead") or ""),
+                (f"clark_report.underdog[{i}].text", item.get("text") or "")]
+    out += [(f"clark_report.change_my_mind[{i}]", t) for i, t in enumerate(report.get("change_my_mind") or [])]
+    out.append(("clark_report.meaning", (report.get("meaning") or {}).get("body") or ""))
+    if report.get("line"):
+        out.append(("clark_report.line", report["line"].get("body") or ""))
+    return out
 
 
 def validate_game(game: dict) -> list[str]:
@@ -86,7 +108,7 @@ def validate_game(game: dict) -> list[str]:
 
     # 5. Template hygiene, filler and jargon in reader-facing prose.
     for name, text in _prose_fields(game):
-        if not text and name.endswith(("headline", "explanation")):
+        if not text and name.endswith(("headline", "explanation", "dek", "lead", "text")):
             errors.append(f"{gid}: {name} is empty")
         if TEMPLATE_LEAKS.search(text):
             errors.append(f"{gid}: {name} leaks a template value: {text[:80]!r}")

@@ -43,6 +43,8 @@ from src.api import (  # noqa: E402
     MODEL_META,
 )
 from src.validate_report import validate_game  # noqa: E402
+from src.clark_report import build_clark_report  # noqa: E402
+from src.clark_llm import polish_reports  # noqa: E402
 
 PUBLIC_DIR = REPO_ROOT / "primary-ui" / "public"
 
@@ -95,12 +97,56 @@ def validate_predictions(season: int, predictions: list[dict]) -> None:
 
 
 
+# Written into the shipped file by patch_live_week.py / espn_extras.py, not by
+# the model pipeline. A re-export must not wipe them.
+LIVE_FIELDS = ("actual_winner", "home_score", "away_score",
+               "key_players", "injury_notes", "espn_event_id")
+
+
+def carry_live_fields(out_path: Path, predictions: list[dict]) -> int:
+    """Copy live fields from the file being replaced wherever the fresh export has none."""
+    if not out_path.exists():
+        return 0
+    with open(out_path, encoding="utf-8") as fh:
+        previous = {str(g.get("game_id")): g for g in json.load(fh)}
+    carried = 0
+    for game in predictions:
+        old = previous.get(str(game.get("game_id")))
+        if not old:
+            continue
+        for field in LIVE_FIELDS:
+            if game.get(field) is None and old.get(field) is not None:
+                game[field] = old[field]
+                carried += 1
+    return carried
+
+
+def attach_clark_reports(season: int, predictions: list[dict]) -> None:
+    """Add the in-depth Clark Report to every game; AI-polish only next week's (§15)."""
+    for game in predictions:
+        game["clark_report"] = build_clark_report(game)
+
+    eligible: set[str] = set()
+    if season == ACTIVE_SEASON:
+        upcoming = [g["week"] for g in predictions if not g.get("actual_winner") and g["clark_report"]]
+        if upcoming:
+            week = min(upcoming)
+            eligible = {str(g["game_id"]) for g in predictions if g["week"] == week}
+    stats = polish_reports(predictions, eligible)
+    built = sum(1 for g in predictions if g["clark_report"])
+    print(f"   Clark Reports: {built} built · AI {stats}")
+
+
 def main() -> None:
     PUBLIC_DIR.mkdir(parents=True, exist_ok=True)
 
     for season, out_path in EXPORTS.items():
         print(f"Running enrichment pipeline for {season}...")
         predictions = get_predictions(season=season)
+        carried = carry_live_fields(out_path, predictions)
+        if carried:
+            print(f"   Kept {carried} live field value(s) from the existing {out_path.name}")
+        attach_clark_reports(season, predictions)
         validate_predictions(season, predictions)
 
         with open(out_path, "w", encoding="utf-8") as fh:

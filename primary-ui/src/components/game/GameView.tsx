@@ -18,6 +18,7 @@ import WeatherPanel from '@/components/game-report/WeatherPanel';
 import StadiumPanel from '@/components/game-report/StadiumPanel';
 import GameHeader from './GameHeader';
 import WinProbChart from './WinProbChart';
+import ClarkReportArticle from './ClarkReportArticle';
 
 type Tab = 'preview' | 'live' | 'chat' | 'recap';
 const pct = (p: number) => Math.round(p * 100);
@@ -177,7 +178,14 @@ export default function GameView({ game }: { game: ApiPrediction }) {
       </nav>
       <div className="gv-wrap gv-layout">
         <div className="gv-main" key={tab}>
-          {tab === 'preview' && (<><PickPanel game={game} /><ClarkReport game={game} /></>)}
+          {tab === 'preview' && (
+            <>
+              <PickPanel game={game} />
+              {game.clark_report
+                ? <ClarkReportArticle game={game} report={game.clark_report} record={clarkRecord} />
+                : <ClarkReport game={game} />}
+            </>
+          )}
           {tab === 'live' && (
             <section className="gv-panel">
               <div className="gv-ph"><h2>Win probability</h2><span className="gr-muted">Dashed line = Clark before kickoff</span></div>

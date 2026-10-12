@@ -3,6 +3,7 @@
 @import './styles/tokens.css';
 @import './styles/landing.css';
 @import './styles/shell.css';
+@import './styles/report.css';
 
 @tailwind base;
 @tailwind components;

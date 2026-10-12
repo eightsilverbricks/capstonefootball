@@ -1,3 +1,4 @@
+import type { ClarkReportData } from './clarkReport';
 // ─── Factor card from the football diagnosis engine ───────────────────────────
 export interface FactorCard {
   name: string;
@@ -111,6 +112,7 @@ export interface ApiPrediction {
   market_context?: MarketContext;
   learning_module?: LearningModule;
   key_battle?: string;
+  clark_report?: ClarkReportData | null;
 
   // Player context
   key_players?: KeyPlayer[];
