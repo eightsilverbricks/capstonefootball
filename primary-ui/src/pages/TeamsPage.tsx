@@ -1,38 +1,40 @@
-import React from 'react';
-import PageShell from '@/components/layout/PageShell';
-import Card from '@/components/layout/Card';
-import TeamLogo from '@/components/TeamLogo';
+import { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+import { usePredictions } from '@/hooks/usePredictions';
 import { groupByDivision } from '@/data/teams';
+import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
+import { teamRecord } from '@/lib/teamPage';
 
-/** All 32 teams by division. Team pages (/team/:abbr) arrive in phase 5. */
-const TeamsPage: React.FC = () => (
-  <PageShell title="Teams">
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      {groupByDivision().map((group) => (
-        <Card key={group.label} title={group.label} flush>
-          <ul>
-            {group.teams.map((team) => (
-              <li
-                key={team.abbr}
-                className="flex items-center gap-3 px-4 py-2.5"
-                style={{ borderTop: '1px solid var(--divider)' }}
-              >
-                <TeamLogo abbr={team.abbr} size="sm" />
-                <span className="min-w-0">
-                  <span className="block text-[15px] font-semibold leading-tight" style={{ color: 'var(--text-primary)' }}>
-                    {team.name}
-                  </span>
-                  <span className="block text-[13px]" style={{ color: 'var(--text-tertiary)' }}>
-                    {team.city}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-        </Card>
-      ))}
+/** All 32 teams by division, each linking to its team page. */
+export default function TeamsPage() {
+  const { predictions } = usePredictions();
+  const groups = useMemo(() => groupByDivision(), []);
+  return (
+    <div className="min-h-screen">
+      <Header />
+      <main className="tm-wrap tm-index">
+        <h1 className="gp-title">Teams</h1>
+        <div className="tm-grid">
+          {groups.map((group) => (
+            <section key={group.label}>
+              <h2 className="hm-h2">{group.label}</h2>
+              {group.teams.map((t) => {
+                const rec = teamRecord(t.abbr, predictions);
+                return (
+                  <Link key={t.abbr} to={`/team/${t.abbr}`} className="tm-tile" style={{ ['--tc' as string]: getTeamColors(t.abbr).primary }}>
+                    <img src={getEspnLogoUrl(t.abbr)} alt="" width={30} height={30} loading="lazy" />
+                    <span><b>{t.name}</b><small>{t.city}</small></span>
+                    {rec.w + rec.l > 0 && <span className="tm-rec">{rec.w}–{rec.l}</span>}
+                  </Link>
+                );
+              })}
+            </section>
+          ))}
+        </div>
+      </main>
+      <Footer />
     </div>
-  </PageShell>
-);
-
-export default TeamsPage;
+  );
+}
