@@ -169,15 +169,20 @@ def fetch_week(season: int, week: int) -> dict[tuple[str, str], dict]:
     return out
 
 
-def write_injury_cache(season: int, week: int, extras: dict[tuple[str, str], dict]) -> None:
-    """Save the full injury list so the export can move Clark's % for this week (injury_adjust.py)."""
+def injury_teams(extras: dict[tuple[str, str], dict]) -> dict[str, list[dict]]:
     teams: dict[str, list[dict]] = {}
     for found in extras.values():
         for player in found.get("_injury_report") or []:
             teams.setdefault(player["team"], []).append(player)
+    return teams
+
+
+def write_injury_cache(season: int, weeks: dict[int, dict[str, list[dict]]]) -> None:
+    """Save the full injury lists so the export can move Clark's % for these weeks (injury_adjust.py)."""
     INJURY_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
     with open(INJURY_CACHE_PATH, "w", encoding="utf-8") as fh:
-        json.dump({"season": season, "week": week, "teams": teams}, fh, indent=1, ensure_ascii=False)
+        json.dump({"season": season, "weeks": {str(w): t for w, t in weeks.items()}},
+                  fh, indent=1, ensure_ascii=False)
 
 
 def merge_into_predictions(predictions: list[dict], season: int, week: int,
@@ -202,13 +207,14 @@ def main() -> None:
     with open(PREDICTIONS_PATH, encoding="utf-8") as fh:
         predictions = json.load(fh)
 
+    injuries: dict[int, dict[str, list[dict]]] = {}
     for week in args.weeks:
         extras = fetch_week(args.season, week)
         merged = merge_into_predictions(predictions, args.season, week, extras)
-        if week == min(args.weeks):
-            write_injury_cache(args.season, week, extras)
+        injuries[week] = injury_teams(extras)
         print(f"   Week {week}: {merged}/{len(extras)} games updated from ESPN")
 
+    write_injury_cache(args.season, injuries)
     with open(PREDICTIONS_PATH, "w", encoding="utf-8") as fh:
         json.dump(predictions, fh, indent=2, ensure_ascii=False)
     print(f"   Wrote {PREDICTIONS_PATH}")

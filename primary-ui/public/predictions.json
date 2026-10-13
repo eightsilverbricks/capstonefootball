@@ -42072,7 +42072,7 @@
         "team": "ATL",
         "position": "QB",
         "role": "Leads ATL in passing",
-        "stat_line": "256 yards, 1 TD, 1 INT this season",
+        "stat_line": "240 yards, 1 TD this season",
         "espn_id": "4360423"
       },
       {
@@ -42080,7 +42080,7 @@
         "team": "ATL",
         "position": "RB",
         "role": "Leads ATL in rushing",
-        "stat_line": "66 carries, 349 yards, 2 TD this season",
+        "stat_line": "17 carries, 86 yards this season",
         "espn_id": "4430807"
       },
       {
@@ -42088,92 +42088,99 @@
         "team": "ATL",
         "position": "WR",
         "role": "Leads ATL in receiving",
-        "stat_line": "15 catches, 274 yards this season",
+        "stat_line": "7 catches, 118 yards this season",
         "espn_id": "4426502"
       },
       {
-        "name": "Za'Darius Smith",
+        "name": "Samson Ebukam",
         "team": "ATL",
         "position": "DE",
         "role": "Leads ATL in sacks",
-        "stat_line": "2.5 sacks this season",
-        "espn_id": "3043168"
+        "stat_line": "1 sack this season",
+        "espn_id": "3045527"
       },
       {
-        "name": "Lamar Jackson",
+        "name": "Tyler Huntley",
         "team": "BAL",
         "position": "QB",
         "role": "Leads BAL in passing",
-        "stat_line": "745 yards, 4 TD, 1 INT this season",
-        "espn_id": "3916387"
+        "stat_line": "201 yards, 2 TD this season",
+        "espn_id": "4035671"
       },
       {
         "name": "Derrick Henry",
         "team": "BAL",
         "position": "RB",
         "role": "Leads BAL in rushing",
-        "stat_line": "66 carries, 301 yards, 6 TD this season",
+        "stat_line": "24 carries, 102 yards this season",
         "espn_id": "3043078"
       },
       {
-        "name": "Zay Flowers",
+        "name": "Rashod Bateman",
         "team": "BAL",
         "position": "WR",
         "role": "Leads BAL in receiving",
-        "stat_line": "10 catches, 234 yards, 1 TD this season",
-        "espn_id": "4429615"
+        "stat_line": "5 catches, 62 yards this season",
+        "espn_id": "4360939"
       },
       {
-        "name": "Tavius Robinson",
+        "name": "Trenton Simpson",
         "team": "BAL",
         "position": "LB",
         "role": "Leads BAL in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "4690179"
+        "stat_line": "1 sack this season",
+        "espn_id": "4430831"
       }
     ],
     "injury_notes": [
       {
-        "name": "Samson Ebukam",
+        "name": "Za'Darius Smith",
         "team": "ATL",
         "position": "DE",
-        "status": "Questionable",
-        "injury": "Hamstring"
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Divine Deablo",
+        "name": "Michael Penix Jr.",
         "team": "ATL",
-        "position": "LB",
+        "position": "QB",
         "status": "Questionable",
-        "injury": "Hamstring"
+        "injury": "Ribs"
       },
       {
-        "name": "Jovaughn Gwyn",
-        "team": "BAL",
-        "position": "G",
-        "status": "Out",
-        "injury": "Lower Leg"
-      },
-      {
-        "name": "Ethan Pocic",
-        "team": "BAL",
-        "position": "C",
-        "status": "Out",
-        "injury": "Knee"
-      },
-      {
-        "name": "Chris Moore",
-        "team": "BAL",
-        "position": "WR",
+        "name": "C.J. Henderson",
+        "team": "ATL",
+        "position": "CB",
         "status": "Questionable",
+        "injury": "Groin"
+      },
+      {
+        "name": "Lamar Jackson",
+        "team": "BAL",
+        "position": "QB",
+        "status": "Out",
         "injury": "Ankle"
       },
       {
-        "name": "Ronnie Stanley",
+        "name": "Cam Jurgens",
         "team": "BAL",
-        "position": "OT",
+        "position": "C",
+        "status": "Out",
+        "injury": "Concussion"
+      },
+      {
+        "name": "Trey Hendrickson",
+        "team": "BAL",
+        "position": "LB",
+        "status": "Out",
+        "injury": "Finger"
+      },
+      {
+        "name": "Broderick Washington Jr.",
+        "team": "BAL",
+        "position": "DT",
         "status": "Questionable",
-        "injury": "Toe"
+        "injury": "Ankle"
       }
     ],
     "espn_event_id": "401872993",
@@ -42806,7 +42813,7 @@
         "team": "LA",
         "position": "QB",
         "role": "Leads LA in passing",
-        "stat_line": "872 yards, 6 TD, 4 INT this season",
+        "stat_line": "52 yards this season",
         "espn_id": "12483"
       },
       {
@@ -42814,31 +42821,31 @@
         "team": "LA",
         "position": "RB",
         "role": "Leads LA in rushing",
-        "stat_line": "38 carries, 214 yards, 1 TD this season",
+        "stat_line": "4 carries, 14 yards this season",
         "espn_id": "4430737"
       },
       {
-        "name": "Davante Adams",
+        "name": "Puka Nacua",
         "team": "LA",
         "position": "WR",
         "role": "Leads LA in receiving",
-        "stat_line": "18 catches, 358 yards, 2 TD this season",
-        "espn_id": "16800"
+        "stat_line": "4 catches, 24 yards this season",
+        "espn_id": "4426515"
       },
       {
-        "name": "Omar Speights",
+        "name": "Josaiah Stewart",
         "team": "LA",
         "position": "LB",
         "role": "Leads LA in sacks",
         "stat_line": "1 sack this season",
-        "espn_id": "4428550"
+        "espn_id": "4682983"
       },
       {
         "name": "Josh Allen",
         "team": "BUF",
         "position": "QB",
         "role": "Leads BUF in passing",
-        "stat_line": "786 yards, 5 TD, 2 INT this season",
+        "stat_line": "7 yards this season",
         "espn_id": "3918298"
       },
       {
@@ -42846,82 +42853,74 @@
         "team": "BUF",
         "position": "RB",
         "role": "Leads BUF in rushing",
-        "stat_line": "58 carries, 346 yards, 2 TD this season",
+        "stat_line": "6 carries, 32 yards this season",
         "espn_id": "4379399"
       },
       {
-        "name": "Dalton Kincaid",
+        "name": "James Cook III",
         "team": "BUF",
-        "position": "TE",
+        "position": "RB",
         "role": "Leads BUF in receiving",
-        "stat_line": "14 catches, 263 yards, 1 TD this season",
-        "espn_id": "4385690"
-      },
-      {
-        "name": "Greg Rousseau",
-        "team": "BUF",
-        "position": "LB",
-        "role": "Leads BUF in sacks",
-        "stat_line": "6 sacks this season",
-        "espn_id": "4362506"
+        "stat_line": "1 catches, 7 yards this season",
+        "espn_id": "4379399"
       }
     ],
     "injury_notes": [
       {
-        "name": "Terrance Ferguson",
+        "name": "Ty Simpson",
+        "team": "LA",
+        "position": "QB",
+        "status": "Out",
+        "injury": "Coach's Decision"
+      },
+      {
+        "name": "CJ Daniels",
+        "team": "LA",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Coach's Decision"
+      },
+      {
+        "name": "Max Klare",
         "team": "LA",
         "position": "TE",
-        "status": "Doubtful",
-        "injury": "Ankle"
+        "status": "Out",
+        "injury": "Coach's Decision"
       },
       {
-        "name": "Puka Nacua",
+        "name": "Bill Murray",
         "team": "LA",
-        "position": "WR",
-        "status": "Questionable",
-        "injury": "Hip"
+        "position": "G",
+        "status": "Out",
+        "injury": "Coach's Decision"
       },
       {
-        "name": "Colby Parkinson",
-        "team": "LA",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Shoulder - AC Joint"
-      },
-      {
-        "name": "Aaron Donald",
-        "team": "LA",
-        "position": "DT",
-        "status": "Questionable",
-        "injury": "Back"
-      },
-      {
-        "name": "Keon Coleman",
+        "name": "Joshua Palmer",
         "team": "BUF",
         "position": "WR",
-        "status": "Questionable",
-        "injury": "Ankle"
-      },
-      {
-        "name": "DJ Moore",
-        "team": "BUF",
-        "position": "WR",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Shoulder"
       },
       {
-        "name": "T.J. Sanders",
+        "name": "Ar'maj Reed-Adams",
         "team": "BUF",
-        "position": "DT",
-        "status": "Questionable",
-        "injury": ""
+        "position": "G",
+        "status": "Out",
+        "injury": "Coach's Decision"
       },
       {
-        "name": "Christian Benford",
+        "name": "Landon Jackson",
         "team": "BUF",
-        "position": "CB",
-        "status": "Questionable",
-        "injury": "Toe"
+        "position": "DE",
+        "status": "Out",
+        "injury": "Knee"
+      },
+      {
+        "name": "Ed Oliver",
+        "team": "BUF",
+        "position": "DT",
+        "status": "Out",
+        "injury": "Knee"
       }
     ],
     "espn_event_id": "401872994",
@@ -43551,7 +43550,7 @@
         "team": "GB",
         "position": "QB",
         "role": "Leads GB in passing",
-        "stat_line": "844 yards, 6 TD, 2 INT this season",
+        "stat_line": "367 yards, 2 TD this season",
         "espn_id": "4036378"
       },
       {
@@ -43559,7 +43558,7 @@
         "team": "GB",
         "position": "RB",
         "role": "Leads GB in rushing",
-        "stat_line": "23 carries, 68 yards this season",
+        "stat_line": "10 carries, 31 yards, 2 TD this season",
         "espn_id": "4429023"
       },
       {
@@ -43567,106 +43566,106 @@
         "team": "GB",
         "position": "WR",
         "role": "Leads GB in receiving",
-        "stat_line": "17 catches, 284 yards, 4 TD this season",
+        "stat_line": "6 catches, 143 yards, 2 TD this season",
         "espn_id": "4248528"
       },
       {
-        "name": "Lukas Van Ness",
+        "name": "Devonte Wyatt",
         "team": "GB",
-        "position": "DE",
+        "position": "DT",
         "role": "Leads GB in sacks",
-        "stat_line": "2.5 sacks this season",
-        "espn_id": "4686906"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4361791"
       },
       {
-        "name": "Caleb Williams",
+        "name": "Case Keenum",
         "team": "CHI",
         "position": "QB",
         "role": "Leads CHI in passing",
-        "stat_line": "407 yards, 2 TD, 1 INT this season",
-        "espn_id": "4431611"
+        "stat_line": "108 yards, 1 INT this season",
+        "espn_id": "15168"
       },
       {
         "name": "D'Andre Swift",
         "team": "CHI",
         "position": "RB",
         "role": "Leads CHI in rushing",
-        "stat_line": "54 carries, 253 yards, 3 TD this season",
+        "stat_line": "9 carries, 43 yards, 1 TD this season",
         "espn_id": "4259545"
       },
       {
-        "name": "Kalif Raymond",
+        "name": "Luther Burden III",
         "team": "CHI",
         "position": "WR",
         "role": "Leads CHI in receiving",
-        "stat_line": "19 catches, 214 yards, 1 TD this season",
-        "espn_id": "2973405"
+        "stat_line": "4 catches, 47 yards this season",
+        "espn_id": "4685278"
       },
       {
-        "name": "Montez Sweat",
+        "name": "Austin Booker",
         "team": "CHI",
         "position": "DE",
         "role": "Leads CHI in sacks",
         "stat_line": "2 sacks this season",
-        "espn_id": "3134690"
+        "espn_id": "4683553"
       }
     ],
     "injury_notes": [
       {
-        "name": "Jager Burton",
+        "name": "Aaron Banks",
+        "team": "GB",
+        "position": "G",
+        "status": "Out",
+        "injury": "Toe"
+      },
+      {
+        "name": "Jacob Monk",
         "team": "GB",
         "position": "C",
-        "status": "Questionable",
-        "injury": "Groin"
+        "status": "Out",
+        "injury": "Quadriceps"
       },
       {
-        "name": "Lukas Van Ness",
+        "name": "Micah Parsons",
         "team": "GB",
         "position": "DE",
-        "status": "Questionable",
-        "injury": "Shoulder"
+        "status": "Out",
+        "injury": "Knee - ACL"
       },
       {
-        "name": "Karl Brooks",
+        "name": "Anthony Campbell",
         "team": "GB",
         "position": "DT",
-        "status": "Questionable",
-        "injury": "Illness"
-      },
-      {
-        "name": "Edgerrin Cooper",
-        "team": "GB",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Concussion"
-      },
-      {
-        "name": "Kyler Gordon",
-        "team": "CHI",
-        "position": "CB",
         "status": "Out",
-        "injury": "Calf"
+        "injury": "Ankle"
       },
       {
         "name": "Caleb Williams",
         "team": "CHI",
         "position": "QB",
-        "status": "Doubtful",
+        "status": "Out",
         "injury": "Hamstring"
       },
       {
-        "name": "Braxton Jones",
-        "team": "CHI",
-        "position": "OT",
-        "status": "Doubtful",
-        "injury": "Knee"
-      },
-      {
-        "name": "D'Andre Swift",
+        "name": "Kyle Monangai",
         "team": "CHI",
         "position": "RB",
+        "status": "Out",
+        "injury": "Toe"
+      },
+      {
+        "name": "Keyshaun Elliott",
+        "team": "CHI",
+        "position": "LB",
+        "status": "Out",
+        "injury": "Quadriceps"
+      },
+      {
+        "name": "Dayo Odeyingbo",
+        "team": "CHI",
+        "position": "DE",
         "status": "Questionable",
-        "injury": "Knee"
+        "injury": "Quadriceps"
       }
     ],
     "espn_event_id": "401872990",
@@ -44300,23 +44299,23 @@
         "team": "MIA",
         "position": "QB",
         "role": "Leads MIA in passing",
-        "stat_line": "627 yards, 1 TD, 2 INT this season",
+        "stat_line": "137 yards, 1 TD, 2 INT this season",
         "espn_id": "4242512"
       },
       {
-        "name": "De'Von Achane",
+        "name": "Ollie Gordon II",
         "team": "MIA",
         "position": "RB",
         "role": "Leads MIA in rushing",
-        "stat_line": "34 carries, 127 yards this season",
-        "espn_id": "4429160"
+        "stat_line": "18 carries, 88 yards, 1 TD this season",
+        "espn_id": "4711533"
       },
       {
         "name": "Malik Washington",
         "team": "MIA",
         "position": "WR",
         "role": "Leads MIA in receiving",
-        "stat_line": "12 catches, 152 yards this season",
+        "stat_line": "6 catches, 43 yards this season",
         "espn_id": "4569603"
       },
       {
@@ -44324,90 +44323,83 @@
         "team": "CIN",
         "position": "QB",
         "role": "Leads CIN in passing",
-        "stat_line": "743 yards, 6 TD, 1 INT this season",
+        "stat_line": "190 yards, 4 TD this season",
         "espn_id": "3915511"
       },
       {
-        "name": "Chase Brown",
+        "name": "Samaje Perine",
         "team": "CIN",
         "position": "RB",
         "role": "Leads CIN in rushing",
-        "stat_line": "49 carries, 197 yards, 1 TD this season",
-        "espn_id": "4362238"
+        "stat_line": "14 carries, 68 yards this season",
+        "espn_id": "3116389"
       },
       {
-        "name": "Tee Higgins",
+        "name": "Ja'Marr Chase",
         "team": "CIN",
         "position": "WR",
         "role": "Leads CIN in receiving",
-        "stat_line": "14 catches, 244 yards, 1 TD this season",
-        "espn_id": "4239993"
+        "stat_line": "6 catches, 77 yards, 1 TD this season",
+        "espn_id": "4362628"
       },
       {
         "name": "Jonathan Allen",
         "team": "CIN",
         "position": "DT",
         "role": "Leads CIN in sacks",
-        "stat_line": "2 sacks this season",
+        "stat_line": "1 sack this season",
         "espn_id": "3054840"
       }
     ],
     "injury_notes": [
       {
-        "name": "Storm Duck",
-        "team": "MIA",
-        "position": "CB",
-        "status": "Out",
-        "injury": "Knee"
-      },
-      {
-        "name": "Chris Bell",
-        "team": "MIA",
-        "position": "WR",
-        "status": "Questionable",
-        "injury": "Knee"
-      },
-      {
         "name": "Caleb Douglas",
         "team": "MIA",
         "position": "WR",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Ankle"
       },
       {
-        "name": "Aaron Brewer",
+        "name": "Justin Joly",
         "team": "MIA",
-        "position": "C",
-        "status": "Questionable",
-        "injury": "Hand"
+        "position": "TE",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Dalton Risner",
-        "team": "CIN",
-        "position": "G",
-        "status": "Questionable",
-        "injury": "Knee"
+        "name": "Robert Beal Jr.",
+        "team": "MIA",
+        "position": "DE",
+        "status": "Out",
+        "injury": "Hamstring"
       },
       {
-        "name": "Swayze Bozeman",
-        "team": "CIN",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Groin"
-      },
-      {
-        "name": "DJ Turner II",
-        "team": "CIN",
+        "name": "Reese Taylor",
+        "team": "MIA",
         "position": "CB",
-        "status": "Questionable",
-        "injury": "Ankle"
+        "status": "Out",
+        "injury": "Quadriceps"
+      },
+      {
+        "name": "Colbie Young",
+        "team": "CIN",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Knee"
       },
       {
         "name": "Kyle Dugger",
         "team": "CIN",
         "position": "S",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Quadriceps"
+      },
+      {
+        "name": "Tanner Hudson",
+        "team": "CIN",
+        "position": "TE",
+        "status": "Questionable",
+        "injury": "Pectoral"
       }
     ],
     "espn_event_id": "401872982",
@@ -45037,39 +45029,39 @@
         "team": "NYJ",
         "position": "QB",
         "role": "Leads NYJ in passing",
-        "stat_line": "783 yards, 4 TD this season",
+        "stat_line": "182 yards, 1 TD this season",
         "espn_id": "15864"
       },
       {
-        "name": "Breece Hall",
+        "name": "Braelon Allen",
         "team": "NYJ",
         "position": "RB",
         "role": "Leads NYJ in rushing",
-        "stat_line": "51 carries, 163 yards, 1 TD this season",
-        "espn_id": "4427366"
+        "stat_line": "24 carries, 116 yards, 1 TD this season",
+        "espn_id": "4685247"
       },
       {
         "name": "Garrett Wilson",
         "team": "NYJ",
         "position": "WR",
         "role": "Leads NYJ in receiving",
-        "stat_line": "21 catches, 243 yards, 2 TD this season",
+        "stat_line": "7 catches, 104 yards, 1 TD this season",
         "espn_id": "4569618"
       },
       {
-        "name": "Kingsley Enagbare",
+        "name": "David Bailey",
         "team": "NYJ",
         "position": "LB",
         "role": "Leads NYJ in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "4362840"
+        "stat_line": "3 sacks this season",
+        "espn_id": "4685248"
       },
       {
         "name": "Deshaun Watson",
         "team": "CLE",
         "position": "QB",
         "role": "Leads CLE in passing",
-        "stat_line": "587 yards, 5 TD, 1 INT this season",
+        "stat_line": "155 yards, 1 TD this season",
         "espn_id": "3122840"
       },
       {
@@ -45077,24 +45069,24 @@
         "team": "CLE",
         "position": "RB",
         "role": "Leads CLE in rushing",
-        "stat_line": "42 carries, 124 yards this season",
+        "stat_line": "14 carries, 44 yards this season",
         "espn_id": "4685702"
       },
       {
-        "name": "Denzel Boston",
+        "name": "Isaiah Bond",
         "team": "CLE",
         "position": "WR",
         "role": "Leads CLE in receiving",
-        "stat_line": "9 catches, 195 yards, 2 TD this season",
-        "espn_id": "4832800"
+        "stat_line": "3 catches, 74 yards this season",
+        "espn_id": "4808839"
       },
       {
-        "name": "Mason Graham",
+        "name": "Maliek Collins",
         "team": "CLE",
         "position": "DT",
         "role": "Leads CLE in sacks",
-        "stat_line": "4 sacks this season",
-        "espn_id": "4873232"
+        "stat_line": "1.5 sacks this season",
+        "espn_id": "3040471"
       }
     ],
     "injury_notes": [
@@ -45102,36 +45094,43 @@
         "name": "Breece Hall",
         "team": "NYJ",
         "position": "RB",
-        "status": "Doubtful",
+        "status": "Out",
         "injury": "Quadriceps"
       },
       {
         "name": "Adonai Mitchell",
         "team": "NYJ",
         "position": "WR",
-        "status": "Doubtful",
+        "status": "Out",
         "injury": "Finger"
       },
       {
-        "name": "Jeremy Ruckert",
+        "name": "Dylan Parham",
         "team": "NYJ",
-        "position": "TE",
-        "status": "Questionable",
+        "position": "G",
+        "status": "Out",
         "injury": "Knee"
       },
       {
-        "name": "Kenyon Sadiq",
+        "name": "Kiko Mauigoa",
         "team": "NYJ",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Back"
+        "position": "LB",
+        "status": "Out",
+        "injury": "Quadriceps"
       },
       {
-        "name": "Taylen Green",
+        "name": "Tylan Wallace",
         "team": "CLE",
-        "position": "QB",
+        "position": "WR",
         "status": "Out",
-        "injury": "Coach's Decision"
+        "injury": "Knee"
+      },
+      {
+        "name": "Carsen Ryan",
+        "team": "CLE",
+        "position": "TE",
+        "status": "Out",
+        "injury": "Calf"
       },
       {
         "name": "Teven Jenkins",
@@ -45141,18 +45140,11 @@
         "injury": "Back"
       },
       {
-        "name": "Elgton Jenkins",
+        "name": "Mason Graham",
         "team": "CLE",
-        "position": "C",
+        "position": "DT",
         "status": "Out",
-        "injury": "Concussion"
-      },
-      {
-        "name": "Justin Jefferson",
-        "team": "CLE",
-        "position": "LB",
-        "status": "Out",
-        "injury": "Coach's Decision"
+        "injury": "Knee - MCL"
       }
     ],
     "espn_event_id": "401872983",
@@ -45782,39 +45774,39 @@
         "team": "LAC",
         "position": "QB",
         "role": "Leads LAC in passing",
-        "stat_line": "627 yards, 3 TD, 4 INT this season",
+        "stat_line": "121 yards, 1 TD, 1 INT this season",
         "espn_id": "4038941"
       },
       {
-        "name": "Omarion Hampton",
+        "name": "Kimani Vidal",
         "team": "LAC",
         "position": "RB",
         "role": "Leads LAC in rushing",
-        "stat_line": "50 carries, 193 yards, 2 TD this season",
-        "espn_id": "4685382"
+        "stat_line": "8 carries, 57 yards, 1 TD this season",
+        "espn_id": "4430968"
       },
       {
-        "name": "Ladd McConkey",
+        "name": "Charlie Kolar",
         "team": "LAC",
-        "position": "WR",
+        "position": "TE",
         "role": "Leads LAC in receiving",
-        "stat_line": "12 catches, 183 yards, 1 TD this season",
-        "espn_id": "4612826"
+        "stat_line": "3 catches, 37 yards this season",
+        "espn_id": "4241263"
       },
       {
-        "name": "Khalil Mack",
+        "name": "Akheem Mesidor",
         "team": "LAC",
         "position": "LB",
         "role": "Leads LAC in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "16710"
+        "stat_line": "1 sack this season",
+        "espn_id": "4429190"
       },
       {
         "name": "Bo Nix",
         "team": "DEN",
         "position": "QB",
         "role": "Leads DEN in passing",
-        "stat_line": "605 yards, 4 TD, 3 INT this season",
+        "stat_line": "123 yards, 1 TD this season",
         "espn_id": "4426338"
       },
       {
@@ -45822,75 +45814,82 @@
         "team": "DEN",
         "position": "RB",
         "role": "Leads DEN in rushing",
-        "stat_line": "35 carries, 121 yards this season",
+        "stat_line": "18 carries, 68 yards, 1 TD this season",
         "espn_id": "4241985"
       },
       {
-        "name": "Jaylen Waddle",
+        "name": "Evan Engram",
         "team": "DEN",
-        "position": "WR",
+        "position": "TE",
         "role": "Leads DEN in receiving",
-        "stat_line": "11 catches, 150 yards this season",
-        "espn_id": "4372016"
+        "stat_line": "4 catches, 55 yards this season",
+        "espn_id": "3051876"
       },
       {
-        "name": "Zach Allen",
+        "name": "Nik Bonitto",
         "team": "DEN",
-        "position": "DE",
+        "position": "LB",
         "role": "Leads DEN in sacks",
-        "stat_line": "3 sacks this season",
-        "espn_id": "3915282"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4360259"
       }
     ],
     "injury_notes": [
       {
-        "name": "Charlie Kolar",
-        "team": "LAC",
-        "position": "TE",
-        "status": "Doubtful",
-        "injury": "Forearm"
-      },
-      {
-        "name": "Trey Lance",
-        "team": "LAC",
-        "position": "QB",
-        "status": "Questionable",
-        "injury": "Groin"
-      },
-      {
-        "name": "Ladd McConkey",
+        "name": "Brenen Thompson",
         "team": "LAC",
         "position": "WR",
-        "status": "Questionable",
-        "injury": "Foot"
+        "status": "Out",
+        "injury": "Quadriceps"
+      },
+      {
+        "name": "Quentin Johnston",
+        "team": "LAC",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Chest"
       },
       {
         "name": "Donte Jackson",
         "team": "LAC",
         "position": "CB",
-        "status": "Questionable",
-        "injury": "Concussion"
-      },
-      {
-        "name": "Nick Gargiulo",
-        "team": "DEN",
-        "position": "G",
         "status": "Out",
-        "injury": "Knee - ACL"
-      },
-      {
-        "name": "Jonathon Cooper",
-        "team": "DEN",
-        "position": "LB",
-        "status": "Out",
-        "injury": "Personal"
-      },
-      {
-        "name": "Dondrea Tillman",
-        "team": "DEN",
-        "position": "LB",
-        "status": "Questionable",
         "injury": "Hamstring"
+      },
+      {
+        "name": "Derwin James Jr.",
+        "team": "LAC",
+        "position": "S",
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Riley Moss",
+        "team": "DEN",
+        "position": "CB",
+        "status": "Out",
+        "injury": "Ribs"
+      },
+      {
+        "name": "Pat Surtain II",
+        "team": "DEN",
+        "position": "CB",
+        "status": "Out",
+        "injury": "Ankle"
+      },
+      {
+        "name": "Sai'vion Jones",
+        "team": "DEN",
+        "position": "DE",
+        "status": "Questionable",
+        "injury": "Shoulder"
+      },
+      {
+        "name": "Talanoa Hufanga",
+        "team": "DEN",
+        "position": "S",
+        "status": "Questionable",
+        "injury": "Ankle"
       }
     ],
     "espn_event_id": "401872989",
@@ -46519,7 +46518,7 @@
         "team": "ARI",
         "position": "QB",
         "role": "Leads ARI in passing",
-        "stat_line": "652 yards, 4 TD, 1 INT this season",
+        "stat_line": "292 yards, 3 TD, 1 INT this season",
         "espn_id": "2578570"
       },
       {
@@ -46527,23 +46526,23 @@
         "team": "ARI",
         "position": "RB",
         "role": "Leads ARI in rushing",
-        "stat_line": "41 carries, 160 yards, 1 TD this season",
+        "stat_line": "12 carries, 22 yards this season",
         "espn_id": "4870808"
       },
       {
-        "name": "Trey McBride",
+        "name": "Kendrick Bourne",
         "team": "ARI",
-        "position": "TE",
+        "position": "WR",
         "role": "Leads ARI in receiving",
-        "stat_line": "26 catches, 211 yards, 2 TD this season",
-        "espn_id": "4361307"
+        "stat_line": "5 catches, 70 yards this season",
+        "espn_id": "3045523"
       },
       {
         "name": "Budda Baker",
         "team": "ARI",
         "position": "S",
         "role": "Leads ARI in sacks",
-        "stat_line": "1.5 sacks this season",
+        "stat_line": "1 sack this season",
         "espn_id": "3127287"
       },
       {
@@ -46551,7 +46550,7 @@
         "team": "DET",
         "position": "QB",
         "role": "Leads DET in passing",
-        "stat_line": "802 yards, 8 TD this season",
+        "stat_line": "271 yards, 3 TD this season",
         "espn_id": "3046779"
       },
       {
@@ -46559,68 +46558,68 @@
         "team": "DET",
         "position": "RB",
         "role": "Leads DET in rushing",
-        "stat_line": "65 carries, 307 yards, 4 TD this season",
+        "stat_line": "25 carries, 151 yards, 2 TD this season",
         "espn_id": "4429795"
       },
       {
-        "name": "Amon-Ra St. Brown",
+        "name": "Sam LaPorta",
         "team": "DET",
-        "position": "WR",
+        "position": "TE",
         "role": "Leads DET in receiving",
-        "stat_line": "23 catches, 228 yards, 5 TD this season",
-        "espn_id": "4374302"
+        "stat_line": "5 catches, 88 yards, 1 TD this season",
+        "espn_id": "4430027"
       },
       {
-        "name": "Aidan Hutchinson",
+        "name": "DJ Wonnum",
         "team": "DET",
-        "position": "DE",
+        "position": "LB",
         "role": "Leads DET in sacks",
-        "stat_line": "3.5 sacks this season",
-        "espn_id": "4372099"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4038849"
       }
     ],
     "injury_notes": [
       {
-        "name": "Hjalte Froholdt",
+        "name": "Andrew Wingard",
         "team": "ARI",
-        "position": "C",
-        "status": "Questionable",
+        "position": "S",
+        "status": "Out",
         "injury": "Knee"
       },
       {
-        "name": "Roy Lopez",
-        "team": "ARI",
-        "position": "DT",
-        "status": "Questionable",
-        "injury": "Groin"
-      },
-      {
-        "name": "Walter Nolen III",
-        "team": "ARI",
-        "position": "DT",
-        "status": "Questionable",
-        "injury": "Shoulder"
-      },
-      {
-        "name": "Dadrion Taylor-Demerson",
+        "name": "Wydett Williams Jr.",
         "team": "ARI",
         "position": "S",
         "status": "Questionable",
-        "injury": "Back"
+        "injury": "Concussion"
+      },
+      {
+        "name": "Tom Kennedy",
+        "team": "DET",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Knee - MCL"
       },
       {
         "name": "Ben Bartch",
         "team": "DET",
         "position": "G",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Foot"
       },
       {
-        "name": "D.J. Reed",
+        "name": "Rock Ya-Sin",
         "team": "DET",
         "position": "CB",
-        "status": "Questionable",
-        "injury": "Ribs"
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Devin White",
+        "team": "DET",
+        "position": "LB",
+        "status": "Doubtful",
+        "injury": "Forearm"
       }
     ],
     "espn_event_id": "401872991",
@@ -47249,7 +47248,7 @@
         "team": "TEN",
         "position": "QB",
         "role": "Leads TEN in passing",
-        "stat_line": "504 yards, 2 TD, 1 INT this season",
+        "stat_line": "170 yards, 1 INT this season",
         "espn_id": "4688380"
       },
       {
@@ -47257,100 +47256,100 @@
         "team": "TEN",
         "position": "RB",
         "role": "Leads TEN in rushing",
-        "stat_line": "38 carries, 173 yards this season",
+        "stat_line": "14 carries, 52 yards this season",
         "espn_id": "3916148"
       },
       {
-        "name": "Carnell Tate",
+        "name": "Wan'Dale Robinson",
         "team": "TEN",
         "position": "WR",
         "role": "Leads TEN in receiving",
-        "stat_line": "13 catches, 123 yards this season",
-        "espn_id": "4871023"
+        "stat_line": "6 catches, 53 yards this season",
+        "espn_id": "4569587"
       },
       {
-        "name": "Jeffery Simmons",
+        "name": "Jacob Martin",
         "team": "TEN",
-        "position": "DT",
+        "position": "DE",
         "role": "Leads TEN in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "4035369"
+        "stat_line": "1 sack this season",
+        "espn_id": "3138764"
       },
       {
         "name": "C.J. Stroud",
         "team": "HOU",
         "position": "QB",
         "role": "Leads HOU in passing",
-        "stat_line": "794 yards, 3 TD this season",
+        "stat_line": "261 yards, 1 TD this season",
         "espn_id": "4432577"
       },
       {
-        "name": "David Montgomery",
+        "name": "Woody Marks",
         "team": "HOU",
         "position": "RB",
         "role": "Leads HOU in rushing",
-        "stat_line": "37 carries, 103 yards, 2 TD this season",
-        "espn_id": "4035538"
+        "stat_line": "15 carries, 62 yards this season",
+        "espn_id": "4429059"
       },
       {
-        "name": "Dalton Schultz",
+        "name": "Xavier Hutchinson",
         "team": "HOU",
-        "position": "TE",
+        "position": "WR",
         "role": "Leads HOU in receiving",
-        "stat_line": "19 catches, 205 yards this season",
-        "espn_id": "3117256"
+        "stat_line": "4 catches, 65 yards this season",
+        "espn_id": "4686422"
       },
       {
         "name": "Will Anderson Jr.",
         "team": "HOU",
         "position": "DE",
         "role": "Leads HOU in sacks",
-        "stat_line": "4 sacks this season",
+        "stat_line": "3 sacks this season",
         "espn_id": "4685724"
       }
     ],
     "injury_notes": [
       {
-        "name": "Tyjae Spears",
+        "name": "David Martin-Robinson",
         "team": "TEN",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Ankle"
+        "position": "TE",
+        "status": "Out",
+        "injury": "Hamstring"
       },
       {
-        "name": "John Franklin-Myers",
+        "name": "Amani Hooker",
         "team": "TEN",
-        "position": "DE",
-        "status": "Questionable",
-        "injury": "Back"
+        "position": "S",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Azeez Al-Shaair",
+        "name": "Cor'Dale Flott",
+        "team": "TEN",
+        "position": "CB",
+        "status": "Questionable",
+        "injury": "Chest"
+      },
+      {
+        "name": "Kevin Winston Jr.",
+        "team": "TEN",
+        "position": "S",
+        "status": "Questionable",
+        "injury": "Quadriceps"
+      },
+      {
+        "name": "David Montgomery",
         "team": "HOU",
-        "position": "LB",
+        "position": "RB",
         "status": "Doubtful",
         "injury": "Groin"
       },
       {
-        "name": "British Brooks",
+        "name": "Jalen Pitre",
         "team": "HOU",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Hamstring"
-      },
-      {
-        "name": "Nico Collins",
-        "team": "HOU",
-        "position": "WR",
-        "status": "Questionable",
-        "injury": "Hamstring"
-      },
-      {
-        "name": "Jake Hansen",
-        "team": "HOU",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Calf"
+        "position": "S",
+        "status": "Doubtful",
+        "injury": "Shoulder"
       }
     ],
     "espn_event_id": "401872984",
@@ -47980,7 +47979,7 @@
         "team": "PIT",
         "position": "QB",
         "role": "Leads PIT in passing",
-        "stat_line": "700 yards, 4 TD, 2 INT this season",
+        "stat_line": "235 yards, 3 TD this season",
         "espn_id": "8439"
       },
       {
@@ -47988,31 +47987,31 @@
         "team": "PIT",
         "position": "RB",
         "role": "Leads PIT in rushing",
-        "stat_line": "38 carries, 216 yards this season",
+        "stat_line": "15 carries, 101 yards, 1 TD this season",
         "espn_id": "4569987"
       },
       {
-        "name": "Roman Wilson",
+        "name": "Jaylen Warren",
         "team": "PIT",
-        "position": "WR",
+        "position": "RB",
         "role": "Leads PIT in receiving",
-        "stat_line": "11 catches, 114 yards, 1 TD this season",
-        "espn_id": "4431492"
+        "stat_line": "6 catches, 87 yards, 1 TD this season",
+        "espn_id": "4569987"
       },
       {
-        "name": "T.J. Watt",
+        "name": "Cameron Heyward",
         "team": "PIT",
-        "position": "LB",
+        "position": "DT",
         "role": "Leads PIT in sacks",
-        "stat_line": "3.5 sacks this season",
-        "espn_id": "3045282"
+        "stat_line": "1 sack this season",
+        "espn_id": "13977"
       },
       {
         "name": "Daniel Jones",
         "team": "IND",
         "position": "QB",
         "role": "Leads IND in passing",
-        "stat_line": "611 yards, 3 TD, 3 INT this season",
+        "stat_line": "267 yards this season",
         "espn_id": "3917792"
       },
       {
@@ -48020,41 +48019,27 @@
         "team": "IND",
         "position": "RB",
         "role": "Leads IND in rushing",
-        "stat_line": "66 carries, 258 yards, 4 TD this season",
+        "stat_line": "15 carries, 45 yards this season",
         "espn_id": "4242335"
       },
       {
-        "name": "Josh Downs",
+        "name": "Tyler Warren",
         "team": "IND",
-        "position": "WR",
+        "position": "TE",
         "role": "Leads IND in receiving",
-        "stat_line": "14 catches, 186 yards this season",
-        "espn_id": "4688813"
+        "stat_line": "7 catches, 83 yards this season",
+        "espn_id": "4431459"
       },
       {
         "name": "DeForest Buckner",
         "team": "IND",
         "position": "DT",
         "role": "Leads IND in sacks",
-        "stat_line": "3 sacks this season",
+        "stat_line": "1 sack this season",
         "espn_id": "2971282"
       }
     ],
     "injury_notes": [
-      {
-        "name": "Drew Allar",
-        "team": "PIT",
-        "position": "QB",
-        "status": "Out",
-        "injury": "Coach's Decision"
-      },
-      {
-        "name": "Will Howard",
-        "team": "PIT",
-        "position": "QB",
-        "status": "Out",
-        "injury": "Coach's Decision"
-      },
       {
         "name": "Rico Dowdle",
         "team": "PIT",
@@ -48063,25 +48048,46 @@
         "injury": "Toe"
       },
       {
-        "name": "Gabriel Rubio",
+        "name": "Ben Skowronek",
         "team": "PIT",
-        "position": "DE",
+        "position": "WR",
         "status": "Out",
-        "injury": "Coach's Decision"
+        "injury": "Calf"
       },
       {
-        "name": "Keenan Allen",
+        "name": "Roman Wilson",
+        "team": "PIT",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Finger"
+      },
+      {
+        "name": "Jamel Dean",
+        "team": "PIT",
+        "position": "CB",
+        "status": "Out",
+        "injury": "Ankle"
+      },
+      {
+        "name": "Darius Slayton",
         "team": "IND",
         "position": "WR",
-        "status": "Questionable",
-        "injury": "Groin"
+        "status": "Out",
+        "injury": "Knee"
       },
       {
-        "name": "Mo Alie-Cox",
+        "name": "Ashton Dulin",
         "team": "IND",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Illness"
+        "position": "WR",
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Jaylon Carlies",
+        "team": "IND",
+        "position": "LB",
+        "status": "Out",
+        "injury": "Ribs"
       }
     ],
     "espn_event_id": "401872985",
@@ -48707,7 +48713,7 @@
         "team": "NE",
         "position": "QB",
         "role": "Leads NE in passing",
-        "stat_line": "585 yards, 1 TD, 6 INT this season",
+        "stat_line": "374 yards, 4 TD this season",
         "espn_id": "4431452"
       },
       {
@@ -48715,23 +48721,23 @@
         "team": "NE",
         "position": "RB",
         "role": "Leads NE in rushing",
-        "stat_line": "31 carries, 116 yards this season",
+        "stat_line": "13 carries, 64 yards, 1 TD this season",
         "espn_id": "4569173"
       },
       {
-        "name": "Mack Hollins",
+        "name": "Kyle Williams",
         "team": "NE",
         "position": "WR",
         "role": "Leads NE in receiving",
-        "stat_line": "12 catches, 156 yards this season",
-        "espn_id": "2991662"
+        "stat_line": "3 catches, 91 yards, 1 TD this season",
+        "espn_id": "4613202"
       },
       {
         "name": "Elijah Ponder",
         "team": "NE",
         "position": "LB",
         "role": "Leads NE in sacks",
-        "stat_line": "1.5 sacks this season",
+        "stat_line": "2 sacks this season",
         "espn_id": "4688432"
       },
       {
@@ -48739,7 +48745,7 @@
         "team": "LV",
         "position": "QB",
         "role": "Leads LV in passing",
-        "stat_line": "661 yards, 9 TD, 3 INT this season",
+        "stat_line": "243 yards, 1 TD this season",
         "espn_id": "14880"
       },
       {
@@ -48747,68 +48753,82 @@
         "team": "LV",
         "position": "RB",
         "role": "Leads LV in rushing",
-        "stat_line": "63 carries, 206 yards this season",
+        "stat_line": "10 carries, 27 yards this season",
         "espn_id": "4890973"
       },
       {
-        "name": "Tre Tucker",
+        "name": "Brock Bowers",
         "team": "LV",
-        "position": "WR",
+        "position": "TE",
         "role": "Leads LV in receiving",
-        "stat_line": "11 catches, 189 yards, 1 TD this season",
-        "espn_id": "4428718"
+        "stat_line": "8 catches, 110 yards, 1 TD this season",
+        "espn_id": "4432665"
       },
       {
         "name": "Malcolm Koonce",
         "team": "LV",
         "position": "DE",
         "role": "Leads LV in sacks",
-        "stat_line": "2.5 sacks this season",
+        "stat_line": "0.5 sacks this season",
         "espn_id": "4239719"
       }
     ],
     "injury_notes": [
       {
-        "name": "Eli Raridon",
+        "name": "Karon Prunty",
         "team": "NE",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Thigh"
+        "position": "CB",
+        "status": "Out",
+        "injury": "Hamstring"
       },
       {
-        "name": "Dre'Mont Jones",
+        "name": "Carlton Davis III",
         "team": "NE",
-        "position": "DE",
-        "status": "Questionable",
+        "position": "CB",
+        "status": "Out",
+        "injury": "Neck"
+      },
+      {
+        "name": "Christian Gonzalez",
+        "team": "NE",
+        "position": "CB",
+        "status": "Out",
         "injury": "Shoulder"
       },
       {
         "name": "Channing Canada",
         "team": "NE",
         "position": "CB",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Hamstring"
       },
       {
-        "name": "Christian Gonzalez",
-        "team": "NE",
-        "position": "CB",
-        "status": "Questionable",
-        "injury": "Shoulder"
+        "name": "Jalen Nailor",
+        "team": "LV",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Aidan O'Connell",
+        "name": "Trey Zuhn III",
         "team": "LV",
-        "position": "QB",
-        "status": "Questionable",
-        "injury": "Personal"
+        "position": "C",
+        "status": "Out",
+        "injury": "Knee"
       },
       {
-        "name": "Jackson Powers-Johnson",
+        "name": "Patrick Johnson",
         "team": "LV",
-        "position": "G",
+        "position": "DE",
         "status": "Questionable",
-        "injury": "Groin"
+        "injury": "Neck"
+      },
+      {
+        "name": "Tonka Hemingway",
+        "team": "LV",
+        "position": "DT",
+        "status": "Questionable",
+        "injury": "Concussion"
       }
     ],
     "espn_event_id": "401872986",
@@ -49438,47 +49458,47 @@
         "team": "NO",
         "position": "QB",
         "role": "Leads NO in passing",
-        "stat_line": "917 yards, 8 TD, 3 INT this season",
+        "stat_line": "96 yards, 2 INT this season",
         "espn_id": "4360689"
       },
       {
-        "name": "Travis Etienne Jr.",
+        "name": "Kendre Miller",
         "team": "NO",
         "position": "RB",
         "role": "Leads NO in rushing",
-        "stat_line": "30 carries, 128 yards this season",
-        "espn_id": "4239996"
+        "stat_line": "10 carries, 30 yards, 1 TD this season",
+        "espn_id": "4599739"
       },
       {
         "name": "Chris Olave",
         "team": "NO",
         "position": "WR",
         "role": "Leads NO in receiving",
-        "stat_line": "27 catches, 375 yards, 1 TD this season",
+        "stat_line": "4 catches, 46 yards this season",
         "espn_id": "4361370"
       },
       {
-        "name": "Chase Young",
+        "name": "Carl Granderson",
         "team": "NO",
         "position": "DE",
         "role": "Leads NO in sacks",
-        "stat_line": "3.5 sacks this season",
-        "espn_id": "4241986"
+        "stat_line": "1.5 sacks this season",
+        "espn_id": "3918310"
       },
       {
-        "name": "Carson Wentz",
+        "name": "Kyler Murray",
         "team": "MIN",
         "position": "QB",
         "role": "Leads MIN in passing",
-        "stat_line": "276 yards, 3 TD this season",
-        "espn_id": "2573079"
+        "stat_line": "229 yards, 1 TD this season",
+        "espn_id": "3917315"
       },
       {
         "name": "Aaron Jones Sr.",
         "team": "MIN",
         "position": "RB",
         "role": "Leads MIN in rushing",
-        "stat_line": "52 carries, 203 yards, 1 TD this season",
+        "stat_line": "25 carries, 113 yards, 1 TD this season",
         "espn_id": "3042519"
       },
       {
@@ -49486,46 +49506,60 @@
         "team": "MIN",
         "position": "WR",
         "role": "Leads MIN in receiving",
-        "stat_line": "13 catches, 179 yards, 2 TD this season",
+        "stat_line": "6 catches, 79 yards, 1 TD this season",
         "espn_id": "4262921"
       },
       {
-        "name": "Dallas Turner",
+        "name": "Andrew Van Ginkel",
         "team": "MIN",
         "position": "LB",
         "role": "Leads MIN in sacks",
-        "stat_line": "3.5 sacks this season",
-        "espn_id": "4565190"
+        "stat_line": "1 sack this season",
+        "espn_id": "3133487"
       }
     ],
     "injury_notes": [
       {
-        "name": "Noah Fant",
+        "name": "Jeremiah Wright",
         "team": "NO",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Abdomen"
+        "position": "G",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Carl Granderson",
+        "name": "Nathan Shepherd",
         "team": "NO",
-        "position": "DE",
-        "status": "Questionable",
-        "injury": "Ankle"
+        "position": "DT",
+        "status": "Out",
+        "injury": "Illness"
       },
       {
-        "name": "Pete Werner",
+        "name": "Vernon Broughton",
         "team": "NO",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Neck"
+        "position": "DT",
+        "status": "Out",
+        "injury": "Illness"
       },
       {
         "name": "Kaden Elliss",
         "team": "NO",
         "position": "LB",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Calf"
+      },
+      {
+        "name": "Jordan Addison",
+        "team": "MIN",
+        "position": "WR",
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Christian Darrisaw",
+        "team": "MIN",
+        "position": "OT",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
         "name": "Charles Demmings",
@@ -49535,25 +49569,11 @@
         "injury": "Hamstring"
       },
       {
-        "name": "Justin Jefferson",
+        "name": "T.J. Hockenson",
         "team": "MIN",
-        "position": "WR",
+        "position": "TE",
         "status": "Questionable",
-        "injury": "Ankle"
-      },
-      {
-        "name": "Blake Cashman",
-        "team": "MIN",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Elbow"
-      },
-      {
-        "name": "Brett Thorson",
-        "team": "MIN",
-        "position": "P",
-        "status": "Questionable",
-        "injury": "Hamstring"
+        "injury": "Concussion"
       }
     ],
     "espn_event_id": "401872987",
@@ -50183,126 +50203,126 @@
     "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data - only games already played are used to build features.",
     "key_players": [
       {
-        "name": "Marcus Mariota",
+        "name": "Jayden Daniels",
         "team": "WAS",
         "position": "QB",
         "role": "Leads WAS in passing",
-        "stat_line": "294 yards, 4 TD this season",
-        "espn_id": "2576980"
+        "stat_line": "199 yards this season",
+        "espn_id": "4426348"
       },
       {
-        "name": "Jacory Croskey-Merritt",
+        "name": "Jayden Daniels",
         "team": "WAS",
-        "position": "RB",
+        "position": "QB",
         "role": "Leads WAS in rushing",
-        "stat_line": "47 carries, 142 yards, 1 TD this season",
-        "espn_id": "4575131"
+        "stat_line": "9 carries, 103 yards, 2 TD this season",
+        "espn_id": "4426348"
       },
       {
         "name": "Terry McLaurin",
         "team": "WAS",
         "position": "WR",
         "role": "Leads WAS in receiving",
-        "stat_line": "10 catches, 141 yards, 1 TD this season",
+        "stat_line": "4 catches, 62 yards this season",
         "espn_id": "3121422"
       },
       {
-        "name": "Frankie Luvu",
+        "name": "Daron Payne",
         "team": "WAS",
-        "position": "LB",
+        "position": "DT",
         "role": "Leads WAS in sacks",
         "stat_line": "1 sack this season",
-        "espn_id": "3127273"
+        "espn_id": "3925354"
       },
       {
-        "name": "Jaxson Dart",
+        "name": "Jameis Winston",
         "team": "NYG",
         "position": "QB",
         "role": "Leads NYG in passing",
-        "stat_line": "250 yards, 3 TD this season",
-        "espn_id": "4689114"
+        "stat_line": "326 yards, 3 TD this season",
+        "espn_id": "2969939"
       },
       {
         "name": "Cam Skattebo",
         "team": "NYG",
         "position": "RB",
         "role": "Leads NYG in rushing",
-        "stat_line": "50 carries, 177 yards, 1 TD this season",
+        "stat_line": "13 carries, 59 yards this season",
         "espn_id": "4696981"
       },
       {
-        "name": "Isaiah Likely",
+        "name": "Malik Nabers",
         "team": "NYG",
-        "position": "TE",
+        "position": "WR",
         "role": "Leads NYG in receiving",
-        "stat_line": "15 catches, 124 yards, 2 TD this season",
-        "espn_id": "4361050"
+        "stat_line": "11 catches, 121 yards, 1 TD this season",
+        "espn_id": "4595348"
       },
       {
-        "name": "Abdul Carter",
+        "name": "Dru Phillips",
         "team": "NYG",
-        "position": "LB",
+        "position": "CB",
         "role": "Leads NYG in sacks",
-        "stat_line": "1 sack this season",
-        "espn_id": "4725996"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4431321"
       }
     ],
     "injury_notes": [
       {
-        "name": "Jayden Daniels",
+        "name": "Marcus Mariota",
         "team": "WAS",
         "position": "QB",
-        "status": "Questionable",
-        "injury": "Elbow"
+        "status": "Out",
+        "injury": "Knee - MCL"
       },
       {
-        "name": "Rachaad White",
+        "name": "Stefon Diggs",
         "team": "WAS",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Shoulder"
-      },
-      {
-        "name": "Ben Sinnott",
-        "team": "WAS",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Ribs"
-      },
-      {
-        "name": "Chig Okonkwo",
-        "team": "WAS",
-        "position": "TE",
-        "status": "Questionable",
+        "position": "WR",
+        "status": "Out",
         "injury": "Hamstring"
       },
       {
-        "name": "Tyrone Tracy Jr.",
-        "team": "NYG",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Knee"
-      },
-      {
-        "name": "Andrew Thomas",
-        "team": "NYG",
-        "position": "OT",
-        "status": "Questionable",
+        "name": "Charles Omenihu",
+        "team": "WAS",
+        "position": "DE",
+        "status": "Out",
         "injury": "Groin"
       },
       {
-        "name": "Deonte Banks",
+        "name": "Tyler Owens",
+        "team": "WAS",
+        "position": "S",
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Jason Pinnock",
+        "team": "NYG",
+        "position": "S",
+        "status": "Out",
+        "injury": "Concussion"
+      },
+      {
+        "name": "Jermaine Eluemunor",
+        "team": "NYG",
+        "position": "OT",
+        "status": "Questionable",
+        "injury": "Calf"
+      },
+      {
+        "name": "Colton Hood",
         "team": "NYG",
         "position": "CB",
         "status": "Questionable",
-        "injury": "Calf"
+        "injury": "Concussion"
       },
       {
         "name": "Tyler Nubin",
         "team": "NYG",
         "position": "S",
         "status": "Questionable",
-        "injury": "Calf"
+        "injury": "Neck"
       }
     ],
     "espn_event_id": "401872988",
@@ -50936,7 +50956,7 @@
         "team": "JAX",
         "position": "QB",
         "role": "Leads JAX in passing",
-        "stat_line": "616 yards, 7 TD, 2 INT this season",
+        "stat_line": "331 yards, 2 TD, 1 INT this season",
         "espn_id": "4360310"
       },
       {
@@ -50944,7 +50964,7 @@
         "team": "JAX",
         "position": "RB",
         "role": "Leads JAX in rushing",
-        "stat_line": "43 carries, 204 yards, 2 TD this season",
+        "stat_line": "22 carries, 72 yards this season",
         "espn_id": "4882093"
       },
       {
@@ -50952,106 +50972,106 @@
         "team": "JAX",
         "position": "WR",
         "role": "Leads JAX in receiving",
-        "stat_line": "15 catches, 221 yards, 2 TD this season",
+        "stat_line": "6 catches, 124 yards, 2 TD this season",
         "espn_id": "4432620"
       },
       {
-        "name": "Josh Hines-Allen",
+        "name": "Travon Walker",
         "team": "JAX",
         "position": "DE",
         "role": "Leads JAX in sacks",
-        "stat_line": "1.5 sacks this season",
-        "espn_id": "3915239"
+        "stat_line": "0.5 sacks this season",
+        "espn_id": "4426349"
       },
       {
         "name": "Jalen Hurts",
         "team": "PHI",
         "position": "QB",
         "role": "Leads PHI in passing",
-        "stat_line": "620 yards, 5 TD, 3 INT this season",
+        "stat_line": "220 yards, 1 TD this season",
         "espn_id": "4040715"
       },
       {
-        "name": "Saquon Barkley",
+        "name": "Dameon Pierce",
         "team": "PHI",
         "position": "RB",
         "role": "Leads PHI in rushing",
-        "stat_line": "34 carries, 174 yards this season",
-        "espn_id": "3929630"
+        "stat_line": "11 carries, 14 yards this season",
+        "espn_id": "4360238"
       },
       {
-        "name": "DeVonta Smith",
+        "name": "Darius Cooper",
         "team": "PHI",
         "position": "WR",
         "role": "Leads PHI in receiving",
-        "stat_line": "19 catches, 235 yards, 1 TD this season",
-        "espn_id": "4241478"
+        "stat_line": "2 catches, 71 yards, 1 TD this season",
+        "espn_id": "4715355"
       },
       {
-        "name": "Nolan Smith Jr.",
+        "name": "Jalen Carter",
         "team": "PHI",
-        "position": "LB",
+        "position": "DT",
         "role": "Leads PHI in sacks",
-        "stat_line": "1 sack this season",
-        "espn_id": "4426331"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4685759"
       }
     ],
     "injury_notes": [
       {
-        "name": "LeQuint Allen Jr.",
+        "name": "Eric Murray",
         "team": "JAX",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Hip"
+        "position": "S",
+        "status": "Out",
+        "injury": "Concussion"
       },
       {
-        "name": "Jakobi Meyers",
-        "team": "JAX",
-        "position": "WR",
-        "status": "Questionable",
-        "injury": "Thumb"
-      },
-      {
-        "name": "Nate Boerkircher",
-        "team": "JAX",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Illness"
-      },
-      {
-        "name": "Cole Van Lanen",
+        "name": "Anton Harrison",
         "team": "JAX",
         "position": "OT",
         "status": "Questionable",
         "injury": "Knee"
       },
       {
-        "name": "Dallas Goedert",
+        "name": "Montaric Brown",
+        "team": "JAX",
+        "position": "CB",
+        "status": "Questionable",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Ross Matiscik",
+        "team": "JAX",
+        "position": "LS",
+        "status": "Questionable",
+        "injury": "Shoulder"
+      },
+      {
+        "name": "Saquon Barkley",
         "team": "PHI",
-        "position": "TE",
-        "status": "Doubtful",
-        "injury": "Knee - MCL"
+        "position": "RB",
+        "status": "Out",
+        "injury": "Hamstring"
       },
       {
         "name": "DeVonta Smith",
         "team": "PHI",
         "position": "WR",
-        "status": "Questionable",
+        "status": "Out",
         "injury": "Hamstring"
       },
       {
-        "name": "Hollywood Brown",
+        "name": "Drew Kendall",
         "team": "PHI",
-        "position": "WR",
-        "status": "Questionable",
-        "injury": "Ankle"
+        "position": "C",
+        "status": "Out",
+        "injury": "Knee"
       },
       {
-        "name": "Zack Baun",
+        "name": "Jonathan Greenard",
         "team": "PHI",
         "position": "LB",
-        "status": "Questionable",
-        "injury": "Concussion"
+        "status": "Out",
+        "injury": "Ankle"
       }
     ],
     "espn_event_id": "401872981",
@@ -51680,43 +51700,43 @@
     "current_season_ready_note": "This version runs on historical backtest data. During a live season, the same pipeline refreshes weekly using current nflfastR/nflverse data - only games already played are used to build features.",
     "key_players": [
       {
-        "name": "Drew Lock",
+        "name": "Sam Darnold",
         "team": "SEA",
         "position": "QB",
         "role": "Leads SEA in passing",
-        "stat_line": "422 yards, 4 TD this season",
-        "espn_id": "3924327"
+        "stat_line": "195 yards, 1 TD, 2 INT this season",
+        "espn_id": "3912547"
       },
       {
-        "name": "Jadarian Price",
+        "name": "Emanuel Wilson",
         "team": "SEA",
         "position": "RB",
         "role": "Leads SEA in rushing",
-        "stat_line": "28 carries, 119 yards this season",
-        "espn_id": "4685512"
+        "stat_line": "20 carries, 61 yards, 1 TD this season",
+        "espn_id": "4887558"
       },
       {
         "name": "Jaxon Smith-Njigba",
         "team": "SEA",
         "position": "WR",
         "role": "Leads SEA in receiving",
-        "stat_line": "27 catches, 405 yards, 6 TD this season",
+        "stat_line": "5 catches, 102 yards, 1 TD this season",
         "espn_id": "4430878"
       },
       {
-        "name": "Leonard Williams",
+        "name": "Byron Murphy II",
         "team": "SEA",
         "position": "DT",
         "role": "Leads SEA in sacks",
-        "stat_line": "3 sacks this season",
-        "espn_id": "2971622"
+        "stat_line": "2 sacks this season",
+        "espn_id": "4570040"
       },
       {
         "name": "Brock Purdy",
         "team": "SF",
         "position": "QB",
         "role": "Leads SF in passing",
-        "stat_line": "789 yards, 9 TD, 1 INT this season",
+        "stat_line": "189 yards, 2 TD, 1 INT this season",
         "espn_id": "4361741"
       },
       {
@@ -51724,82 +51744,75 @@
         "team": "SF",
         "position": "RB",
         "role": "Leads SF in rushing",
-        "stat_line": "35 carries, 166 yards, 3 TD this season",
+        "stat_line": "11 carries, 68 yards, 1 TD this season",
         "espn_id": "3117251"
-      },
-      {
-        "name": "George Kittle",
-        "team": "SF",
-        "position": "TE",
-        "role": "Leads SF in receiving",
-        "stat_line": "12 catches, 174 yards, 3 TD this season",
-        "espn_id": "3040151"
-      },
-      {
-        "name": "Keion White",
-        "team": "SF",
-        "position": "DE",
-        "role": "Leads SF in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "4243493"
-      }
-    ],
-    "injury_notes": [
-      {
-        "name": "Zach Charbonnet",
-        "team": "SEA",
-        "position": "RB",
-        "status": "Out",
-        "injury": "Knee - ACL"
-      },
-      {
-        "name": "George Holani",
-        "team": "SEA",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Ribs"
-      },
-      {
-        "name": "Jadarian Price",
-        "team": "SEA",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Chest"
-      },
-      {
-        "name": "Ty Okada",
-        "team": "SEA",
-        "position": "S",
-        "status": "Questionable",
-        "injury": "Hamstring"
-      },
-      {
-        "name": "Mykel Williams",
-        "team": "SF",
-        "position": "DE",
-        "status": "Out",
-        "injury": "Knee - ACL"
       },
       {
         "name": "Mike Evans",
         "team": "SF",
         "position": "WR",
-        "status": "Questionable",
-        "injury": "Ribs"
+        "role": "Leads SF in receiving",
+        "stat_line": "7 catches, 113 yards, 1 TD this season",
+        "espn_id": "16737"
       },
       {
-        "name": "Keion White",
+        "name": "Osa Odighizuwa",
         "team": "SF",
-        "position": "DE",
+        "position": "DT",
+        "role": "Leads SF in sacks",
+        "stat_line": "1 sack this season",
+        "espn_id": "4035840"
+      }
+    ],
+    "injury_notes": [
+      {
+        "name": "Drew Lock",
+        "team": "SEA",
+        "position": "QB",
         "status": "Questionable",
-        "injury": "Hamstring"
+        "injury": "Forearm"
       },
       {
-        "name": "Romello Height",
+        "name": "Beau Stephens",
+        "team": "SEA",
+        "position": "G",
+        "status": "Questionable",
+        "injury": "Shoulder"
+      },
+      {
+        "name": "Leonard Williams",
+        "team": "SEA",
+        "position": "DT",
+        "status": "Questionable",
+        "injury": "Ankle"
+      },
+      {
+        "name": "Drake Thomas",
+        "team": "SEA",
+        "position": "LB",
+        "status": "Questionable",
+        "injury": "Ankle"
+      },
+      {
+        "name": "Nick Bosa",
         "team": "SF",
         "position": "DE",
-        "status": "Questionable",
-        "injury": "Hand"
+        "status": "Out",
+        "injury": "Calf"
+      },
+      {
+        "name": "James Thompson Jr.",
+        "team": "SF",
+        "position": "DT",
+        "status": "Out",
+        "injury": "Ankle"
+      },
+      {
+        "name": "Kyle Juszczyk",
+        "team": "SF",
+        "position": "FB",
+        "status": "Out",
+        "injury": "Knee"
       }
     ],
     "espn_event_id": "401872992",
@@ -52428,7 +52441,7 @@
         "team": "DAL",
         "position": "QB",
         "role": "Leads DAL in passing",
-        "stat_line": "730 yards, 7 TD, 1 INT this season",
+        "stat_line": "316 yards, 1 TD, 2 INT this season",
         "espn_id": "2577417"
       },
       {
@@ -52436,107 +52449,106 @@
         "team": "DAL",
         "position": "RB",
         "role": "Leads DAL in rushing",
-        "stat_line": "43 carries, 169 yards, 2 TD this season",
+        "stat_line": "12 carries, 45 yards, 1 TD this season",
         "espn_id": "4361579"
       },
       {
-        "name": "CeeDee Lamb",
+        "name": "George Pickens",
         "team": "DAL",
         "position": "WR",
         "role": "Leads DAL in receiving",
-        "stat_line": "20 catches, 309 yards, 3 TD this season",
-        "espn_id": "4241389"
+        "stat_line": "9 catches, 130 yards, 1 TD this season",
+        "espn_id": "4426354"
       },
       {
-        "name": "Caleb Downs",
+        "name": "Malachi Lawrence",
         "team": "DAL",
-        "position": "S",
+        "position": "LB",
         "role": "Leads DAL in sacks",
         "stat_line": "1 sack this season",
-        "espn_id": "4870706"
+        "espn_id": "4710067"
       },
       {
-        "name": "Baker Mayfield",
+        "name": "Jalon Daniels",
         "team": "TB",
         "position": "QB",
         "role": "Leads TB in passing",
-        "stat_line": "615 yards, 2 TD, 2 INT this season",
-        "espn_id": "3052587"
+        "stat_line": "189 yards, 1 TD this season",
+        "espn_id": "4596472"
       },
       {
         "name": "Bucky Irving",
         "team": "TB",
         "position": "RB",
         "role": "Leads TB in rushing",
-        "stat_line": "40 carries, 180 yards, 1 TD this season",
+        "stat_line": "21 carries, 165 yards, 1 TD this season",
         "espn_id": "4596448"
       },
       {
-        "name": "Emeka Egbuka",
+        "name": "Tez Johnson",
         "team": "TB",
         "position": "WR",
         "role": "Leads TB in receiving",
-        "stat_line": "13 catches, 141 yards, 1 TD this season",
-        "espn_id": "4567750"
-      },
-      {
-        "name": "David Walker",
-        "team": "TB",
-        "position": "LB",
-        "role": "Leads TB in sacks",
-        "stat_line": "2 sacks this season",
-        "espn_id": "5085355"
+        "stat_line": "1 catches, 64 yards this season",
+        "espn_id": "4608810"
       }
     ],
     "injury_notes": [
       {
-        "name": "DeMarvion Overshown",
+        "name": "Drew Shelton",
         "team": "DAL",
-        "position": "LB",
-        "status": "Questionable",
+        "position": "OT",
+        "status": "Out",
         "injury": "Hamstring"
       },
       {
-        "name": "Shavon Revel Jr.",
+        "name": "DeMarvion Overshown",
+        "team": "DAL",
+        "position": "LB",
+        "status": "Out",
+        "injury": "Hamstring"
+      },
+      {
+        "name": "Joey Porter Jr.",
         "team": "DAL",
         "position": "CB",
-        "status": "Questionable",
-        "injury": "Knee"
+        "status": "Out",
+        "injury": "Illness"
       },
       {
-        "name": "Malik Hooker",
+        "name": "Cobie Durant",
         "team": "DAL",
-        "position": "S",
-        "status": "Questionable",
-        "injury": "Forearm"
+        "position": "CB",
+        "status": "Out",
+        "injury": "Hamstring"
       },
       {
-        "name": "Bucky Irving",
+        "name": "Baker Mayfield",
         "team": "TB",
-        "position": "RB",
-        "status": "Questionable",
-        "injury": "Lower Body"
+        "position": "QB",
+        "status": "Out",
+        "injury": "Thumb"
       },
       {
-        "name": "Ko Kieft",
+        "name": "SirVocea Dennis",
         "team": "TB",
-        "position": "TE",
-        "status": "Questionable",
-        "injury": "Elbow"
-      },
-      {
-        "name": "Rakeem Nunez-Roches",
-        "team": "TB",
-        "position": "DT",
-        "status": "Questionable",
+        "position": "LB",
+        "status": "Out",
         "injury": "Ankle"
       },
       {
-        "name": "Rueben Bain Jr.",
+        "name": "Benjamin Morrison",
         "team": "TB",
-        "position": "LB",
-        "status": "Questionable",
-        "injury": "Groin"
+        "position": "CB",
+        "status": "Out",
+        "injury": "Quadriceps"
+      },
+      {
+        "name": "Antoine Winfield Jr.",
+        "team": "TB",
+        "position": "S",
+        "status": "Out",
+        "injury": "Ribs"
       }
     ],
     "espn_event_id": "401872980",
@@ -52754,13 +52766,13 @@
     "home_team": "LA",
     "away_team": "ARI",
     "predicted_winner": "LA",
-    "home_win_prob": 0.7909,
-    "away_win_prob": 0.2091,
+    "home_win_prob": 0.7941,
+    "away_win_prob": 0.2059,
     "actual_winner": null,
     "home_score": null,
     "away_score": null,
     "confidence_label": "High",
-    "confidence_score": 58.2,
+    "confidence_score": 58.8,
     "key_battle": "The betting line strongly favors LA.",
     "football_factors": [
       {
@@ -52805,11 +52817,11 @@
       }
     ],
     "explanation": "Clark picks LA with a 79% chance to win. The biggest reason is home field, worth about 6.5 points of win chance on its own. LA have been playing better lately. The betting line agrees.",
-    "market_note": "Sportsbooks have LA as a 12.5-point favorite, about an 85% chance to win. Clark agrees.",
+    "market_note": "Sportsbooks have LA as a 12.5-point favorite, about an 86% chance to win. Clark agrees.",
     "game_diagnosis": {
       "headline": "Clark picks LA (79%)",
       "football_story": "Clark picks LA with a 79% chance to win. The biggest reason is home field, worth about 6.5 points of win chance on its own. LA have been playing better lately. The betting line agrees.",
-      "primary_reason": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 85% chance to win. Clark also picks LA.",
+      "primary_reason": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 86% chance to win. Clark also picks LA.",
       "secondary_reason": "The game is at SoFi Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
       "risk_factor": "LA list Ty Simpson (QB, out), Larrell Murchison (DE, out), CJ Daniels (WR, out) on the injury report. That moves Clark's number about 3.2 points toward ARI.",
       "flip_scenarios": [
@@ -52821,19 +52833,19 @@
         "market_role": "context_only",
         "market_favorite": "LA",
         "spread_line": 12.5,
-        "home_moneyline": -800.0,
-        "away_moneyline": 550.0,
+        "home_moneyline": -900.0,
+        "away_moneyline": 610.0,
         "interpretation": "Market inputs help calibrate baseline team strength, but football diagnosis sections intentionally avoid citing Vegas as the cause."
       },
       "factor_cards": [
         {
           "name": "Market Edge",
           "advantage_team": "LA",
-          "raw_edge": 1.17174,
+          "raw_edge": 1.19074,
           "contribution_strength": 1.0,
           "headline": "The betting line strongly favors LA.",
-          "explanation": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 85% chance to win. Clark also picks LA.",
-          "baseline_note": "Betting line: LA by 12.5 (85% implied).",
+          "explanation": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 86% chance to win. Clark also picks LA.",
+          "baseline_note": "Betting line: LA by 12.5 (86% implied).",
           "confident": true,
           "status": "DECISIVE"
         },
@@ -52841,7 +52853,7 @@
           "name": "Home Field",
           "advantage_team": "LA",
           "raw_edge": 0.26153,
-          "contribution_strength": 0.2232,
+          "contribution_strength": 0.2196,
           "headline": "LA are at home.",
           "explanation": "The game is at SoFi Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
           "baseline_note": "Home field: +6.5 win-chance points.",
@@ -52852,7 +52864,7 @@
           "name": "Momentum",
           "advantage_team": "LA",
           "raw_edge": 0.23547,
-          "contribution_strength": 0.201,
+          "contribution_strength": 0.1977,
           "headline": "LA have been playing better lately.",
           "explanation": "LA are 2-1 over their last three games; ARI are 0-3. They also have about 21 more points of scoring margin per game.",
           "baseline_note": "Last three: LA 2-1, ARI 0-3 (21 pt/gm margin swing).",
@@ -52863,7 +52875,7 @@
           "name": "Recent Offense",
           "advantage_team": "LA",
           "raw_edge": 0.01541,
-          "contribution_strength": 0.0132,
+          "contribution_strength": 0.0129,
           "headline": "LA's offense is heating up.",
           "explanation": "Over the last three games, LA have gained noticeably more on a typical play than ARI, scoring 26 points a game to ARI's 25. That offense has been better than most of the league. Expect LA to move the ball more consistently.",
           "baseline_note": "Last 3 games, EPA/play edge: LA +0.10; LA offense +0.07 EPA/play (above-average).",
@@ -52874,7 +52886,7 @@
           "name": "Injuries",
           "advantage_team": "ARI",
           "raw_edge": -0.20563,
-          "contribution_strength": 0.1755,
+          "contribution_strength": 0.1727,
           "headline": "ARI are the healthier team this week.",
           "explanation": "LA list Ty Simpson (QB, out), Larrell Murchison (DE, out), CJ Daniels (WR, out) on the injury report. That moves Clark's number about 3.2 points toward ARI.",
           "baseline_note": "Injury weight (position x status): LA 17.0, ARI 1.88.",
@@ -52885,7 +52897,7 @@
           "name": "Defensive Edge",
           "advantage_team": "ARI",
           "raw_edge": -0.07906,
-          "contribution_strength": 0.0675,
+          "contribution_strength": 0.0664,
           "headline": "The defenses have been about even.",
           "explanation": "LA's defense has actually allowed less per play over the last three games, so defense isn't a real edge for ARI in this game.",
           "baseline_note": "EPA/play allowed edge, last 3: ARI -0.45; season: -0.02.",
@@ -52896,7 +52908,7 @@
           "name": "Game Context",
           "advantage_team": "ARI",
           "raw_edge": -0.0689,
-          "contribution_strength": 0.0588,
+          "contribution_strength": 0.0579,
           "headline": "Division game.",
           "explanation": "It's a division game. These teams play twice a year, and those games tend to be closer than expected.",
           "baseline_note": "ARI 1d rest · divisional",
@@ -52946,7 +52958,7 @@
     },
     "headline": "Clark picks LA (79%)",
     "football_story": "Clark picks LA with a 79% chance to win. The biggest reason is home field, worth about 6.5 points of win chance on its own. LA have been playing better lately. The betting line agrees.",
-    "primary_reason": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 85% chance to win. Clark also picks LA.",
+    "primary_reason": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 86% chance to win. Clark also picks LA.",
     "secondary_reason": "The game is at SoFi Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
     "risk_factor": "LA list Ty Simpson (QB, out), Larrell Murchison (DE, out), CJ Daniels (WR, out) on the injury report. That moves Clark's number about 3.2 points toward ARI.",
     "flip_scenarios": [
@@ -52958,19 +52970,19 @@
       "market_role": "context_only",
       "market_favorite": "LA",
       "spread_line": 12.5,
-      "home_moneyline": -800.0,
-      "away_moneyline": 550.0,
+      "home_moneyline": -900.0,
+      "away_moneyline": 610.0,
       "interpretation": "Market inputs help calibrate baseline team strength, but football diagnosis sections intentionally avoid citing Vegas as the cause."
     },
     "factor_cards": [
       {
         "name": "Market Edge",
         "advantage_team": "LA",
-        "raw_edge": 1.17174,
+        "raw_edge": 1.19074,
         "contribution_strength": 1.0,
         "headline": "The betting line strongly favors LA.",
-        "explanation": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 85% chance to win. Clark also picks LA.",
-        "baseline_note": "Betting line: LA by 12.5 (85% implied).",
+        "explanation": "Sportsbooks have LA as a 12.5-point favorite, which works out to about an 86% chance to win. Clark also picks LA.",
+        "baseline_note": "Betting line: LA by 12.5 (86% implied).",
         "confident": true,
         "status": "DECISIVE"
       },
@@ -52978,7 +52990,7 @@
         "name": "Home Field",
         "advantage_team": "LA",
         "raw_edge": 0.26153,
-        "contribution_strength": 0.2232,
+        "contribution_strength": 0.2196,
         "headline": "LA are at home.",
         "explanation": "The game is at SoFi Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
         "baseline_note": "Home field: +6.5 win-chance points.",
@@ -52989,7 +53001,7 @@
         "name": "Momentum",
         "advantage_team": "LA",
         "raw_edge": 0.23547,
-        "contribution_strength": 0.201,
+        "contribution_strength": 0.1977,
         "headline": "LA have been playing better lately.",
         "explanation": "LA are 2-1 over their last three games; ARI are 0-3. They also have about 21 more points of scoring margin per game.",
         "baseline_note": "Last three: LA 2-1, ARI 0-3 (21 pt/gm margin swing).",
@@ -53000,7 +53012,7 @@
         "name": "Recent Offense",
         "advantage_team": "LA",
         "raw_edge": 0.01541,
-        "contribution_strength": 0.0132,
+        "contribution_strength": 0.0129,
         "headline": "LA's offense is heating up.",
         "explanation": "Over the last three games, LA have gained noticeably more on a typical play than ARI, scoring 26 points a game to ARI's 25. That offense has been better than most of the league. Expect LA to move the ball more consistently.",
         "baseline_note": "Last 3 games, EPA/play edge: LA +0.10; LA offense +0.07 EPA/play (above-average).",
@@ -53011,7 +53023,7 @@
         "name": "Injuries",
         "advantage_team": "ARI",
         "raw_edge": -0.20563,
-        "contribution_strength": 0.1755,
+        "contribution_strength": 0.1727,
         "headline": "ARI are the healthier team this week.",
         "explanation": "LA list Ty Simpson (QB, out), Larrell Murchison (DE, out), CJ Daniels (WR, out) on the injury report. That moves Clark's number about 3.2 points toward ARI.",
         "baseline_note": "Injury weight (position x status): LA 17.0, ARI 1.88.",
@@ -53022,7 +53034,7 @@
         "name": "Defensive Edge",
         "advantage_team": "ARI",
         "raw_edge": -0.07906,
-        "contribution_strength": 0.0675,
+        "contribution_strength": 0.0664,
         "headline": "The defenses have been about even.",
         "explanation": "LA's defense has actually allowed less per play over the last three games, so defense isn't a real edge for ARI in this game.",
         "baseline_note": "EPA/play allowed edge, last 3: ARI -0.45; season: -0.02.",
@@ -53033,7 +53045,7 @@
         "name": "Game Context",
         "advantage_team": "ARI",
         "raw_edge": -0.0689,
-        "contribution_strength": 0.0588,
+        "contribution_strength": 0.0579,
         "headline": "Division game.",
         "explanation": "It's a division game. These teams play twice a year, and those games tend to be closer than expected.",
         "baseline_note": "ARI 1d rest · divisional",
@@ -53093,14 +53105,14 @@
         "label": "Home Field",
         "value": "DECISIVE",
         "direction": "LA",
-        "impact": 0.2232
+        "impact": 0.2196
       },
       {
         "feature": "Momentum",
         "label": "Momentum",
         "value": "MODERATE",
         "direction": "LA",
-        "impact": 0.201
+        "impact": 0.1977
       }
     ],
     "model_feature_set": "market_elo_form",
@@ -53494,8 +53506,8 @@
       "line": {
         "favorite": "LA",
         "spread": 12.5,
-        "pct": 85,
-        "body": "The line has the Rams by 12.5, about 85%. I'm a bit lower at 79%. I like the Rams, just not quite as much as the market does."
+        "pct": 86,
+        "body": "The line has the Rams by 12.5, about 86%. I'm a bit lower at 79%. I like the Rams, just not quite as much as the market does."
       },
       "injuries": {
         "title": "Injuries I'm factoring in",
@@ -54528,13 +54540,13 @@
     "home_team": "LV",
     "away_team": "BUF",
     "predicted_winner": "BUF",
-    "home_win_prob": 0.3018,
-    "away_win_prob": 0.6982,
+    "home_win_prob": 0.311,
+    "away_win_prob": 0.689,
     "actual_winner": null,
     "home_score": null,
     "away_score": null,
     "confidence_label": "High",
-    "confidence_score": 39.6,
+    "confidence_score": 37.8,
     "key_battle": "The betting line favors BUF.",
     "football_factors": [
       {
@@ -54578,12 +54590,12 @@
         "reason": "LV wins the pass rush vs. protection battle slightly (0.001 sack-rate edge) - a mismatch that can collapse key third-down drives."
       }
     ],
-    "explanation": "Clark picks BUF with a 70% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
-    "market_note": "Sportsbooks have BUF as a 6.0-point favorite, about a 71% chance to win. Clark agrees.",
+    "explanation": "Clark picks BUF with a 69% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
+    "market_note": "Sportsbooks have BUF as a 5.5-point favorite, about a 70% chance to win. Clark agrees.",
     "game_diagnosis": {
-      "headline": "Clark picks BUF (70%)",
-      "football_story": "Clark picks BUF with a 70% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
-      "primary_reason": "Sportsbooks have BUF as a 6.0-point favorite, which works out to about a 71% chance to win. Clark also picks BUF.",
+      "headline": "Clark picks BUF (69%)",
+      "football_story": "Clark picks BUF with a 69% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
+      "primary_reason": "Sportsbooks have BUF as a 5.5-point favorite, which works out to about a 70% chance to win. Clark also picks BUF.",
       "secondary_reason": "BUF are 2-1 over their last three games; LV are 1-2. They also have about 13 more points of scoring margin per game.",
       "risk_factor": "LV have home field, worth about 6.5 points of win chance.",
       "flip_scenarios": [
@@ -54594,20 +54606,20 @@
         "market_used": true,
         "market_role": "context_only",
         "market_favorite": "BUF",
-        "spread_line": -6.0,
-        "home_moneyline": 230.0,
-        "away_moneyline": -285.0,
+        "spread_line": -5.5,
+        "home_moneyline": 225.0,
+        "away_moneyline": -275.0,
         "interpretation": "Market inputs help calibrate baseline team strength, but football diagnosis sections intentionally avoid citing Vegas as the cause."
       },
       "factor_cards": [
         {
           "name": "Market Edge",
           "advantage_team": "BUF",
-          "raw_edge": -1.00593,
+          "raw_edge": -0.96274,
           "contribution_strength": 1.0,
           "headline": "The betting line favors BUF.",
-          "explanation": "Sportsbooks have BUF as a 6.0-point favorite, which works out to about a 71% chance to win. Clark also picks BUF.",
-          "baseline_note": "Betting line: BUF by 6.0 (71% implied).",
+          "explanation": "Sportsbooks have BUF as a 5.5-point favorite, which works out to about a 70% chance to win. Clark also picks BUF.",
+          "baseline_note": "Betting line: BUF by 5.5 (70% implied).",
           "confident": true,
           "status": "DECISIVE"
         },
@@ -54615,7 +54627,7 @@
           "name": "Momentum",
           "advantage_team": "BUF",
           "raw_edge": -0.15303,
-          "contribution_strength": 0.1521,
+          "contribution_strength": 0.159,
           "headline": "BUF have been playing better lately.",
           "explanation": "BUF are 2-1 over their last three games; LV are 1-2. They also have about 13 more points of scoring margin per game.",
           "baseline_note": "Last three: BUF 2-1, LV 1-2 (13 pt/gm margin swing).",
@@ -54626,7 +54638,7 @@
           "name": "Recent Offense",
           "advantage_team": "BUF",
           "raw_edge": -0.03531,
-          "contribution_strength": 0.0351,
+          "contribution_strength": 0.0367,
           "headline": "BUF's offense is heating up.",
           "explanation": "Over the last three games, BUF have gained noticeably more on a typical play than LV, scoring 30 points a game to LV's 26. That offense has been one of the best in the league right now. Expect BUF to move the ball more consistently.",
           "baseline_note": "Last 3 games, EPA/play edge: BUF +0.10; BUF offense +0.15 EPA/play (elite).",
@@ -54637,7 +54649,7 @@
           "name": "Defensive Edge",
           "advantage_team": "BUF",
           "raw_edge": -0.01335,
-          "contribution_strength": 0.0133,
+          "contribution_strength": 0.0139,
           "headline": "BUF's defense has been tougher.",
           "explanation": "BUF have allowed slightly less on a typical play than LV over the last three games, giving up 25 points a game to LV's 34. That makes it harder for K.Cousins to put together scoring drives.",
           "baseline_note": "EPA/play allowed edge, last 3: BUF +0.01; season: +0.05.",
@@ -54648,7 +54660,7 @@
           "name": "Home Field",
           "advantage_team": "LV",
           "raw_edge": 0.26153,
-          "contribution_strength": 0.26,
+          "contribution_strength": 0.2717,
           "headline": "LV are at home.",
           "explanation": "The game is at Allegiant Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
           "baseline_note": "Home field: +6.5 win-chance points.",
@@ -54659,7 +54671,7 @@
           "name": "Injuries",
           "advantage_team": "LV",
           "raw_edge": 0.06283,
-          "contribution_strength": 0.0625,
+          "contribution_strength": 0.0653,
           "headline": "LV are the healthier team this week.",
           "explanation": "BUF list Landon Jackson (DE, out), Dee Alford (CB, out), Joshua Palmer (WR, out) on the injury report. That moves Clark's number about 1.3 points toward LV.",
           "baseline_note": "Injury weight (position x status): LV 4.38, BUF 9.0.",
@@ -54670,7 +54682,7 @@
           "name": "Game Context",
           "advantage_team": "LV",
           "raw_edge": 0.04442,
-          "contribution_strength": 0.0442,
+          "contribution_strength": 0.0461,
           "headline": "Rest and weather are about even.",
           "explanation": "Rest, travel and weather are about even for both teams.",
           "baseline_note": "LV 1d rest",
@@ -54718,9 +54730,9 @@
       },
       "model_contributions": []
     },
-    "headline": "Clark picks BUF (70%)",
-    "football_story": "Clark picks BUF with a 70% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
-    "primary_reason": "Sportsbooks have BUF as a 6.0-point favorite, which works out to about a 71% chance to win. Clark also picks BUF.",
+    "headline": "Clark picks BUF (69%)",
+    "football_story": "Clark picks BUF with a 69% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
+    "primary_reason": "Sportsbooks have BUF as a 5.5-point favorite, which works out to about a 70% chance to win. Clark also picks BUF.",
     "secondary_reason": "BUF are 2-1 over their last three games; LV are 1-2. They also have about 13 more points of scoring margin per game.",
     "risk_factor": "LV have home field, worth about 6.5 points of win chance.",
     "flip_scenarios": [
@@ -54731,20 +54743,20 @@
       "market_used": true,
       "market_role": "context_only",
       "market_favorite": "BUF",
-      "spread_line": -6.0,
-      "home_moneyline": 230.0,
-      "away_moneyline": -285.0,
+      "spread_line": -5.5,
+      "home_moneyline": 225.0,
+      "away_moneyline": -275.0,
       "interpretation": "Market inputs help calibrate baseline team strength, but football diagnosis sections intentionally avoid citing Vegas as the cause."
     },
     "factor_cards": [
       {
         "name": "Market Edge",
         "advantage_team": "BUF",
-        "raw_edge": -1.00593,
+        "raw_edge": -0.96274,
         "contribution_strength": 1.0,
         "headline": "The betting line favors BUF.",
-        "explanation": "Sportsbooks have BUF as a 6.0-point favorite, which works out to about a 71% chance to win. Clark also picks BUF.",
-        "baseline_note": "Betting line: BUF by 6.0 (71% implied).",
+        "explanation": "Sportsbooks have BUF as a 5.5-point favorite, which works out to about a 70% chance to win. Clark also picks BUF.",
+        "baseline_note": "Betting line: BUF by 5.5 (70% implied).",
         "confident": true,
         "status": "DECISIVE"
       },
@@ -54752,7 +54764,7 @@
         "name": "Momentum",
         "advantage_team": "BUF",
         "raw_edge": -0.15303,
-        "contribution_strength": 0.1521,
+        "contribution_strength": 0.159,
         "headline": "BUF have been playing better lately.",
         "explanation": "BUF are 2-1 over their last three games; LV are 1-2. They also have about 13 more points of scoring margin per game.",
         "baseline_note": "Last three: BUF 2-1, LV 1-2 (13 pt/gm margin swing).",
@@ -54763,7 +54775,7 @@
         "name": "Recent Offense",
         "advantage_team": "BUF",
         "raw_edge": -0.03531,
-        "contribution_strength": 0.0351,
+        "contribution_strength": 0.0367,
         "headline": "BUF's offense is heating up.",
         "explanation": "Over the last three games, BUF have gained noticeably more on a typical play than LV, scoring 30 points a game to LV's 26. That offense has been one of the best in the league right now. Expect BUF to move the ball more consistently.",
         "baseline_note": "Last 3 games, EPA/play edge: BUF +0.10; BUF offense +0.15 EPA/play (elite).",
@@ -54774,7 +54786,7 @@
         "name": "Defensive Edge",
         "advantage_team": "BUF",
         "raw_edge": -0.01335,
-        "contribution_strength": 0.0133,
+        "contribution_strength": 0.0139,
         "headline": "BUF's defense has been tougher.",
         "explanation": "BUF have allowed slightly less on a typical play than LV over the last three games, giving up 25 points a game to LV's 34. That makes it harder for K.Cousins to put together scoring drives.",
         "baseline_note": "EPA/play allowed edge, last 3: BUF +0.01; season: +0.05.",
@@ -54785,7 +54797,7 @@
         "name": "Home Field",
         "advantage_team": "LV",
         "raw_edge": 0.26153,
-        "contribution_strength": 0.26,
+        "contribution_strength": 0.2717,
         "headline": "LV are at home.",
         "explanation": "The game is at Allegiant Stadium. Before any matchup data, playing at home is worth about 6.5 points of win chance in Clark's model.",
         "baseline_note": "Home field: +6.5 win-chance points.",
@@ -54796,7 +54808,7 @@
         "name": "Injuries",
         "advantage_team": "LV",
         "raw_edge": 0.06283,
-        "contribution_strength": 0.0625,
+        "contribution_strength": 0.0653,
         "headline": "LV are the healthier team this week.",
         "explanation": "BUF list Landon Jackson (DE, out), Dee Alford (CB, out), Joshua Palmer (WR, out) on the injury report. That moves Clark's number about 1.3 points toward LV.",
         "baseline_note": "Injury weight (position x status): LV 4.38, BUF 9.0.",
@@ -54807,7 +54819,7 @@
         "name": "Game Context",
         "advantage_team": "LV",
         "raw_edge": 0.04442,
-        "contribution_strength": 0.0442,
+        "contribution_strength": 0.0461,
         "headline": "Rest and weather are about even.",
         "explanation": "Rest, travel and weather are about even for both teams.",
         "baseline_note": "LV 1d rest",
@@ -54853,7 +54865,7 @@
       "simple_explanation": "Measures how much value a team creates every snap.",
       "why_predictive": "Teams consistently generating positive EPA sustain offense better and do not need fluky field position."
     },
-    "explanation_summary": "Clark picks BUF with a 70% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
+    "explanation_summary": "Clark picks BUF with a 69% chance to win. BUF are 2-1 over their last three games; LV are 1-2. BUF's offense is heating up. J.Allen has been an above-average passer this season. The betting line agrees.",
     "explanation_factors": [
       {
         "feature": "Market Edge",
@@ -54867,14 +54879,14 @@
         "label": "Momentum",
         "value": "MODERATE",
         "direction": "BUF",
-        "impact": 0.1521
+        "impact": 0.159
       },
       {
         "feature": "Recent Offense",
         "label": "Recent Offense",
         "value": "NEUTRAL",
         "direction": "BUF",
-        "impact": 0.0351
+        "impact": 0.0367
       }
     ],
     "model_feature_set": "market_elo_form",
@@ -55163,10 +55175,10 @@
         "label": "this season (through Week 5)",
         "games": 4
       },
-      "headline": "I'm on the Bills at 70%, and it starts with their offense.",
+      "headline": "I'm on the Bills at 69%, and it starts with their offense.",
       "dek": "Yards per play: the Bills offense ranks 3rd, the Raiders defense ranks 28th. That's the gap this whole pick is built on.",
       "intro": [
-        "This is one of my more confident calls of the week.",
+        "I like this pick, but it's not a runaway.",
         "The biggest reason? BUF are 2-1 over their last three games; LV are 1-2. They also have about 13 more points of scoring margin per game."
       ],
       "deciding": {
@@ -55286,15 +55298,15 @@
         "If either starting quarterback is ruled out before kickoff, ignore this report and check back."
       ],
       "meaning": {
-        "title": "What 70% actually means",
-        "pct": 70,
-        "body": "If this game were played 100 times, I think the Bills win about 70 of them. That means the Raiders win 30, which is not nothing."
+        "title": "What 69% actually means",
+        "pct": 69,
+        "body": "If this game were played 100 times, I think the Bills win about 69 of them. That means the Raiders win 31, which is not nothing."
       },
       "line": {
         "favorite": "BUF",
-        "spread": 6.0,
-        "pct": 71,
-        "body": "The line has the Bills by 6, about 71%. I'm at 70%, so we basically agree on this one."
+        "spread": 5.5,
+        "pct": 70,
+        "body": "The line has the Bills by 5.5, about 70%. I'm at 69%, so we basically agree on this one."
       },
       "injuries": {
         "title": "Injuries I'm factoring in",

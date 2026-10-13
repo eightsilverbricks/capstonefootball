@@ -1,0 +1,88 @@
+# Keeps the live season current: scores, betting lines, injuries and stats are
+# re-pulled, every upcoming game is re-scored, and predictions.json is
+# republished to the `data` branch. The site reads that file at runtime
+# (primary-ui/src/hooks/usePredictions.ts), so nothing is redeployed.
+name: Refresh live data
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # scores, lines, injuries (cached play-by-play)
+    - cron: "0 10 * * *"     # daily, 6am ET: also re-download play-by-play
+  workflow_dispatch:
+    inputs:
+      pbp:
+        description: "Re-download play-by-play (~250 MB)"
+        type: boolean
+        default: false
+
+# One refresh at a time; a newer trigger waits instead of racing the push.
+concurrency:
+  group: refresh-data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    defaults:
+      run:
+        working-directory: nfl-prediction
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: nfl-prediction/requirements.txt
+
+      - run: pip install -r requirements.txt
+
+      - name: Restore play-by-play
+        id: pbp
+        uses: actions/cache/restore@v4
+        with:
+          path: nfl-prediction/data/raw/pbp.parquet
+          key: pbp-${{ github.run_id }}
+          restore-keys: pbp-
+
+      - name: Start from the last published file
+        run: |
+          if git fetch --depth=1 origin data 2>/dev/null; then
+            git show origin/data:predictions.json > ../primary-ui/public/predictions.json
+            git show origin/data:current_injuries.json > data/processed/current_injuries.json 2>/dev/null || true
+          fi
+
+      - name: Refresh
+        id: refresh
+        run: |
+          if [ "${{ github.event.schedule }}" = "0 10 * * *" ] || [ "${{ inputs.pbp }}" = "true" ] || [ -z "${{ steps.pbp.outputs.cache-matched-key }}" ]; then
+            echo "fresh_pbp=true" >> "$GITHUB_OUTPUT"
+            python src/refresh.py --pbp
+          else
+            python src/refresh.py
+          fi
+
+      - name: Save play-by-play
+        if: steps.refresh.outputs.fresh_pbp == 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: nfl-prediction/data/raw/pbp.parquet
+          key: pbp-${{ github.run_id }}
+
+      # A single orphan commit, force-pushed: the branch never grows history.
+      - name: Publish to the data branch
+        run: |
+          out="$(mktemp -d)"
+          cp ../primary-ui/public/predictions.json "$out/"
+          cp data/processed/current_injuries.json "$out/" 2>/dev/null || true
+          cd "$out"
+          git init -q -b data
+          git config user.name "clark-index-bot"
+          git config user.email "clark-index-bot@users.noreply.github.com"
+          git add -A
+          git commit -q -m "data: refresh $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q --force "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data

@@ -1,3 +1,4 @@
+import sys
 from pathlib import Path
 import nflreadpy as nfl
 
@@ -23,10 +24,15 @@ def main():
     schedules.write_parquet(RAW_DIR / "schedules.parquet")
     print("Saved schedules.parquet")
 
-    print("Loading play-by-play...")
-    pbp = nfl.load_pbp(seasons=PBP_SEASONS)
-    pbp.write_parquet(RAW_DIR / "pbp.parquet")
-    print("Saved pbp.parquet")
+    # --no-pbp: the frequent refresh reuses a cached play-by-play file (~250 MB)
+    # and only re-downloads it once a day.
+    if "--no-pbp" in sys.argv and (RAW_DIR / "pbp.parquet").exists():
+        print("Skipping play-by-play (--no-pbp, cached file present)")
+    else:
+        print("Loading play-by-play...")
+        pbp = nfl.load_pbp(seasons=PBP_SEASONS)
+        pbp.write_parquet(RAW_DIR / "pbp.parquet")
+        print("Saved pbp.parquet")
 
     # gsis_id -> espn_id crosswalk, used to build real headshot URLs for the
     # game-page banner's QB/RB imagery (see build_player_context.py).

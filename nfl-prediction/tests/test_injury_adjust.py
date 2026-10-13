@@ -46,9 +46,9 @@ class TestInjuryAdjust(unittest.TestCase):
         self.assertEqual(report["home"]["players"][0]["name"], "Josh Allen")
 
     def test_espn_fallback_only_for_its_own_week(self):
-        cache = {"season": 2026, "week": 6, "teams": {"KC": [{"name": "A", "position": "CB", "status": "Doubtful"}]}}
+        teams = {"KC": [{"name": "A", "position": "CB", "status": "Doubtful"}]}
         with mock.patch.object(ia, "_nflverse", return_value={}), \
-             mock.patch.object(ia, "_espn", return_value=(2026, 6, cache["teams"])):
+             mock.patch.object(ia, "_espn", return_value={(2026, 6): teams}):
             hit = ia.game_injuries(2026, 6, "LAC", "KC")
             miss = ia.game_injuries(2026, 7, "LAC", "KC")
         self.assertEqual(hit["source"], "espn")
@@ -58,9 +58,24 @@ class TestInjuryAdjust(unittest.TestCase):
 
     def test_espn_cache_reader(self):
         with mock.patch.object(ia, "ESPN_CACHE_PATH") as path:
-            path.read_text.return_value = json.dumps({"season": 2026, "week": 6, "teams": {}})
-            self.assertEqual(ia._espn(), (2026, 6, {}))
+            path.read_text.return_value = json.dumps({"season": 2026, "weeks": {"5": {}, "6": {"KC": []}}})
+            self.assertEqual(ia._espn(), {(2026, 5): {}, (2026, 6): {"KC": []}})
 
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestRefreshWeeks(unittest.TestCase):
+
+    def test_week_detection(self):
+        import pandas as pd
+        from src.refresh import season_weeks
+        sched = pd.DataFrame({
+            "season": [2026] * 6, "game_type": ["REG"] * 6,
+            "week": [1, 1, 2, 2, 3, 3],
+            "home_score": [20, 17, 24, None, None, None],
+        })
+        self.assertEqual(season_weeks(sched), (2, 2))
+        done = sched.assign(home_score=[1, 1, 1, 1, 1, 1])
+        self.assertEqual(season_weeks(done), (3, None))

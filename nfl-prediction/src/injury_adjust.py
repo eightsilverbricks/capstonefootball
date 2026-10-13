@@ -18,7 +18,7 @@ line, which the model already uses, prices quarterback injuries in.
 
 Sources, in order: the nflverse injury report for that week, then the ESPN
 injury list saved by espn_extras.py (data/processed/current_injuries.json),
-which only covers the upcoming week. No data means no adjustment.
+which covers the current and next week. No data means no adjustment.
 """
 from __future__ import annotations
 
@@ -65,12 +65,14 @@ def _nflverse() -> dict[tuple[int, int, str], list[dict]]:
 
 
 @lru_cache(maxsize=1)
-def _espn() -> tuple[int, int, dict[str, list[dict]]] | None:
+def _espn() -> dict[tuple[int, int], dict[str, list[dict]]]:
+    """{(season, week): {team: [players]}} for the weeks espn_extras.py last fetched."""
     try:
         data = json.loads(ESPN_CACHE_PATH.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError):
-        return None
-    return int(data["season"]), int(data["week"]), data.get("teams") or {}
+        return {}
+    season = int(data.get("season") or 0)
+    return {(season, int(w)): teams or {} for w, teams in (data.get("weeks") or {}).items()}
 
 
 def _team_report(players: list[dict]) -> dict:
@@ -88,11 +90,11 @@ def game_injuries(season: int, week: int, home: str, away: str) -> dict | None:
         source = "nflverse"
         teams = {t: nflverse.get((season, week, t), []) for t in (home, away)}
     else:
-        espn = _espn()
-        if not espn or espn[:2] != (season, week):
+        espn = _espn().get((season, week))
+        if espn is None:
             return None
         source = "espn"
-        teams = {t: espn[2].get(t, []) for t in (home, away)}
+        teams = {t: espn.get(t, []) for t in (home, away)}
 
     home_r, away_r = _team_report(teams[home]), _team_report(teams[away])
     logit = INJURY_LOGIT_PER_POINT * (home_r["burden"] - away_r["burden"])

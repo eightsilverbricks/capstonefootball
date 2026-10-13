@@ -1,752 +1,1553 @@
 {
  "season": 2026,
- "week": 6,
- "teams": {
-  "DEN": [
-   {
-    "name": "Riley Moss",
-    "team": "DEN",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Talanoa Hufanga",
-    "team": "DEN",
-    "position": "S",
-    "status": "Questionable"
-   },
-   {
-    "name": "Sai'vion Jones",
-    "team": "DEN",
-    "position": "DE",
-    "status": "Questionable"
-   },
-   {
-    "name": "Pat Surtain II",
-    "team": "DEN",
-    "position": "CB",
-    "status": "Out"
-   }
-  ],
-  "SEA": [
-   {
-    "name": "Drew Lock",
-    "team": "SEA",
-    "position": "QB",
-    "status": "Questionable"
-   },
-   {
-    "name": "Drake Thomas",
-    "team": "SEA",
-    "position": "LB",
-    "status": "Questionable"
-   },
-   {
-    "name": "Leonard Williams",
-    "team": "SEA",
-    "position": "DT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Beau Stephens",
-    "team": "SEA",
-    "position": "G",
-    "status": "Questionable"
-   }
-  ],
-  "JAX": [
-   {
-    "name": "Eric Murray",
-    "team": "JAX",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Anton Harrison",
-    "team": "JAX",
-    "position": "OT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Montaric Brown",
-    "team": "JAX",
-    "position": "CB",
-    "status": "Questionable"
-   },
-   {
-    "name": "Ross Matiscik",
-    "team": "JAX",
-    "position": "LS",
-    "status": "Questionable"
-   }
-  ],
-  "HOU": [
-   {
-    "name": "Jalen Pitre",
-    "team": "HOU",
-    "position": "S",
-    "status": "Doubtful"
-   },
-   {
-    "name": "David Montgomery",
-    "team": "HOU",
-    "position": "RB",
-    "status": "Doubtful"
-   }
-  ],
-  "ATL": [
-   {
-    "name": "Michael Penix Jr.",
-    "team": "ATL",
-    "position": "QB",
-    "status": "Questionable"
-   },
-   {
-    "name": "Za'Darius Smith",
-    "team": "ATL",
-    "position": "DE",
-    "status": "Out"
-   },
-   {
-    "name": "C.J. Henderson",
-    "team": "ATL",
-    "position": "CB",
-    "status": "Questionable"
-   }
-  ],
-  "CHI": [
-   {
-    "name": "Kyle Monangai",
-    "team": "CHI",
-    "position": "RB",
-    "status": "Out"
-   },
-   {
-    "name": "Keyshaun Elliott",
-    "team": "CHI",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Caleb Williams",
-    "team": "CHI",
-    "position": "QB",
-    "status": "Out"
-   },
-   {
-    "name": "Dayo Odeyingbo",
-    "team": "CHI",
-    "position": "DE",
-    "status": "Questionable"
-   }
-  ],
-  "CLE": [
-   {
-    "name": "Tylan Wallace",
-    "team": "CLE",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Carsen Ryan",
-    "team": "CLE",
-    "position": "TE",
-    "status": "Out"
-   },
-   {
-    "name": "Teven Jenkins",
-    "team": "CLE",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "Mason Graham",
-    "team": "CLE",
-    "position": "DT",
-    "status": "Out"
-   },
-   {
-    "name": "Mike Hall Jr.",
-    "team": "CLE",
-    "position": "DT",
-    "status": "Out"
-   }
-  ],
-  "BAL": [
-   {
-    "name": "Cam Jurgens",
-    "team": "BAL",
-    "position": "C",
-    "status": "Out"
-   },
-   {
-    "name": "Lamar Jackson",
-    "team": "BAL",
-    "position": "QB",
-    "status": "Out"
-   },
-   {
-    "name": "Trey Hendrickson",
-    "team": "BAL",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Broderick Washington Jr.",
-    "team": "BAL",
-    "position": "DT",
-    "status": "Questionable"
-   }
-  ],
-  "IND": [
-   {
-    "name": "Darius Slayton",
-    "team": "IND",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Ashton Dulin",
-    "team": "IND",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Jaylon Carlies",
-    "team": "IND",
-    "position": "LB",
-    "status": "Out"
-   }
-  ],
-  "TEN": [
-   {
-    "name": "David Martin-Robinson",
-    "team": "TEN",
-    "position": "TE",
-    "status": "Out"
-   },
-   {
-    "name": "Amani Hooker",
-    "team": "TEN",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Kevin Winston Jr.",
-    "team": "TEN",
-    "position": "S",
-    "status": "Questionable"
-   },
-   {
-    "name": "Cor'Dale Flott",
-    "team": "TEN",
-    "position": "CB",
-    "status": "Questionable"
-   }
-  ],
-  "NE": [
-   {
-    "name": "Karon Prunty",
-    "team": "NE",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Carlton Davis III",
-    "team": "NE",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Christian Gonzalez",
-    "team": "NE",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Channing Canada",
-    "team": "NE",
-    "position": "CB",
-    "status": "Out"
-   }
-  ],
-  "NYJ": [
-   {
-    "name": "Dylan Parham",
-    "team": "NYJ",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "Kiko Mauigoa",
-    "team": "NYJ",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Adonai Mitchell",
-    "team": "NYJ",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Breece Hall",
-    "team": "NYJ",
-    "position": "RB",
-    "status": "Out"
-   },
-   {
-    "name": "Kenyon Sadiq",
-    "team": "NYJ",
-    "position": "TE",
-    "status": "Questionable"
-   }
-  ],
-  "NYG": [
-   {
-    "name": "Jermaine Eluemunor",
-    "team": "NYG",
-    "position": "OT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Colton Hood",
-    "team": "NYG",
-    "position": "CB",
-    "status": "Questionable"
-   },
-   {
-    "name": "Tyler Nubin",
-    "team": "NYG",
-    "position": "S",
-    "status": "Questionable"
-   },
-   {
-    "name": "Jason Pinnock",
-    "team": "NYG",
-    "position": "S",
-    "status": "Out"
-   }
-  ],
-  "NO": [
-   {
-    "name": "Jeremiah Wright",
-    "team": "NO",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "Nathan Shepherd",
-    "team": "NO",
-    "position": "DT",
-    "status": "Out"
-   },
-   {
-    "name": "Kaden Elliss",
-    "team": "NO",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Anfernee Jennings",
-    "team": "NO",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Vernon Broughton",
-    "team": "NO",
-    "position": "DT",
-    "status": "Out"
-   }
-  ],
-  "PHI": [
-   {
-    "name": "DeVonta Smith",
-    "team": "PHI",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Saquon Barkley",
-    "team": "PHI",
-    "position": "RB",
-    "status": "Out"
-   },
-   {
-    "name": "Drew Kendall",
-    "team": "PHI",
-    "position": "C",
-    "status": "Out"
-   },
-   {
-    "name": "Marcus Epps",
-    "team": "PHI",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Jonathan Greenard",
-    "team": "PHI",
-    "position": "LB",
-    "status": "Out"
-   }
-  ],
-  "CAR": [
-   {
-    "name": "Taylor Moton",
-    "team": "CAR",
-    "position": "OT",
-    "status": "Out"
-   },
-   {
-    "name": "Tershawn Wharton",
-    "team": "CAR",
-    "position": "DT",
-    "status": "Out"
-   },
-   {
-    "name": "Jalen Coker",
-    "team": "CAR",
-    "position": "WR",
-    "status": "Questionable"
-   },
-   {
-    "name": "Cam Jackson",
-    "team": "CAR",
-    "position": "DT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Damien Lewis",
-    "team": "CAR",
-    "position": "G",
-    "status": "Questionable"
-   }
-  ],
-  "TB": [
-   {
-    "name": "Antoine Winfield Jr.",
-    "team": "TB",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Baker Mayfield",
-    "team": "TB",
-    "position": "QB",
-    "status": "Out"
-   },
-   {
-    "name": "Benjamin Morrison",
-    "team": "TB",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "SirVocea Dennis",
-    "team": "TB",
-    "position": "LB",
-    "status": "Out"
-   }
-  ],
-  "PIT": [
-   {
-    "name": "Ben Skowronek",
-    "team": "PIT",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Rico Dowdle",
-    "team": "PIT",
-    "position": "RB",
-    "status": "Out"
-   },
-   {
-    "name": "Jamel Dean",
-    "team": "PIT",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Roman Wilson",
-    "team": "PIT",
-    "position": "WR",
-    "status": "Out"
-   }
-  ],
-  "LA": [
-   {
-    "name": "Ty Simpson",
-    "team": "LA",
-    "position": "QB",
-    "status": "Out"
-   },
-   {
-    "name": "Max Klare",
-    "team": "LA",
-    "position": "TE",
-    "status": "Out"
-   },
-   {
-    "name": "Larrell Murchison",
-    "team": "LA",
-    "position": "DE",
-    "status": "Out"
-   },
-   {
-    "name": "Bill Murray",
-    "team": "LA",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "CJ Daniels",
-    "team": "LA",
-    "position": "WR",
-    "status": "Out"
-   }
-  ],
-  "ARI": [
-   {
-    "name": "Andrew Wingard",
-    "team": "ARI",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Wydett Williams Jr.",
-    "team": "ARI",
-    "position": "S",
-    "status": "Questionable"
-   }
-  ],
-  "KC": [
-   {
-    "name": "Josh Simmons",
-    "team": "KC",
-    "position": "OT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Rashee Rice",
-    "team": "KC",
-    "position": "WR",
-    "status": "Questionable"
-   },
-   {
-    "name": "Omarr Norman-Lott",
-    "team": "KC",
-    "position": "DT",
-    "status": "Out"
-   }
-  ],
-  "LAC": [
-   {
-    "name": "Tre' Harris",
-    "team": "LAC",
-    "position": "WR",
-    "status": "Doubtful"
-   },
-   {
-    "name": "Brenen Thompson",
-    "team": "LAC",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Quentin Johnston",
-    "team": "LAC",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Donte Jackson",
-    "team": "LAC",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Derwin James Jr.",
-    "team": "LAC",
-    "position": "S",
-    "status": "Out"
-   }
-  ],
-  "LV": [
-   {
-    "name": "Tonka Hemingway",
-    "team": "LV",
-    "position": "DT",
-    "status": "Questionable"
-   },
-   {
-    "name": "Jalen Nailor",
-    "team": "LV",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Trey Zuhn III",
-    "team": "LV",
-    "position": "C",
-    "status": "Out"
-   },
-   {
-    "name": "Patrick Johnson",
-    "team": "LV",
-    "position": "DE",
-    "status": "Questionable"
-   }
-  ],
-  "BUF": [
-   {
-    "name": "Landon Jackson",
-    "team": "BUF",
-    "position": "DE",
-    "status": "Out"
-   },
-   {
-    "name": "Dee Alford",
-    "team": "BUF",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Joshua Palmer",
-    "team": "BUF",
-    "position": "WR",
-    "status": "Out"
-   },
-   {
-    "name": "Ar'maj Reed-Adams",
-    "team": "BUF",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "Ed Oliver",
-    "team": "BUF",
-    "position": "DT",
-    "status": "Out"
-   }
-  ],
-  "GB": [
-   {
-    "name": "Jacob Monk",
-    "team": "GB",
-    "position": "C",
-    "status": "Out"
-   },
-   {
-    "name": "Aaron Banks",
-    "team": "GB",
-    "position": "G",
-    "status": "Out"
-   },
-   {
-    "name": "Anthony Campbell",
-    "team": "GB",
-    "position": "DT",
-    "status": "Out"
-   },
-   {
-    "name": "Micah Parsons",
-    "team": "GB",
-    "position": "DE",
-    "status": "Out"
-   },
-   {
-    "name": "Javon Hargrave",
-    "team": "GB",
-    "position": "DT",
-    "status": "Out"
-   }
-  ],
-  "DAL": [
-   {
-    "name": "Drew Shelton",
-    "team": "DAL",
-    "position": "OT",
-    "status": "Out"
-   },
-   {
-    "name": "DeMarvion Overshown",
-    "team": "DAL",
-    "position": "LB",
-    "status": "Out"
-   },
-   {
-    "name": "Joey Porter Jr.",
-    "team": "DAL",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Cobie Durant",
-    "team": "DAL",
-    "position": "CB",
-    "status": "Out"
-   },
-   {
-    "name": "Tyler Guyton",
-    "team": "DAL",
-    "position": "OT",
-    "status": "Questionable"
-   }
-  ],
-  "SF": [
-   {
-    "name": "James Thompson Jr.",
-    "team": "SF",
-    "position": "DT",
-    "status": "Out"
-   },
-   {
-    "name": "Kyle Juszczyk",
-    "team": "SF",
-    "position": "FB",
-    "status": "Out"
-   },
-   {
-    "name": "Nick Bosa",
-    "team": "SF",
-    "position": "DE",
-    "status": "Out"
-   }
-  ],
-  "WAS": [
-   {
-    "name": "Charles Omenihu",
-    "team": "WAS",
-    "position": "DE",
-    "status": "Out"
-   },
-   {
-    "name": "Tyler Owens",
-    "team": "WAS",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Marcus Mariota",
-    "team": "WAS",
-    "position": "QB",
-    "status": "Out"
-   },
-   {
-    "name": "Nick Cross",
-    "team": "WAS",
-    "position": "S",
-    "status": "Out"
-   },
-   {
-    "name": "Stefon Diggs",
-    "team": "WAS",
-    "position": "WR",
-    "status": "Out"
-   }
-  ]
+ "weeks": {
+  "5": {
+   "LA": [
+    {
+     "name": "Ty Simpson",
+     "team": "LA",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Max Klare",
+     "team": "LA",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Larrell Murchison",
+     "team": "LA",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Bill Murray",
+     "team": "LA",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "CJ Daniels",
+     "team": "LA",
+     "position": "WR",
+     "status": "Out"
+    }
+   ],
+   "BUF": [
+    {
+     "name": "Landon Jackson",
+     "team": "BUF",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Dee Alford",
+     "team": "BUF",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Joshua Palmer",
+     "team": "BUF",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Ar'maj Reed-Adams",
+     "team": "BUF",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Ed Oliver",
+     "team": "BUF",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "DAL": [
+    {
+     "name": "Drew Shelton",
+     "team": "DAL",
+     "position": "OT",
+     "status": "Out"
+    },
+    {
+     "name": "DeMarvion Overshown",
+     "team": "DAL",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Joey Porter Jr.",
+     "team": "DAL",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Cobie Durant",
+     "team": "DAL",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Tyler Guyton",
+     "team": "DAL",
+     "position": "OT",
+     "status": "Questionable"
+    }
+   ],
+   "TB": [
+    {
+     "name": "Antoine Winfield Jr.",
+     "team": "TB",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Baker Mayfield",
+     "team": "TB",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Benjamin Morrison",
+     "team": "TB",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "SirVocea Dennis",
+     "team": "TB",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "JAX": [
+    {
+     "name": "Eric Murray",
+     "team": "JAX",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Anton Harrison",
+     "team": "JAX",
+     "position": "OT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Montaric Brown",
+     "team": "JAX",
+     "position": "CB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Ross Matiscik",
+     "team": "JAX",
+     "position": "LS",
+     "status": "Questionable"
+    }
+   ],
+   "PHI": [
+    {
+     "name": "DeVonta Smith",
+     "team": "PHI",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Saquon Barkley",
+     "team": "PHI",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Drew Kendall",
+     "team": "PHI",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Marcus Epps",
+     "team": "PHI",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Jonathan Greenard",
+     "team": "PHI",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "GB": [
+    {
+     "name": "Jacob Monk",
+     "team": "GB",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Aaron Banks",
+     "team": "GB",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Anthony Campbell",
+     "team": "GB",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Micah Parsons",
+     "team": "GB",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Javon Hargrave",
+     "team": "GB",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "CHI": [
+    {
+     "name": "Kyle Monangai",
+     "team": "CHI",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Keyshaun Elliott",
+     "team": "CHI",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Caleb Williams",
+     "team": "CHI",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Dayo Odeyingbo",
+     "team": "CHI",
+     "position": "DE",
+     "status": "Questionable"
+    }
+   ],
+   "TEN": [
+    {
+     "name": "David Martin-Robinson",
+     "team": "TEN",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Amani Hooker",
+     "team": "TEN",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Kevin Winston Jr.",
+     "team": "TEN",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Cor'Dale Flott",
+     "team": "TEN",
+     "position": "CB",
+     "status": "Questionable"
+    }
+   ],
+   "HOU": [
+    {
+     "name": "Jalen Pitre",
+     "team": "HOU",
+     "position": "S",
+     "status": "Doubtful"
+    },
+    {
+     "name": "David Montgomery",
+     "team": "HOU",
+     "position": "RB",
+     "status": "Doubtful"
+    }
+   ],
+   "MIA": [
+    {
+     "name": "Reese Taylor",
+     "team": "MIA",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Justin Joly",
+     "team": "MIA",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Caleb Douglas",
+     "team": "MIA",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Robert Beal Jr.",
+     "team": "MIA",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "JuJu Brents",
+     "team": "MIA",
+     "position": "CB",
+     "status": "Questionable"
+    }
+   ],
+   "CIN": [
+    {
+     "name": "Tanner Hudson",
+     "team": "CIN",
+     "position": "TE",
+     "status": "Questionable"
+    },
+    {
+     "name": "Colbie Young",
+     "team": "CIN",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Kyle Dugger",
+     "team": "CIN",
+     "position": "S",
+     "status": "Out"
+    }
+   ],
+   "NE": [
+    {
+     "name": "Karon Prunty",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Carlton Davis III",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Christian Gonzalez",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Channing Canada",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    }
+   ],
+   "LV": [
+    {
+     "name": "Tonka Hemingway",
+     "team": "LV",
+     "position": "DT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Jalen Nailor",
+     "team": "LV",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Trey Zuhn III",
+     "team": "LV",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Patrick Johnson",
+     "team": "LV",
+     "position": "DE",
+     "status": "Questionable"
+    }
+   ],
+   "NO": [
+    {
+     "name": "Jeremiah Wright",
+     "team": "NO",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Nathan Shepherd",
+     "team": "NO",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Kaden Elliss",
+     "team": "NO",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Anfernee Jennings",
+     "team": "NO",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Vernon Broughton",
+     "team": "NO",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "MIN": [
+    {
+     "name": "Christian Darrisaw",
+     "team": "MIN",
+     "position": "OT",
+     "status": "Out"
+    },
+    {
+     "name": "Charles Demmings",
+     "team": "MIN",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Jordan Addison",
+     "team": "MIN",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "T.J. Hockenson",
+     "team": "MIN",
+     "position": "TE",
+     "status": "Questionable"
+    }
+   ],
+   "NYJ": [
+    {
+     "name": "Dylan Parham",
+     "team": "NYJ",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Kiko Mauigoa",
+     "team": "NYJ",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Adonai Mitchell",
+     "team": "NYJ",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Breece Hall",
+     "team": "NYJ",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Kenyon Sadiq",
+     "team": "NYJ",
+     "position": "TE",
+     "status": "Questionable"
+    }
+   ],
+   "CLE": [
+    {
+     "name": "Tylan Wallace",
+     "team": "CLE",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Carsen Ryan",
+     "team": "CLE",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Teven Jenkins",
+     "team": "CLE",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Mason Graham",
+     "team": "CLE",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Mike Hall Jr.",
+     "team": "CLE",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "PIT": [
+    {
+     "name": "Ben Skowronek",
+     "team": "PIT",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Rico Dowdle",
+     "team": "PIT",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Jamel Dean",
+     "team": "PIT",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Roman Wilson",
+     "team": "PIT",
+     "position": "WR",
+     "status": "Out"
+    }
+   ],
+   "IND": [
+    {
+     "name": "Darius Slayton",
+     "team": "IND",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Ashton Dulin",
+     "team": "IND",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Jaylon Carlies",
+     "team": "IND",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "WAS": [
+    {
+     "name": "Charles Omenihu",
+     "team": "WAS",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Tyler Owens",
+     "team": "WAS",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Marcus Mariota",
+     "team": "WAS",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Nick Cross",
+     "team": "WAS",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Stefon Diggs",
+     "team": "WAS",
+     "position": "WR",
+     "status": "Out"
+    }
+   ],
+   "NYG": [
+    {
+     "name": "Jermaine Eluemunor",
+     "team": "NYG",
+     "position": "OT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Colton Hood",
+     "team": "NYG",
+     "position": "CB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Tyler Nubin",
+     "team": "NYG",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Jason Pinnock",
+     "team": "NYG",
+     "position": "S",
+     "status": "Out"
+    }
+   ],
+   "LAC": [
+    {
+     "name": "Tre' Harris",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Doubtful"
+    },
+    {
+     "name": "Brenen Thompson",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Quentin Johnston",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Donte Jackson",
+     "team": "LAC",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Derwin James Jr.",
+     "team": "LAC",
+     "position": "S",
+     "status": "Out"
+    }
+   ],
+   "DEN": [
+    {
+     "name": "Riley Moss",
+     "team": "DEN",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Talanoa Hufanga",
+     "team": "DEN",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Sai'vion Jones",
+     "team": "DEN",
+     "position": "DE",
+     "status": "Questionable"
+    },
+    {
+     "name": "Pat Surtain II",
+     "team": "DEN",
+     "position": "CB",
+     "status": "Out"
+    }
+   ],
+   "ARI": [
+    {
+     "name": "Andrew Wingard",
+     "team": "ARI",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Wydett Williams Jr.",
+     "team": "ARI",
+     "position": "S",
+     "status": "Questionable"
+    }
+   ],
+   "DET": [
+    {
+     "name": "Devin White",
+     "team": "DET",
+     "position": "LB",
+     "status": "Doubtful"
+    },
+    {
+     "name": "Tom Kennedy",
+     "team": "DET",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Rock Ya-Sin",
+     "team": "DET",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Ben Bartch",
+     "team": "DET",
+     "position": "G",
+     "status": "Out"
+    }
+   ],
+   "SEA": [
+    {
+     "name": "Drew Lock",
+     "team": "SEA",
+     "position": "QB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Drake Thomas",
+     "team": "SEA",
+     "position": "LB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Leonard Williams",
+     "team": "SEA",
+     "position": "DT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Beau Stephens",
+     "team": "SEA",
+     "position": "G",
+     "status": "Questionable"
+    }
+   ],
+   "SF": [
+    {
+     "name": "James Thompson Jr.",
+     "team": "SF",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Kyle Juszczyk",
+     "team": "SF",
+     "position": "FB",
+     "status": "Out"
+    },
+    {
+     "name": "Nick Bosa",
+     "team": "SF",
+     "position": "DE",
+     "status": "Out"
+    }
+   ],
+   "ATL": [
+    {
+     "name": "Michael Penix Jr.",
+     "team": "ATL",
+     "position": "QB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Za'Darius Smith",
+     "team": "ATL",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "C.J. Henderson",
+     "team": "ATL",
+     "position": "CB",
+     "status": "Questionable"
+    }
+   ],
+   "BAL": [
+    {
+     "name": "Cam Jurgens",
+     "team": "BAL",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Lamar Jackson",
+     "team": "BAL",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Trey Hendrickson",
+     "team": "BAL",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Broderick Washington Jr.",
+     "team": "BAL",
+     "position": "DT",
+     "status": "Questionable"
+    }
+   ]
+  },
+  "6": {
+   "DEN": [
+    {
+     "name": "Riley Moss",
+     "team": "DEN",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Talanoa Hufanga",
+     "team": "DEN",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Sai'vion Jones",
+     "team": "DEN",
+     "position": "DE",
+     "status": "Questionable"
+    },
+    {
+     "name": "Pat Surtain II",
+     "team": "DEN",
+     "position": "CB",
+     "status": "Out"
+    }
+   ],
+   "SEA": [
+    {
+     "name": "Drew Lock",
+     "team": "SEA",
+     "position": "QB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Drake Thomas",
+     "team": "SEA",
+     "position": "LB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Leonard Williams",
+     "team": "SEA",
+     "position": "DT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Beau Stephens",
+     "team": "SEA",
+     "position": "G",
+     "status": "Questionable"
+    }
+   ],
+   "JAX": [
+    {
+     "name": "Eric Murray",
+     "team": "JAX",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Anton Harrison",
+     "team": "JAX",
+     "position": "OT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Montaric Brown",
+     "team": "JAX",
+     "position": "CB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Ross Matiscik",
+     "team": "JAX",
+     "position": "LS",
+     "status": "Questionable"
+    }
+   ],
+   "HOU": [
+    {
+     "name": "Jalen Pitre",
+     "team": "HOU",
+     "position": "S",
+     "status": "Doubtful"
+    },
+    {
+     "name": "David Montgomery",
+     "team": "HOU",
+     "position": "RB",
+     "status": "Doubtful"
+    }
+   ],
+   "ATL": [
+    {
+     "name": "Michael Penix Jr.",
+     "team": "ATL",
+     "position": "QB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Za'Darius Smith",
+     "team": "ATL",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "C.J. Henderson",
+     "team": "ATL",
+     "position": "CB",
+     "status": "Questionable"
+    }
+   ],
+   "CHI": [
+    {
+     "name": "Kyle Monangai",
+     "team": "CHI",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Keyshaun Elliott",
+     "team": "CHI",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Caleb Williams",
+     "team": "CHI",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Dayo Odeyingbo",
+     "team": "CHI",
+     "position": "DE",
+     "status": "Questionable"
+    }
+   ],
+   "CLE": [
+    {
+     "name": "Tylan Wallace",
+     "team": "CLE",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Carsen Ryan",
+     "team": "CLE",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Teven Jenkins",
+     "team": "CLE",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Mason Graham",
+     "team": "CLE",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Mike Hall Jr.",
+     "team": "CLE",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "BAL": [
+    {
+     "name": "Cam Jurgens",
+     "team": "BAL",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Lamar Jackson",
+     "team": "BAL",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Trey Hendrickson",
+     "team": "BAL",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Broderick Washington Jr.",
+     "team": "BAL",
+     "position": "DT",
+     "status": "Questionable"
+    }
+   ],
+   "IND": [
+    {
+     "name": "Darius Slayton",
+     "team": "IND",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Ashton Dulin",
+     "team": "IND",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Jaylon Carlies",
+     "team": "IND",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "TEN": [
+    {
+     "name": "David Martin-Robinson",
+     "team": "TEN",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Amani Hooker",
+     "team": "TEN",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Kevin Winston Jr.",
+     "team": "TEN",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Cor'Dale Flott",
+     "team": "TEN",
+     "position": "CB",
+     "status": "Questionable"
+    }
+   ],
+   "NE": [
+    {
+     "name": "Karon Prunty",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Carlton Davis III",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Christian Gonzalez",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Channing Canada",
+     "team": "NE",
+     "position": "CB",
+     "status": "Out"
+    }
+   ],
+   "NYJ": [
+    {
+     "name": "Dylan Parham",
+     "team": "NYJ",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Kiko Mauigoa",
+     "team": "NYJ",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Adonai Mitchell",
+     "team": "NYJ",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Breece Hall",
+     "team": "NYJ",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Kenyon Sadiq",
+     "team": "NYJ",
+     "position": "TE",
+     "status": "Questionable"
+    }
+   ],
+   "NYG": [
+    {
+     "name": "Jermaine Eluemunor",
+     "team": "NYG",
+     "position": "OT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Colton Hood",
+     "team": "NYG",
+     "position": "CB",
+     "status": "Questionable"
+    },
+    {
+     "name": "Tyler Nubin",
+     "team": "NYG",
+     "position": "S",
+     "status": "Questionable"
+    },
+    {
+     "name": "Jason Pinnock",
+     "team": "NYG",
+     "position": "S",
+     "status": "Out"
+    }
+   ],
+   "NO": [
+    {
+     "name": "Jeremiah Wright",
+     "team": "NO",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Nathan Shepherd",
+     "team": "NO",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Kaden Elliss",
+     "team": "NO",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Anfernee Jennings",
+     "team": "NO",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Vernon Broughton",
+     "team": "NO",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "PHI": [
+    {
+     "name": "DeVonta Smith",
+     "team": "PHI",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Saquon Barkley",
+     "team": "PHI",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Drew Kendall",
+     "team": "PHI",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Marcus Epps",
+     "team": "PHI",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Jonathan Greenard",
+     "team": "PHI",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "CAR": [
+    {
+     "name": "Taylor Moton",
+     "team": "CAR",
+     "position": "OT",
+     "status": "Out"
+    },
+    {
+     "name": "Tershawn Wharton",
+     "team": "CAR",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Jalen Coker",
+     "team": "CAR",
+     "position": "WR",
+     "status": "Questionable"
+    },
+    {
+     "name": "Cam Jackson",
+     "team": "CAR",
+     "position": "DT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Damien Lewis",
+     "team": "CAR",
+     "position": "G",
+     "status": "Questionable"
+    }
+   ],
+   "TB": [
+    {
+     "name": "Antoine Winfield Jr.",
+     "team": "TB",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Baker Mayfield",
+     "team": "TB",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Benjamin Morrison",
+     "team": "TB",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "SirVocea Dennis",
+     "team": "TB",
+     "position": "LB",
+     "status": "Out"
+    }
+   ],
+   "PIT": [
+    {
+     "name": "Ben Skowronek",
+     "team": "PIT",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Rico Dowdle",
+     "team": "PIT",
+     "position": "RB",
+     "status": "Out"
+    },
+    {
+     "name": "Jamel Dean",
+     "team": "PIT",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Roman Wilson",
+     "team": "PIT",
+     "position": "WR",
+     "status": "Out"
+    }
+   ],
+   "LA": [
+    {
+     "name": "Ty Simpson",
+     "team": "LA",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Max Klare",
+     "team": "LA",
+     "position": "TE",
+     "status": "Out"
+    },
+    {
+     "name": "Larrell Murchison",
+     "team": "LA",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Bill Murray",
+     "team": "LA",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "CJ Daniels",
+     "team": "LA",
+     "position": "WR",
+     "status": "Out"
+    }
+   ],
+   "ARI": [
+    {
+     "name": "Andrew Wingard",
+     "team": "ARI",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Wydett Williams Jr.",
+     "team": "ARI",
+     "position": "S",
+     "status": "Questionable"
+    }
+   ],
+   "KC": [
+    {
+     "name": "Josh Simmons",
+     "team": "KC",
+     "position": "OT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Rashee Rice",
+     "team": "KC",
+     "position": "WR",
+     "status": "Questionable"
+    },
+    {
+     "name": "Omarr Norman-Lott",
+     "team": "KC",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "LAC": [
+    {
+     "name": "Tre' Harris",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Doubtful"
+    },
+    {
+     "name": "Brenen Thompson",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Quentin Johnston",
+     "team": "LAC",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Donte Jackson",
+     "team": "LAC",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Derwin James Jr.",
+     "team": "LAC",
+     "position": "S",
+     "status": "Out"
+    }
+   ],
+   "LV": [
+    {
+     "name": "Tonka Hemingway",
+     "team": "LV",
+     "position": "DT",
+     "status": "Questionable"
+    },
+    {
+     "name": "Jalen Nailor",
+     "team": "LV",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Trey Zuhn III",
+     "team": "LV",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Patrick Johnson",
+     "team": "LV",
+     "position": "DE",
+     "status": "Questionable"
+    }
+   ],
+   "BUF": [
+    {
+     "name": "Landon Jackson",
+     "team": "BUF",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Dee Alford",
+     "team": "BUF",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Joshua Palmer",
+     "team": "BUF",
+     "position": "WR",
+     "status": "Out"
+    },
+    {
+     "name": "Ar'maj Reed-Adams",
+     "team": "BUF",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Ed Oliver",
+     "team": "BUF",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "GB": [
+    {
+     "name": "Jacob Monk",
+     "team": "GB",
+     "position": "C",
+     "status": "Out"
+    },
+    {
+     "name": "Aaron Banks",
+     "team": "GB",
+     "position": "G",
+     "status": "Out"
+    },
+    {
+     "name": "Anthony Campbell",
+     "team": "GB",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Micah Parsons",
+     "team": "GB",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Javon Hargrave",
+     "team": "GB",
+     "position": "DT",
+     "status": "Out"
+    }
+   ],
+   "DAL": [
+    {
+     "name": "Drew Shelton",
+     "team": "DAL",
+     "position": "OT",
+     "status": "Out"
+    },
+    {
+     "name": "DeMarvion Overshown",
+     "team": "DAL",
+     "position": "LB",
+     "status": "Out"
+    },
+    {
+     "name": "Joey Porter Jr.",
+     "team": "DAL",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Cobie Durant",
+     "team": "DAL",
+     "position": "CB",
+     "status": "Out"
+    },
+    {
+     "name": "Tyler Guyton",
+     "team": "DAL",
+     "position": "OT",
+     "status": "Questionable"
+    }
+   ],
+   "SF": [
+    {
+     "name": "James Thompson Jr.",
+     "team": "SF",
+     "position": "DT",
+     "status": "Out"
+    },
+    {
+     "name": "Kyle Juszczyk",
+     "team": "SF",
+     "position": "FB",
+     "status": "Out"
+    },
+    {
+     "name": "Nick Bosa",
+     "team": "SF",
+     "position": "DE",
+     "status": "Out"
+    }
+   ],
+   "WAS": [
+    {
+     "name": "Charles Omenihu",
+     "team": "WAS",
+     "position": "DE",
+     "status": "Out"
+    },
+    {
+     "name": "Tyler Owens",
+     "team": "WAS",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Marcus Mariota",
+     "team": "WAS",
+     "position": "QB",
+     "status": "Out"
+    },
+    {
+     "name": "Nick Cross",
+     "team": "WAS",
+     "position": "S",
+     "status": "Out"
+    },
+    {
+     "name": "Stefon Diggs",
+     "team": "WAS",
+     "position": "WR",
+     "status": "Out"
+    }
+   ]
+  }
  }
 }
