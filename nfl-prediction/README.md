@@ -79,6 +79,26 @@ must be re-exported and committed:
 `add_actual_results.py` is required — without the outcome fields the frontend
 can never resolve a pick, so records and season pages stay empty.
 
+## Weekly refresh (live season)
+
+Run after each completed week (Monday night / Tuesday), then again before
+kickoff for late injuries (`espn_extras.py` + export only):
+
+```sh
+.venv/bin/python src/download_data.py
+.venv/bin/python src/build_team_game_stats.py
+PYTHONPATH=. .venv/bin/python src/build_training_table.py
+.venv/bin/python src/build_availability.py        # nflverse injury reports
+.venv/bin/python src/build_player_context.py
+.venv/bin/python src/build_game_context.py
+.venv/bin/python src/espn_extras.py --weeks <next week>   # key players + this week's injury list
+.venv/bin/python src/export_predictions.py        # games already kicked off keep their published pick
+.venv/bin/python src/patch_live_week.py --results-through-week <last completed week>
+```
+
+Injuries move Clark's % through `src/injury_adjust.py` (see its docstring for
+how the coefficient was fitted; re-fit with `--fit`).
+
 ## Tests
 
 ```sh
