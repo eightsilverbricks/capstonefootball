@@ -65,3 +65,15 @@
   .cr-drawer th, .cr-drawer td { padding: 7px 10px; }
 }
 @media (prefers-reduced-motion: reduce) { .cr-bar span { animation: none; } }
+
+.cr-inj { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 12px; font-family: var(--font-sans); font-size: 14px; }
+.cr-inj > div { padding: 12px 14px; border: 1px solid var(--rule); border-radius: var(--radius-md); }
+.cr-inj h3 { display: flex; align-items: center; gap: 6px; font-weight: 800; font-size: 14px; }
+.cr-inj ul { list-style: none; padding: 0; margin-top: 8px; display: grid; gap: 6px; }
+.cr-inj li { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+.cr-inj li span { color: var(--ink-3); font-size: 12.5px; }
+.cr-inj em { margin-left: auto; font-style: normal; font-size: 12px; font-weight: 800; }
+.cr-inj em.out { color: var(--loss); }
+.cr-inj em.doubtful { color: var(--clark-solid); }
+.cr-inj em.questionable { color: var(--ink-3); }
+@media (max-width: 767px) { .cr-inj { grid-template-columns: minmax(0, 1fr); } }

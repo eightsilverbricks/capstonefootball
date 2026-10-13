@@ -7,14 +7,14 @@ RAW_DIR.mkdir(parents=True, exist_ok=True)
 # Schedules run one season ahead of play-by-play: the upcoming season's fixtures
 # are published months before a snap is taken, and those unplayed rows are what
 # the model predicts. nflreadpy raises if asked for play-by-play it does not
-# have, so the two ranges are deliberately separate - keep PBP_SEASONS ending at
-# the last *completed* season.
+# have, so the two ranges are deliberately separate - PBP_SEASONS may include the live season (nflverse serves its played weeks);
+# it must not go past the season being played.
 # History starts at 2006, not earlier: cpoe, pass_oe and xpass are all NaN before
 # then (nflfastR's completion/pass-rate models need air-yards charting that only
 # exists from 2006), and the fill-zero pass in build_team_game_stats.py would
 # quietly turn those NaNs into league-average-looking zeros for every old season.
 FIRST_SEASON = 2006
-PBP_SEASONS = list(range(FIRST_SEASON, 2026))       # through 2025, all played
+PBP_SEASONS = list(range(FIRST_SEASON, 2027))       # through 2026; the live season has only its played weeks
 SCHEDULE_SEASONS = list(range(FIRST_SEASON, 2027))  # through 2026, incl. fixtures
 
 def main():

@@ -23,7 +23,7 @@ PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
 FIRST_SEASON = 2009  # first season with injury reports in nflverse
-LAST_SEASON = 2025
+LAST_SEASON = 2026  # the live season: reports through the latest week
 
 # Rough positional value. A missing quarterback is not one missing player, and a
 # flat headcount of injuries would say it is.
@@ -38,9 +38,21 @@ DEFAULT_WEIGHT = 1.0
 STATUS_WEIGHT = {"Out": 1.0, "Doubtful": 0.75, "Questionable": 0.25}
 
 
-def build_injury_features(seasons: list[int]) -> pd.DataFrame:
+def load_injury_reports(seasons: list[int]) -> pd.DataFrame:
     inj = nfl.load_injuries(seasons=seasons).to_pandas()
-    inj = inj[inj["report_status"].notna()].copy()
+    return inj[inj["report_status"].notna()].copy()
+
+
+def build_injury_players(inj: pd.DataFrame) -> pd.DataFrame:
+    """Who is on each team-week report, so the Clark Report can name them."""
+    listed = inj[inj["report_status"].isin(list(STATUS_WEIGHT))]
+    return listed.rename(columns={"full_name": "name", "report_status": "status"})[
+        ["season", "week", "team", "name", "position", "status"]
+    ].reset_index(drop=True)
+
+
+def build_injury_features(inj: pd.DataFrame) -> pd.DataFrame:
+    inj = inj.copy()
 
     inj["pos_weight"] = inj["position"].map(POSITION_WEIGHT).fillna(DEFAULT_WEIGHT)
     inj["status_weight"] = inj["report_status"].map(STATUS_WEIGHT).fillna(0.0)
@@ -78,8 +90,12 @@ def main() -> None:
     seasons = list(range(FIRST_SEASON, LAST_SEASON + 1))
 
     print(f"Loading injuries {FIRST_SEASON}-{LAST_SEASON}...")
-    injuries = build_injury_features(seasons)
+    reports = load_injury_reports(seasons)
+    injuries = build_injury_features(reports)
     print(f"  {len(injuries)} team-weeks")
+    players = build_injury_players(reports)
+    players.to_parquet(PROCESSED_DIR / "injury_players.parquet", index=False)
+    print(f"  {len(players)} listed players -> injury_players.parquet")
 
     print("Loading depth charts...")
     qb = build_qb_change(seasons)

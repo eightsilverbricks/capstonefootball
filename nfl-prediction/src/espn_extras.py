@@ -31,6 +31,7 @@ from pathlib import Path
 THIS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = THIS_DIR.parent.parent
 PREDICTIONS_PATH = REPO_ROOT / "primary-ui" / "public" / "predictions.json"
+INJURY_CACHE_PATH = THIS_DIR.parent / "data" / "processed" / "current_injuries.json"
 
 SCOREBOARD_URL = ("https://site.api.espn.com/apis/site/v2/sports/football/nfl/"
                   "scoreboard?week={week}&seasontype=2&dates={season}")
@@ -108,6 +109,22 @@ def parse_key_players(summary: dict) -> list[dict]:
     return [p for p in players if p["name"]]
 
 
+def parse_injury_report(summary: dict) -> list[dict]:
+    """Every listed Out / Doubtful / Questionable player, uncapped (for Clark's injury factor)."""
+    report: list[dict] = []
+    for team_block in summary.get("injuries") or []:
+        team = nflverse_abbr((team_block.get("team") or {}).get("abbreviation", ""))
+        for item in team_block.get("injuries") or []:
+            athlete = item.get("athlete") or {}
+            if item.get("status") in STATUS_RANK and athlete.get("displayName"):
+                report.append({
+                    "name": athlete["displayName"], "team": team,
+                    "position": (athlete.get("position") or {}).get("abbreviation") or "",
+                    "status": item["status"],
+                })
+    return report
+
+
 def parse_injury_notes(summary: dict) -> list[dict]:
     notes: list[dict] = []
     for team_block in summary.get("injuries") or []:
@@ -147,8 +164,20 @@ def fetch_week(season: int, week: int) -> dict[tuple[str, str], dict]:
             "espn_event_id": str(event["id"]),
             "key_players": parse_key_players(summary),
             "injury_notes": parse_injury_notes(summary),
+            "_injury_report": parse_injury_report(summary),
         }
     return out
+
+
+def write_injury_cache(season: int, week: int, extras: dict[tuple[str, str], dict]) -> None:
+    """Save the full injury list so the export can move Clark's % for this week (injury_adjust.py)."""
+    teams: dict[str, list[dict]] = {}
+    for found in extras.values():
+        for player in found.get("_injury_report") or []:
+            teams.setdefault(player["team"], []).append(player)
+    INJURY_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with open(INJURY_CACHE_PATH, "w", encoding="utf-8") as fh:
+        json.dump({"season": season, "week": week, "teams": teams}, fh, indent=1, ensure_ascii=False)
 
 
 def merge_into_predictions(predictions: list[dict], season: int, week: int,
@@ -159,7 +188,7 @@ def merge_into_predictions(predictions: list[dict], season: int, week: int,
             continue
         found = extras.get((game.get("away_team"), game.get("home_team")))
         if found:
-            game.update(found)
+            game.update({k: v for k, v in found.items() if not k.startswith("_")})
             merged += 1
     return merged
 
@@ -176,6 +205,8 @@ def main() -> None:
     for week in args.weeks:
         extras = fetch_week(args.season, week)
         merged = merge_into_predictions(predictions, args.season, week, extras)
+        if week == min(args.weeks):
+            write_injury_cache(args.season, week, extras)
         print(f"   Week {week}: {merged}/{len(extras)} games updated from ESPN")
 
     with open(PREDICTIONS_PATH, "w", encoding="utf-8") as fh:

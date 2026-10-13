@@ -5495,7 +5495,8 @@ game_id,gameday,weekday,gametime,game_type,location,stadium
 2026_04_DET_CAR,2026-10-04,Sunday,20:20,REG,Home,Bank of America Stadium
 2026_04_ATL_NO,2026-10-05,Monday,20:15,REG,Home,Caesars Superdome
 2026_05_TB_DAL,2026-10-08,Thursday,20:15,REG,Home,AT&T Stadium
-2026_05_PHI_JAX,2026-10-11,Sunday,09:30,REG,Home,Tottenham Hotspur Stadium
+2026_05_PHI_JAX,2026-10-11,Sunday,09:30,REG,Neutral,Tottenham Hotspur Stadium
+2026_05_CHI_GB,2026-10-11,Sunday,13:00,REG,Home,Lambeau Field
 2026_05_CIN_MIA,2026-10-11,Sunday,13:00,REG,Home,Hard Rock Stadium
 2026_05_CLE_NYJ,2026-10-11,Sunday,13:00,REG,Home,MetLife Stadium
 2026_05_HOU_TEN,2026-10-11,Sunday,13:00,REG,Home,Nissan Stadium
@@ -5504,7 +5505,6 @@ game_id,gameday,weekday,gametime,game_type,location,stadium
 2026_05_MIN_NO,2026-10-11,Sunday,13:00,REG,Home,Caesars Superdome
 2026_05_NYG_WAS,2026-10-11,Sunday,13:00,REG,Home,Northwest Stadium
 2026_05_DEN_LAC,2026-10-11,Sunday,16:05,REG,Home,SoFi Stadium
-2026_05_CHI_GB,2026-10-11,Sunday,16:25,REG,Home,Lambeau Field
 2026_05_DET_ARI,2026-10-11,Sunday,16:25,REG,Home,State Farm Stadium
 2026_05_SF_SEA,2026-10-11,Sunday,16:25,REG,Home,Lumen Field
 2026_05_BAL_ATL,2026-10-11,Sunday,20:20,REG,Home,Mercedes-Benz Stadium

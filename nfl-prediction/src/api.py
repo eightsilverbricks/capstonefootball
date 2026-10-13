@@ -14,8 +14,9 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from src.odds import market_view
 from src.factor_prose import (
-    FactorContext, build_factor_prose, LedeContext, build_synthesis_lede,
+    FactorContext, FactorProse, build_factor_prose, LedeContext, build_synthesis_lede,
 )
+from src.injury_adjust import adjust_home_prob, game_injuries
 
 # ---------------------------------------------------------------------------
 # Paths
@@ -296,6 +297,10 @@ def compute_factor_contributions(row: dict) -> dict[str, dict]:
     # the factors can't add up to the pick: a 52% home favorite can have every
     # listed factor leaning away and still win on home field alone.
     raw["Home Field"] = MODEL_INTERCEPT
+    # Injuries sit on top of the model (injury_adjust.py); as a card they keep
+    # the factors summing to the published logit.
+    if row.get("injury_logit"):
+        raw["Injuries"] = float(row["injury_logit"])
 
     max_abs = max(abs(v) for v in raw.values()) or 1.0
 
@@ -828,6 +833,30 @@ def factor_status(strength: float, thresholds: dict) -> str:
     return "NEUTRAL"
 
 
+def injury_prose(row: dict, adv: str, opp: str):
+    """Plain-English card for the injury term (see injury_adjust.py)."""
+    report = row.get("injury_report") or {}
+    side = lambda t: report.get("home" if t == row["home_team"] else "away") or {}  # noqa: E731
+    hurt = side(opp).get("players") or []
+    shift = abs(float(report.get("shift_pct") or 0.0))
+    named = ", ".join(f"{p['name']} ({p['position'] or 'player'}, {p['status'].lower()})" for p in hurt[:3])
+    explanation = (
+        f"{opp} list {named} on the injury report. That moves Clark's number about "
+        f"{shift:.1f} points toward {adv}."
+        if named else
+        f"{adv} have fewer key players on the injury report. That moves Clark's number about "
+        f"{shift:.1f} points toward {adv}."
+    )
+    return FactorProse(
+        headline=f"{adv} are the healthier team this week.",
+        explanation=explanation,
+        baseline_note=(f"Injury weight (position x status): {row['home_team']} "
+                       f"{side(row['home_team']).get('burden', 0)}, {row['away_team']} "
+                       f"{side(row['away_team']).get('burden', 0)}."),
+        confident=shift >= 1.0,
+    )
+
+
 def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
     """
     Build factor cards derived from actual model coefficients via
@@ -954,9 +983,9 @@ def build_factor_cards(row: dict, player_ctx: dict | None = None) -> list[dict]:
             # nonsense to a reader.
             adv = (market or {}).get("favorite") or "Even"
         opp = away if adv == home else home
-        prose = build_factor_prose(
+        prose = (injury_prose(row, adv, opp) if name == "Injuries" else build_factor_prose(
             _prose_ctx(name, adv, opp, contrib["contribution_strength"])
-        )
+        ))
         cards.append({
             "name":                 name,
             "advantage_team":       adv,
@@ -1360,6 +1389,19 @@ def get_predictions(season: int | None = None) -> list[dict[str, Any]]:
         home_win_prob = record.get("home_win_prob") or 0.5
         away_win_prob = record.get("away_win_prob") or 0.5
 
+        injuries = game_injuries(int(record.get("season") or 0), int(record.get("week") or 0),
+                                 record.get("home_team", ""), record.get("away_team", ""))
+        if injuries and injuries["logit"]:
+            model_home_prob = home_win_prob
+            home_win_prob = adjust_home_prob(home_win_prob, injuries["logit"])
+            away_win_prob = 1.0 - home_win_prob
+            injuries["shift_pct"] = round((home_win_prob - model_home_prob) * 100, 1)
+            record["home_win_prob"], record["away_win_prob"] = home_win_prob, away_win_prob
+            record["predicted_winner"] = (record["home_team"] if home_win_prob > 0.5
+                                          else record["away_team"])
+            record["injury_logit"] = injuries["logit"]
+        record["injury_report"] = injuries
+
         confidence_label, confidence_score = get_confidence(home_win_prob)
         season_int  = int(record.get("season") or 0)
         game_id_str = str(record.get("game_id") or "")
@@ -1432,6 +1474,8 @@ def get_predictions(season: int | None = None) -> list[dict[str, Any]]:
             "explanation_summary": diagnosis["football_story"],
             "explanation_factors": legacy_explanation_factors,
             "model_feature_set":   PRODUCTION_MODEL_NAME,
+            # Injury report behind the "Injuries" factor (injury_adjust.py)
+            "injury_report":     injuries,
             # Player context (QB, RB per team)
             "home_players":      home_ctx,
             "away_players":      away_ctx,

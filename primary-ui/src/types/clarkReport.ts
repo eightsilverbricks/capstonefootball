@@ -32,6 +32,13 @@ export interface ClarkReportData {
   change_my_mind: string[];
   meaning: { title: string; pct: number; body: string };
   line: { favorite: string; spread: number; pct: number; body: string } | null;
+  injuries?: {
+    title: string;
+    body: string;
+    shift_pct: number;
+    source: 'nflverse' | 'espn' | null;
+    teams: { team: string; players: { name: string; position: string; status: string }[] }[];
+  } | null;
   numbers: { away: string; home: string; rows: { label: string; away: string; home: string }[] };
   signoff: string;
 }

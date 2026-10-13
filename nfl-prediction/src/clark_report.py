@@ -217,6 +217,34 @@ def _line_note(game: dict, pick: str, pct: int, reasons: list[dict]) -> dict | N
     return {"favorite": fav, "spread": view["spread"], "pct": line_pct, "body": body}
 
 
+def _injuries(game: dict, pick: str) -> dict | None:
+    """Who is hurt and how far it moved Clark's number (injury_adjust.py)."""
+    report = game.get("injury_report")
+    if not report:
+        return None
+    teams = {game["home_team"]: report.get("home") or {}, game["away_team"]: report.get("away") or {}}
+    listed = {t: r.get("players") or [] for t, r in teams.items()}
+    if not any(listed.values()):
+        return None
+    shift = float(report.get("shift_pct") or 0.0)
+    toward = game["home_team"] if shift > 0 else game["away_team"]
+    if abs(shift) < 0.5:
+        body = "Both teams have guys on the injury report, but it roughly evens out, so it barely moves my number."
+    elif toward == pick:
+        body = (f"The injury report pushes me about {abs(shift):.1f} points further toward the "
+                f"{nick(pick)}. The {nick(toward)} are the healthier team this week.")
+    else:
+        body = (f"This is the part working against my pick: injuries pull my number about "
+                f"{abs(shift):.1f} points toward the {nick(toward)}.")
+    return {
+        "title": "Injuries I'm factoring in",
+        "body": body,
+        "shift_pct": shift,
+        "source": report.get("source"),
+        "teams": [{"team": t, "players": listed[t]} for t in (game["away_team"], game["home_team"])],
+    }
+
+
 def _numbers(game: dict, teams: dict) -> dict:
     away, home = game["away_team"], game["home_team"]
     rows = []
@@ -301,6 +329,7 @@ def build_clark_report(game: dict) -> dict | None:
         "change_my_mind": _change_my_mind(pick, other, deciding),
         "meaning": {"title": f"What {pct}% actually means", "pct": pct, "body": _meaning(pick, other, pct)},
         "line": _line_note(game, pick, pct, reasons),
+        "injuries": _injuries(game, pick),
         "numbers": _numbers(game, teams),
         "signoff": f"Not a lock! If the {nick(other)} win the turnover battle, I'm probably wrong, "
                    f"and you'll hear about it in the recap.",

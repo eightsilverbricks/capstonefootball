@@ -56,6 +56,27 @@ function Meter({ report, pick, other }: { report: ClarkReportData; pick: string;
   );
 }
 
+function Injuries({ injuries }: { injuries: NonNullable<ClarkReportData['injuries']> }) {
+  return (
+    <>
+      <h2>{injuries.title}</h2>
+      <p>{injuries.body}</p>
+      <div className="cr-inj">
+        {injuries.teams.map(({ team, players }) => (
+          <div key={team}>
+            <h3><Logo team={team} />{nick(team)}</h3>
+            {players.length === 0
+              ? <p className="gr-muted">Nobody important listed.</p>
+              : <ul>{players.map((p) => (
+                  <li key={p.name}><b>{p.name}</b> <span>{p.position}</span><em className={p.status.toLowerCase()}>{p.status}</em></li>
+                ))}</ul>}
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 function NumbersDrawer({ report }: { report: ClarkReportData }) {
   const { numbers, basis } = report;
   return (
@@ -100,6 +121,8 @@ export default function ClarkReportArticle({ game, report, record }: { game: Api
         {report.intro.map((t) => <p key={t}>{t}</p>)}
         <Matchup section={report.deciding} />
         <Matchup section={report.other_side} />
+
+        {report.injuries && <Injuries injuries={report.injuries} />}
 
         <h2>{report.underdog.title}</h2>
         <ol className="cr-watch">

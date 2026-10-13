@@ -60,6 +60,8 @@ def _clark_report_prose(report: dict | None) -> list[tuple[str, str]]:
                 (f"clark_report.underdog[{i}].text", item.get("text") or "")]
     out += [(f"clark_report.change_my_mind[{i}]", t) for i, t in enumerate(report.get("change_my_mind") or [])]
     out.append(("clark_report.meaning", (report.get("meaning") or {}).get("body") or ""))
+    if report.get("injuries"):
+        out.append(("clark_report.injuries", report["injuries"].get("body") or ""))
     if report.get("line"):
         out.append(("clark_report.line", report["line"].get("body") or ""))
     return out

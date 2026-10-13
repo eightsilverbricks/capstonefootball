@@ -18,6 +18,7 @@ only talks to the live FastAPI backend when VITE_API_BASE_URL is set.
 
 import sys
 import json
+from datetime import datetime, timezone
 from pathlib import Path
 
 # Make `from src.api import ...` resolvable when run from the repo root
@@ -121,6 +122,26 @@ def carry_live_fields(out_path: Path, predictions: list[dict]) -> int:
     return carried
 
 
+def freeze_started_games(out_path: Path, predictions: list[dict], now: datetime) -> int:
+    """Games that have kicked off keep the pick Clark published before kickoff.
+
+    Re-scoring them with stats from later weeks would rewrite Clark's record
+    after the fact. Only the in-depth report is rebuilt afterwards.
+    """
+    if not out_path.exists():
+        return 0
+    with open(out_path, encoding="utf-8") as fh:
+        previous = {str(g.get("game_id")): g for g in json.load(fh)}
+    frozen = 0
+    for i, game in enumerate(predictions):
+        old = previous.get(str(game.get("game_id")))
+        kickoff = game.get("kickoff_at")
+        if old and kickoff and datetime.fromisoformat(kickoff) <= now:
+            predictions[i] = {**old, "clark_report": None}
+            frozen += 1
+    return frozen
+
+
 def attach_clark_reports(season: int, predictions: list[dict]) -> None:
     """Add the in-depth Clark Report to every game; AI-polish only next week's (§15)."""
     for game in predictions:
@@ -143,6 +164,9 @@ def main() -> None:
     for season, out_path in EXPORTS.items():
         print(f"Running enrichment pipeline for {season}...")
         predictions = get_predictions(season=season)
+        if season == ACTIVE_SEASON:
+            frozen = freeze_started_games(out_path, predictions, datetime.now(timezone.utc))
+            print(f"   Kept Clark's published pick for {frozen} game(s) that already kicked off")
         carried = carry_live_fields(out_path, predictions)
         if carried:
             print(f"   Kept {carried} live field value(s) from the existing {out_path.name}")
