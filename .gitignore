@@ -59,3 +59,4 @@ npm-debug.log*
 # Raw nflverse play-by-play. Regenerate with nfl-prediction/src/download_data.py.
 # Never commit it: 2006-2025 is 239 MB, well past GitHub's 100 MB hard limit.
 nfl-prediction/data/raw/pbp.parquet
+nfl-prediction/outputs/experiments/

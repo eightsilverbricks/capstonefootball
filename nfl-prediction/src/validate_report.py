@@ -17,6 +17,9 @@ import re
 import sys
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from src.validate_clark_report import validate_clark_report  # noqa: E402
+
 TEMPLATE_LEAKS = re.compile(r"\b(undefined|NaN|None|null)\b")
 # A negative number right before "more"/"fewer"/"less" is a double negative.
 DOUBLE_NEGATIVE = re.compile(r"-\d+(\.\d+)?\s+\S*\s*(more|fewer|less)\b")
@@ -133,6 +136,7 @@ def validate_game(game: dict) -> list[str]:
         if c.get("advantage_team") == winner and risk and risk == c.get("explanation"):
             errors.append(f"{gid}: risk_factor repeats a factor that supports the pick")
 
+    errors.extend(validate_clark_report(game))
     return errors
 
 

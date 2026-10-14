@@ -37,7 +37,7 @@ const KeyPlayersPanel: React.FC<KeyPlayersPanelProps> = ({ awayTeam, homeTeam, p
           return (
             <ul key={team} className="flex flex-col gap-2.5" aria-label={`${team} key players`}>
               {teamPlayers.map((p) => (
-                <li key={`${p.team}-${p.name}`} className="flex items-center gap-3">
+                <li key={`${p.team}-${p.name}-${p.role}`} className="flex items-center gap-3">
                   <PlayerHeadshot espnId={p.espn_id} name={p.name} teamAbbr={p.team} size={36} />
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>

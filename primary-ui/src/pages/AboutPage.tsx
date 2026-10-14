@@ -129,7 +129,7 @@ const AboutPage: React.FC = () => {
             About the model
           </h2>
           <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
-            Clark is a logistic regression trained on the {TRAIN_SEASON_RANGE} seasons and evaluated on all{' '}
+            Clark is a logistic regression trained on {TRAIN_SEASON_RANGE} and evaluated on all{' '}
             {EVAL_GAMES} games of {EVAL_SEASON}, where it called {formatPct(MODEL_ACCURACY)} of games correctly.
             Across {POOLED_SEASON_RANGE} it sits at {formatPct(POOLED_ACCURACY)}, just ahead of the Vegas closing
             line's {formatPct(POOLED_VEGAS_ACCURACY)} over the same games — which is the number worth judging it

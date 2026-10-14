@@ -1,0 +1,58 @@
+{
+  "career": {
+    "season_start": {
+      "log_loss": 0.61313,
+      "accuracy": 0.6641,
+      "brier": 0.21251,
+      "n": 3025
+    },
+    "weekly": {
+      "log_loss": 0.61321,
+      "accuracy": 0.6645,
+      "brier": 0.21255,
+      "n": 3025
+    }
+  },
+  "season_k2": {
+    "season_start": {
+      "log_loss": 0.61245,
+      "accuracy": 0.6621,
+      "brier": 0.21223,
+      "n": 3025
+    },
+    "weekly": {
+      "log_loss": 0.61256,
+      "accuracy": 0.6631,
+      "brier": 0.21226,
+      "n": 3025
+    }
+  },
+  "season_k4": {
+    "season_start": {
+      "log_loss": 0.6131,
+      "accuracy": 0.6641,
+      "brier": 0.21252,
+      "n": 3025
+    },
+    "weekly": {
+      "log_loss": 0.61316,
+      "accuracy": 0.6628,
+      "brier": 0.21253,
+      "n": 3025
+    }
+  },
+  "season_k8": {
+    "season_start": {
+      "log_loss": 0.61324,
+      "accuracy": 0.6612,
+      "brier": 0.21255,
+      "n": 3025
+    },
+    "weekly": {
+      "log_loss": 0.61326,
+      "accuracy": 0.6605,
+      "brier": 0.21256,
+      "n": 3025
+    }
+  }
+}

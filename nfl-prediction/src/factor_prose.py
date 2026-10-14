@@ -21,7 +21,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from src.odds import market_view
+from src.odds import display_pct, market_view
 
 
 # ---------------------------------------------------------------------------
@@ -247,7 +247,7 @@ def _market_prose(c: FactorContext) -> FactorProse:
     else:
         verdict = f" Clark disagrees and picks {model_pick}."
     explanation = (f"Sportsbooks have {fav} as {price}, which works out to about"
-                   f" {_a_pct(round(prob * 100))} chance to win.{verdict}")
+                   f" {_a_pct(display_pct(prob))} chance to win.{verdict}")
     baseline = f"Betting line: {fav} by {points:.1f} ({prob:.0%} implied)."
     return FactorProse(headline, explanation, baseline, confident=True)
 
@@ -680,7 +680,7 @@ def build_synthesis_lede(ctx: LedeContext) -> str:
     repeated here.
     """
     parts: list[str] = [f"Clark picks {ctx.winner} with"
-                        f" {_a_pct(round(ctx.probability * 100))} chance to win."]
+                        f" {_a_pct(display_pct(ctx.probability))} chance to win."]
 
     backing = ctx.backing
     lead = backing[0] if backing else (ctx.football_lead or ctx.primary)

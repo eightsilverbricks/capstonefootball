@@ -179,10 +179,19 @@ def sort_games(df: pd.DataFrame) -> pd.DataFrame:
     return df.sort_values(sort_columns).reset_index(drop=True)
 
 
+# A season counts as complete (and can be the evaluation season) with at least
+# this many played games. The live season's first weeks are played games too,
+# but evaluating on a partial season would make the published accuracy jump
+# around week to week.
+COMPLETE_SEASON_GAMES = 256
+
+
 def split_train_test(df: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFrame, int]:
-    latest_season = int(df["season"].max())
+    counts = df.groupby("season").size()
+    latest_season = int(counts[counts >= COMPLETE_SEASON_GAMES].index.max())
 
     train_df = sort_games(df[df["season"] < latest_season].copy())
+    # Only the evaluation season itself; later (live) seasons are not tested on.
     test_df = sort_games(df[df["season"] == latest_season].copy())
 
     if train_df.empty:

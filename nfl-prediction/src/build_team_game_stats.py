@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pandas as pd
@@ -7,6 +8,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RAW_DIR = BASE_DIR / "data" / "raw"
 PROCESSED_DIR = BASE_DIR / "data" / "processed"
 PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+
+# How season_* features are built. Decided by src/experiment_retraining.py on
+# 2015-2025 walk-forward: season-to-date with K=2 had the best log loss and
+# Brier (0.61245 / 0.21223 vs 0.61313 / 0.21251 for career); weekly retraining
+# did not help any variant (outputs/retraining_experiment.json).
+#   "season" - (default) this season's played games so far, shrunk toward the team's
+#              previous season as if that season counted for SEASON_PRIOR_GAMES
+#              extra games, so week 1 isn't one game of noise.
+#   "career" - the old behaviour: mean over every game the team has played
+#              since 2006 (kept only so the experiment can reproduce it).
+SEASON_MODE = os.environ.get("SEASON_MODE", "season")
+SEASON_PRIOR_GAMES = float(os.environ.get("SEASON_PRIOR_GAMES", "2"))
 
 
 def build_pbp_team_stats(pbp: pd.DataFrame) -> pd.DataFrame:
@@ -193,6 +206,31 @@ def _apply_carry_forward(
         team_games.loc[upcoming, new_col] = teams.map(carry)
 
 
+def add_season_to_date(team_games: pd.DataFrame, season_stats: dict[str, str], prior_games: float) -> None:
+    """season_x = (this season's sum before the game + K * last season's mean) / (n + K).
+
+    Rows must be sorted by team, season, date. Unplayed games contribute nothing
+    to the running sums, so every upcoming fixture sees the team's form through
+    its last played game. A team's first season in the data falls back to that
+    season's league average as the prior.
+    """
+    played = team_games["is_played"].astype(bool)
+    by_season = team_games.groupby(["team", "season"], group_keys=False)
+    n_before = by_season["is_played"].transform(lambda s: s.astype(int).cumsum().shift(1).fillna(0))
+
+    for new_col, source_col in season_stats.items():
+        values = team_games[source_col].where(played)
+        sum_before = values.fillna(0.0).groupby([team_games["team"], team_games["season"]]).transform(
+            lambda s: s.cumsum().shift(1).fillna(0.0))
+        season_mean = values.groupby([team_games["team"], team_games["season"]]).mean()
+        prior = season_mean.groupby(level="team").shift(1)
+        league = values.groupby(team_games["season"]).mean()
+        prior_for_row = pd.Series(
+            [prior.get((t, s)) for t, s in zip(team_games["team"], team_games["season"])], index=team_games.index)
+        prior_for_row = prior_for_row.fillna(team_games["season"].map(league))
+        team_games[new_col] = (sum_before + prior_games * prior_for_row) / (n_before + prior_games)
+
+
 def _win_flag(team_rows: pd.DataFrame) -> pd.Series:
     """1.0 / 0.0 for a played game, NaN for an unplayed fixture.
 
@@ -319,10 +357,13 @@ def main() -> None:
         "season_pass_oe": "pass_oe",
     }
 
-    for new_col, source_col in season_stats.items():
-        team_games[new_col] = grouped[source_col].transform(
-            lambda s: s.shift(1).expanding().mean()
-        )
+    if SEASON_MODE == "career":
+        for new_col, source_col in season_stats.items():
+            team_games[new_col] = grouped[source_col].transform(
+                lambda s: s.shift(1).expanding().mean()
+            )
+    else:
+        add_season_to_date(team_games, season_stats, SEASON_PRIOR_GAMES)
 
     last3_stats = {
         "last3_points_pg": "points_for",
@@ -350,7 +391,9 @@ def main() -> None:
             lambda s: s.shift(1).rolling(3, min_periods=1).mean()
         )
 
-    _apply_carry_forward(team_games, season_stats, last3_stats)
+    # Season-to-date stats already carry forward (unplayed games add nothing to
+    # the running sums), so only the career mode needs the explicit pass.
+    _apply_carry_forward(team_games, season_stats if SEASON_MODE == "career" else {}, last3_stats)
 
     feature_cols = list(season_stats.keys()) + list(last3_stats.keys())
     team_games = team_games.dropna(subset=feature_cols).copy()

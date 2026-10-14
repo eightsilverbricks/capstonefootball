@@ -112,3 +112,13 @@ class TestValidator(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestDisplayPct(unittest.TestCase):
+
+    def test_rounds_half_up_like_the_site(self):
+        from src.odds import display_pct
+        self.assertEqual(display_pct(0.595), 60)
+        self.assertEqual(display_pct(0.585), 59)
+        self.assertEqual(display_pct(0.5149), 51)
+        self.assertEqual(display_pct(1.0), 100)

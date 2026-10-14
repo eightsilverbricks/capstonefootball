@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import hashlib
 
-from src.odds import market_view
+from src.odds import display_pct, market_view
 from src.team_ranks import league_ranks, ordinal
 
 REPORT_VERSION = 1
@@ -119,8 +119,8 @@ def _matchup_body(m: dict, pick: str, is_deciding: bool) -> list[str]:
     if m["edge_team"] is None:
         lines.append("On paper this side of the ball is a wash, so I'm not leaning on it either way.")
     elif is_deciding and m["edge_team"] == pick:
-        lines.append(f"That's the number that jumped out at me. It's the biggest edge on the field, "
-                     f"and it belongs to the {nick(pick)}.")
+        lines.append(f"That's the number that jumped out at me: it's the biggest mismatch on the field, "
+                     f"and it favors the {nick(pick)}.")
     elif m["edge_team"] == pick:
         lines.append(f"So the {nick(pick)} have the better of this side too, which is part of why I'm comfortable.")
     else:
@@ -202,7 +202,7 @@ def _line_note(game: dict, pick: str, pct: int, reasons: list[dict]) -> dict | N
                        mc.get("home_moneyline"), mc.get("away_moneyline"))
     if not view or not view["favorite"]:
         return None
-    fav, line_pct = view["favorite"], round(view["favorite_prob"] * 100)
+    fav, line_pct = view["favorite"], display_pct(view["favorite_prob"])
     spread = f"{view['spread']:g}"
     head = f"The line has the {nick(fav)} by {spread}, about {line_pct}%."
     why = f" Most of the gap comes from {reasons[0]['name'].lower()}." if reasons else ""
@@ -261,7 +261,7 @@ def _dek(m: dict) -> str:
     off, dfn = nick(m["offense_team"]), nick(m["defense_team"])
     return (f"{row['label']}: the {off} offense ranks {ordinal(row['offense']['rank'])}, "
             f"the {dfn} defense ranks {ordinal(row['defense']['rank'])}. "
-            f"That's the gap this whole pick is built on.")
+            f"That's the biggest mismatch on the field.")
 
 
 def _table(m: dict) -> dict:
@@ -286,7 +286,7 @@ def build_clark_report(game: dict) -> dict | None:
     teams, gid = ranks["teams"], str(game["game_id"])
     other = away if pick == home else home
     prob = game["home_win_prob"] if pick == home else game["away_win_prob"]
-    pct = round(float(prob) * 100)
+    pct = display_pct(prob)
     cards = game.get("factor_cards") or []
     reasons, against = _reasons(cards, pick), _reasons(cards, other)
 
@@ -297,13 +297,13 @@ def build_clark_report(game: dict) -> dict | None:
 
     unit = "offense" if deciding["offense_team"] == pick else "defense"
     headline = (
-        f"I'm on the {nick(pick)} at {pct}%, and it starts with their {unit}."
+        f"I'm on the {nick(pick)} at {pct}%, and the biggest mismatch on the field is their {unit}."
         if deciding["edge_team"] == pick else
         f"I'm on the {nick(pick)} at {pct}%, even though the matchups are closer than that sounds."
     )
     intro = [_opener(gid, pct)]
     if reasons:
-        intro.append(f"The biggest reason? {first_person(reasons[0]['explanation'])}")
+        intro.append(f"The biggest football reason? {first_person(reasons[0]['explanation'])}")
     if len(reasons) > 1:
         intro.append(f"On top of that, {lower_first(first_person(reasons[1]['headline']))}")
     basis = ranks["basis"]

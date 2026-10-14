@@ -12,7 +12,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, ConfigDict, Field
 
-from src.odds import market_view
+from src.odds import display_pct, market_view
 from src.factor_prose import (
     FactorContext, FactorProse, build_factor_prose, LedeContext, build_synthesis_lede,
 )
@@ -693,7 +693,7 @@ def build_market_note(row: dict, factors: list[dict]) -> str:
     price = f"a {pts:.1f}-point favorite" if pts >= 0.5 else "a slight favorite"
     verdict = (f"Clark agrees." if fav == winner
                else f"Clark disagrees and picks {winner}.")
-    article = "an" if round(prob * 100) // 10 == 8 else "a"
+    article = "an" if display_pct(prob) // 10 == 8 else "a"
     return (f"Sportsbooks have {fav} as {price}, about {article} {prob:.0%} chance to win."
             f" {verdict}")
 
@@ -1201,7 +1201,7 @@ def game_diagnosis_engine(row: dict) -> dict:
     risk = confident_risks[0] if confident_risks else None
 
     # ── Headline ───────────────────────────────────────────────────────────────
-    headline = f"Clark picks {winner} ({probability * 100:.0f}%)"
+    headline = f"Clark picks {winner} ({display_pct(probability)}%)"
 
     # ── Primary / secondary reasons (now the plain-English explanation) ────────
     if primary:
@@ -1401,6 +1401,11 @@ def get_predictions(season: int | None = None) -> list[dict[str, Any]]:
                                           else record["away_team"])
             record["injury_logit"] = injuries["logit"]
         record["injury_report"] = injuries
+        # Every sentence is written from the probability exactly as published
+        # (4 decimals), so the text can never disagree with the page by a point.
+        home_win_prob = round(float(home_win_prob), 4)
+        away_win_prob = round(1.0 - home_win_prob, 4)
+        record["home_win_prob"], record["away_win_prob"] = home_win_prob, away_win_prob
 
         confidence_label, confidence_score = get_confidence(home_win_prob)
         season_int  = int(record.get("season") or 0)

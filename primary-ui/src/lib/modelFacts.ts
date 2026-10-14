@@ -5,14 +5,14 @@
 // only ever hit on one particularly predictable season.
 
 /** Seasons the production model is fitted on. */
-export const TRAIN_SEASON_RANGE = '2006–2024';
+export const TRAIN_SEASON_RANGE = '2006–2025 plus 2026 Weeks 1–5';
 
 /** The held-out season the quoted accuracy is measured on. */
 export const EVAL_SEASON = 2025;
 export const EVAL_GAMES = 285;
 
 /** Held-out accuracy, expanding-week protocol. */
-export const MODEL_ACCURACY = 0.656;
+export const MODEL_ACCURACY = 0.649;
 
 /**
  * Accuracy pooled over 2015–2025 (3,025 games), against the Vegas closing line
@@ -20,11 +20,13 @@ export const MODEL_ACCURACY = 0.656;
  * accuracy swings from 62% to 71% on luck alone, so "we track the closing line"
  * says far more than any one percentage.
  */
-export const POOLED_ACCURACY = 0.6648;
+// Re-measured 2026-10-14 after season_* stats became true season-to-date
+// (nfl-prediction/src/experiment_retraining.py, season_k2, weekly refits).
+export const POOLED_ACCURACY = 0.6631;
 export const POOLED_VEGAS_ACCURACY = 0.6610;
 export const POOLED_SEASON_RANGE = '2015–2025';
 
-/** 0.656 → "65.6%". One decimal, because that is how the model is quoted. */
+/** 0.649 → "64.9%". One decimal, because that is how the model is quoted. */
 export function formatPct(value: number): string {
   return `${(value * 100).toFixed(1)}%`;
 }

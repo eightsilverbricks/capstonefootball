@@ -68,3 +68,13 @@ def market_view(home: str, away: str, spread: float,
     # games; never publish a "favorite" below 50%.
     fav_prob = max(fav_prob, 0.5)
     return {"favorite": favorite, "favorite_prob": fav_prob, "spread": abs(spread or 0.0)}
+
+
+def display_pct(prob: float) -> int:
+    """A probability as the whole-number percent the site shows.
+
+    Rounds half up, like the frontend's Math.round, so a published 0.595 is
+    60% in the report text and on the page (Python's round() would give 60
+    here but 58 for 0.585, where the page shows 59).
+    """
+    return int(math.floor(float(prob) * 100 + 0.5))
