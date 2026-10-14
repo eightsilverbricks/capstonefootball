@@ -24,6 +24,7 @@ import ChatPanel from './ChatPanel';
 import CommentsThread from './CommentsThread';
 import RecapTab from './RecapTab';
 import ShareButtons from './ShareButtons';
+import AskClark from './AskClark';
 import { useGamePlays } from '@/hooks/useGamePlays';
 import { useGameSocial } from '@/hooks/useGameSocial';
 import { isLive, type LiveAware } from '@/lib/live';
@@ -191,6 +192,7 @@ export default function GameView({ game }: { game: LiveAware }) {
               {game.clark_report
                 ? <ClarkReportArticle game={game} report={game.clark_report} record={clarkRecord} />
                 : <ClarkReport game={game} />}
+              <AskClark game={game} />
               <CommentsThread gameKey={key} />
             </>
           )}

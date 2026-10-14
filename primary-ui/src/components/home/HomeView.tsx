@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
 import LiveNow from './LiveNow';
+import { confession } from '@/lib/clarkVoice';
 import { Link } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import Header from '@/components/Header';
@@ -205,6 +206,17 @@ export default function HomeView() {
             </div>
 
             <aside className="hm-col-r">
+              {(() => {
+                const misses = weekGames.filter((g) => confession(g))
+                  .sort((a, b) => Math.max(b.home_win_prob, b.away_win_prob) - Math.max(a.home_win_prob, a.away_win_prob));
+                const line = misses[0] ? confession(misses[0]) : null;
+                return line && (
+                  <Link to={`/game/${misses[0].season}/${misses[0].week}/${misses[0].away_team}/${misses[0].home_team}`} className="hm-confess">
+                    <img src="/brand/clark-logo.jpg" alt="" width={40} height={40} />
+                    <span><b>Clark's confession</b>{line}</span>
+                  </Link>
+                );
+              })()}
               <Link to="/my-season" className="clark-card hm-says">
                 <img src="/brand/clark-logo.jpg" alt="" />
                 <p>"{clarkQuip(records)}"<small>Clark · see where you two disagreed</small></p>

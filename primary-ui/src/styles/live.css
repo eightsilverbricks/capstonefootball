@@ -126,3 +126,30 @@
 .community-streak.risk { background: var(--live); animation: live-pulse 2.4s ease-in-out infinite; }
 .community .community-inner { flex: 1; min-width: 0; }
 @media (prefers-reduced-motion: reduce) { .community-streak.risk { animation: none; } }
+.lv-explain { font-size: 12px; font-weight: 700; color: var(--clark-solid); text-decoration: underline; text-underline-offset: 2px; }
+.lv-explain-text { display: block; flex-basis: 100%; margin-top: 6px; padding: 8px 10px; border-radius: 8px; background: var(--paper); color: var(--ink-2); font-size: 13px; }
+.lv-big .meta { flex-wrap: wrap; }
+.ch { grid-template-rows: auto auto auto minmax(0, 1fr) auto auto auto; }
+.ch-bar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; padding: 0 14px 8px; }
+.ch-rooms { display: flex; gap: 4px; }
+.ch-rooms button { height: 28px; padding: 0 10px; border-radius: 999px; font-size: 12.5px; font-weight: 700; color: var(--ink-3); background: var(--chip); }
+.ch-rooms button[aria-selected="true"] { background: var(--ink); color: var(--paper); }
+.ch-shield { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--ink-3); }
+.ch-shield select { height: 28px; border-radius: 8px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); font-size: 12px; }
+.ch-mood i { display: block; height: 100%; }
+.ch-playwrap { display: grid; gap: 6px; }
+.ch-clark .ch-av { box-shadow: var(--clark-glow); }
+.ch-clark .ch-body { font-style: italic; }
+.ch-held { padding: 6px 14px; font-size: 12.5px; background: var(--warm); }
+.ch-held button { color: var(--clark-solid); font-weight: 700; text-decoration: underline; }
+
+/* Ask Clark */
+.ask-qs { display: flex; flex-wrap: wrap; gap: 8px; }
+.ask-qs button { padding: 8px 12px; border-radius: 999px; border: 1px solid var(--rule); font-size: 13.5px; font-weight: 700; transition: border-color var(--duration-fast), color var(--duration-fast); }
+.ask-qs button:hover, .ask-qs button[aria-expanded="true"] { border-color: var(--clark-solid); color: var(--clark-solid); }
+.ask-a { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 10px; margin-top: 12px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--warm); animation: lv-in .3s var(--ease-out) both; }
+.ask-a img { border-radius: 50%; box-shadow: var(--clark-glow); }
+.ask-a p { font-family: var(--font-serif); font-size: 16.5px; line-height: 1.5; }
+.hm-confess { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--warm); font-size: 14px; }
+.hm-confess img { border-radius: 50%; }
+.hm-confess b { display: block; font-family: var(--font-display); font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--clark-solid); }

@@ -7,6 +7,7 @@ import {
   factorTracker, groupDrives, pickStanding, pollKey, type Drive, type LiveAware, type TrackState,
 } from '@/lib/live';
 import WinProbChart from './WinProbChart';
+import { explainPlay } from '@/lib/clarkVoice';
 
 const nick = (t: string) => getTeam(t)?.name ?? t;
 const pct = (p: number) => Math.round(p * 100);
@@ -33,6 +34,16 @@ export function Reactions({ playId, social }: { playId: string; social: SocialPr
   );
 }
 
+function Explain({ play }: { play: LivePlay }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" className="lv-explain" aria-expanded={open} onClick={() => setOpen((o) => !o)}>What happened?</button>
+      {open && <span className="lv-explain-text">{explainPlay(play)}</span>}
+    </>
+  );
+}
+
 export function BigPlayCard({ play, social }: { play: LivePlay; social: SocialProps }) {
   return (
     <div className="lv-big">
@@ -40,6 +51,7 @@ export function BigPlayCard({ play, social }: { play: LivePlay; social: SocialPr
       {play.note && <div className="txt">{play.text}</div>}
       <div className="meta">
         <span>Q{play.quarter} {play.clock}</span>
+        <Explain play={play} />
         <Reactions playId={play.play_id} social={social} />
       </div>
     </div>
@@ -58,7 +70,7 @@ function DriveRow({ drive, social }: { drive: Drive; social: SocialProps }) {
         <span className={`res${drive.result === 'TD' ? ' td' : ''}`}>{drive.result}</span>
       </button>
       {open && routine.slice().reverse().map((p) => (
-        <div className="lv-play" key={p.play_id}><span className="t">Q{p.quarter} {p.clock}</span><span>{p.text}</span></div>
+        <div className="lv-play" key={p.play_id}><span className="t">Q{p.quarter} {p.clock}</span><span>{p.text} <Explain play={p} /></span></div>
       ))}
     </div>
   );
