@@ -95,3 +95,23 @@ export function subscribePlays(gameKey: string, onPlay: (p: LivePlay) => void): 
     .subscribe();
   return () => { client.removeChannel(channel); };
 }
+
+/** The latest big plays across every game. */
+export async function fetchRecentBigPlays(limit = 8): Promise<LivePlay[]> {
+  if (!isSupabaseConfigured || !supabase) return [];
+  const { data, error } = await supabase
+    .from('live_plays').select(PLAY_COLS).eq('is_big', true).order('created_at', { ascending: false }).limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []).map(toPlay);
+}
+
+export function subscribeBigPlays(onPlay: (p: LivePlay) => void): () => void {
+  if (!supabase) return () => {};
+  const client = supabase;
+  const channel = client
+    .channel('live_plays_big')
+    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'live_plays', filter: 'is_big=eq.true' },
+      (payload) => onPlay(toPlay(payload.new as Record<string, unknown>)))
+    .subscribe();
+  return () => { client.removeChannel(channel); };
+}

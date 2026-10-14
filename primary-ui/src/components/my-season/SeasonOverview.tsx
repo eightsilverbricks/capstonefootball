@@ -5,6 +5,8 @@ import { signed } from '@/lib/format';
 import { SeasonSummary } from '@/lib/seasonSummary';
 import { PickHighlight, SeasonHistory } from '@/lib/seasonHistory';
 import { DivisionLine, Split, WeekLine, formatRecord } from '@/lib/seasonBreakdown';
+import { ShareSpecButtons } from '@/components/game/ShareButtons';
+import type { ShareSpec } from '@/lib/shareImage';
 
 const pct = (p: number) => Math.round(p * 100);
 const nick = (t: string) => getTeam(t)?.name ?? t;
@@ -86,6 +88,25 @@ interface SeasonOverviewProps {
   divisions: DivisionLine[];
 }
 
+/** The latest week with a graded pick, as a weekly results share card (§8). */
+function WeekShare({ weeks }: { weeks: WeekLine[] }) {
+  const last = [...weeks].reverse().find((w) => w.you.w + w.you.l > 0);
+  if (!last) return null;
+  const spec: ShareSpec = {
+    kind: 'week', week: last.week, wins: last.you.w, losses: last.you.l,
+    clarkWins: last.clark.w, clarkLosses: last.clark.l,
+    grid: last.squares.filter((q) => q !== 'n').map((q) => (q === 'w' ? 'W' : 'L')),
+  };
+  return (
+    <section className="ms-card">
+      <div className="ms-ch"><h2>Week {last.week}: {last.you.w}–{last.you.l}</h2><span>Clark {last.clark.w}–{last.clark.l}</span></div>
+      <div className="ms-cb">
+        <ShareSpecButtons spec={spec} url="https://clarkindex.com" label="Share my week" />
+      </div>
+    </section>
+  );
+}
+
 export default function SeasonOverview({ summary, history, weeks, splits, divisions }: SeasonOverviewProps) {
   if (summary.picksMade === 0) {
     return (
@@ -109,6 +130,7 @@ export default function SeasonOverview({ summary, history, weeks, splits, divisi
       </div>
       <div className="ms-two">
         <div className="ms-stack">
+          <WeekShare weeks={weeks} />
           <WinsChart weeks={weeks} />
           <Divisions lines={divisions} />
           {graded === 0 && <p className="gr-muted">Your picks are in. Charts fill in as games finish.</p>}

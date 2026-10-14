@@ -7,6 +7,7 @@ import { getTeam } from '@/data/teams';
 import { useGamePick } from '@/hooks/useGamePick';
 import { useAuth } from '@/hooks/useAuth';
 import { isFinal, isPickingClosed } from '@/lib/gameStatus';
+import { liveClock, pickStanding, type LiveAware } from '@/lib/live';
 import { formatKickoff } from '@/lib/slate';
 import { confetti, toast } from '@/lib/fx';
 import SparkSlider from '@/components/picks/SparkSlider';
@@ -27,7 +28,7 @@ function TeamLine({ team, record, score, dim }: { team: string; record?: string 
 }
 
 /** One game as a scoreboard row: status, teams, Clark's pick, your pick (inline slider). */
-export default function GameRow({ game }: { game: ApiPrediction }) {
+export default function GameRow({ game }: { game: LiveAware }) {
   const navigate = useNavigate();
   const pick = useGamePick(game);
   const { isSignedIn } = useAuth();
@@ -35,6 +36,7 @@ export default function GameRow({ game }: { game: ApiPrediction }) {
   const final = isFinal(game);
   const closed = isPickingClosed(game);
   const winner = final ? game.actual_winner ?? null : null;
+  const live = !final && game.live?.status === 'in' ? game.live : null;
   const url = `/game/${game.season}/${game.week}/${game.away_team}/${game.home_team}`;
   const clarkProb = game.predicted_winner === game.home_team ? game.home_win_prob : game.away_win_prob;
   const homePct = pct(game.home_win_prob);
@@ -60,6 +62,7 @@ export default function GameRow({ game }: { game: ApiPrediction }) {
       <>
         <span>You: <b>{pick.userPick.team} {pct(pick.userPick.confidence)}%</b></span>
         {result && <span className={`gr-chip ${result}`}>{result === 'win' ? 'Correct' : 'Wrong'}</span>}
+        {live && <span className={`gr-chip ${pickStanding(pick.userPick.team, live) === 'winning' ? 'win' : pickStanding(pick.userPick.team, live) === 'losing' ? 'loss' : ''}`}>{pickStanding(pick.userPick.team, live)}</span>}
         {!closed && !result && <button type="button" className="gr-link" onClick={() => { pick.changePick(); setOpen(true); }}>Change</button>}
       </>
     );
@@ -80,11 +83,13 @@ export default function GameRow({ game }: { game: ApiPrediction }) {
         onClick={(e) => { if (!(e.target as HTMLElement).closest('button, a')) navigate(url); }}
       >
         <div className="gr-when">
-          <b>{final ? 'Final' : formatKickoff(game.gametime)}</b>
+          {live
+            ? <b className="gr-live"><span className="live-dot" />{liveClock(live)}</b>
+            : <b>{final ? 'Final' : formatKickoff(game.gametime)}</b>}
         </div>
         <div className="gr-teams">
-          <TeamLine team={game.away_team} record={game.away_season_record} score={final ? game.away_score : null} dim={Boolean(winner && winner !== game.away_team)} />
-          <TeamLine team={game.home_team} record={game.home_season_record} score={final ? game.home_score : null} dim={Boolean(winner && winner !== game.home_team)} />
+          <TeamLine team={game.away_team} record={game.away_season_record} score={final ? game.away_score : live ? live.away_score : null} dim={Boolean(winner && winner !== game.away_team)} />
+          <TeamLine team={game.home_team} record={game.home_season_record} score={final ? game.home_score : live ? live.home_score : null} dim={Boolean(winner && winner !== game.home_team)} />
         </div>
         <div className="gr-clark">
           <span className="clark-tag"><img src="/brand/clark-logo.jpg" alt="" />{game.predicted_winner} {pct(clarkProb)}%</span>

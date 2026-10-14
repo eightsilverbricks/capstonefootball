@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import LiveNow from './LiveNow';
 import { Link } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import Header from '@/components/Header';
@@ -188,6 +189,7 @@ export default function HomeView() {
         {!loading && !error && story && (
           <div className="hm-front">
             <div className="hm-col-l">
+              <LiveNow games={weekGames} />
               <Finals games={weekGames} />
               <Injuries games={weekGames} />
             </div>
