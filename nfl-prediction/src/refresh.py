@@ -63,6 +63,7 @@ def main() -> None:
         weeks = [str(w) for w in (next_week, next_week + 1) if w <= 18]
         run("espn_extras.py", "--weeks", *weeks)
     run("export_predictions.py")
+    run("export_rosters.py")
     if last_done:
         run("patch_live_week.py", "--results-through-week", str(last_done))
     run("validate_report.py")

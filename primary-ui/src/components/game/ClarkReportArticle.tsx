@@ -3,6 +3,7 @@ import type { ClarkReportData, MatchupSection } from '@/types/clarkReport';
 import { getEspnLogoUrl } from '@/data/nflData';
 import { getTeam } from '@/data/teams';
 import { ordinal } from '@/lib/teamPage';
+import PlayerLink from '@/components/PlayerLink';
 
 const nick = (t: string) => getTeam(t)?.name ?? t;
 
@@ -68,7 +69,7 @@ function Injuries({ injuries }: { injuries: NonNullable<ClarkReportData['injurie
             {players.length === 0
               ? <p className="gr-muted">Nobody important listed.</p>
               : <ul>{players.map((p) => (
-                  <li key={p.name}><b>{p.name}</b> <span>{p.position}</span><em className={p.status.toLowerCase()}>{p.status}</em></li>
+                  <li key={p.name}><b><PlayerLink name={p.name} team={team} /></b> <span>{p.position}</span><em className={p.status.toLowerCase()}>{p.status}</em></li>
                 ))}</ul>}
           </div>
         ))}

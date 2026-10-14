@@ -9,6 +9,9 @@ import AboutPage from "./pages/AboutPage";
 import AdminPage from "./pages/AdminPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import TeamsPage from "./pages/TeamsPage";
+import RosterPage from "./pages/RosterPage";
+import LiveRedirect from "./pages/LiveRedirect";
+import PlayerPage from "./pages/PlayerPage";
 import TeamPage from "./pages/TeamPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 import MockupsRedirect from "./pages/MockupsRedirect";
@@ -32,9 +35,11 @@ const App = () => (
       <Route path="/games" element={<GamesPage />} />
       <Route path="/game/:season/:week/:away/:home" element={<GamePage />} />
       {/* Live hub arrives with the live system; until then Live opens the week's games */}
-      <Route path="/live" element={<Navigate to="/games" replace />} />
+      <Route path="/live" element={<LiveRedirect />} />
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/team/:abbr" element={<TeamPage />} />
+      <Route path="/team/:abbr/roster" element={<RosterPage />} />
+      <Route path="/player/:id" element={<PlayerPage />} />
       <Route path="/leaderboard" element={<LeaderboardPage />} />
       <Route path="/my-season" element={<MySeasonPage />} />
       <Route path="/about" element={<AboutPage />} />

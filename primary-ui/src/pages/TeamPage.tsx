@@ -11,6 +11,7 @@ import { gameKey } from '@/lib/threeWaySignal';
 import { formatKickoff } from '@/lib/slate';
 import { divisionPlace, ordinal, teamNotes, teamOutlook, teamRecord, teamSchedule } from '@/lib/teamPage';
 import NotFound from './NotFound';
+import PlayerLink from '@/components/PlayerLink';
 
 const pct = (p: number) => Math.round(p * 100);
 const nick = (t: string) => getTeam(t)?.name ?? t;
@@ -47,6 +48,7 @@ export default function TeamPage() {
           <div>
             <h1>{team.city} {team.name}</h1>
             <p>{meta}</p>
+            <Link to={`/team/${team.abbr}/roster`} className="pill pill-line tm-roster-btn">Starting lineup</Link>
           </div>
         </div>
       </section>
@@ -68,7 +70,7 @@ export default function TeamPage() {
               <h2 className="hm-h2">Key players</h2>
               {notes.players.map((p) => (
                 <div key={p.name} className="tm-row">
-                  <div><b>{p.name}</b> <span className="gr-muted">{p.position}</span><div className="gr-muted tm-sub">{p.role}</div></div>
+                  <div><b><PlayerLink name={p.name} team={code} /></b> <span className="gr-muted">{p.position}</span><div className="gr-muted tm-sub">{p.role}</div></div>
                   <span className="tm-stat">{p.stat_line}</span>
                 </div>
               ))}

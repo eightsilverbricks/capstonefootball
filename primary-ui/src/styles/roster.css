@@ -1,0 +1,47 @@
+/* ─── Roster on a field, player page ──────────────────────────────────── */
+.ro { padding-top: 20px; padding-bottom: 40px; }
+.ro-head { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.ro-head h1 { font-family: var(--font-display); font-weight: 900; font-size: 28px; margin-right: auto; }
+.ro-back { display: inline-flex; align-items: center; gap: 8px; font-weight: 800; width: 100%; color: var(--ink-3); }
+.ro-back:hover { color: var(--clark-solid); }
+.ro-toggle { display: inline-flex; padding: 3px; border-radius: 999px; background: var(--chip); }
+.ro-toggle button { height: 34px; padding: 0 16px; border-radius: 999px; font-weight: 800; font-size: 14px; color: var(--ink-3); }
+.ro-toggle button[aria-selected="true"] { background: var(--paper); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.ro-layout { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 20px; align-items: start; }
+.ro-field {
+  position: relative; aspect-ratio: 16 / 10; border-radius: var(--radius-lg); overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 2px, transparent 2px 10%),
+    linear-gradient(180deg, #2f7d3a, #276b31);
+  box-shadow: inset 0 0 0 3px rgba(255,255,255,.35), var(--shadow-card);
+}
+.ro-los { position: absolute; left: 0; right: 0; top: 50%; height: 3px; background: color-mix(in srgb, var(--tc) 70%, #fff); opacity: .9; }
+.ro-dot {
+  position: absolute; transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 2px;
+  min-width: 52px; padding: 5px 6px; border-radius: 10px; background: #fff; color: #111;
+  box-shadow: 0 2px 8px rgba(0,0,0,.35); transition: transform var(--duration-fast) var(--ease-spring), box-shadow var(--duration-fast);
+}
+.ro-dot:hover { transform: translate(-50%, -50%) scale(1.08); }
+.ro-dot:focus-visible { outline: 3px solid #FFD34D; outline-offset: 2px; }
+.ro-dot.on { background: var(--tc); color: #fff; transform: translate(-50%, -50%) scale(1.1); }
+.ro-pos { font-family: var(--font-display); font-weight: 900; font-size: 12px; }
+.ro-name { font-size: 11px; font-weight: 600; max-width: 76px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ro-inj { position: absolute; top: -6px; right: -6px; width: 16px; height: 16px; border-radius: 50%; background: var(--loss); color: #fff; font-size: 12px; font-weight: 900; line-height: 16px; }
+.ro-sheet { position: relative; padding: 18px; border-radius: var(--radius-md); background: var(--paper); border: 1px solid var(--rule); display: grid; gap: 10px; font-size: 14.5px; animation: lv-in .3s var(--ease-out) both; }
+.ro-sheet-top { display: flex; gap: 12px; align-items: center; }
+.ro-sheet-top img, .ro-ph { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; background: var(--chip); }
+.ro-sheet-top b { display: block; font-family: var(--font-display); font-weight: 900; font-size: 18px; }
+.ro-sheet-top span { font-size: 13px; color: var(--ink-3); }
+.ro-close { position: absolute; top: 8px; right: 10px; font-size: 22px; color: var(--ink-3); }
+.ro-rank { display: inline-block; padding: 4px 10px; border-radius: 999px; background: var(--clark); color: #fff; font-weight: 800; font-size: 13px; width: fit-content; }
+.ro-hint p { margin: 0; }
+.tm-roster-btn { margin-top: 10px; display: inline-flex; background: rgba(255,255,255,.95); color: #111; }
+.pl-shot { border-radius: 50%; object-fit: cover; background: rgba(255,255,255,.2); }
+.pl-text { font-family: var(--font-serif); font-size: 17px; line-height: 1.55; }
+@media (max-width: 1023px) { .ro-layout { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 767px) {
+  .ro-field { aspect-ratio: 3 / 4; }
+  .ro-dot { min-width: 40px; padding: 3px 4px; }
+  .ro-name { display: none; }
+}
+.player-link { text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 2px; } .player-link:hover { color: var(--clark-solid); }

@@ -78,6 +78,7 @@ jobs:
         run: |
           out="$(mktemp -d)"
           cp ../primary-ui/public/predictions.json "$out/"
+          cp ../primary-ui/public/rosters.json "$out/"
           cp data/processed/current_injuries.json "$out/" 2>/dev/null || true
           cd "$out"
           git init -q -b data

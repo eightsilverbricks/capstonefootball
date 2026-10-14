@@ -1,3 +1,4 @@
+import PlayerLink from '@/components/PlayerLink';
 import React from 'react';
 import { InjuryNote, KeyPlayer } from '@/types/prediction';
 import PlayerHeadshot from '@/components/PlayerHeadshot';
@@ -40,7 +41,7 @@ const KeyPlayersPanel: React.FC<KeyPlayersPanelProps> = ({ awayTeam, homeTeam, p
                   <PlayerHeadshot espnId={p.espn_id} name={p.name} teamAbbr={p.team} size={36} />
                   <div className="min-w-0">
                     <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
-                      {p.name} <span style={{ color: 'var(--text-muted)' }}>{p.position} · {p.team}</span>
+                      <PlayerLink name={p.name} team={p.team} /> <span style={{ color: 'var(--text-muted)' }}>{p.position} · {p.team}</span>
                     </p>
                     <p className="text-xs" style={{ color: 'var(--text-tertiary)' }}>{p.stat_line}</p>
                   </div>
@@ -60,7 +61,7 @@ const KeyPlayersPanel: React.FC<KeyPlayersPanelProps> = ({ awayTeam, homeTeam, p
             {injuries.map((n) => (
               <li key={`${n.team}-${n.name}`} className="flex items-baseline justify-between gap-3 text-sm">
                 <span className="min-w-0 truncate" style={{ color: 'var(--text-secondary)' }}>
-                  {n.name} <span style={{ color: 'var(--text-muted)' }}>{n.position} · {n.team}{n.injury ? ` · ${n.injury}` : ''}</span>
+                  <PlayerLink name={n.name} team={n.team} /> <span style={{ color: 'var(--text-muted)' }}>{n.position} · {n.team}{n.injury ? ` · ${n.injury}` : ''}</span>
                 </span>
                 <span className="shrink-0 text-xs font-medium" style={{ color: STATUS_COLOR[n.status] }}>
                   {n.status}

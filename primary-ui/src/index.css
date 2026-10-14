@@ -5,6 +5,7 @@
 @import './styles/shell.css';
 @import './styles/report.css';
 @import './styles/live.css';
+@import './styles/roster.css';
 
 @tailwind base;
 @tailwind components;
