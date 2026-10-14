@@ -1,7 +1,9 @@
 // ─── live-sync Edge Function ──────────────────────────────────────────────────
-// Invoked every 15 seconds by Supabase Cron. Secrets (set with
-// `npx supabase secrets set ...`):
-//   LIVE_SYNC_SECRET  required — the cron job sends it as a bearer token
+// Invoked every 15 seconds by Supabase Cron (migration 20261014010000). The
+// cron job sends a bearer token generated inside the database and kept in
+// Vault; check_live_sync_token() verifies it with the service role, so no
+// secret has to be copied anywhere. Optional secrets
+// (`npx supabase secrets set ...`):
 //   GEMINI_API_KEY    optional — free-tier AI notes on big plays
 //   GEMINI_MODEL      optional — defaults to gemini-2.5-flash-lite
 // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by the platform.
@@ -60,13 +62,18 @@ async function fetchJson(url: string) {
   return res.json();
 }
 
+async function authorized(db: SupabaseClient, req: Request): Promise<boolean> {
+  const token = (req.headers.get('Authorization') ?? '').replace(/^Bearer /, '');
+  if (!token) return false;
+  const { data, error } = await db.rpc('check_live_sync_token', { token });
+  return !error && data === true;
+}
+
 Deno.serve(async (req) => {
-  const secret = Deno.env.get('LIVE_SYNC_SECRET');
-  if (!secret || req.headers.get('Authorization') !== `Bearer ${secret}`) {
+  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
+  if (!(await authorized(db, req))) {
     return new Response('Unauthorized', { status: 401 });
   }
-
-  const db = createClient(Deno.env.get('SUPABASE_URL')!, Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
   const apiKey = Deno.env.get('GEMINI_API_KEY');
   const model = Deno.env.get('GEMINI_MODEL') ?? undefined;
 

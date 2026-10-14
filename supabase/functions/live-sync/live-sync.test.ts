@@ -155,3 +155,12 @@ test('the gate opens 10 minutes before the next kickoff', () => {
   assert.equal(nextCheckAt([pre], now), new Date(Date.parse('2026-10-04T17:00:00Z') - PREGAME_LEAD_MS).toISOString());
   assert.equal(nextCheckAt([{ ...pre, state: 'in' }], now), null);
 });
+
+test('situation is empty after the final, and plays carry their drive', () => {
+  const [event] = parseScoreboard(board);
+  assert.equal(event.down, null);
+  assert.equal(event.yardLine, null);
+  const plays = parsePlays(summary, event.teamsById);
+  assert.ok(plays.every((p) => p.driveId));
+  assert.ok(new Set(plays.map((p) => p.driveId)).size > 5);
+});

@@ -31,6 +31,9 @@ export interface LiveGameRow {
   away_score: number;
   possession: string | null;
   home_win_prob: number | null;
+  down: number | null;
+  distance: number | null;
+  yard_line: string | null;
 }
 
 export interface LivePlayRow {
@@ -50,6 +53,7 @@ export interface LivePlayRow {
   big_reason: string | null;
   note: string | null;
   note_source: 'ai' | 'template' | null;
+  drive_id: string | null;
 }
 
 export interface ResultRow {
@@ -142,6 +146,7 @@ export async function buildPlayRows(
       big_reason: reason,
       note,
       note_source: source,
+      drive_id: p.driveId,
     });
   }
   return { rows, aiUsed };
@@ -162,6 +167,9 @@ function gameRow(event: LiveEvent, homeWinProb: number | null): LiveGameRow {
     away_score: event.awayScore,
     possession: event.possession,
     home_win_prob: homeWinProb,
+    down: event.down,
+    distance: event.distance,
+    yard_line: event.yardLine,
   };
 }
 

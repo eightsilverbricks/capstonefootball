@@ -34,6 +34,11 @@ export interface LiveEvent {
   awayScore: number;
   /** nflverse abbreviation of the team with the ball, when ESPN reports it. */
   possession: string | null;
+  /** Current down and distance (null between plays or outside a live game). */
+  down: number | null;
+  distance: number | null;
+  /** ESPN's field position text, e.g. "KC 35". */
+  yardLine: string | null;
   /** ESPN team id → nflverse abbreviation, for resolving play.start.team.id. */
   teamsById: Record<string, string>;
 }
@@ -53,6 +58,8 @@ export interface LivePlay {
   offense: string | null;
   down: number | null;
   distance: number | null;
+  /** ESPN drive id, so the client can collapse routine plays per drive. */
+  driveId: string | null;
 }
 
 export function gameKeyFor(season: number, week: number, away: string, home: string): string {
@@ -100,6 +107,9 @@ export function parseScoreboard(board: Json): LiveEvent[] {
       homeScore: Number(sides.home.score ?? 0),
       awayScore: Number(sides.away.score ?? 0),
       possession: possessionId ? teamsById[String(possessionId)] ?? null : null,
+      down: state === 'in' && Number(comp.situation?.down) > 0 ? Number(comp.situation.down) : null,
+      distance: state === 'in' && comp.situation?.distance != null ? Number(comp.situation.distance) : null,
+      yardLine: state === 'in' ? (comp.situation?.possessionText ?? null) : null,
       teamsById,
     });
   }
@@ -115,7 +125,7 @@ export function parsePlays(summary: Json, teamsById: Record<string, string>): Li
   const seen = new Set<string>();
   const plays: LivePlay[] = [];
 
-  for (const drive of drives) {
+  drives.forEach((drive, driveIndex) => {
     for (const p of drive?.plays ?? []) {
       const playId = String(p?.id ?? '');
       if (!playId || seen.has(playId)) continue;
@@ -135,9 +145,10 @@ export function parsePlays(summary: Json, teamsById: Record<string, string>): Li
         offense: offenseId != null ? teamsById[String(offenseId)] ?? null : null,
         down: p.start?.down ? Number(p.start.down) : null,
         distance: p.start?.distance != null ? Number(p.start.distance) : null,
+        driveId: drive?.id != null ? String(drive.id) : `d${driveIndex}`,
       });
     }
-  }
+  });
   return plays.sort((a, b) => a.seq - b.seq);
 }
 
