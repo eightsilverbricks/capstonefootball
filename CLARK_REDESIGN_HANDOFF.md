@@ -96,3 +96,21 @@ In `nfl-prediction/src/export_predictions.py`: after computing factors, build a 
 - `FoundersPortrait.tsx` logs a React warning for `fetchPriority`; harmless, fix when the landing page is rebuilt.
 - Supabase: see the memory note on schema drift; `supabase/README.md` covers migrations (`npx supabase db push`).
 - Session cost was high (~$265); the owner asked earlier to keep work lean: one page per step, no parallel agents.
+
+
+---
+
+## 7. Update 2026-10-14: live system and the rest of the plan
+
+Built and deployed (production Supabase `qubjlpndblrsarzxcobf`, Vercel from `main`):
+
+- **Data refresh every ~10 min** (`.github/workflows/refresh-data.yml` → `nfl-prediction/src/refresh.py`): scores, lines, nflverse + ESPN injuries, stats, re-scored upcoming games, finals, rosters. Publishes `predictions.json` and `rosters.json` to the single-commit `data` branch; the site reads them from raw.githubusercontent.com with the bundled files as fallback. Play-by-play re-downloads daily at 6am ET.
+- **Injuries move Clark's %** (`src/injury_adjust.py`, coefficient fitted 2009–2025) and show as an "Injuries" factor card and report section.
+- **Live system** (migration `20261014010000_live_system.sql`): `live-sync` Edge Function on a 15-second pg_cron job (token generated in Vault, checked via `check_live_sync_token`). Tables `live_games`, `live_plays`, `results`, chat, comments, reactions, 4th-down polls, moderation (blocklist table, strikes, mute/ban, rate limits, reports). Realtime on.
+- **Game page:** Live tab (win % vs Clark, Clark's calls graded live, drive-grouped play feed with explain-this-play, 4th-down poll, your-pick bar), Chat (beside Live on desktop; rooms, spoiler shield, fan mood, big-play cards with reactions, Clark reacting), comments + Ask Clark under the report, Recap (report card, 5 plays that decided it, share).
+- Picks lock at kickoff in the UI and in the database (`20261014020000_pick_lock.sql`).
+- Live scores in the Rail, scorebug, Games rows, Home (Live now + Big plays); weekly streak with freezes in the community bar; share cards drawn in the browser (pick, result, weekly).
+- **Learn:** `/team/:abbr/roster` (starters on a field), `/player/:id`, player names link site-wide (`src/export_rosters.py`).
+- Settings: hide me from leaderboards, delete account (`20261014030000_settings.sql`). About: how Clark works + public record. 404 with Clark.
+
+Not done / known limits: link-preview images (og:image) for shared links need a server function with `@vercel/og`; Clark's Wrapped (end of season); the mockups' next-play guess, drive maps and game replay. ESPN's API is unofficial (move off before monetizing). Gemini key not set, so report prose and big-play notes are templates.

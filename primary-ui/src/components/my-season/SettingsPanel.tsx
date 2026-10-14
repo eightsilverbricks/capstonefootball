@@ -1,4 +1,5 @@
-import { FormEvent, ReactNode, useState } from 'react';
+import { FormEvent, ReactNode, useEffect, useState } from 'react';
+import { deleteMyAccount, getHiddenFromLeaderboards, setHiddenFromLeaderboards } from '@/data/accountRepository';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/hooks/useTheme';
 import { useSeasonMode } from '@/context/SeasonModeContext';
@@ -84,10 +85,33 @@ function ProfileForm() {
   );
 }
 
+const DELETE_WORD = 'DELETE';
+
 function AccountCard() {
   const { user, requestPasswordReset, signOut } = useAuth();
   const [sent, setSent] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+  const [typed, setTyped] = useState('');
+  const [busy, setBusy] = useState(false);
+  useEffect(() => { if (user) getHiddenFromLeaderboards(user.id).then(setHidden).catch(() => {}); }, [user]);
   if (!user) return null;
+
+  const toggleHidden = async () => {
+    const next = !hidden;
+    setHidden(next);
+    const error = await setHiddenFromLeaderboards(user.id, next);
+    if (error) { setHidden(!next); toast(`Couldn't save: ${error}`); return; }
+    toast(next ? "You're hidden from leaderboards." : "You're back on the leaderboards.");
+  };
+  const remove = async () => {
+    setBusy(true);
+    const error = await deleteMyAccount();
+    setBusy(false);
+    if (error) { toast(`Couldn't delete the account: ${error}`); return; }
+    toast('Your account and picks were deleted.');
+    await signOut();
+  };
   const reset = async () => {
     const { error } = await requestPasswordReset(user.email);
     if (error) { toast(`Couldn't send the email: ${error.message}`); return; }
@@ -100,7 +124,22 @@ function AccountCard() {
       <Row label="Password">
         {sent ? <span className="gr-muted">Check your email for a reset link.</span> : <button type="button" className="pill pill-line" onClick={reset}>Email me a reset link</button>}
       </Row>
+      <Row label="Leaderboards" hint="Your picks still count; your name just isn't shown to others">
+        <label className="ms-switch">
+          <input type="checkbox" checked={hidden} onChange={toggleHidden} />
+          <span>Hide me from leaderboards</span>
+        </label>
+      </Row>
       <Row label="Sign out"><button type="button" className="pill pill-line" onClick={() => void signOut()}>Sign out</button></Row>
+      <Row label="Delete account" hint="Removes your account, picks, chat and comments for good">
+        {confirming ? (
+          <span className="ms-delete">
+            <input value={typed} onChange={(e) => setTyped(e.target.value)} placeholder={`Type ${DELETE_WORD}`} aria-label={`Type ${DELETE_WORD} to confirm`} />
+            <button type="button" className="pill pill-red" disabled={typed !== DELETE_WORD || busy} onClick={remove}>{busy ? 'Deleting' : 'Delete forever'}</button>
+            <button type="button" className="pill pill-line" onClick={() => { setConfirming(false); setTyped(''); }}>Cancel</button>
+          </span>
+        ) : <button type="button" className="pill pill-line" onClick={() => setConfirming(true)}>Delete my account</button>}
+      </Row>
     </section>
   );
 }

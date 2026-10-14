@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import ClarkPublicRecord, { HowClarkWorks } from '@/components/about/ClarkPublicRecord';
 import FoundersPortrait from '@/components/brand/FoundersPortrait';
 import TeamLogo from '@/components/TeamLogo';
 import { useAuth } from '@/hooks/useAuth';
@@ -137,6 +138,18 @@ const AboutPage: React.FC = () => {
             couldn't tell you <em>why</em> — and the why is the entire product. Every factor you see in a Clark Report is a real input the model
             weighted, translated into plain English.
           </p>
+          <HowClarkWorks />
+        </section>
+
+        {/* ── Clark's public record ── */}
+        <section className="max-w-3xl mx-auto px-4 mt-12" aria-labelledby="record-heading">
+          <h2 id="record-heading" className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: 'var(--accent-gold)' }}>
+            Clark's public record
+          </h2>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+            Every pick Clark has made this season, including the misses. Nothing gets deleted.
+          </p>
+          <ClarkPublicRecord />
         </section>
 
         {/* ── Sign-off ── */}

@@ -31,6 +31,8 @@ const NotFound: React.FC = () => {
           >
             404
           </h1>
+          <img src="/brand/clark-logo.jpg" alt="" width={96} height={96} style={{ borderRadius: '50%', boxShadow: 'var(--clark-glow)', margin: '0 auto' }} />
+          <p className="text-lg" style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic' }}>"I ran the numbers. This page has a 0% chance of existing."</p>
 
           <p className="text-lg" style={{ fontFamily: 'var(--font-display)', color: 'var(--text-secondary)' }}>
             Page not found.

@@ -45,3 +45,29 @@
   .ro-name { display: none; }
 }
 .player-link { text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 2px; } .player-link:hover { color: var(--clark-solid); }
+.ms-switch { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; cursor: pointer; }
+.ms-switch input { width: 18px; height: 18px; accent-color: var(--clark-solid); }
+.ms-delete { display: inline-flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.ms-delete input { height: 36px; padding: 0 10px; border-radius: 8px; border: 1px solid var(--rule); background: var(--paper); color: var(--ink); width: 130px; }
+
+/* About: how Clark works + public record */
+.ab-flow { list-style: none; padding: 0; margin-top: 16px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; counter-reset: step; }
+.ab-flow li { position: relative; padding: 14px; border-radius: var(--radius-md); background: var(--paper); border: 1px solid var(--rule); font-size: 13.5px; }
+.ab-flow li:not(:last-child)::after { content: '→'; position: absolute; right: -11px; top: 50%; transform: translateY(-50%); font-weight: 900; color: var(--clark-solid); z-index: 1; }
+.ab-flow .n { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: var(--clark); color: #fff; font-weight: 900; font-size: 13px; margin-bottom: 6px; }
+.ab-flow b { display: block; font-family: var(--font-display); font-weight: 900; font-size: 16px; }
+.ab-flow p { color: var(--ink-2); margin-top: 4px; line-height: 1.45; }
+.ab-record { margin-top: 14px; }
+.ab-record-head { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.ab-record-head b { font-family: var(--font-display); font-weight: 900; font-size: 28px; }
+.ab-record-head .ms-switch { margin-left: auto; }
+.ab-record-list { margin-top: 10px; max-height: 420px; overflow-y: auto; border: 1px solid var(--rule); border-radius: var(--radius-md); }
+.ab-rec-row { display: grid; grid-template-columns: 52px minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 9px 12px; border-top: 1px solid var(--rule); font-size: 13.5px; }
+.ab-rec-row:first-child { border-top: 0; }
+.ab-rec-row:hover { background: var(--card-hi); }
+@media (max-width: 767px) {
+  .ab-flow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .ab-flow li::after { display: none; }
+  .ab-rec-row { grid-template-columns: 44px minmax(0, 1fr) auto; }
+  .ab-rec-row span:nth-child(3) { display: none; }
+}
