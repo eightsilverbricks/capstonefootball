@@ -16,7 +16,7 @@ function RailRow({ team, score, item }: { team: string; score?: number | null; i
     <div className={`rail-row${lost ? ' lost' : ''}`}>
       <img src={getEspnLogoUrl(team)} alt="" width={16} height={16} loading="lazy" />
       <b>{team}</b>
-      {item.status === 'final' && <span className="s">{score}</span>}
+      {score != null && <span className="s">{score}</span>}
     </div>
   );
 }
@@ -60,9 +60,9 @@ export default function ScoreRail() {
               const g = item.game;
               return (
                 <Link key={item.key} className="rail-game" to={`/game/${g.season}/${g.week}/${g.away_team}/${g.home_team}`}>
-                  <span className="rail-status">{item.statusLabel}</span>
-                  <RailRow team={g.away_team} score={g.away_score} item={item} />
-                  <RailRow team={g.home_team} score={g.home_score} item={item} />
+                  <span className={`rail-status${item.status === 'live' ? ' live' : ''}`}>{item.statusLabel}</span>
+                  <RailRow team={g.away_team} score={item.score?.away} item={item} />
+                  <RailRow team={g.home_team} score={item.score?.home} item={item} />
                   <span className={`rail-pick${item.pickResult ? ` ${item.pickResult}` : ''}`}>{item.pickLabel}</span>
                 </Link>
               );

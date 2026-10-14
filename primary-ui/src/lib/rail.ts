@@ -7,8 +7,9 @@ import { PickMap } from '@/data/picksRepository';
 import { gameKey } from '@/lib/threeWaySignal';
 import { isFinal } from '@/lib/gameStatus';
 import { formatKickoff, kickoffSortKey } from '@/lib/slate';
+import { liveClock, pickStanding, type LiveAware } from '@/lib/live';
 
-export type RailStatus = 'final' | 'pre';
+export type RailStatus = 'live' | 'pre' | 'final';
 export type PickResult = 'win' | 'loss' | null;
 
 export interface RailItem {
@@ -19,6 +20,8 @@ export interface RailItem {
   winner: string | null;
   pickLabel: string;
   pickResult: PickResult;
+  /** Live score while the game is on. */
+  score: { away: number; home: number } | null;
 }
 
 const pct = (p: number): number => Math.round(p * 100);
@@ -28,10 +31,11 @@ function clarkLabel(g: ApiPrediction): string {
   return `Clark: ${g.predicted_winner} ${pct(prob)}%`;
 }
 
-export function buildRailItems(games: ApiPrediction[], picks: PickMap): RailItem[] {
+export function buildRailItems(games: LiveAware[], picks: PickMap): RailItem[] {
   const items = games.map((game): RailItem => {
     const key = gameKey(game);
     const final = isFinal(game);
+    const live = !final && game.live?.status === 'in' ? game.live : null;
     const winner = final ? game.actual_winner ?? null : null;
     const pick = picks[key];
     let pickLabel = clarkLabel(game);
@@ -41,21 +45,27 @@ export function buildRailItems(games: ApiPrediction[], picks: PickMap): RailItem
       if (final && winner) {
         pickResult = pick.team === winner ? 'win' : 'loss';
         pickLabel += pickResult === 'win' ? ' ✓' : ' ✗';
+      } else if (live) {
+        pickLabel += ` · ${pickStanding(pick.team, live)}`;
       }
     }
     return {
       key,
       game,
-      status: final ? 'final' : 'pre',
-      statusLabel: final ? 'Final' : `${game.weekday ? `${game.weekday.slice(0, 3)} ` : ''}${formatKickoff(game.gametime)}`,
+      status: final ? 'final' : live ? 'live' : 'pre',
+      statusLabel: final ? 'Final' : live ? liveClock(live)
+        : `${game.weekday ? `${game.weekday.slice(0, 3)} ` : ''}${formatKickoff(game.gametime)}`,
+      score: final ? { away: game.away_score ?? 0, home: game.home_score ?? 0 }
+        : live ? { away: live.away_score, home: live.home_score } : null,
       winner,
       pickLabel,
       pickResult,
     };
   });
-  // Upcoming games first (soonest kickoff), then finals.
+  // Live games first, then upcoming (soonest kickoff), then finals.
+  const order: Record<RailStatus, number> = { live: 0, pre: 1, final: 2 };
   return [...items].sort((a, b) => {
-    if (a.status !== b.status) return a.status === 'pre' ? -1 : 1;
+    if (a.status !== b.status) return order[a.status] - order[b.status];
     return kickoffSortKey(a.game).localeCompare(kickoffSortKey(b.game));
   });
 }

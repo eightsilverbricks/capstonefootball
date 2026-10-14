@@ -79,6 +79,8 @@ export interface ApiPrediction {
   game_date?: string;
   weekday?: string;
   gametime?: string;
+  /** ISO kickoff with offset, e.g. 2026-10-18T13:00:00-04:00. */
+  kickoff_at?: string | null;
   game_type?: string;
   location?: string;
   stadium?: string;

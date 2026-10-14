@@ -56,6 +56,17 @@ describe('isPickingClosed', () => {
     expect(isPickingClosed(game())).toBe(false);
   });
 
+  it('closes at the scheduled kickoff', () => {
+    const g = game({ kickoff_at: '2026-10-18T17:00:00Z' });
+    expect(isPickingClosed(g, new Date('2026-10-18T16:59:00Z'))).toBe(false);
+    expect(isPickingClosed(g, new Date('2026-10-18T17:00:00Z'))).toBe(true);
+  });
+
+  it('closes as soon as live-sync sees the game start', () => {
+    const g = { ...game({ kickoff_at: '2026-10-18T17:00:00Z' }), live: { status: 'in' } } as ApiPrediction;
+    expect(isPickingClosed(g, new Date('2026-10-18T16:55:00Z'))).toBe(true);
+  });
+
   it('leaves the demo season open so its picks can still be made', () => {
     expect(
       isPickingClosed(game({ season: DEMO_SEASON, home_score: 34, away_score: 28 })),

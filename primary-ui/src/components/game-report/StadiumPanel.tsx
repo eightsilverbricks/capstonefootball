@@ -32,9 +32,8 @@ const USMap: React.FC<USMapProps> = ({ lat, lng, markerColor }) => {
     <svg
       viewBox={`0 0 ${W} ${H}`}
       width="100%"
-      height="auto"
       aria-hidden="true"
-      style={{ display: 'block' }}
+      style={{ display: 'block', height: 'auto' }}
     >
       <path
         d={US_OUTLINE_PATH}

@@ -15,10 +15,12 @@ import MockupsRedirect from "./pages/MockupsRedirect";
 import NotFound from "./pages/NotFound";
 import AuthDialogHost from "./components/auth/AuthDialogHost";
 import { SeasonModeProvider } from "./context/SeasonModeContext";
+import { LiveGamesProvider } from "./context/LiveGamesContext";
 import DemoModeBanner from "./components/DemoModeBanner";
 
 const App = () => (
   <SeasonModeProvider>
+  <LiveGamesProvider>
   <BrowserRouter>
     {/* Always visible while demo mode is on — see DemoModeBanner.tsx */}
     <DemoModeBanner />
@@ -49,6 +51,7 @@ const App = () => (
     <AuthDialogHost />
     <Analytics />
   </BrowserRouter>
+  </LiveGamesProvider>
   </SeasonModeProvider>
 );
 

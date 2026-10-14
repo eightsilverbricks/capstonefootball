@@ -22,7 +22,13 @@ export function finalScore(game: ApiPrediction): string | null {
   return `${game.away_team} ${game.away_score} — ${game.home_team} ${game.home_score}`;
 }
 
-/** True when the game has been played and no new pick may be made on it. */
-export function isPickingClosed(game: ApiPrediction): boolean {
-  return game.season !== DEMO_SEASON && isFinal(game);
+/** True once the game has kicked off (or is final): no new pick may be made on it. */
+export function isPickingClosed(game: ApiPrediction, now: Date = new Date()): boolean {
+  if (game.season === DEMO_SEASON) return false;
+  if (isFinal(game)) return true;
+  // Picks lock at kickoff: from the scheduled time, or as soon as live-sync
+  // sees the game start, whichever comes first.
+  const live = (game as { live?: { status: string } }).live;
+  if (live && live.status !== 'pre') return true;
+  return game.kickoff_at ? Date.parse(game.kickoff_at) <= now.getTime() : false;
 }

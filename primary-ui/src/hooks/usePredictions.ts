@@ -1,4 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { useLiveGames } from '@/context/LiveGamesContext';
+import { applyLive, type LiveAware } from '@/lib/live';
+import { gameKey } from '@/lib/threeWaySignal';
 import { ApiPrediction } from '@/types/prediction';
 import { useSeasonMode } from '@/context/SeasonModeContext';
 
@@ -61,7 +64,8 @@ async function fetchPredictions(url: string): Promise<ApiPrediction[]> {
 }
 
 export interface PredictionsState {
-  predictions: ApiPrediction[];
+  /** Each game carries `live` while live-sync is tracking it, and a final as soon as it lands. */
+  predictions: LiveAware[];
   loading: boolean;
   error: string;
   reload: () => void;
@@ -102,5 +106,11 @@ export function usePredictions(): PredictionsState {
     return () => window.clearInterval(id);
   }, [url]);
 
-  return { predictions, loading, error, reload: load };
+  const liveGames = useLiveGames();
+  const merged = useMemo(
+    () => (liveGames.size ? predictions.map((g) => applyLive(g, liveGames.get(gameKey(g)))) : predictions),
+    [predictions, liveGames],
+  );
+
+  return { predictions: merged, loading, error, reload: load };
 }

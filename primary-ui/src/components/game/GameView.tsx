@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ApiPrediction, getPredictedProbability } from '@/types/prediction';
 import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
@@ -19,6 +19,14 @@ import StadiumPanel from '@/components/game-report/StadiumPanel';
 import GameHeader from './GameHeader';
 import WinProbChart from './WinProbChart';
 import ClarkReportArticle from './ClarkReportArticle';
+import LiveTab from './LiveTab';
+import ChatPanel from './ChatPanel';
+import CommentsThread from './CommentsThread';
+import RecapTab from './RecapTab';
+import ShareButtons from './ShareButtons';
+import { useGamePlays } from '@/hooks/useGamePlays';
+import { useGameSocial } from '@/hooks/useGameSocial';
+import { isLive, type LiveAware } from '@/lib/live';
 
 type Tab = 'preview' | 'live' | 'chat' | 'recap';
 const pct = (p: number) => Math.round(p * 100);
@@ -48,11 +56,12 @@ function PickPanel({ game }: { game: ApiPrediction }) {
           <b>{nick(pick.userPick.team)} · {pct(pick.userPick.confidence)}%</b>
           <span>{closed ? 'Picks are locked for this game.' : 'Locked in. You can change it until kickoff.'}</span>
         </div>
+        {isSignedIn && <div className="gv-pb" style={{ paddingTop: 0 }}><ShareButtons game={game} userPick={pick.userPick} /></div>}
       </section>
     );
   }
   if (closed) {
-    return <section className="gv-panel"><div className="gv-ph"><h2>Your pick</h2></div><div className="gv-pb gr-muted">This game has been played, so picks are closed.</div></section>;
+    return <section className="gv-panel"><div className="gv-ph"><h2>Your pick</h2></div><div className="gv-pb gr-muted">{isFinal(game) ? 'This game has been played, so picks are closed.' : 'Picks locked at kickoff.'}</div></section>;
   }
   return (
     <section className="gv-panel">
@@ -100,26 +109,6 @@ function ClarkReport({ game }: { game: ApiPrediction }) {
   );
 }
 
-function Recap({ game }: { game: ApiPrediction }) {
-  const pick = useGamePick(game);
-  if (!isFinal(game)) {
-    return <section className="gv-panel"><div className="gv-pb gr-muted">The recap appears after the final whistle: Clark's report card and how your pick did.</div></section>;
-  }
-  const winner = game.actual_winner;
-  const clarkRight = winner === game.predicted_winner;
-  const youRight = pick.userPick && winner ? pick.userPick.team === winner : null;
-  return (
-    <section className="gv-panel">
-      <div className="gv-pb">
-        <div className="gp-kicker">Final</div>
-        <h2 className="gv-recap-score">{game.away_team} {game.away_score} – {game.home_score} {game.home_team}</h2>
-        <div className="gv-recap-row"><span>Clark had {game.predicted_winner} {pct(getPredictedProbability(game))}%</span><span className={`gr-chip ${clarkRight ? 'win' : 'loss'}`}>{clarkRight ? 'Right' : 'Wrong'}</span></div>
-        {pick.userPick && <div className="gv-recap-row"><span>You had {pick.userPick.team} {pct(pick.userPick.confidence)}%</span><span className={`gr-chip ${youRight ? 'win' : 'loss'}`}>{youRight ? 'Correct' : 'Wrong'}</span></div>}
-      </div>
-    </section>
-  );
-}
-
 function Sidebar({ game }: { game: ApiPrediction }) {
   const w = game.weather;
   return (
@@ -136,14 +125,27 @@ function Sidebar({ game }: { game: ApiPrediction }) {
   );
 }
 
+/** Opens on Preview before kickoff, Live during the game, Recap after (§4). */
+function defaultTab(game: LiveAware): Tab {
+  if (isFinal(game)) return 'recap';
+  return isLive(game) ? 'live' : 'preview';
+}
+
 /** The game page: scorebug header, then Preview · Live · Chat · Recap. */
-export default function GameView({ game }: { game: ApiPrediction }) {
+export default function GameView({ game }: { game: LiveAware }) {
   const key = gameKey(game);
   const keys = useMemo(() => [key], [key]);
   const { sentiment } = useFanSentiment(keys);
   const { predictions } = usePredictions();
-  const [tab, setTab] = useState<Tab>(isFinal(game) ? 'recap' : 'preview');
+  const [tab, setTab] = useState<Tab>(() => defaultTab(game));
   const pick = useGamePick(game);
+  const live = isLive(game);
+  const { plays } = useGamePlays(key, game.season !== 2024 && (live || isFinal(game) || tab !== 'preview'));
+  const social = useGameSocial(key);
+
+  // Jump to Live the moment the game kicks off, unless the reader picked a tab.
+  const [touched, setTouched] = useState(false);
+  useEffect(() => { if (!touched) setTab(defaultTab(game)); }, [live, game.home_score, touched]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const clarkRecord = useMemo(() => {
     const done = predictions.filter((g) => g.season === game.season && g.actual_winner);
@@ -153,10 +155,13 @@ export default function GameView({ game }: { game: ApiPrediction }) {
 
   const tabs: { id: Tab; label: string }[] = [
     { id: 'preview', label: 'Preview' },
-    { id: 'live', label: 'Live' },
+    { id: 'live', label: live ? '● Live' : 'Live' },
     { id: 'chat', label: 'Chat' },
     { id: 'recap', label: 'Recap' },
   ];
+  const userPick = pick.userPick ? { team: pick.userPick.team, confidence: pick.userPick.confidence } : null;
+  // On desktop the chat sits beside the Live tab; on phones it stays its own tab.
+  const chatBeside = tab === 'live';
 
   return (
     <>
@@ -172,7 +177,9 @@ export default function GameView({ game }: { game: ApiPrediction }) {
       <nav className="gv-tabs" aria-label="Game sections">
         <div className="gv-wrap" role="tablist">
           {tabs.map((t) => (
-            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id} onClick={() => setTab(t.id)}>{t.label}</button>
+            <button key={t.id} type="button" role="tab" aria-selected={tab === t.id}
+              className={t.id === 'chat' && chatBeside ? 'gv-tab-phone' : undefined}
+              onClick={() => { setTouched(true); setTab(t.id); }}>{t.label}</button>
           ))}
         </div>
       </nav>
@@ -184,26 +191,17 @@ export default function GameView({ game }: { game: ApiPrediction }) {
               {game.clark_report
                 ? <ClarkReportArticle game={game} report={game.clark_report} record={clarkRecord} />
                 : <ClarkReport game={game} />}
+              <CommentsThread gameKey={key} />
             </>
           )}
-          {tab === 'live' && (
-            <section className="gv-panel">
-              <div className="gv-ph"><h2>Win probability</h2><span className="gr-muted">Dashed line = Clark before kickoff</span></div>
-              <div className="gv-pb">
-                <WinProbChart game={game} />
-                <p className="gr-muted">Play-by-play, live win % and Clark's live checks start at kickoff.</p>
-              </div>
-            </section>
-          )}
-          {tab === 'chat' && (
-            <section className="gv-panel"><div className="gv-pb gv-soon">
-              <img src="/brand/clark-logo.jpg" alt="" />
-              <div><b>Game chat is coming soon.</b><p>Chat with every fan in this game, with picks next to names and big plays you can react to.</p></div>
-            </div></section>
-          )}
-          {tab === 'recap' && <Recap game={game} />}
+          {tab === 'live' && <LiveTab game={game} plays={plays} userPick={userPick} social={social} />}
+          {tab === 'live' && <div className="gv-chat-phone"><ChatPanel game={game} gameKey={key} plays={plays} social={social} /></div>}
+          {tab === 'chat' && <ChatPanel game={game} gameKey={key} plays={plays} social={social} />}
+          {tab === 'recap' && <RecapTab game={game} plays={plays} userPick={userPick} />}
         </div>
-        <Sidebar game={game} />
+        {chatBeside
+          ? <aside className="gv-side gv-chat-side"><ChatPanel game={game} gameKey={key} plays={plays} social={social} /></aside>
+          : <Sidebar game={game} />}
       </div>
       <p className="gv-wrap gv-foot">
         <Link to="/games">← All games</Link>
