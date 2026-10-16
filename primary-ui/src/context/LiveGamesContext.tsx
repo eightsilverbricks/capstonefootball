@@ -20,8 +20,16 @@ export function LiveGamesProvider({ children }: { children: ReactNode }) {
     const unsubscribe = subscribeLiveGames((row) => {
       setGames((prev) => new Map(prev).set(row.game_key, row));
     });
-    const id = window.setInterval(() => { if (document.visibilityState === 'visible') load(); }, RESYNC_MS);
-    return () => { cancelled = true; unsubscribe(); window.clearInterval(id); };
+    // Catch up when a sleeping phone or background tab is seen again, and on a timer.
+    const onVisible = () => { if (document.visibilityState === 'visible') load(); };
+    document.addEventListener('visibilitychange', onVisible);
+    const id = window.setInterval(onVisible, RESYNC_MS);
+    return () => {
+      cancelled = true;
+      unsubscribe();
+      document.removeEventListener('visibilitychange', onVisible);
+      window.clearInterval(id);
+    };
   }, []);
 
   return <LiveGamesContext.Provider value={games}>{children}</LiveGamesContext.Provider>;

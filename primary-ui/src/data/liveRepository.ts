@@ -6,6 +6,28 @@ import { isSupabaseConfigured, supabase } from '@/auth/supabaseClient';
 
 export type LiveStatus = 'pre' | 'in' | 'post';
 
+/** One drive as ESPN summarises it. */
+export interface DriveSummary {
+  id: string;
+  team: string | null;
+  /** "8 plays, 75 yards, 4:12". */
+  description: string;
+  /** "Touchdown", "Punt", … null while the drive is going. */
+  result: string | null;
+  start: string | null;
+  plays: number;
+  yards: number;
+  scoring: boolean;
+}
+
+export type LeaderKind = 'passing' | 'rushing' | 'receiving';
+export interface Leader { id: string; name: string; line: string }
+export interface BoxScore {
+  /** Per team: total_yards, passing, rushing, first_downs, third_down, … as display strings. */
+  teams: Record<string, Record<string, string>>;
+  leaders: Record<string, Partial<Record<LeaderKind, Leader>>>;
+}
+
 export interface LiveGame {
   game_key: string;
   status: LiveStatus;
@@ -20,6 +42,14 @@ export interface LiveGame {
   down: number | null;
   distance: number | null;
   yard_line: string | null;
+  /** Ball spot in yards from the home goal line (0–100). */
+  ball_on?: number | null;
+  red_zone?: boolean;
+  home_timeouts?: number | null;
+  away_timeouts?: number | null;
+  last_play?: string | null;
+  drives?: DriveSummary[] | null;
+  box?: BoxScore | null;
   updated_at: string;
 }
 
@@ -40,11 +70,17 @@ export interface LivePlay {
   big_reason: string | null;
   note: string | null;
   drive_id: string | null;
+  down?: number | null;
+  distance?: number | null;
+  /** Ball spot before and after the snap, yards from the home goal line. */
+  start_yard?: number | null;
+  end_yard?: number | null;
+  scoring?: boolean;
   created_at: string;
 }
 
-const GAME_COLS = 'game_key,status,quarter,clock,home_team,away_team,home_score,away_score,possession,home_win_prob,down,distance,yard_line,updated_at';
-const PLAY_COLS = 'game_key,play_id,seq,quarter,clock,play_type,text,yards,offense,home_score,away_score,home_win_prob,is_big,big_reason,note,drive_id,created_at';
+const GAME_COLS = 'game_key,status,quarter,clock,home_team,away_team,home_score,away_score,possession,home_win_prob,down,distance,yard_line,ball_on,red_zone,home_timeouts,away_timeouts,last_play,drives,box,updated_at';
+const PLAY_COLS = 'game_key,play_id,seq,quarter,clock,play_type,text,yards,offense,home_score,away_score,home_win_prob,is_big,big_reason,note,drive_id,down,distance,start_yard,end_yard,scoring,created_at';
 
 const num = (v: unknown): number | null => (v == null ? null : Number(v));
 

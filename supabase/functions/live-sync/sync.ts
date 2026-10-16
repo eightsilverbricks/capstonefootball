@@ -6,7 +6,8 @@
 // ends. All I/O is injected, so this file runs under node:test with fakes.
 
 import type { LiveEvent, LivePlay } from './espnAdapter.ts';
-import { SCOREBOARD_URL, SUMMARY_URL, parsePlays, parseScoreboard, parseWinProbability } from './espnAdapter.ts';
+import type { BoxScore, DriveSummary } from './espnAdapter.ts';
+import { SCOREBOARD_URL, SUMMARY_URL, parseBox, parseDrives, parsePlays, parseScoreboard, parseWinProbability } from './espnAdapter.ts';
 import type { PlayContext } from './plays.ts';
 import { bigPlayReason, templateNote } from './plays.ts';
 
@@ -34,6 +35,14 @@ export interface LiveGameRow {
   down: number | null;
   distance: number | null;
   yard_line: string | null;
+  ball_on: number | null;
+  red_zone: boolean;
+  home_timeouts: number | null;
+  away_timeouts: number | null;
+  last_play: string | null;
+  /** Left out for pregame rows so a refresh never wipes a stored chart. */
+  drives?: DriveSummary[];
+  box?: BoxScore | null;
 }
 
 export interface LivePlayRow {
@@ -54,6 +63,11 @@ export interface LivePlayRow {
   note: string | null;
   note_source: 'ai' | 'template' | null;
   drive_id: string | null;
+  down: number | null;
+  distance: number | null;
+  start_yard: number | null;
+  end_yard: number | null;
+  scoring: boolean;
 }
 
 export interface ResultRow {
@@ -147,6 +161,11 @@ export async function buildPlayRows(
       note,
       note_source: source,
       drive_id: p.driveId,
+      down: p.down,
+      distance: p.distance,
+      start_yard: p.startYard,
+      end_yard: p.endYard,
+      scoring: p.scoring,
     });
   }
   return { rows, aiUsed };
@@ -154,6 +173,11 @@ export async function buildPlayRows(
 
 function gameRow(event: LiveEvent, homeWinProb: number | null): LiveGameRow {
   return {
+    ball_on: event.ballOn,
+    red_zone: event.redZone,
+    home_timeouts: event.homeTimeouts,
+    away_timeouts: event.awayTimeouts,
+    last_play: event.lastPlay,
     game_key: event.gameKey,
     espn_event_id: event.eventId,
     season: event.season,
@@ -230,7 +254,11 @@ export async function runSync({ now, fetchJson, store, aiNote }: SyncDeps): Prom
     if (rows.length) await store.insertPlays(rows);
 
     const lastWp = plays.length ? wp[plays[plays.length - 1].playId] ?? null : null;
-    await store.upsertGame(gameRow(event, event.state === 'post' ? null : lastWp));
+    await store.upsertGame({
+      ...gameRow(event, event.state === 'post' ? null : lastWp),
+      drives: parseDrives(summary),
+      box: parseBox(summary),
+    });
     if (event.state === 'post' && event.completed) {
       await store.upsertResult(resultRow(event));
       report.resultsWritten += 1;

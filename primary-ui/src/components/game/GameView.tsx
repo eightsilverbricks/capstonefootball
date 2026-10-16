@@ -141,7 +141,7 @@ export default function GameView({ game }: { game: LiveAware }) {
   const [tab, setTab] = useState<Tab>(() => defaultTab(game));
   const pick = useGamePick(game);
   const live = isLive(game);
-  const { plays } = useGamePlays(key, game.season !== 2024 && (live || isFinal(game) || tab !== 'preview'));
+  const { plays } = useGamePlays(key, game.season !== 2024 && (live || isFinal(game) || tab !== 'preview'), live);
   const social = useGameSocial(key);
 
   // Jump to Live the moment the game kicks off, unless the reader picked a tab.

@@ -1,0 +1,1558 @@
+{
+  "drives": {
+    "previous": [
+      {
+        "id": "4018729941",
+        "description": "4 plays, -5 yards, 1:37",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "15:00"
+          },
+          "yardLine": 26,
+          "text": "LAR 26"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "13:23"
+          },
+          "yardLine": 31,
+          "text": "LAR 31"
+        },
+        "timeElapsed": {
+          "displayValue": "1:37"
+        },
+        "yards": -5,
+        "isScore": true,
+        "offensivePlays": 4,
+        "result": "FG",
+        "shortDisplayResult": "FG",
+        "displayResult": "Field Goal"
+      },
+      {
+        "id": "4018729942",
+        "description": "14 plays, 38 yards, 7:48",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "13:23"
+          },
+          "yardLine": 30,
+          "text": "LAR 30"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "5:35"
+          },
+          "yardLine": 68,
+          "text": "BUF 32"
+        },
+        "timeElapsed": {
+          "displayValue": "7:48"
+        },
+        "yards": 38,
+        "isScore": false,
+        "offensivePlays": 14,
+        "result": "MISSED FG",
+        "shortDisplayResult": "MISSED FG",
+        "displayResult": "Missed FG"
+      },
+      {
+        "id": "4018729943",
+        "description": "10 plays, 55 yards, 5:25",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "5:35"
+          },
+          "yardLine": 60,
+          "text": "BUF 40"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "0:10"
+          },
+          "yardLine": 5,
+          "text": "LAR 5"
+        },
+        "timeElapsed": {
+          "displayValue": "5:25"
+        },
+        "yards": 55,
+        "isScore": true,
+        "offensivePlays": 10,
+        "result": "FG",
+        "shortDisplayResult": "FG",
+        "displayResult": "Field Goal"
+      },
+      {
+        "id": "4018729944",
+        "description": "14 plays, 71 yards, 7:10",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 1
+          },
+          "clock": {
+            "displayValue": "0:10"
+          },
+          "yardLine": 29,
+          "text": "LAR 29"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "8:00"
+          },
+          "yardLine": 100,
+          "text": "BUF 0"
+        },
+        "timeElapsed": {
+          "displayValue": "7:10"
+        },
+        "yards": 71,
+        "isScore": true,
+        "offensivePlays": 14,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "4018729945",
+        "description": "5 plays, 69 yards, 2:51",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "8:00"
+          },
+          "yardLine": 69,
+          "text": "BUF 31"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "5:09"
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "timeElapsed": {
+          "displayValue": "2:51"
+        },
+        "yards": 69,
+        "isScore": true,
+        "offensivePlays": 5,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "4018729946",
+        "description": "7 plays, 21 yards, 3:17",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "5:09"
+          },
+          "yardLine": 36,
+          "text": "LAR 36"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "1:52"
+          },
+          "yardLine": 57,
+          "text": "BUF 43"
+        },
+        "timeElapsed": {
+          "displayValue": "3:17"
+        },
+        "yards": 21,
+        "isScore": false,
+        "offensivePlays": 7,
+        "result": "PUNT",
+        "shortDisplayResult": "PUNT",
+        "displayResult": "Punt"
+      },
+      {
+        "id": "4018729947",
+        "description": "3 plays, 4 yards, 1:32",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "1:52"
+          },
+          "yardLine": 88,
+          "text": "BUF 12"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "0:20"
+          },
+          "yardLine": 84,
+          "text": "BUF 16"
+        },
+        "timeElapsed": {
+          "displayValue": "1:32"
+        },
+        "yards": 4,
+        "isScore": false,
+        "offensivePlays": 3,
+        "result": "INT",
+        "shortDisplayResult": "INT",
+        "displayResult": "Interception"
+      },
+      {
+        "id": "4018729948",
+        "description": "3 plays, 8 yards, 0:20",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "clock": {
+            "displayValue": "0:20"
+          },
+          "yardLine": 43,
+          "text": "LAR 43"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 2
+          },
+          "yardLine": 51,
+          "text": "BUF 49"
+        },
+        "timeElapsed": {
+          "displayValue": "0:20"
+        },
+        "yards": 8,
+        "isScore": false,
+        "offensivePlays": 3,
+        "result": "END OF HALF",
+        "shortDisplayResult": "END OF HALF",
+        "displayResult": "End of Half"
+      },
+      {
+        "id": "4018729949",
+        "description": "9 plays, 60 yards, 4:49",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "15:00"
+          },
+          "yardLine": 40,
+          "text": "LAR 40"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "10:11"
+          },
+          "yardLine": 100,
+          "text": "BUF 0"
+        },
+        "timeElapsed": {
+          "displayValue": "4:49"
+        },
+        "yards": 60,
+        "isScore": true,
+        "offensivePlays": 9,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299410",
+        "description": "4 plays, 9 yards, 1:54",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "10:11"
+          },
+          "yardLine": 68,
+          "text": "BUF 32"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "8:17"
+          },
+          "yardLine": 59,
+          "text": "BUF 41"
+        },
+        "timeElapsed": {
+          "displayValue": "1:54"
+        },
+        "yards": 9,
+        "isScore": false,
+        "offensivePlays": 4,
+        "result": "PUNT",
+        "shortDisplayResult": "PUNT",
+        "displayResult": "Punt"
+      },
+      {
+        "id": "40187299411",
+        "description": "3 plays, 6 yards, 1:33",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "8:17"
+          },
+          "yardLine": 7,
+          "text": "LAR 7"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "6:44"
+          },
+          "yardLine": 13,
+          "text": "LAR 13"
+        },
+        "timeElapsed": {
+          "displayValue": "1:33"
+        },
+        "yards": 6,
+        "isScore": false,
+        "offensivePlays": 3,
+        "result": "PUNT",
+        "shortDisplayResult": "PUNT",
+        "displayResult": "Punt"
+      },
+      {
+        "id": "40187299412",
+        "description": "9 plays, 61 yards, 3:59",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "6:44"
+          },
+          "yardLine": 61,
+          "text": "BUF 39"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "2:45"
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "timeElapsed": {
+          "displayValue": "3:59"
+        },
+        "yards": 61,
+        "isScore": true,
+        "offensivePlays": 9,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299413",
+        "description": "6 plays, 83 yards, 3:29",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 3
+          },
+          "clock": {
+            "displayValue": "2:45"
+          },
+          "yardLine": 17,
+          "text": "LAR 17"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "14:16"
+          },
+          "yardLine": 100,
+          "text": "BUF 0"
+        },
+        "timeElapsed": {
+          "displayValue": "3:29"
+        },
+        "yards": 83,
+        "isScore": true,
+        "offensivePlays": 6,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299414",
+        "description": "5 plays, 80 yards, 2:48",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "14:16"
+          },
+          "yardLine": 80,
+          "text": "BUF 20"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "11:28"
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "timeElapsed": {
+          "displayValue": "2:48"
+        },
+        "yards": 80,
+        "isScore": true,
+        "offensivePlays": 5,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299415",
+        "description": "8 plays, 71 yards, 4:14",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "11:28"
+          },
+          "yardLine": 29,
+          "text": "LAR 29"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "7:14"
+          },
+          "yardLine": 100,
+          "text": "BUF 0"
+        },
+        "timeElapsed": {
+          "displayValue": "4:14"
+        },
+        "yards": 71,
+        "isScore": true,
+        "offensivePlays": 8,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299416",
+        "description": "11 plays, 71 yards, 5:35",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "7:14"
+          },
+          "yardLine": 71,
+          "text": "BUF 29"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "1:39"
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "timeElapsed": {
+          "displayValue": "5:35"
+        },
+        "yards": 71,
+        "isScore": true,
+        "offensivePlays": 11,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299417",
+        "description": "8 plays, 63 yards, 1:34",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "1:39"
+          },
+          "yardLine": 37,
+          "text": "LAR 37"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "0:05"
+          },
+          "yardLine": 100,
+          "text": "BUF 0"
+        },
+        "timeElapsed": {
+          "displayValue": "1:34"
+        },
+        "yards": 63,
+        "isScore": true,
+        "offensivePlays": 8,
+        "result": "TD",
+        "shortDisplayResult": "TD",
+        "displayResult": "Touchdown"
+      },
+      {
+        "id": "40187299418",
+        "description": "0 plays, 0 yards, 0:05",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "clock": {
+            "displayValue": "0:05"
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 4
+          },
+          "yardLine": 0,
+          "text": "LAR 0"
+        },
+        "timeElapsed": {
+          "displayValue": "0:05"
+        },
+        "yards": 0,
+        "isScore": false,
+        "offensivePlays": 0,
+        "result": "END OF HALF",
+        "shortDisplayResult": "END OF HALF",
+        "displayResult": "End of Half"
+      },
+      {
+        "id": "40187299419",
+        "description": "4 plays, 51 yards, 2:06",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "10:00"
+          },
+          "yardLine": 73,
+          "text": "BUF 27"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "7:54"
+          },
+          "yardLine": 22,
+          "text": "LAR 22"
+        },
+        "timeElapsed": {
+          "displayValue": "2:06"
+        },
+        "yards": 51,
+        "isScore": false,
+        "offensivePlays": 4,
+        "result": "FUMBLE",
+        "shortDisplayResult": "FUMBLE",
+        "displayResult": "Fumble"
+      },
+      {
+        "id": "40187299420",
+        "description": "8 plays, 50 yards, 3:43",
+        "team": {
+          "id": "14",
+          "name": "Rams",
+          "abbreviation": "LAR",
+          "displayName": "Los Angeles Rams",
+          "shortDisplayName": "Rams"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "7:54"
+          },
+          "yardLine": 20,
+          "text": "LAR 20"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "4:11"
+          },
+          "yardLine": 70,
+          "text": "BUF 30"
+        },
+        "timeElapsed": {
+          "displayValue": "3:43"
+        },
+        "yards": 50,
+        "isScore": false,
+        "offensivePlays": 8,
+        "result": "MISSED FG",
+        "shortDisplayResult": "MISSED FG",
+        "displayResult": "Missed FG"
+      },
+      {
+        "id": "40187299421",
+        "description": "5 plays, 35 yards, 2:16",
+        "team": {
+          "id": "2",
+          "name": "Bills",
+          "abbreviation": "BUF",
+          "displayName": "Buffalo Bills",
+          "shortDisplayName": "Bills"
+        },
+        "start": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "4:11"
+          },
+          "yardLine": 62,
+          "text": "BUF 38"
+        },
+        "end": {
+          "period": {
+            "type": "quarter",
+            "number": 5
+          },
+          "clock": {
+            "displayValue": "1:55"
+          },
+          "yardLine": 27,
+          "text": "LAR 27"
+        },
+        "timeElapsed": {
+          "displayValue": "2:16"
+        },
+        "yards": 35,
+        "isScore": true,
+        "offensivePlays": 5,
+        "result": "FG",
+        "shortDisplayResult": "FG",
+        "displayResult": "Field Goal"
+      }
+    ]
+  },
+  "boxscore": {
+    "teams": [
+      {
+        "team": {
+          "id": "2",
+          "abbreviation": "BUF"
+        },
+        "statistics": [
+          {
+            "name": "firstDowns",
+            "displayValue": "25"
+          },
+          {
+            "name": "firstDownsPassing",
+            "displayValue": "7"
+          },
+          {
+            "name": "firstDownsRushing",
+            "displayValue": "14"
+          },
+          {
+            "name": "firstDownsPenalty",
+            "displayValue": "4"
+          },
+          {
+            "name": "thirdDownEff",
+            "displayValue": "2-7"
+          },
+          {
+            "name": "fourthDownEff",
+            "displayValue": "0-0"
+          },
+          {
+            "name": "totalOffensivePlays",
+            "displayValue": "57"
+          },
+          {
+            "name": "totalYards",
+            "displayValue": "436"
+          },
+          {
+            "name": "yardsPerPlay",
+            "displayValue": "7.6"
+          },
+          {
+            "name": "totalDrives",
+            "displayValue": "11"
+          },
+          {
+            "name": "netPassingYards",
+            "displayValue": "202"
+          },
+          {
+            "name": "completionAttempts",
+            "displayValue": "12/19"
+          },
+          {
+            "name": "yardsPerPass",
+            "displayValue": "10.1"
+          },
+          {
+            "name": "interceptions",
+            "displayValue": "1"
+          },
+          {
+            "name": "sacksYardsLost",
+            "displayValue": "1-8"
+          },
+          {
+            "name": "rushingYards",
+            "displayValue": "234"
+          },
+          {
+            "name": "rushingAttempts",
+            "displayValue": "37"
+          },
+          {
+            "name": "yardsPerRushAttempt",
+            "displayValue": "6.3"
+          },
+          {
+            "name": "redZoneAttempts",
+            "displayValue": "4-5"
+          },
+          {
+            "name": "totalPenaltiesYards",
+            "displayValue": "13-112"
+          },
+          {
+            "name": "turnovers",
+            "displayValue": "2"
+          },
+          {
+            "name": "fumblesLost",
+            "displayValue": "1"
+          },
+          {
+            "name": "interceptions",
+            "displayValue": "1"
+          },
+          {
+            "name": "defensiveTouchdowns",
+            "displayValue": "0"
+          },
+          {
+            "name": "possessionTime",
+            "displayValue": "30:08"
+          }
+        ]
+      },
+      {
+        "team": {
+          "id": "14",
+          "abbreviation": "LAR"
+        },
+        "statistics": [
+          {
+            "name": "firstDowns",
+            "displayValue": "33"
+          },
+          {
+            "name": "firstDownsPassing",
+            "displayValue": "23"
+          },
+          {
+            "name": "firstDownsRushing",
+            "displayValue": "6"
+          },
+          {
+            "name": "firstDownsPenalty",
+            "displayValue": "4"
+          },
+          {
+            "name": "thirdDownEff",
+            "displayValue": "7-14"
+          },
+          {
+            "name": "fourthDownEff",
+            "displayValue": "2-2"
+          },
+          {
+            "name": "totalOffensivePlays",
+            "displayValue": "78"
+          },
+          {
+            "name": "totalYards",
+            "displayValue": "454"
+          },
+          {
+            "name": "yardsPerPlay",
+            "displayValue": "5.8"
+          },
+          {
+            "name": "totalDrives",
+            "displayValue": "10"
+          },
+          {
+            "name": "netPassingYards",
+            "displayValue": "377"
+          },
+          {
+            "name": "completionAttempts",
+            "displayValue": "40/54"
+          },
+          {
+            "name": "yardsPerPass",
+            "displayValue": "6.9"
+          },
+          {
+            "name": "interceptions",
+            "displayValue": "0"
+          },
+          {
+            "name": "sacksYardsLost",
+            "displayValue": "1-6"
+          },
+          {
+            "name": "rushingYards",
+            "displayValue": "77"
+          },
+          {
+            "name": "rushingAttempts",
+            "displayValue": "23"
+          },
+          {
+            "name": "yardsPerRushAttempt",
+            "displayValue": "3.3"
+          },
+          {
+            "name": "redZoneAttempts",
+            "displayValue": "5-5"
+          },
+          {
+            "name": "totalPenaltiesYards",
+            "displayValue": "11-84"
+          },
+          {
+            "name": "turnovers",
+            "displayValue": "0"
+          },
+          {
+            "name": "fumblesLost",
+            "displayValue": "0"
+          },
+          {
+            "name": "interceptions",
+            "displayValue": "0"
+          },
+          {
+            "name": "defensiveTouchdowns",
+            "displayValue": "0"
+          },
+          {
+            "name": "possessionTime",
+            "displayValue": "37:57"
+          }
+        ]
+      }
+    ],
+    "players": [
+      {
+        "team": {
+          "id": "2",
+          "abbreviation": "BUF"
+        },
+        "statistics": [
+          {
+            "name": "passing",
+            "labels": [
+              "C/ATT",
+              "YDS",
+              "AVG",
+              "TD",
+              "INT",
+              "SACKS",
+              "QBR",
+              "RTG"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "3918298",
+                  "displayName": "Josh Allen",
+                  "jersey": "17"
+                },
+                "stats": [
+                  "12/19",
+                  "210",
+                  "11.1",
+                  "1",
+                  "1",
+                  "1-8",
+                  "93.0",
+                  "96.4"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "rushing",
+            "labels": [
+              "CAR",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "3918298",
+                  "displayName": "Josh Allen",
+                  "jersey": "17"
+                },
+                "stats": [
+                  "10",
+                  "121",
+                  "12.1",
+                  "1",
+                  "22"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4379399",
+                  "displayName": "James Cook III",
+                  "jersey": "4"
+                },
+                "stats": [
+                  "25",
+                  "111",
+                  "4.4",
+                  "2",
+                  "18"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4429501",
+                  "displayName": "Ray Davis",
+                  "jersey": "7"
+                },
+                "stats": [
+                  "2",
+                  "2",
+                  "1.0",
+                  "0",
+                  "4"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "receiving",
+            "labels": [
+              "REC",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG",
+              "TGTS"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4373678",
+                  "displayName": "Khalil Shakir",
+                  "jersey": "10"
+                },
+                "stats": [
+                  "3",
+                  "80",
+                  "26.7",
+                  "0",
+                  "57",
+                  "3"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "3915411",
+                  "displayName": "Ty Johnson",
+                  "jersey": "26"
+                },
+                "stats": [
+                  "4",
+                  "72",
+                  "18.0",
+                  "0",
+                  "40",
+                  "4"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4429501",
+                  "displayName": "Ray Davis",
+                  "jersey": "7"
+                },
+                "stats": [
+                  "1",
+                  "31",
+                  "31.0",
+                  "0",
+                  "31",
+                  "1"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4635008",
+                  "displayName": "Keon Coleman",
+                  "jersey": "0"
+                },
+                "stats": [
+                  "1",
+                  "7",
+                  "7.0",
+                  "1",
+                  "7",
+                  "2"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4379399",
+                  "displayName": "James Cook III",
+                  "jersey": "4"
+                },
+                "stats": [
+                  "1",
+                  "7",
+                  "7.0",
+                  "0",
+                  "7",
+                  "1"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4385690",
+                  "displayName": "Dalton Kincaid",
+                  "jersey": "86"
+                },
+                "stats": [
+                  "1",
+                  "7",
+                  "7.0",
+                  "0",
+                  "7",
+                  "2"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "3930086",
+                  "displayName": "Dawson Knox",
+                  "jersey": "88"
+                },
+                "stats": [
+                  "1",
+                  "6",
+                  "6.0",
+                  "0",
+                  "6",
+                  "3"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4683153",
+                  "displayName": "Skyler Bell",
+                  "jersey": "13"
+                },
+                "stats": [
+                  "0",
+                  "0",
+                  "0.0",
+                  "0",
+                  "0",
+                  "2"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "team": {
+          "id": "14",
+          "abbreviation": "LAR"
+        },
+        "statistics": [
+          {
+            "name": "passing",
+            "labels": [
+              "C/ATT",
+              "YDS",
+              "AVG",
+              "TD",
+              "INT",
+              "SACKS",
+              "QBR",
+              "RTG"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "12483",
+                  "displayName": "Matthew Stafford",
+                  "jersey": "9"
+                },
+                "stats": [
+                  "40/54",
+                  "383",
+                  "7.1",
+                  "3",
+                  "0",
+                  "1-6",
+                  "76.4",
+                  "111.9"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "rushing",
+            "labels": [
+              "CAR",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4430737",
+                  "displayName": "Kyren Williams",
+                  "jersey": "23"
+                },
+                "stats": [
+                  "16",
+                  "49",
+                  "3.1",
+                  "1",
+                  "12"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4429096",
+                  "displayName": "Blake Corum",
+                  "jersey": "24"
+                },
+                "stats": [
+                  "5",
+                  "19",
+                  "3.8",
+                  "1",
+                  "10"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4426515",
+                  "displayName": "Puka Nacua",
+                  "jersey": "12"
+                },
+                "stats": [
+                  "2",
+                  "9",
+                  "4.5",
+                  "0",
+                  "9"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "receiving",
+            "labels": [
+              "REC",
+              "YDS",
+              "AVG",
+              "TD",
+              "LONG",
+              "TGTS"
+            ],
+            "athletes": [
+              {
+                "athlete": {
+                  "id": "4426515",
+                  "displayName": "Puka Nacua",
+                  "jersey": "12"
+                },
+                "stats": [
+                  "17",
+                  "138",
+                  "8.1",
+                  "1",
+                  "21",
+                  "24"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "2573401",
+                  "displayName": "Tyler Higbee",
+                  "jersey": "89"
+                },
+                "stats": [
+                  "5",
+                  "83",
+                  "16.6",
+                  "0",
+                  "30",
+                  "6"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4429096",
+                  "displayName": "Blake Corum",
+                  "jersey": "24"
+                },
+                "stats": [
+                  "3",
+                  "53",
+                  "17.7",
+                  "0",
+                  "34",
+                  "4"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "16800",
+                  "displayName": "Davante Adams",
+                  "jersey": "17"
+                },
+                "stats": [
+                  "5",
+                  "51",
+                  "10.2",
+                  "2",
+                  "15",
+                  "7"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4430737",
+                  "displayName": "Kyren Williams",
+                  "jersey": "23"
+                },
+                "stats": [
+                  "6",
+                  "27",
+                  "4.5",
+                  "0",
+                  "9",
+                  "8"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4426553",
+                  "displayName": "Davis Allen",
+                  "jersey": "87"
+                },
+                "stats": [
+                  "2",
+                  "24",
+                  "12.0",
+                  "0",
+                  "21",
+                  "2"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4360797",
+                  "displayName": "Tutu Atwell",
+                  "jersey": "8"
+                },
+                "stats": [
+                  "1",
+                  "4",
+                  "4.0",
+                  "0",
+                  "4",
+                  "1"
+                ]
+              },
+              {
+                "athlete": {
+                  "id": "4242557",
+                  "displayName": "Colby Parkinson",
+                  "jersey": "84"
+                },
+                "stats": [
+                  "1",
+                  "3",
+                  "3.0",
+                  "0",
+                  "3",
+                  "2"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import type { LivePlay } from './espnAdapter.ts';
-import { gameKeyFor, parsePlays, parseScoreboard, parseWinProbability } from './espnAdapter.ts';
+import { gameKeyFor, parseBox, parseDrives, parsePlays, parseScoreboard, parseWinProbability } from './espnAdapter.ts';
 import type { PlayContext } from './plays.ts';
 import { bigPlayReason, templateNote } from './plays.ts';
 import { cleanAiText, aiNote } from './ai.ts';
@@ -19,6 +19,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const fixture = (name: string) => JSON.parse(readFileSync(join(here, 'fixtures', name), 'utf8'));
 const board = fixture('scoreboard_week3.json');
 const summary = fixture('summary_atl_gb_final.json');
+const boxFixture = fixture('summary_buf_la_box.json');
 
 const basePlay: LivePlay = {
   playId: '1', seq: 1, quarter: 2, clock: '5:00', type: 'Rush', text: '', yards: 3,
@@ -163,4 +164,53 @@ test('situation is empty after the final, and plays carry their drive', () => {
   const plays = parsePlays(summary, event.teamsById);
   assert.ok(plays.every((p) => p.driveId));
   assert.ok(new Set(plays.map((p) => p.driveId)).size > 5);
+});
+
+// ─── Drives, box score, live situation ───────────────────────────────────────
+
+test('drives come back oldest first with ESPN\'s own team and result', () => {
+  const drives = parseDrives(boxFixture);
+  assert.equal(drives.length, 21);
+  assert.deepEqual(
+    { team: drives[0].team, result: drives[0].result, plays: drives[0].plays, yards: drives[0].yards, start: drives[0].start },
+    { team: 'BUF', result: 'Field Goal', plays: 4, yards: -5, start: 'LAR 26' },
+  );
+  assert.ok(drives.every((d) => d.team !== 'LAR'), 'ESPN abbreviations are mapped to nflverse');
+});
+
+test('box score keeps both teams and each side\'s leaders', () => {
+  const box = parseBox(boxFixture);
+  assert.ok(box);
+  assert.deepEqual(Object.keys(box.teams).sort(), ['BUF', 'LA']);
+  assert.match(box.teams.BUF.total_yards, /^\d+$/);
+  assert.match(box.teams.BUF.third_down, /^\d+-\d+$/);
+  assert.equal(box.leaders.BUF.passing?.name, 'Josh Allen');
+  assert.equal(box.leaders.BUF.passing?.line, '12/19, 210 yds, 1 TD, 1 INT');
+  assert.match(box.leaders.LA.rushing?.line ?? '', /^\d+ car, -?\d+ yds/);
+  assert.equal(parseBox({}), null);
+});
+
+test('a live scoreboard carries ball spot, timeouts, red zone and the last play', () => {
+  const live = structuredClone(board);
+  const comp = live.events[0].competitions[0];
+  comp.status = { period: 2, displayClock: '3:10', type: { state: 'in', completed: false } };
+  comp.situation = {
+    down: 3, distance: 2, yardLine: 18, possessionText: 'GB 18', isRedZone: true,
+    homeTimeouts: 2, awayTimeouts: 1, lastPlay: { text: ' Rush for 4 yards. ' },
+  };
+  const [event] = parseScoreboard(live);
+  assert.deepEqual(
+    [event.ballOn, event.redZone, event.homeTimeouts, event.awayTimeouts, event.lastPlay],
+    [18, true, 2, 1, 'Rush for 4 yards.'],
+  );
+});
+
+test('plays carry their ball spot before and after the snap', () => {
+  const teams = parseScoreboard(board)[0].teamsById;
+  const plays = parsePlays({ drives: { current: { id: 'd1', plays: [
+    { id: '9', sequenceNumber: '9', period: { number: 1 }, clock: { displayValue: '9:00' }, type: { text: 'Rush' },
+      text: 'x', statYardage: 6, start: { yardLine: 45, down: 1, distance: 10 }, end: { yardLine: 39 } },
+  ] } } }, teams);
+  assert.equal(plays[0].startYard, 45);
+  assert.equal(plays[0].endYard, 39);
 });

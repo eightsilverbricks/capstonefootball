@@ -27,8 +27,14 @@
 .lv-drive > button:focus-visible { outline: 2px solid var(--clark-solid); outline-offset: -2px; }
 .lv-drive .res { margin-left: auto; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--chip); }
 .lv-drive .res.td { background: var(--clark); color: #fff; }
-.lv-play { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; padding: 9px 12px; border-top: 1px solid var(--rule); font-size: 13.5px; }
-.lv-play .t { color: var(--ink-3); font-size: 12px; font-variant-numeric: tabular-nums; }
+.lv-play { display: grid; grid-template-columns: 74px minmax(0, 1fr) auto; gap: 10px; align-items: start; padding: 9px 12px; border-top: 1px solid var(--rule); font-size: 13.5px; line-height: 1.4; }
+.lv-play .t { color: var(--ink-3); font-size: 12px; font-variant-numeric: tabular-nums; display: grid; }
+.lv-play .t em { font-style: normal; font-weight: 800; color: var(--ink-2); }
+.lv-play .yd { font-family: var(--font-display); font-weight: 900; font-size: 13px; font-variant-numeric: tabular-nums; color: var(--ink-3); min-width: 34px; text-align: right; }
+.lv-play .yd.pos { color: var(--win); }
+.lv-play .yd.neg { color: var(--loss); }
+.lv-play.big { background: var(--warm); }
+.lv-note { font-weight: 800; }
 .lv-big { padding: 12px 14px; border-radius: var(--radius-md); background: var(--warm); border-left: 4px solid var(--clark-solid); animation: lv-in .45s var(--ease-out) both; }
 .lv-big .note { font-weight: 800; font-size: 15px; }
 .lv-big .txt { font-size: 13px; color: var(--ink-2); margin-top: 3px; }
@@ -92,7 +98,7 @@
 @media (max-width: 767px) {
   .lv-mine { top: 46px; }
   .ch { height: min(72vh, 600px); }
-  .lv-play { grid-template-columns: 54px minmax(0, 1fr); }
+  .lv-play { grid-template-columns: 62px minmax(0, 1fr) auto; }
 }
 @media (prefers-reduced-motion: reduce) {
   .live-dot, .rail-status.live::before { animation: none; }
@@ -153,3 +159,80 @@
 .hm-confess { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 10px; padding: 12px 14px; border-radius: var(--radius-md); background: var(--warm); font-size: 14px; }
 .hm-confess img { border-radius: 50%; }
 .hm-confess b { display: block; font-family: var(--font-display); font-weight: 900; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--clark-solid); }
+
+/* ─── Live field ─────────────────────────────────────────────────────────── */
+.lf { overflow: hidden; }
+.lf-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; padding: 14px 16px 10px; }
+.lf-sit { display: inline-flex; align-items: center; gap: 10px; }
+.lf-sit b { font-family: var(--font-display); font-weight: 900; font-size: clamp(17px, 15px + .6vw, 22px); font-variant-numeric: tabular-nums; }
+.lf-rz { padding: 3px 9px; border-radius: 999px; background: var(--loss); color: #fff; font-size: 11.5px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; animation: live-pulse 1.6s ease-in-out infinite; }
+.lf-tos { display: inline-flex; gap: 14px; font-size: 12px; font-weight: 800; color: var(--ink-3); }
+.lf-to { display: inline-flex; align-items: center; gap: 4px; }
+.lf-to i { width: 14px; height: 4px; border-radius: 2px; background: var(--rule); }
+.lf-to i.on { background: #FFD34D; }
+.lf-svg { display: block; padding: 0 12px; }
+.lf-grass { fill: #2f7d3b; }
+.lf-stripe { fill: rgba(255,255,255,.05); }
+.lf-line { stroke: rgba(255,255,255,.45); stroke-width: 1.2; }
+.lf-goal { stroke: #fff; stroke-width: 2.5; }
+.lf-num { fill: rgba(255,255,255,.75); font-size: 15px; font-weight: 800; text-anchor: middle; font-family: var(--font-display); }
+.lf-ez { fill: #fff; font-size: 20px; font-weight: 900; text-anchor: middle; dominant-baseline: middle; letter-spacing: .12em; font-family: var(--font-display); }
+.lf-rzone { fill: rgba(220, 38, 38, .22); }
+.lf-los { stroke: #3b82f6; stroke-width: 3; }
+.lf-gain { stroke: #FFD34D; stroke-width: 3; }
+.lf-ball { transition: transform .7s var(--ease-out); }
+.lf-drive { transition: x .7s var(--ease-out), width .7s var(--ease-out); }
+.lf-foot { padding: 10px 16px 14px; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.45; }
+.lf-foot b { font-weight: 800; }
+.lf-last { color: var(--ink-2); }
+.lf-fresh { display: inline-flex; align-items: center; font-size: 12px; color: var(--ink-3); }
+.lf-fresh.stale { color: var(--loss); font-weight: 700; }
+
+/* ─── Win probability readout ────────────────────────────────────────────── */
+.wp { position: relative; }
+.wp svg { touch-action: pan-y; cursor: crosshair; }
+.wp-read { display: flex; gap: 10px; align-items: baseline; min-height: 22px; margin-bottom: 6px; font-size: 13px; color: var(--ink-3); }
+.wp-read b { font-family: var(--font-display); font-weight: 900; font-size: 18px; font-variant-numeric: tabular-nums; flex: none; }
+.wp-read span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wp-now { animation: live-pulse 1.4s ease-in-out infinite; }
+
+/* ─── Drives ─────────────────────────────────────────────────────────────── */
+.lv-drive > button img, .lv-now-head img { flex: none; }
+.lv-drive .who, .lv-now-head .who { font-family: var(--font-display); font-weight: 900; }
+.lv-drive .sum, .lv-now-head .sum { font-weight: 600; color: var(--ink-2); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lv-drive .chev { flex: none; width: 18px; text-align: center; color: var(--ink-3); font-weight: 900; }
+.lv-drive .res, .lv-now-head .res { margin-left: auto; flex: none; padding: 2px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; background: var(--chip); }
+.res.td { background: var(--clark); color: #fff; }
+.res.fg { background: color-mix(in srgb, var(--win) 18%, var(--paper)); color: var(--win); }
+.res.to { background: color-mix(in srgb, var(--loss) 16%, var(--paper)); color: var(--loss); }
+.res.live { background: color-mix(in srgb, var(--live) 14%, var(--paper)); color: var(--live); }
+.lv-now-head { display: flex; align-items: center; gap: 8px; font-size: 14px; margin-bottom: 10px; }
+.lv-now-plays { border: 1px solid var(--rule); border-radius: var(--radius-md); overflow: hidden; margin-top: 10px; }
+.lv-now-plays .lv-play:first-child { border-top: 0; animation: lv-in .45s var(--ease-out) both; }
+
+/* ─── Box score ──────────────────────────────────────────────────────────── */
+.lb { display: grid; gap: 2px; }
+.lb-head { display: flex; justify-content: space-between; font-family: var(--font-display); font-weight: 900; font-size: 15px; margin-bottom: 6px; }
+.lb-head span { display: inline-flex; align-items: center; gap: 6px; }
+.lb-row { display: grid; grid-template-columns: 64px minmax(0, 1fr) 64px; gap: 10px; align-items: center; padding: 6px 0; border-top: 1px solid var(--rule); }
+.lb-row > b { font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; color: var(--ink-2); }
+.lb-row > b:last-child { text-align: right; }
+.lb-row > b.up { font-weight: 900; color: var(--ink); }
+.lb-mid { display: grid; gap: 4px; text-align: center; font-size: 12px; font-weight: 700; color: var(--ink-3); }
+.lb-bar { display: flex; height: 5px; border-radius: 3px; overflow: hidden; background: var(--chip); gap: 2px; }
+.lb-bar i { flex: 1; transition: transform .6s var(--ease-out); }
+.lb-bar i:first-child { transform-origin: right; }
+.lb-bar i:last-child { transform-origin: left; }
+.lb-leaders { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 14px; }
+.lb-lead h3 { font-size: 11.5px; font-weight: 900; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-3); margin-bottom: 6px; }
+.lb-lead p { display: grid; gap: 1px; padding: 4px 0 4px 9px; border-left: 3px solid; margin-bottom: 6px; font-size: 13.5px; font-weight: 700; }
+.lb-lead p span { font-weight: 500; font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+@media (max-width: 640px) {
+  .lb-leaders { grid-template-columns: 1fr; }
+  .lf-svg { padding: 0 8px; }
+  .lf-num { font-size: 18px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lf-ball, .lf-drive, .lb-bar i { transition: none; }
+  .lf-rz, .wp-now, .lv-now-plays .lv-play:first-child { animation: none; }
+}

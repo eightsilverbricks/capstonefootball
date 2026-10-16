@@ -5,7 +5,7 @@
 // decided a game for the recap.
 
 import type { ApiPrediction } from '@/types/prediction';
-import type { LiveGame, LivePlay } from '@/data/liveRepository';
+import type { DriveSummary, LiveGame, LivePlay } from '@/data/liveRepository';
 
 /** League-typical yards per play; above it an offense is moving the ball. */
 export const LEAGUE_YPP = 5.0;
@@ -54,6 +54,29 @@ export interface Drive {
   yards: number;
   result: string;
   big: LivePlay[];
+  /** ESPN's "8 plays, 75 yards, 4:12", when the feed has it. */
+  description: string | null;
+  /** Where it started, e.g. "SEA 29". */
+  start: string | null;
+}
+
+/** ESPN's long drive results, in the short form the feed shows. */
+const SHORT_RESULT: Record<string, string> = { Touchdown: 'TD', 'Field Goal': 'FG', 'Downs': 'Downs' };
+
+/**
+ * The team with the ball on most real snaps. A drive's first play is often
+ * the kickoff, which ESPN credits to the kicking team.
+ */
+function driveOffense(plays: LivePlay[]): string | null {
+  const counts = new Map<string, number>();
+  for (const p of plays) {
+    if (!p.offense || SPECIAL.test(p.play_type)) continue;
+    counts.set(p.offense, (counts.get(p.offense) ?? 0) + 1);
+  }
+  let best: string | null = null;
+  let most = 0;
+  for (const [team, n] of counts) if (n > most) { best = team; most = n; }
+  return best ?? plays.find((p) => p.offense)?.offense ?? null;
 }
 
 function driveResult(last: LivePlay, next: LivePlay | null, gameOver: boolean): string {
@@ -71,24 +94,107 @@ function driveResult(last: LivePlay, next: LivePlay | null, gameOver: boolean): 
   return next.quarter >= 3 && last.quarter <= 2 ? 'End of half' : 'Downs';
 }
 
-/** Plays grouped by drive, oldest first. */
-export function groupDrives(plays: LivePlay[], gameOver = false): Drive[] {
-  const drives: Drive[] = [];
+/**
+ * Plays grouped by drive, oldest first. ESPN's drive summaries, when given,
+ * are the authority on who had the ball, the yards and how it ended.
+ */
+export function groupDrives(plays: LivePlay[], gameOver = false, summaries: DriveSummary[] = []): Drive[] {
+  const groups: { id: string; plays: LivePlay[] }[] = [];
   for (const p of [...plays].sort((a, b) => a.seq - b.seq)) {
     const id = p.drive_id ?? 'none';
-    let d = drives[drives.length - 1];
-    if (!d || d.id !== id) {
-      d = { id, offense: p.offense, plays: [], yards: 0, result: '', big: [] };
-      drives.push(d);
-    }
-    d.plays.push(p);
-    if (!SPECIAL.test(p.play_type)) d.yards += p.yards;
-    if (p.is_big) d.big.push(p);
+    const last = groups[groups.length - 1];
+    if (last && last.id === id) last.plays.push(p);
+    else groups.push({ id, plays: [p] });
   }
-  drives.forEach((d, i) => {
-    d.result = driveResult(d.plays[d.plays.length - 1], drives[i + 1]?.plays[0] ?? null, gameOver);
+  const byId = new Map(summaries.map((d) => [d.id, d]));
+  return groups.map((g, i) => {
+    const meta = byId.get(g.id);
+    const counted = g.plays.filter((p) => !SPECIAL.test(p.play_type)).reduce((n, p) => n + p.yards, 0);
+    const fallback = driveResult(g.plays[g.plays.length - 1], groups[i + 1]?.plays[0] ?? null, gameOver);
+    const result = meta?.result ? SHORT_RESULT[meta.result] ?? meta.result
+      : meta && !gameOver && i === groups.length - 1 ? 'In progress' : fallback;
+    return {
+      id: g.id,
+      offense: meta?.team ?? driveOffense(g.plays),
+      plays: g.plays,
+      yards: meta ? meta.yards : counted,
+      result,
+      big: g.plays.filter((p) => p.is_big),
+      description: meta?.description || null,
+      start: meta?.start ?? null,
+    };
   });
-  return drives;
+}
+
+// ─── Game clock ──────────────────────────────────────────────────────────────
+
+/** Regulation length, and the length of a regular-season overtime. */
+export const REGULATION_S = 3600;
+export const OT_S = 600;
+
+/** Seconds of game time played when this quarter showed this clock. */
+export function elapsedSeconds(quarter: number, clock: string): number {
+  const [m, s] = clock.split(':').map(Number);
+  const left = Number.isFinite(m) && Number.isFinite(s) ? m * 60 + s : 0;
+  if (quarter <= 4) return (Math.max(1, quarter) - 1) * 900 + (900 - Math.min(900, left));
+  return REGULATION_S + (quarter - 5) * OT_S + (OT_S - Math.min(OT_S, left));
+}
+
+export interface WpPoint { t: number; p: number; play: LivePlay }
+
+/** Home win % against game time, one point per play that has one. */
+export function winProbSeries(plays: LivePlay[]): WpPoint[] {
+  const out: WpPoint[] = [];
+  for (const play of [...plays].sort((a, b) => a.seq - b.seq)) {
+    if (play.home_win_prob == null) continue;
+    // Clocks only run down; keep the line from doubling back on a stray stamp.
+    const t = Math.max(out.length ? out[out.length - 1].t : 0, elapsedSeconds(play.quarter, play.clock));
+    out.push({ t, p: play.home_win_prob, play });
+  }
+  return out;
+}
+
+// ─── Field ───────────────────────────────────────────────────────────────────
+
+export interface FieldState {
+  /** Ball spot, yards from the home goal line. */
+  ball: number;
+  /** Line to gain on the same scale, or null (goal to go, or unknown). */
+  toGain: number | null;
+  /** Which way the offense is going: +1 toward the away goal, -1 toward home. */
+  direction: 1 | -1 | 0;
+  offense: string | null;
+}
+
+/** Where the ball is and where the sticks are, from the live situation. */
+export function fieldState(live: LiveGame): FieldState | null {
+  if (live.status !== 'in' || live.ball_on == null) return null;
+  const ball = Math.min(100, Math.max(0, live.ball_on));
+  const offense = live.possession;
+  const direction: FieldState['direction'] = offense === live.home_team ? 1 : offense === live.away_team ? -1 : 0;
+  const gain = live.distance != null && live.down != null && direction !== 0 ? ball + direction * live.distance : null;
+  const toGain = gain != null && gain > 0 && gain < 100 ? gain : null;
+  return { ball, toGain, direction, offense };
+}
+
+/** Seconds since the live row last changed. */
+export function secondsSince(iso: string, now = Date.now()): number {
+  const t = Date.parse(iso);
+  return Number.isFinite(t) ? Math.max(0, Math.round((now - t) / 1000)) : Number.POSITIVE_INFINITY;
+}
+
+/** The drive in progress: the last one, while the game is still going. */
+export function currentDrive(drives: Drive[], gameOver: boolean): Drive | null {
+  if (gameOver || !drives.length) return null;
+  const last = drives[drives.length - 1];
+  return last.result === 'In progress' ? last : null;
+}
+
+/** "3rd & 7" for a play, or null for kicks and untimed downs. */
+export function playDown(p: LivePlay): string | null {
+  if (!p.down || p.down > 4) return null;
+  const ord = ['', '1st', '2nd', '3rd', '4th'][p.down];
+  return `${ord} & ${p.distance ?? '?'}`;
 }
 
 // ─── Box score from plays ────────────────────────────────────────────────────
@@ -148,7 +254,9 @@ export function factorTracker(game: ApiPrediction, plays: LivePlay[]): TrackItem
     const moving = line.ypp >= LEAGUE_YPP;
     items.push({
       claim,
-      now: line.plays ? `${off}: ${one(line.ypp)} yards per play ${soFar}` : 'Waiting for the first snaps',
+      now: !line.plays ? 'Waiting for the first snaps'
+        : line.plays < 8 ? `${off}: ${one(line.ypp)} yards per play on ${line.plays} snaps. Graded after 8.`
+        : `${off}: ${one(line.ypp)} yards per play ${soFar}`,
       state: line.plays < 8 ? 'waiting' : (pickHasBall ? moving : !moving) ? 'yes' : 'no',
     });
   }
