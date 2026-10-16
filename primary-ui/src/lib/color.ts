@@ -100,3 +100,19 @@ export function scrimStrengthFor(bgHex: string): number {
   if (lum <= 0.18) return 0;
   return Math.min(0.85, 0.35 + lum * 0.6);
 }
+
+/** The page surfaces charts sit on (--paper in each theme). */
+export const PAPER_HEX = { light: '#FFFFFF', dark: '#16181C' } as const;
+/** WCAG's minimum for lines and bars (non-text graphics). */
+const GRAPHIC_CONTRAST = 3;
+
+/**
+ * A team color for chart marks (lines, bars) that stays visible on `bgHex`:
+ * primary if it clears 3:1, else secondary, else the fallback. Keeps navy teams
+ * from disappearing in dark mode and pale ones on white.
+ */
+export function chartTeamColor(colors: { primary: string; secondary: string }, bgHex: string, fallback: string): string {
+  if (contrastRatio(colors.primary, bgHex) >= GRAPHIC_CONTRAST) return colors.primary;
+  if (contrastRatio(colors.secondary, bgHex) >= GRAPHIC_CONTRAST) return colors.secondary;
+  return fallback;
+}

@@ -1,6 +1,8 @@
 import type { BoxScore, LeaderKind } from '@/data/liveRepository';
 import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
 import PlayerLink from '@/components/PlayerLink';
+import { chartTeamColor, PAPER_HEX } from '@/lib/color';
+import { useIsDark } from '@/hooks/useIsDark';
 
 interface Row {
   key: string;
@@ -49,16 +51,18 @@ function StatRow({ row, away, home, awayColor, homeColor }: {
   const a = row.score?.(away) ?? null;
   const h = row.score?.(home) ?? null;
   const total = a != null && h != null ? a + h : 0;
-  const awayShare = total > 0 ? a! / total : 0.5;
+  // Nothing to compare yet (0–0, or a stat that didn't parse): a neutral bar, not two team halves.
+  const even = total <= 0;
+  const awayShare = even ? 0.5 : a! / total;
   const better = a == null || h == null || a === h ? null : (a > h) !== !!row.lowerIsBetter ? 'away' : 'home';
   return (
     <div className="lb-row">
       <b className={better === 'away' ? 'up' : undefined}>{away || '–'}</b>
       <div className="lb-mid">
         <span>{row.label}</span>
-        <div className="lb-bar" aria-hidden="true">
-          <i style={{ background: awayColor, transform: `scaleX(${awayShare})` }} />
-          <i style={{ background: homeColor, transform: `scaleX(${1 - awayShare})` }} />
+        <div className={`lb-bar${even ? ' even' : ''}`} aria-hidden="true">
+          <i style={{ background: even ? undefined : awayColor, transform: `scaleX(${awayShare})` }} />
+          <i style={{ background: even ? undefined : homeColor, transform: `scaleX(${1 - awayShare})` }} />
         </div>
       </div>
       <b className={better === 'home' ? 'up' : undefined}>{home || '–'}</b>
@@ -70,8 +74,9 @@ function StatRow({ row, away, home, awayColor, homeColor }: {
 export default function LiveBox({ box, away, home }: { box: BoxScore; away: string; home: string }) {
   const at = box.teams[away] ?? {};
   const ht = box.teams[home] ?? {};
-  const ac = getTeamColors(away).primary;
-  const hc = getTeamColors(home).primary;
+  const bg = useIsDark() ? PAPER_HEX.dark : PAPER_HEX.light;
+  const ac = chartTeamColor(getTeamColors(away), bg, '#8E8E8A');
+  const hc = chartTeamColor(getTeamColors(home), bg, '#8E8E8A');
   const hasLeaders = KINDS.some(({ kind }) => box.leaders[away]?.[kind] || box.leaders[home]?.[kind]);
 
   return (

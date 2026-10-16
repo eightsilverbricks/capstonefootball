@@ -1,6 +1,8 @@
 import { useState, type PointerEvent } from 'react';
 import { ApiPrediction } from '@/types/prediction';
 import { getTeamColors } from '@/data/nflData';
+import { chartTeamColor, PAPER_HEX } from '@/lib/color';
+import { useIsDark } from '@/hooks/useIsDark';
 import { OT_S, REGULATION_S, type WpPoint } from '@/lib/live';
 
 const W = 600;
@@ -30,8 +32,9 @@ export default function WinProbChart({ game, series = [] }: { game: ApiPredictio
   const pre = y(game.home_win_prob);
   const line = series.map((pt) => `${x(pt.t).toFixed(1)},${y(pt.p).toFixed(1)}`).join(' ');
   const area = series.length > 1 ? `0,${H / 2} ${line} ${x(last.t).toFixed(1)},${H / 2}` : '';
-  const hc = getTeamColors(game.home_team).primary;
-  const ac = getTeamColors(game.away_team).primary;
+  const bg = useIsDark() ? PAPER_HEX.dark : PAPER_HEX.light;
+  const hc = chartTeamColor(getTeamColors(game.home_team), bg, '#8E8E8A');
+  const ac = chartTeamColor(getTeamColors(game.away_team), bg, '#8E8E8A');
   const shown = hover ?? last;
 
   const onMove = (e: PointerEvent<SVGSVGElement>) => {

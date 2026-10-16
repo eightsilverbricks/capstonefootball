@@ -30,7 +30,7 @@
 button.gate-chip:hover { color: var(--brand); background: var(--brand-soft); }
 
 @media (max-width: 560px) {
-  .gate { min-height: 360px; }
+  .gate:not(.gate-compact) { min-height: 360px; }
   .gate-card { flex-direction: column; gap: 10px; }
   .gate-card img { width: 40px; height: 40px; }
   .gate-copy p { font-size: 15px; }

@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
+  chartTeamColor,
+  PAPER_HEX,
   hexToRgb,
   relativeLuminance,
   contrastRatio,
@@ -108,5 +110,18 @@ describe('scrimStrengthFor', () => {
 
   it('never exceeds the 0.85 cap', () => {
     expect(scrimStrengthFor('#ffffff')).toBeLessThanOrEqual(0.85);
+  });
+});
+
+describe('chartTeamColor', () => {
+  const seahawks = { primary: '#002244', secondary: '#69BE28' };
+  it('keeps the primary when it reads on the surface', () => {
+    expect(chartTeamColor(seahawks, PAPER_HEX.light, '#888')).toBe('#002244');
+  });
+  it('swaps a navy primary for the secondary in dark mode', () => {
+    expect(chartTeamColor(seahawks, PAPER_HEX.dark, '#888')).toBe('#69BE28');
+  });
+  it('falls back when neither team color reads', () => {
+    expect(chartTeamColor({ primary: '#101820', secondary: '#1a1a1a' }, PAPER_HEX.dark, '#888')).toBe('#888');
   });
 });

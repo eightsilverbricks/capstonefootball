@@ -32,7 +32,7 @@ function clarkLabel(g: ApiPrediction): string {
 }
 
 /** Signed out, Clark's pick is members-only, so the rail names it without giving it away. */
-export const LOCKED_CLARK_LABEL = "Clark's pick · members";
+export const LOCKED_CLARK_LABEL = 'Clark: members only';
 
 export function buildRailItems(games: LiveAware[], picks: PickMap, { showClark = true }: { showClark?: boolean } = {}): RailItem[] {
   const items = games.map((game): RailItem => {
