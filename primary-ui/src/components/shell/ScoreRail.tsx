@@ -4,6 +4,7 @@ import { getEspnLogoUrl } from '@/data/nflData';
 import { useCurrentWeekGames } from '@/hooks/useCurrentWeekGames';
 import { useUserPicks } from '@/hooks/useUserPicks';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
+import { useGate } from '@/components/auth/SignInGate';
 import { buildRailItems, RailItem } from '@/lib/rail';
 import { weekShortLabel } from '@/lib/currentWeek';
 
@@ -26,7 +27,8 @@ export default function ScoreRail() {
   const { week, games } = useCurrentWeekGames();
   const { picks } = useUserPicks();
   const reduced = useReducedMotion();
-  const items = useMemo(() => buildRailItems(games, picks), [games, picks]);
+  const { locked } = useGate('clark-pick');
+  const items = useMemo(() => buildRailItems(games, picks, { showClark: !locked }), [games, picks, locked]);
   const trackRef = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);

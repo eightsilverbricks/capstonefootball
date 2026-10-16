@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import Header from '@/components/Header';
+import SignInGate, { GatePreview } from '@/components/auth/SignInGate';
 import Footer from '@/components/Footer';
 import { usePredictions } from '@/hooks/usePredictions';
 import { useFanSentiment } from '@/hooks/useFanSentiment';
@@ -175,6 +176,7 @@ export default function LeaderboardPage() {
         {board === 'clark' && <p className="lb-dek">Fans ranked by how many more games they got right than Clark, on the same games.</p>}
         {board === 'week' && <p className="lb-dek">Week {week} · points come from your confidence: right at 80% earns 30, wrong at 80% costs 30.</p>}
 
+        <SignInGate feature="leaderboard" preview={<GatePreview shape="table" />}>
         <div className="lb-two">
           <div>
             {board === 'fanbases' ? <Fanbases games={predictions} myTeam={user?.favoriteTeam ?? null} /> : (
@@ -194,6 +196,7 @@ export default function LeaderboardPage() {
           </div>
           {board !== 'fanbases' && <Aside rows={rows} myId={myId} clark={clark} board={board} week={week} />}
         </div>
+        </SignInGate>
       </main>
       <Footer />
     </div>

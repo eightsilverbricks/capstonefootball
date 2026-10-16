@@ -9,7 +9,7 @@ import { usePredictions } from '@/hooks/usePredictions';
 import { useUserPicks } from '@/hooks/useUserPicks';
 import { useFanSentiment } from '@/hooks/useFanSentiment';
 import { useAuth } from '@/hooks/useAuth';
-import { openAuthDialog } from '@/hooks/useAuthDialog';
+import SignInGate, { GatePreview } from '@/components/auth/SignInGate';
 import { computeSeasonSummary } from '@/lib/seasonSummary';
 import { computeSeasonHistory } from '@/lib/seasonHistory';
 import { divisionLines, pickRows, splits, weekLines } from '@/lib/seasonBreakdown';
@@ -26,16 +26,6 @@ type TabId = (typeof TABS)[number]['id'];
 const isTab = (v: string | null): v is TabId => TABS.some((t) => t.id === v);
 const initials = (name: string) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('') || '?';
 const joined = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
-
-function SignedOut() {
-  return (
-    <div className="clark-card ms-empty">
-      <img src="/brand/clark-logo.jpg" alt="" />
-      <p>"Your season lives in your account. Make one and I'll keep score."<small>Clark · free, no betting</small></p>
-      <button type="button" className="pill pill-red" onClick={() => openAuthDialog('signup')}>Create free account</button>
-    </div>
-  );
-}
 
 /** My season: profile header, then Overview · Picks · Settings (tab kept in the URL). */
 export default function MySeasonPage() {
@@ -88,7 +78,7 @@ export default function MySeasonPage() {
 
       <main className="ms-wrap ms-main">
         {tab === 'settings' && <SettingsPanel />}
-        {tab !== 'settings' && !isSignedIn && <SignedOut />}
+        {tab !== 'settings' && !isSignedIn && <SignInGate feature="my-season" preview={<GatePreview shape="rows" />} />}
         {tab === 'overview' && isSignedIn && (
           <SeasonOverview summary={summary} history={history} weeks={weeks} splits={split} divisions={divisions} />
         )}

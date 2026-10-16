@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRailItems, weekRecords, weekStats } from './rail';
+import { buildRailItems, LOCKED_CLARK_LABEL, weekRecords, weekStats } from './rail';
 import { ApiPrediction } from '@/types/prediction';
 
 const game = (over: Partial<ApiPrediction>): ApiPrediction => ({
@@ -13,6 +13,12 @@ describe('buildRailItems', () => {
     const [item] = buildRailItems([game({})], {});
     expect(item.pickLabel).toBe('Clark: DAL 64%');
     expect(item.status).toBe('pre');
+  });
+
+  it("hides Clark's pick and percentage when Clark is locked", () => {
+    const [item] = buildRailItems([game({})], {}, { showClark: false });
+    expect(item.pickLabel).toBe(LOCKED_CLARK_LABEL);
+    expect(item.pickLabel).not.toMatch(/DAL|%/);
   });
 
   it('grades your pick on a final game', () => {
@@ -42,6 +48,13 @@ describe('weekStats', () => {
 
   it('is empty with no games', () => {
     expect(weekStats([])).toEqual([]);
+  });
+
+  it("leaves out Clark's lock and closest call when Clark is locked", () => {
+    const ids = weekStats([game({}), game({ home_team: 'NE', away_team: 'LV', home_win_prob: 0.51, away_win_prob: 0.49 })], { showClark: false }).map((s) => s.id);
+    expect(ids).not.toContain('lock');
+    expect(ids).not.toContain('closest');
+    expect(ids).toContain('games');
   });
 });
 

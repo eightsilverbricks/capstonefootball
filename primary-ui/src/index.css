@@ -6,6 +6,7 @@
 @import './styles/report.css';
 @import './styles/live.css';
 @import './styles/roster.css';
+@import './styles/gate.css';
 
 @tailwind base;
 @tailwind components;

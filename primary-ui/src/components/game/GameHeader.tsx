@@ -6,6 +6,7 @@ import { isFinal } from '@/lib/gameStatus';
 import { formatKickoff } from '@/lib/slate';
 import { TeamPick, FanPick } from '@/lib/threeWaySignal';
 import { downAndDistance, liveClock, type LiveAware } from '@/lib/live';
+import { LockedChip, useGate } from '@/components/auth/SignInGate';
 
 interface GameHeaderProps {
   game: LiveAware;
@@ -34,6 +35,7 @@ function Side({ team, record, score, align, hasBall }: { team: string; record?: 
 
 /** Scorebug over the home stadium photo, washed in both teams' colors, with Clark / line / fans. */
 export default function GameHeader({ game, vegas, fan }: GameHeaderProps) {
+  const gate = useGate('clark-pick');
   const final = isFinal(game);
   const live = !final && game.live?.status === 'in' ? game.live : null;
   const score = (side: 'home' | 'away') =>
@@ -58,8 +60,10 @@ export default function GameHeader({ game, vegas, fan }: GameHeaderProps) {
         <Side team={game.home_team} record={game.home_season_record} score={score('home')} align="right" hasBall={live?.possession === game.home_team} />
       </div>
       <div className="gh-compare">
-        <span className="clark-tag"><img src="/brand/clark-logo.jpg" alt="" />Clark {game.predicted_winner} {pct(getPredictedProbability(game))}%</span>
-        {live?.home_win_prob != null && (
+        {gate.locked
+          ? <LockedChip />
+          : <span className="clark-tag"><img src="/brand/clark-logo.jpg" alt="" />Clark {game.predicted_winner} {pct(getPredictedProbability(game))}%</span>}
+        {!gate.locked && live?.home_win_prob != null && (
           <span>Live <b>{live.home_win_prob >= 0.5 ? game.home_team : game.away_team} {pct(Math.max(live.home_win_prob, 1 - live.home_win_prob))}%</b></span>
         )}
         {vegas && <span>Betting line <b>{vegas.team} {pct(vegas.prob)}%</b></span>}

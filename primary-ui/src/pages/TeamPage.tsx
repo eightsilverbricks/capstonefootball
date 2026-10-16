@@ -12,6 +12,7 @@ import { formatKickoff } from '@/lib/slate';
 import { divisionPlace, ordinal, teamNotes, teamOutlook, teamRecord, teamSchedule } from '@/lib/teamPage';
 import NotFound from './NotFound';
 import PlayerLink from '@/components/PlayerLink';
+import SignInGate, { GatePreview } from '@/components/auth/SignInGate';
 
 const pct = (p: number) => Math.round(p * 100);
 const nick = (t: string) => getTeam(t)?.name ?? t;
@@ -53,6 +54,7 @@ export default function TeamPage() {
         </div>
       </section>
 
+      <SignInGate feature="team" preview={<div className="tm-wrap"><GatePreview shape="rows" /></div>}>
       <main className="tm-wrap tm-two">
         <div className="tm-stack">
           <section className="clark-card tm-outlook">
@@ -104,6 +106,7 @@ export default function TeamPage() {
           ))}
         </aside>
       </main>
+      </SignInGate>
       <Footer />
     </div>
   );

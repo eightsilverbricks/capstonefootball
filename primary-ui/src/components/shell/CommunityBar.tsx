@@ -12,10 +12,10 @@ import { weeklyStreak } from '@/lib/weeklyStreak';
 /** Scrolling strip of week facts under the rail. Doubled so the scroll loops seamlessly. */
 export default function CommunityBar() {
   const { games, week } = useCurrentWeekGames();
-  const stats = useMemo(() => weekStats(games), [games]);
   const { predictions } = usePredictions();
   const { picks } = useUserPicks();
   const { isSignedIn } = useAuth();
+  const stats = useMemo(() => weekStats(games, { showClark: isSignedIn }), [games, isSignedIn]);
   const streak = useMemo(() => {
     const weeks = new Set(predictions.filter((g) => picks[gameKey(g)]).map((g) => g.week));
     return weeklyStreak(weeks, week);

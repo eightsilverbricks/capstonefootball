@@ -11,6 +11,7 @@ import { liveClock, pickStanding, type LiveAware } from '@/lib/live';
 import { formatKickoff } from '@/lib/slate';
 import { confetti, toast } from '@/lib/fx';
 import SparkSlider from '@/components/picks/SparkSlider';
+import { LockedChip, useGate } from '@/components/auth/SignInGate';
 
 const QUICK_PICK_CONFIDENCE = 0.65;
 const pct = (p: number) => Math.round(p * 100);
@@ -32,6 +33,7 @@ export default function GameRow({ game }: { game: LiveAware }) {
   const navigate = useNavigate();
   const pick = useGamePick(game);
   const { isSignedIn } = useAuth();
+  const gate = useGate('clark-pick');
   const [open, setOpen] = useState(false);
   const final = isFinal(game);
   const closed = isPickingClosed(game);
@@ -92,11 +94,15 @@ export default function GameRow({ game }: { game: LiveAware }) {
           <TeamLine team={game.home_team} record={game.home_season_record} score={final ? game.home_score : live ? live.home_score : null} dim={Boolean(winner && winner !== game.home_team)} />
         </div>
         <div className="gr-clark">
-          <span className="clark-tag"><img src="/brand/clark-logo.jpg" alt="" />{game.predicted_winner} {pct(clarkProb)}%</span>
-          <div className="gr-bar" aria-hidden="true">
-            <span style={{ width: `${100 - homePct}%`, background: getTeamColors(game.away_team).primary }} />
-            <span style={{ width: `${homePct}%`, background: getTeamColors(game.home_team).primary }} />
-          </div>
+          {gate.locked ? <LockedChip /> : (
+            <>
+              <span className="clark-tag"><img src="/brand/clark-logo.jpg" alt="" />{game.predicted_winner} {pct(clarkProb)}%</span>
+              <div className="gr-bar" aria-hidden="true">
+                <span style={{ width: `${100 - homePct}%`, background: getTeamColors(game.away_team).primary }} />
+                <span style={{ width: `${homePct}%`, background: getTeamColors(game.home_team).primary }} />
+              </div>
+            </>
+          )}
         </div>
         <div className="gr-you">{yours}</div>
         <Link to={url} className="gr-open" aria-label={`Open ${game.away_team} at ${game.home_team}`}><ChevronRight size={18} /></Link>

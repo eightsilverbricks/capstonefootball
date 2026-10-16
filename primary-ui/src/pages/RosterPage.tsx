@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Header from '@/components/Header';
+import SignInGate, { GatePreview } from '@/components/auth/SignInGate';
 import Footer from '@/components/Footer';
 import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
 import { getTeam } from '@/data/teams';
@@ -61,6 +62,7 @@ export default function RosterPage() {
             ))}
           </div>
         </div>
+        <SignInGate feature="roster" preview={<GatePreview shape="field" />}>
         {!rosters && !error && <p className="gr-muted">Loading the depth chart…</p>}
         {error && <p className="gr-muted">Couldn't load the roster right now.</p>}
         {rosters && (
@@ -86,6 +88,7 @@ export default function RosterPage() {
                   <p className="gr-muted">From the latest depth chart · updated {new Date(rosters.updated).toLocaleDateString()}</p></aside>}
           </div>
         )}
+        </SignInGate>
       </main>
       <Footer />
     </div>

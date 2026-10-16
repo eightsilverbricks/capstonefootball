@@ -16,6 +16,7 @@ import { isFinal } from '@/lib/gameStatus';
 import { toast } from '@/lib/fx';
 import { getTeam } from '@/data/teams';
 import { ApiPrediction } from '@/types/prediction';
+import SignInGate from '@/components/auth/SignInGate';
 
 function ClarkLock({ games }: { games: ApiPrediction[] }) {
   const open = games.filter((g) => !isFinal(g));
@@ -94,7 +95,7 @@ export default function GamesView() {
             <div className="gp-kicker">{seasonConfig.season} {isDemo ? 'demo season' : 'regular season'}</div>
             <h1 className="gp-title">{weekTitle(activeWeek)}</h1>
           </div>
-          <ClarkLock games={weekGames} />
+          <div className="gp-lock"><SignInGate feature="clark-pick" compact><ClarkLock games={weekGames} /></SignInGate></div>
         </div>
         <WeekStrip availableWeeks={availableWeeks} selectedWeek={activeWeek} onChange={setSelectedWeek} records={records} />
 

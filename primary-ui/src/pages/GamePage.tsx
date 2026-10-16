@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { usePredictions } from '@/hooks/usePredictions';
 import GameView from '@/components/game/GameView';
+import GameTeaser from '@/components/game/GameTeaser';
+import { useAuth } from '@/hooks/useAuth';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import Card from '@/components/layout/Card';
@@ -12,6 +14,7 @@ const GamePage: React.FC = () => {
     season: string; week: string; away: string; home: string;
   }>();
   const { predictions, loading, error, reload } = usePredictions();
+  const { isSignedIn } = useAuth();
 
   const game = useMemo(() => {
     if (!predictions.length) return null;
@@ -71,7 +74,7 @@ const GamePage: React.FC = () => {
         )}
 
       </main>
-      {!loading && !error && game && <GameView game={game} />}
+      {!loading && !error && game && (isSignedIn ? <GameView game={game} /> : <GameTeaser game={game} />)}
 
       <Footer />
     </div>

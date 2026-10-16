@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Header from '@/components/Header';
+import SignInGate, { GatePreview } from '@/components/auth/SignInGate';
 import Footer from '@/components/Footer';
 import { getEspnLogoUrl, getTeamColors } from '@/data/nflData';
 import { getTeam } from '@/data/teams';
@@ -43,6 +44,7 @@ export default function PlayerPage() {
               </div>
             </div>
           </section>
+          <SignInGate feature="player" preview={<div className="tm-wrap"><GatePreview shape="rows" /></div>}>
           <main className="tm-wrap tm-two">
             <div className="tm-stack">
               <section>
@@ -85,6 +87,7 @@ export default function PlayerPage() {
               <Link to={`/team/${team.abbr}/roster`} className="pill pill-line">Full {team.name} lineup</Link>
             </aside>
           </main>
+          </SignInGate>
         </>
       )}
       <Footer />

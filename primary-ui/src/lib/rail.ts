@@ -31,14 +31,17 @@ function clarkLabel(g: ApiPrediction): string {
   return `Clark: ${g.predicted_winner} ${pct(prob)}%`;
 }
 
-export function buildRailItems(games: LiveAware[], picks: PickMap): RailItem[] {
+/** Signed out, Clark's pick is members-only, so the rail names it without giving it away. */
+export const LOCKED_CLARK_LABEL = "Clark's pick · members";
+
+export function buildRailItems(games: LiveAware[], picks: PickMap, { showClark = true }: { showClark?: boolean } = {}): RailItem[] {
   const items = games.map((game): RailItem => {
     const key = gameKey(game);
     const final = isFinal(game);
     const live = !final && game.live?.status === 'in' ? game.live : null;
     const winner = final ? game.actual_winner ?? null : null;
     const pick = picks[key];
-    let pickLabel = clarkLabel(game);
+    let pickLabel = showClark ? clarkLabel(game) : LOCKED_CLARK_LABEL;
     let pickResult: PickResult = null;
     if (pick) {
       pickLabel = `You: ${pick.team} ${pct(pick.confidence)}%`;
@@ -79,7 +82,8 @@ export interface CommunityStat {
 }
 
 /** Facts about the week drawn only from real data (Clark's picks and graded results). */
-export function weekStats(games: ApiPrediction[]): CommunityStat[] {
+/** `showClark: false` leaves out the two stats that give away Clark's picks. */
+export function weekStats(games: ApiPrediction[], { showClark = true }: { showClark?: boolean } = {}): CommunityStat[] {
   if (games.length === 0) return [];
   const stats: CommunityStat[] = [];
   const graded = games.filter((g) => isFinal(g) && g.actual_winner);
@@ -90,10 +94,12 @@ export function weekStats(games: ApiPrediction[]): CommunityStat[] {
   const upcoming = games.filter((g) => !isFinal(g));
   const pool = upcoming.length > 0 ? upcoming : games;
   const probOf = (g: ApiPrediction) => Math.max(g.home_win_prob, g.away_win_prob);
-  const lock = [...pool].sort((a, b) => probOf(b) - probOf(a))[0];
-  stats.push({ id: 'lock', team: lock.predicted_winner, label: "Clark's most confident pick", value: `${lock.predicted_winner} ${pct(probOf(lock))}%` });
-  const closest = [...pool].sort((a, b) => probOf(a) - probOf(b))[0];
-  stats.push({ id: 'closest', label: 'Closest call', value: `${closest.away_team} @ ${closest.home_team}, ${pct(probOf(closest))}%` });
+  if (showClark) {
+    const lock = [...pool].sort((a, b) => probOf(b) - probOf(a))[0];
+    stats.push({ id: 'lock', team: lock.predicted_winner, label: "Clark's most confident pick", value: `${lock.predicted_winner} ${pct(probOf(lock))}%` });
+    const closest = [...pool].sort((a, b) => probOf(a) - probOf(b))[0];
+    stats.push({ id: 'closest', label: 'Closest call', value: `${closest.away_team} @ ${closest.home_team}, ${pct(probOf(closest))}%` });
+  }
   stats.push({ id: 'games', label: 'Games this week', value: `${games.length} · ${upcoming.length} still to play` });
   return stats;
 }
