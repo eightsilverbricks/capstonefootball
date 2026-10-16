@@ -100,7 +100,9 @@ export function weekStats(games: ApiPrediction[], { showClark = true }: { showCl
     const closest = [...pool].sort((a, b) => probOf(a) - probOf(b))[0];
     stats.push({ id: 'closest', label: 'Closest call', value: `${closest.away_team} @ ${closest.home_team}, ${pct(probOf(closest))}%` });
   }
-  stats.push({ id: 'games', label: 'Games this week', value: `${games.length} · ${upcoming.length} still to play` });
+  const liveNow = upcoming.filter((g) => (g as LiveAware).live?.status === 'in').length;
+  const toPlay = upcoming.length - liveNow;
+  stats.push({ id: 'games', label: 'Games this week', value: [`${games.length}`, liveNow ? `${liveNow} live` : '', toPlay ? `${toPlay} to play` : ''].filter(Boolean).join(' · ') });
   return stats;
 }
 

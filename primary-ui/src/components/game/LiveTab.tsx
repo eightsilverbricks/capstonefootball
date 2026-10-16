@@ -140,6 +140,7 @@ function FourthDownPoll({ game, social }: { game: LiveAware; social: SocialProps
           </button>
         ))}
       </div>
+      <p className="lv-poll-n">{mine ? `${total} ${total === 1 ? 'fan has' : 'fans have'} voted` : 'Vote to see how other fans called it.'}</p>
     </section>
   );
 }

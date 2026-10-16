@@ -5,6 +5,7 @@ import {
 } from '@/data/socialRepository';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
+import { toast } from '@/lib/fx';
 
 const REFRESH_DEBOUNCE_MS = 400;
 
@@ -37,7 +38,11 @@ export function useGameSocial(gameKey: string) {
       const mine = Object.fromEntries(Object.entries(r.mine).filter(([k]) => k !== playId));
       return { ...r, mine: next ? { ...mine, [playId]: next } : mine };
     });
-    await setReaction(gameKey, playId, uid, next);
+    try {
+      await setReaction(gameKey, playId, uid, next);
+    } catch {
+      toast("Couldn't save that reaction. Try again.");
+    }
     refresh();
   }, [uid, gameKey, reactions.mine, refresh]);
 
@@ -45,7 +50,12 @@ export function useGameSocial(gameKey: string) {
     if (!uid) { openAuthDialog('signup'); return; }
     if (polls.mine[pollKey]) return;
     setPolls((p) => ({ ...p, mine: { ...p.mine, [pollKey]: choice } }));
-    await vote(gameKey, pollKey, uid, choice);
+    try {
+      await vote(gameKey, pollKey, uid, choice);
+    } catch {
+      setPolls((p) => ({ ...p, mine: Object.fromEntries(Object.entries(p.mine).filter(([k]) => k !== pollKey)) }));
+      toast("Couldn't count that vote. Try again.");
+    }
     refresh();
   }, [uid, gameKey, polls.mine, refresh]);
 

@@ -27,6 +27,7 @@ import ShareButtons from './ShareButtons';
 import AskClark from './AskClark';
 import { useGamePlays } from '@/hooks/useGamePlays';
 import { useGameSocial } from '@/hooks/useGameSocial';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 import { isLive, type LiveAware } from '@/lib/live';
 
 type Tab = 'preview' | 'live' | 'chat' | 'recap';
@@ -161,8 +162,11 @@ export default function GameView({ game }: { game: LiveAware }) {
     { id: 'recap', label: 'Recap' },
   ];
   const userPick = pick.userPick ? { team: pick.userPick.team, confidence: pick.userPick.confidence } : null;
-  // On desktop the chat sits beside the Live tab; on phones it stays its own tab.
-  const chatBeside = tab === 'live';
+  // On desktop the chat sits beside the Live tab; below that it's its own tab.
+  // Only one ChatPanel is ever mounted, so there's one realtime channel per game.
+  const wide = useMediaQuery('(min-width: 1024px)');
+  const chatBeside = tab === 'live' && wide;
+  const chat = <ChatPanel game={game} gameKey={key} plays={plays} social={social} />;
 
   return (
     <>
@@ -179,7 +183,7 @@ export default function GameView({ game }: { game: LiveAware }) {
         <div className="gv-wrap" role="tablist">
           {tabs.map((t) => (
             <button key={t.id} type="button" role="tab" aria-selected={tab === t.id}
-              className={t.id === 'chat' && chatBeside ? 'gv-tab-phone' : undefined}
+              hidden={t.id === 'chat' && wide && tab === 'live'}
               onClick={() => { setTouched(true); setTab(t.id); }}>{t.label}</button>
           ))}
         </div>
@@ -197,12 +201,11 @@ export default function GameView({ game }: { game: LiveAware }) {
             </>
           )}
           {tab === 'live' && <LiveTab game={game} plays={plays} userPick={userPick} social={social} />}
-          {tab === 'live' && <div className="gv-chat-phone"><ChatPanel game={game} gameKey={key} plays={plays} social={social} /></div>}
-          {tab === 'chat' && <ChatPanel game={game} gameKey={key} plays={plays} social={social} />}
+          {tab === 'chat' && chat}
           {tab === 'recap' && <RecapTab game={game} plays={plays} userPick={userPick} />}
         </div>
         {chatBeside
-          ? <aside className="gv-side gv-chat-side"><ChatPanel game={game} gameKey={key} plays={plays} social={social} /></aside>
+          ? <aside className="gv-side gv-chat-side">{chat}</aside>
           : <Sidebar game={game} />}
       </div>
       <p className="gv-wrap gv-foot">

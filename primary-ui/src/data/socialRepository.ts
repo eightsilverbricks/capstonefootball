@@ -91,10 +91,18 @@ export async function fetchChat(gameKey: string): Promise<ChatMessage[]> {
   }));
 }
 
+/** Throw the Supabase error so callers can roll back and say so. */
+function check(res: { error: { message: string } | null }): void {
+  if (res.error) throw new Error(res.error.message);
+}
+
+export type LiveStatus = 'connecting' | 'live' | 'down';
+
 export function subscribeChat(
   gameKey: string,
   onInsert: (m: ChatMessage) => void,
   onRemove: (id: number) => void,
+  onStatus: (s: LiveStatus) => void = () => {},
 ): () => void {
   const client = db();
   if (!client) return () => {};
@@ -106,26 +114,33 @@ export function subscribeChat(
       ({ new: r }) => { if (r.hidden) onRemove(r.id); })
     .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'chat_messages' },
       ({ old: r }) => { if (r?.id) onRemove(r.id); })
-    .subscribe();
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') onStatus('live');
+      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT' || status === 'CLOSED') onStatus('down');
+    });
   return () => { client.removeChannel(channel); };
 }
 
-async function rpcPost(fn: string, gameKey: string, body: string): Promise<{ ok: boolean; error?: string }> {
+export interface PostResult { ok: boolean; error?: string; id?: number }
+
+async function rpcPost(fn: string, gameKey: string, body: string): Promise<PostResult> {
   const client = db();
   if (!client) return { ok: false, error: 'offline' };
   const { data, error } = await client.rpc(fn, { p_game_key: gameKey, p_body: body });
   if (error) return { ok: false, error: 'offline' };
-  return data as { ok: boolean; error?: string };
+  return data as PostResult;
 }
 
 export const postChat = (gameKey: string, body: string) => rpcPost('post_chat_message', gameKey, body);
 
 export async function reportChat(id: number): Promise<void> {
-  await db()?.rpc('report_chat_message', { p_id: id });
+  const client = db();
+  if (client) check(await client.rpc('report_chat_message', { p_id: id }));
 }
 
 export async function deleteChat(id: number): Promise<void> {
-  await db()?.from('chat_messages').delete().eq('id', id);
+  const client = db();
+  if (client) check(await client.from('chat_messages').delete().eq('id', id));
 }
 
 // ─── Comments ────────────────────────────────────────────────────────────────
@@ -148,12 +163,13 @@ export const postComment = (gameKey: string, body: string) => rpcPost('post_comm
 export async function setUpvote(commentId: number, userId: string, on: boolean): Promise<void> {
   const client = db();
   if (!client) return;
-  if (on) await client.from('comment_votes').insert({ comment_id: commentId, user_id: userId });
-  else await client.from('comment_votes').delete().eq('comment_id', commentId).eq('user_id', userId);
+  if (on) check(await client.from('comment_votes').insert({ comment_id: commentId, user_id: userId }));
+  else check(await client.from('comment_votes').delete().eq('comment_id', commentId).eq('user_id', userId));
 }
 
 export async function reportComment(id: number): Promise<void> {
-  await db()?.rpc('report_comment', { p_id: id });
+  const client = db();
+  if (client) check(await client.rpc('report_comment', { p_id: id }));
 }
 
 // ─── Reactions and polls ─────────────────────────────────────────────────────
@@ -180,8 +196,8 @@ export async function fetchReactions(gameKey: string, userId: string | null): Pr
 export async function setReaction(gameKey: string, playId: string, userId: string, emoji: Emoji | null): Promise<void> {
   const client = db();
   if (!client) return;
-  if (emoji) await client.from('play_reactions').upsert({ game_key: gameKey, play_id: playId, user_id: userId, emoji });
-  else await client.from('play_reactions').delete().eq('game_key', gameKey).eq('play_id', playId).eq('user_id', userId);
+  if (emoji) check(await client.from('play_reactions').upsert({ game_key: gameKey, play_id: playId, user_id: userId, emoji }));
+  else check(await client.from('play_reactions').delete().eq('game_key', gameKey).eq('play_id', playId).eq('user_id', userId));
 }
 
 export async function fetchPolls(gameKey: string, userId: string | null): Promise<{ counts: Counts<PollChoice>; mine: Record<string, PollChoice> }> {
@@ -198,7 +214,8 @@ export async function fetchPolls(gameKey: string, userId: string | null): Promis
 }
 
 export async function vote(gameKey: string, pollKey: string, userId: string, choice: PollChoice): Promise<void> {
-  await db()?.from('poll_votes').insert({ game_key: gameKey, poll_key: pollKey, user_id: userId, choice });
+  const client = db();
+  if (client) check(await client.from('poll_votes').insert({ game_key: gameKey, poll_key: pollKey, user_id: userId, choice }));
 }
 
 /** Re-runs `onChange` whenever reactions or poll votes change for this game. */

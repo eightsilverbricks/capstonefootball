@@ -5,6 +5,7 @@ import {
 import { getEspnLogoUrl } from '@/data/nflData';
 import { useAuth } from '@/hooks/useAuth';
 import { openAuthDialog } from '@/hooks/useAuthDialog';
+import { toast } from '@/lib/fx';
 
 const MAX_LEN = 1000;
 const pct = (p: number) => Math.round(p * 100);
@@ -23,8 +24,12 @@ export default function CommentsThread({ gameKey }: { gameKey: string }) {
   const [draft, setDraft] = useState('');
   const [error, setError] = useState('');
   const [sending, setSending] = useState(false);
+  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading');
+  const [reported, setReported] = useState<Set<number>>(() => new Set());
 
-  const load = useCallback(() => { fetchComments(gameKey).then(setComments).catch(() => {}); }, [gameKey]);
+  const load = useCallback(() => {
+    fetchComments(gameKey).then((rows) => { setComments(rows); setStatus('ready'); }).catch(() => setStatus('error'));
+  }, [gameKey]);
   useEffect(load, [load, user?.id]);
 
   const submit = async (e: FormEvent) => {
@@ -35,30 +40,53 @@ export default function CommentsThread({ gameKey }: { gameKey: string }) {
     setError('');
     const res = await postComment(gameKey, draft.trim());
     setSending(false);
-    if (res.ok) { setDraft(''); load(); } else setError(POST_ERRORS[res.error ?? 'offline'] ?? POST_ERRORS.offline);
+    if (res.ok) { setDraft(''); load(); toast('Comment posted.'); } else setError(POST_ERRORS[res.error ?? 'offline'] ?? POST_ERRORS.offline);
   };
+
+  const flipVote = (c: Comment, on: boolean) =>
+    setComments((list) => list.map((x) => (x.id === c.id ? { ...x, voted: on, upvotes: x.upvotes + (on ? 1 : -1) } : x)));
 
   const toggleVote = async (c: Comment) => {
     if (!user) { openAuthDialog('signup'); return; }
-    setComments((list) => list.map((x) => (x.id === c.id ? { ...x, voted: !c.voted, upvotes: x.upvotes + (c.voted ? -1 : 1) } : x)));
-    await setUpvote(c.id, user.id, !c.voted);
+    flipVote(c, !c.voted);
+    try {
+      await setUpvote(c.id, user.id, !c.voted);
+    } catch {
+      flipVote(c, c.voted);
+      toast("Couldn't save that vote. Try again.");
+    }
+  };
+
+  const report = async (c: Comment) => {
+    setReported((s) => new Set(s).add(c.id));
+    try {
+      await reportComment(c.id);
+      toast('Thanks for the report. A moderator will take a look.');
+    } catch {
+      setReported((s) => { const next = new Set(s); next.delete(c.id); return next; });
+      toast("Couldn't send that report. Try again.");
+    }
   };
 
   return (
     <section className="gv-panel" aria-labelledby="cm-h">
-      <div className="gv-ph"><h2 id="cm-h">Comments</h2><span className="gr-muted">{comments.length}</span></div>
+      <div className="gv-ph"><h2 id="cm-h">Comments</h2><span className="gr-muted">{status === 'ready' ? `${comments.length} ${comments.length === 1 ? 'comment' : 'comments'}` : ''}</span></div>
       <div className="gv-pb">
         <form className="cm-form" onSubmit={submit}>
-          <textarea value={draft} maxLength={MAX_LEN} onChange={(e) => setDraft(e.target.value)}
+          <textarea value={draft} maxLength={MAX_LEN} onChange={(e) => { setDraft(e.target.value); if (error) setError(''); }}
             placeholder={user ? 'What do you think Clark got right or wrong?' : 'Sign in to comment'}
             aria-label="Write a comment" onFocus={() => { if (!user) openAuthDialog('signup'); }} />
           <div className="row">
             <span>{error ? <span role="alert" style={{ color: 'var(--loss)' }}>{error}</span> : `${draft.length}/${MAX_LEN}`}</span>
-            <button className="cm-send" type="submit" disabled={sending || (!!user && !draft.trim())}>Post</button>
+            <button className="cm-send" type="submit" disabled={sending || (!!user && !draft.trim())}>{sending ? 'Posting…' : 'Post'}</button>
           </div>
         </form>
-        {comments.length === 0
-          ? <p className="gr-muted" style={{ marginTop: 14 }}>No comments yet. Be the first.</p>
+        {status === 'loading' && <p className="gr-muted cm-empty">Loading comments…</p>}
+        {status === 'error' && (
+          <p className="gr-muted cm-empty">Couldn't load comments. <button type="button" className="gr-link" onClick={() => { setStatus('loading'); load(); }}>Try again</button></p>
+        )}
+        {status === 'ready' && (comments.length === 0
+          ? <p className="gr-muted cm-empty">No comments yet. What did Clark get right or wrong?</p>
           : (
             <ul className="cm-list">
               {comments.map((c) => (
@@ -73,16 +101,16 @@ export default function CommentsThread({ gameKey }: { gameKey: string }) {
                       <b>{c.author.displayName}</b>
                       {c.pick && <span className="ch-pick">{c.pick.team} · {pct(c.pick.confidence)}%</span>}
                       <span className="gr-muted">{ago(c.createdAt)}</span>
-                      {user && user.id !== c.userId && (
-                        <button type="button" className="ch-x" style={{ opacity: 1 }} onClick={() => { reportComment(c.id); setComments((l) => l.filter((x) => x.id !== c.id)); }}>Report</button>
-                      )}
+                      {user && user.id !== c.userId && (reported.has(c.id)
+                        ? <span className="ch-x done">Reported</span>
+                        : <button type="button" className="ch-x cm-report" onClick={() => report(c)}>Report</button>)}
                     </div>
                     <p className="cm-body">{c.body}</p>
                   </div>
                 </li>
               ))}
             </ul>
-          )}
+          ))}
       </div>
     </section>
   );

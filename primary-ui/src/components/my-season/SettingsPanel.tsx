@@ -154,7 +154,7 @@ export default function SettingsPanel() {
       <AccountCard />
       <section className="ms-card">
         <div className="ms-ch"><h2>Display</h2></div>
-        <Row label="Theme" hint="System follows your device"><Segmented label="Theme" options={THEME_OPTIONS} value={preference} onChange={setTheme} /></Row>
+        <Row label="Theme" hint="System matches your device setting"><Segmented label="Theme" options={THEME_OPTIONS} value={preference} onChange={setTheme} /></Row>
         <Row label="Season data" hint={`The ${DEMO_SEASON} demo grades picks right away. Demo picks don't count toward ${LIVE_SEASON}.`}>
           <Segmented label="Season data" options={SEASON_OPTIONS} value={mode} onChange={setMode} />
         </Row>

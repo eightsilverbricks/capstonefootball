@@ -34,7 +34,7 @@ const App = () => (
       <Route path="/welcome" element={<LandingPage />} />
       <Route path="/games" element={<GamesPage />} />
       <Route path="/game/:season/:week/:away/:home" element={<GamePage />} />
-      {/* Live hub arrives with the live system; until then Live opens the week's games */}
+      {/* The phone tab bar's Live button: the game in progress, else this week's games */}
       <Route path="/live" element={<LiveRedirect />} />
       <Route path="/teams" element={<TeamsPage />} />
       <Route path="/team/:abbr" element={<TeamPage />} />
