@@ -80,6 +80,8 @@ jobs:
           cp ../primary-ui/public/predictions.json "$out/"
           cp ../primary-ui/public/rosters.json "$out/"
           cp data/processed/current_injuries.json "$out/" 2>/dev/null || true
+          # Data only, no app: tell Vercel not to build this branch (it was failing a preview every push).
+          echo '{ "git": { "deploymentEnabled": false } }' > "$out/vercel.json"
           cd "$out"
           git init -q -b data
           git config user.name "clark-index-bot"
